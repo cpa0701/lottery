@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, Menu, Icon} from 'antd';
+import {Layout, Menu, Icon,Radio} from 'antd';
 import MenuSer from '../../../../services/MenuSer';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'react-router-dom';
@@ -15,11 +15,13 @@ class Head extends React.Component {
         super(props)
         this.state = {
             current: 'mail',
-            menuData: []
+            menuData: [],
+            locale: null,
         }
         this.stores = this.props.stores;
 
         this.initMenu = this.initMenu.bind(this)
+        this.changeLocale = this.changeLocale.bind(this)
     }
 
     componentWillMount() {
@@ -66,7 +68,15 @@ class Head extends React.Component {
             }
         )
     }
-
+    changeLocale = (e) => {
+        const localeValue = e.target.value;
+        this.setState({locale: localeValue});
+        // if (!localeValue) {
+        //     moment.locale('en');
+        // } else {
+        //     moment.locale('zh-cn');
+        // }
+    }
 
     render() {
         return (
@@ -83,6 +93,7 @@ class Head extends React.Component {
                 >{
                     this.initMenu()
                 }</Menu>
+
             </Header>
         )
     }
