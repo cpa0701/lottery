@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.mapper.DepartmentMapper" >
+  <resultMap id="BaseResultMap" type="Department" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, name
+  </sql>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where id = #{id}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from department
+  </select>
+  
+  <delete id="delete" parameterType="Department" >
+    delete from department 
+    where id = #{id}
+  </delete>
+  
+  <delete id="deleteById" parameterType="Long" >
+    delete from department
+    where id = #{id}
+  </delete>
+  
+  <insert id="add" parameterType="Department" >
+    insert into department (name)
+    values (#{name})
+  </insert>
+
+  <update id="update" parameterType="Department" >
+    update department
+    <set>
+      <if test="name != null" >
+        name = #{name},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>
