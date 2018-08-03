@@ -1,8 +1,8 @@
 import React from 'react';
 import {Layout, Menu, Icon} from 'antd';
 import MenuSer from '../../../../services/MenuSer';
-import { observer, inject } from 'mobx-react';
-
+import {observer, inject} from 'mobx-react';
+import {Link} from 'react-router-dom';
 import "./Header.less"
 
 const {Header} = Layout;
@@ -15,7 +15,7 @@ class Head extends React.Component {
         super(props)
         this.state = {
             current: 'mail',
-            menuData:[]
+            menuData: []
         }
         this.stores = this.props.stores;
 
@@ -41,25 +41,26 @@ class Head extends React.Component {
         return menuData.map((item) => {
                 if (item.children) {
                     return (
-                        <SubMenu key={item.id}
-                                 title={<span><Icon type={item.icon}/><span>{item.name}</span></span>}>
+                        <SubMenu key={item.menuId}
+                                 title={<span><Icon type={item.icon}/><span>{item.menuName}</span></span>}>
                             {item.children.map((vl) => {
                                 if (vl.children) {
-                                    return (<SubMenu key={vl.id}
-                                                     title={<span><Icon type={vl.icon}/><span>{vl.name}</span></span>}>
+                                    return (<SubMenu key={vl.menuId}
+                                                     title={<span><Icon type={vl.icon}/><span>{vl.menuName}</span></span>}>
                                         {this.initMenu(vl.children)}</SubMenu>)
                                 } else {
                                     return (
-
-                                        <Menu.Item key={vl.id}>{vl.name}</Menu.Item>
+                                        <Menu.Item key={vl.menuId}><Link to={vl.menuUrl}>{vl.menuName}</Link></Menu.Item>
                                     )
                                 }
                             })}
                         </SubMenu>
                     )
                 } else {
-                    return (<Menu.Item key={item.id}>
-                        <Icon type={item.icon}/>{item.name}
+                    return (<Menu.Item key={item.menuId}>
+                        <Link to={item.menuUrl}>
+                            <Icon type={item.icon}/>{item.menuName}
+                        </Link>
                     </Menu.Item>)
                 }
             }
