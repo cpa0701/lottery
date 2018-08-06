@@ -17,6 +17,7 @@ CREATE TABLE `regions`  (
 CREATE TABLE `departments`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '部门ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '部门名称',
+  `region_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '区域ID',
   `parent_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '父部门ID',
   `created_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建人',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
