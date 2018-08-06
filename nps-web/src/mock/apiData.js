@@ -3,8 +3,11 @@ import Mock from 'mockjs'
 Mock.setup({
     timeout: '1000'
 });
+Mock.mock("mock/test",{
+    "usercode": "00000",
+})
 //菜单
-Mock.mock("mock/menuInfoController/qryMenu", {
+Mock.mock("mock/menuInfoController/qryMenu",{
     "menuData": [
         {
             menuName: '首页',
@@ -27,7 +30,7 @@ Mock.mock("mock/menuInfoController/qryMenu", {
                     menuName: '问卷管理',
                     menuUrl: '/nps/questionMgr',
                     menuId: 22,
-                    children: [
+                    children:[
                         {
                             menuName: '问卷申请',
                             menuUrl: '/system/domain',
