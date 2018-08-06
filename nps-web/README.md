@@ -16,3 +16,7 @@ mock的接口规则在mock文件夹下的apiData.js中按接口名称进行配�
 
 ##样式
 此项目所有样式全部基于ant-design，各页面的自定义样式放在各自的模块文件夹中建立相应less并在js中进行单独引入，不需使用css
+
+##路由
+路由为react-router-dom
+通过按钮跳转需用Link标签，js控制跳转需要引入withRouter对组件进行包装后调用this.props.history.push('/')进行跳转
