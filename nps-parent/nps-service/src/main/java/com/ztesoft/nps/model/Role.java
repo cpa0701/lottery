@@ -2,24 +2,24 @@ package com.ztesoft.nps.model;
 
 import java.util.Date;
 
-public class Department {
+public class Role {
 	/**
-	 * 部门ID
+	 * 角色ID
 	 */
 	private Long id;
 
 	/**
-	 * 部门名称
+	 * 角色名称
 	 */
 	private String name;
 
 	/**
-	 * 区域ID
+	 * 角色描述
 	 */
-	private Long regionId;
+	private String description;
 
 	/**
-	 * 父部门ID
+	 * 父角色ID
 	 */
 	private Long parentId;
 
@@ -57,6 +57,14 @@ public class Department {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Long getParentId() {
@@ -97,14 +105,6 @@ public class Department {
 
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
-	}
-
-	public Long getRegionId() {
-		return regionId;
-	}
-
-	public void setRegionId(Long regionId) {
-		this.regionId = regionId;
 	}
 
 }

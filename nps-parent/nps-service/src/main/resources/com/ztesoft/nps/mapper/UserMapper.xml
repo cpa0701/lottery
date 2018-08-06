@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ztesoft.nps.mapper.DepartmentMapper" >
-  <resultMap id="BaseResultMap" type="Department" >
+<mapper namespace="com.ztesoft.nps.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="User" >
     <id column="id" property="id" />
+    <result column="no" property="no" />
+    <result column="account" property="account" />
     <result column="name" property="name" />
-    <result column="region_id" property="regionId" />
-    <result column="parent_id" property="parentId" />
+    <result column="dept_id" property="deptId" />
     <result column="created_by" property="createdBy" />
     <result column="created_at" property="createdAt" />
     <result column="modified_by" property="modifiedBy" />
@@ -13,26 +14,26 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, region_id, parent_id, created_by, created_at, modified_by, modified_at
+    id, no, account, name, dept_id, created_by, created_at, modified_by, modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from departments
+    from users
     where id = #{id}
   </select>
   
-  <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
+  <select id="findByDeptId" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from departments
-    where parent_id = #{id}
+    from users
+    where dept_id = #{deptId}
   </select>
   
-  <insert id="add" parameterType="Department" >
-    insert into departments (name, region_id, parent_id, created_by, created_at, modified_by, modified_at)
-    values (#{name}, #{regionId}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+  <insert id="add" parameterType="User" >
+    insert into users (no, account, name, password, salt, dept_id, created_by, created_at, modified_by, modified_at)
+    values (#{no}, #{account}, #{name}, #{password}, #{salt}, #{deptId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>
 
 </mapper>

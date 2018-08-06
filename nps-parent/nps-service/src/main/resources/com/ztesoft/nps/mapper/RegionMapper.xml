@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.mapper.RegionMapper" >
+  <resultMap id="BaseResultMap" type="Region" >
+    <id column="id" property="id" />
+    <result column="area_id" property="areaId" />
+    <result column="name" property="name" />
+    <result column="type" property="type" />
+    <result column="code" property="code" />
+    <result column="sequence" property="sequence" />
+    <result column="parent_id" property="parentId" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_at" property="createdAt" />
+    <result column="modified_by" property="modifiedBy" />
+    <result column="modified_at" property="modifiedAt" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, area_id, name, type, code, sequence, parent_id, created_by, created_at, modified_by, modified_at
+  </sql>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from regions
+    where id = #{id}
+  </select>
+  
+  <select id="findByAreaId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from regions
+    where area_id = #{areaId}
+  </select>
+  
+  <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from regions 
+    where parent_id = #{id}
+  </select>
+  
+  <delete id="delete" parameterType="Region" >
+    delete from regions 
+    where id = #{id}
+  </delete>
+  
+  <delete id="deleteById" parameterType="Long" >
+    delete from regions
+    where id = #{id}
+  </delete>
+  
+  <insert id="add" parameterType="Region" >
+    insert into regions (area_id, name, type, code, sequence, parent_id, created_by, created_at, modified_by, modified_at)
+    values (#{areaId}, #{name}, #{type}, #{code}, #{sequence}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+  </insert>
+
+  <update id="update" parameterType="Region" >
+    update regions
+    <set>
+      <if test="name != null" >
+        name = #{name},
+      </if>
+      <if test="type != null" >
+        type = #{type},
+      </if>
+      <if test="sequence != null" >
+        sequence = #{sequence},
+      </if>
+      <if test="code != null" >
+        code = #{code},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

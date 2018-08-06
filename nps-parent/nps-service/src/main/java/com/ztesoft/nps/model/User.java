@@ -2,26 +2,41 @@ package com.ztesoft.nps.model;
 
 import java.util.Date;
 
-public class Department {
+public class User {
 	/**
-	 * 部门ID
+	 * 用户ID
 	 */
 	private Long id;
 
 	/**
-	 * 部门名称
+	 * 用户工号
+	 */
+	private String no;
+
+	/**
+	 * 用户帐号
+	 */
+	private String account;
+
+	/**
+	 * 用户名称
 	 */
 	private String name;
 
 	/**
-	 * 区域ID
+	 * 帐号密码
 	 */
-	private Long regionId;
+	private String password;
 
 	/**
-	 * 父部门ID
+	 * 密码盐值
 	 */
-	private Long parentId;
+	private String salt;
+
+	/**
+	 * 部门ID
+	 */
+	private Long deptId;
 
 	/**
 	 * 创建人
@@ -51,6 +66,22 @@ public class Department {
 		this.id = id;
 	}
 
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -59,12 +90,28 @@ public class Department {
 		this.name = name;
 	}
 
-	public Long getParentId() {
-		return parentId;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public Long getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
 	}
 
 	public String getCreatedBy() {
@@ -97,14 +144,6 @@ public class Department {
 
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
-	}
-
-	public Long getRegionId() {
-		return regionId;
-	}
-
-	public void setRegionId(Long regionId) {
-		this.regionId = regionId;
 	}
 
 }

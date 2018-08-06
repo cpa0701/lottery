@@ -2,24 +2,39 @@ package com.ztesoft.nps.model;
 
 import java.util.Date;
 
-public class Department {
+public class Region {
 	/**
-	 * 部门ID
+	 * 区域ID
 	 */
 	private Long id;
 
 	/**
-	 * 部门名称
+	 * 区域标识
+	 */
+	private Long areaId;
+
+	/**
+	 * 区域名称
 	 */
 	private String name;
 
 	/**
-	 * 区域ID
+	 * 区域类型
 	 */
-	private Long regionId;
+	private Integer type;
 
 	/**
-	 * 父部门ID
+	 * 区域码
+	 */
+	private String code;
+
+	/**
+	 * 序号
+	 */
+	private Integer sequence;
+
+	/**
+	 * 父区域ID
 	 */
 	private Long parentId;
 
@@ -51,12 +66,44 @@ public class Department {
 		this.id = id;
 	}
 
+	public Long getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(Long areaId) {
+		this.areaId = areaId;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Integer getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
 	}
 
 	public Long getParentId() {
@@ -98,13 +145,4 @@ public class Department {
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
-
-	public Long getRegionId() {
-		return regionId;
-	}
-
-	public void setRegionId(Long regionId) {
-		this.regionId = regionId;
-	}
-
 }
