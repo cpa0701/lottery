@@ -1,14 +1,40 @@
 import Mock from 'mockjs'
 
+
+let serialize = (str1) => {
+    if (str1 === '') {
+        return {}
+    }
+    //修复 jquery.serialize() 会把空格转成'+'的坑
+    let str = str1.replace(/\+/g, " ");
+    let obj = {};
+    let params = str.split('&');
+    for (let i = 0; i < params.length; i++) {
+        let val = params[i].split("=");
+        //多选的select，在jquery.serialize()的时候名称都是相同的，如右：rules=1&rules=3
+        //这个时候需要把值以数组的形式保存，如右：rules：[1,3]
+        if (obj[val[0]]) {
+            let arr = [];
+            Object.prototype.toString.call(obj[val[0]]) === "[object Array]" ? arr = arr.concat(obj[val[0]]) : arr.push(obj[val[0]]);
+            arr.push(unescape(val[1]));
+            obj[val[0]] = arr;
+        } else {
+            obj[val[0]] = unescape(val[1])
+        }
+    }
+    return obj
+};
 Mock.setup({
     timeout: '1000'
 });
-Mock.mock("mock/test",{
-    "usercode": "00000",
+
+//登录
+Mock.mock('mock/test', {
+    'usercode': '00000',
 })
 //菜单
-Mock.mock("mock/menuInfoController/qryMenu",{
-    "menuData": [
+Mock.mock('mock/menuInfoController/qryMenu', {
+    'menuData': [
         {
             menuName: '首页',
             icon: 'home',
@@ -30,7 +56,7 @@ Mock.mock("mock/menuInfoController/qryMenu",{
                     menuName: '问卷管理',
                     menuUrl: '/nps/questionMgr',
                     menuId: 22,
-                    children:[
+                    children: [
                         {
                             menuName: '问卷申请',
                             menuUrl: '/nps/questionMgr',
@@ -174,4 +200,44 @@ Mock.mock("mock/menuInfoController/qryMenu",{
             ]
         }
     ],
+})
+
+//获取区域树
+Mock.mock('mock/region/initRegionInfo', (params) => {
+    let params1 = JSON.parse(params.body);
+    if (!params1.rowId)
+        return Mock.mock({
+            'treeData|5': [{
+                'rowId|+1': 1,
+                'ideptId|+1': '@integer(1,1213123120)',
+                'iDeptLevel': '2',
+                'sdeptName': '@cname',
+                'iParentId': '0',
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': 1010001,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '2'
+            }]
+        })
+    else {
+        return Mock.mock({
+            'treeData|2': [{
+                'rowId|+1': params1.rowId * 10 + 1,
+                'ideptId|+1': params1.ideptId * 10 + 1,
+                'iDeptLevel': params1.iDeptLevel + 1,
+                'sdeptName': '@cname',
+                'iParentId': params1.rowId,
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': params1.idomainId * 10 + 1,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '@integer(0,10)'
+            }]
+        })
+    }
 })

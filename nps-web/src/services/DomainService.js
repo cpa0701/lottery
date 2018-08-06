@@ -6,7 +6,7 @@ import Http from '../common/Http';
 class DomainService {
     // 获取区域树
     getDomainTree=async(param)=>{
-        var url = 'safe/region/initRegionInfo';
+        var url = 'mock/region/initRegionInfo';
         return await Http.post(url, param);
     }
     // 根据条件获取区域树

@@ -80,6 +80,29 @@ export class Http {
             );
     }
 
+    async delete(api, config = {}) {
+        api = this.getUrl(api);
+        return await this._request(
+            {
+                url: api,
+                method: 'DELETE',
+            }, config
+        );
+    }
+
+    async put(api, data = {}, config = {}) {
+        api = this.getUrl(api);
+
+        const formBody = JSON.stringify(data);
+            return await this._request(
+                {
+                    url: api,
+                    method: 'PUT',
+                    params: formBody,
+                }, config
+            );
+    }
+
     async _request(params, config = {
         baseURL: '',
     }) {
