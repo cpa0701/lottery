@@ -154,22 +154,22 @@ Mock.mock("mock/menuInfoController/qryMenu",{
                 {
                     menuName: '部门人员管理',
                     menuUrl: '/system/dept',
-                    menuId: 61,
+                    menuId: 71,
                 },
                 {
                     menuName: '角色管理',
                     menuUrl: '/system/role',
-                    menuId: 62,
+                    menuId: 72,
                 },
                 {
                     menuName: '权限配置管理',
                     menuUrl: '/system/authority',
-                    menuId: 63,
+                    menuId: 73,
                 },
                 {
                     menuName: '区域管理',
                     menuUrl: '/system/domain',
-                    menuId: 64,
+                    menuId: 74,
                 },
             ]
         }
