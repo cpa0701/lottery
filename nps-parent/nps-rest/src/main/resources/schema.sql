@@ -1,6 +1,6 @@
 CREATE TABLE `regions`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '区域ID',
-  `area_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '区域标识',
+  `area_id` bigint UNSIGNED NOT NULL COMMENT '区域标识',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '区域名称',
   `type` tinyint UNSIGNED DEFAULT 0 COMMENT '区域类型',
   `code` varchar(64) NOT NULL DEFAULT '' COMMENT '区域码',
