@@ -33,12 +33,12 @@ Mock.mock("mock/menuInfoController/qryMenu",{
                     children:[
                         {
                             menuName: '问卷申请',
-                            menuUrl: '/system/domain',
+                            menuUrl: '/nps/questionMgr',
                             menuId: 221,
                         },
                         {
                             menuName: '问卷审核',
-                            menuUrl: '/system/dept',
+                            menuUrl: '/nps/questionMgr',
                             menuId: 222,
                         },
                         {
@@ -148,8 +148,30 @@ Mock.mock("mock/menuInfoController/qryMenu",{
         {
             menuName: '系统管理',
             icon: 'setting',
-            menuUrl: 'system',
-            menuId: 7
+            menuUrl: '/system',
+            menuId: 7,
+            children: [
+                {
+                    menuName: '部门人员管理',
+                    menuUrl: '/system/dept',
+                    menuId: 61,
+                },
+                {
+                    menuName: '角色管理',
+                    menuUrl: '/system/role',
+                    menuId: 62,
+                },
+                {
+                    menuName: '权限配置管理',
+                    menuUrl: '/system/authority',
+                    menuId: 63,
+                },
+                {
+                    menuName: '区域管理',
+                    menuUrl: '/system/domain',
+                    menuId: 64,
+                },
+            ]
         }
     ],
 })
