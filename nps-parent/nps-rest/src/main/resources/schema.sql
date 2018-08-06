@@ -43,3 +43,15 @@ CREATE TABLE `users`  (
   UNIQUE KEY (`no`),
   UNIQUE KEY (`account`)
 ) engine=innodb charset=utf8mb4 comment '用户';
+
+CREATE TABLE `roles`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '角色ID',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '角色名称',
+  `description` varchar(255) NOT NULL DEFAULT '' COMMENT '角色描述',
+  `parent_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '父角色ID',
+  `created_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建人',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `modified_by` varchar(64) NOT NULL DEFAULT '' COMMENT '修改人',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) engine=innodb charset=utf8mb4 comment '角色';
