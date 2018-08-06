@@ -9,5 +9,5 @@ public interface UserService {
 
 	User findById(Long id);
 
-	List<User> findByPage(int pageNum, int pageSize);
+	List<User> findByDeptId(int pageNum, int pageSize, Long deptId);
 }

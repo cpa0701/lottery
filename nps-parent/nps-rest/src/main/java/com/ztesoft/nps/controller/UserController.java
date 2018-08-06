@@ -29,11 +29,12 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping
-	@ApiOperation(value = "分页查询用户", notes = "分页查询用户")
-	public Result<PageInfo<User>> findAll(
+	@ApiOperation(value = "根据部门ID查询用户", notes = "根据部门ID查询用户")
+	public Result<PageInfo<User>> findByDeptId(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
-			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize) {
-		List<User> users = userService.findByPage(pageNum, pageSize);
+			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
+			@ApiParam(value = "部门ID") @RequestParam(required = true, defaultValue = "0") Long deptId) {
+		List<User> users = userService.findByDeptId(pageNum, pageSize, deptId);
 
 		PageInfo<User> page = new PageInfo<User>(users);
 		return Result.success(page);

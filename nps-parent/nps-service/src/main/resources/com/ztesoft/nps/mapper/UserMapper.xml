@@ -24,10 +24,11 @@
     where id = #{id}
   </select>
   
-  <select id="findAll" resultMap="BaseResultMap" >
+  <select id="findByDeptId" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
     from users
+    where dept_id = #{deptId}
   </select>
   
   <insert id="add" parameterType="User" >

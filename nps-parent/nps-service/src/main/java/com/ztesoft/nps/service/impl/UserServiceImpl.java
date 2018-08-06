@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByPage(int pageNum, int pageSize) {
+	public List<User> findByDeptId(int pageNum, int pageSize, Long deptId) {
 		PageHelper.startPage(pageNum, pageSize);
 
-		return userMapper.findAll();
+		return userMapper.findByDeptId(deptId);
 	}
 
 }
