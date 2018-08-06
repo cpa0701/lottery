@@ -1,6 +1,5 @@
 import React from 'react';
 import {inject} from "mobx-react/index"
-import stores from "../../../../../model/Stores"
 
 @inject("stores")
 class Domain extends React.Component {
