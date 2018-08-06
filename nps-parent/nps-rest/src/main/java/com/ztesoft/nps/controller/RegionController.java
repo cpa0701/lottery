@@ -44,7 +44,7 @@ public class RegionController {
 	@GetMapping
 	@ApiOperation(value = "根据父区域查询子区域列表", notes = "根据父区域查询子区域列表")
 	public Result<List<Region>> findByParentId(
-			@RequestParam(defaultValue = "0", required = true) Long parentId) {
+			@ApiParam(value = "父区域ID") @RequestParam(defaultValue = "0", required = true) Long parentId) {
 		List<Region> regions = regionService.findByParentId(parentId);
 
 		return Result.success(regions);

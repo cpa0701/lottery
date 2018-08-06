@@ -39,7 +39,7 @@ public class Region {
 	private Long parentId;
 
 	/**
-	 * 创建时间
+	 * 创建人
 	 */
 	private String createdBy;
 
