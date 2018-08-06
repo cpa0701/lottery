@@ -241,3 +241,49 @@ Mock.mock('mock/region/initRegionInfo', (params) => {
         })
     }
 })
+//获取角色树
+Mock.mock('mock/system/rolesController/qryRolesTree', {
+    "treeData": [
+        {
+            name: '角色树',
+            key: '1',
+            isParent: false,
+            children: [
+                {
+                    name: '系统管理员',
+                    key: '1.1',
+                    isParent: true,
+                    children: [
+                        {
+                            name: '角色A',
+                            key: '1.1.1',
+                            isParent: true,
+                        },
+                        {
+                            name: '角色B',
+                            key: '1.1.2',
+                            isParent: true,
+                        }
+                    ]
+                },
+                {
+                    name: '业务员',
+                    key: '1.2',
+                    isParent: true,
+                    children: [
+                        {
+                            name: '角色C',
+                            key: '1.2.1',
+                            isParent: true,
+                        },
+                        {
+                            name: '角色D',
+                            key: '1.2.2',
+                            isParent: true,
+                        }
+                    ]
+                },
+            ]
+        }
+    ]
+})
