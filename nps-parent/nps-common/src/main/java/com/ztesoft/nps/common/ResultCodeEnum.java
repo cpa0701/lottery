@@ -1,7 +1,8 @@
 package com.ztesoft.nps.common;
 
 public enum ResultCodeEnum {
-	SUCCESS(200, "成功"), NOT_FOUND(404, "对象不存在"), INNER_ERROR(500, "服务器内部错误");
+	SUCCESS(200, "成功"), UNAUTHORIZED(401, "用户未登录"), NOT_FOUND(404, "对象不存在"), INNER_ERROR(
+			500, "服务器内部错误");
 	
 	private int code;
 	

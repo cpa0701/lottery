@@ -19,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public Role add(Role role) {
 		roleMapper.add(role);
-		return role;
+		return roleMapper.findById(role.getId());
 	}
 
 	@Transactional(readOnly = true)

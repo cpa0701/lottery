@@ -20,7 +20,7 @@ public class RegionServiceImpl implements RegionService {
 	public Region add(Region region) {
 		regionMapper.add(region);
 
-		return region;
+		return regionMapper.findById(region.getId());
 	}
 
 	@Transactional(rollbackFor = Exception.class)

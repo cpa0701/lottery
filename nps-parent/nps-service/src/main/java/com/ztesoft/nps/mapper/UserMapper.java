@@ -12,4 +12,8 @@ public interface UserMapper {
 	User findById(Long id);
 
 	List<User> findByDeptId(@Param("deptId") Long deptId);
+
+	User findByAccount(String account);
+
+	User findByNo(String no);
 }
