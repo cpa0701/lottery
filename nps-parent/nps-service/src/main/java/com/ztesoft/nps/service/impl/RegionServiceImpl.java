@@ -40,7 +40,7 @@ public class RegionServiceImpl implements RegionService {
 	public Region update(Region region) {
 		regionMapper.update(region);
 
-		return region;
+		return regionMapper.findById(region.getId());
 	}
 
 	@Transactional(readOnly = true)
