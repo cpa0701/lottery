@@ -10,4 +10,6 @@ public interface DepartmentService {
 	Department findById(Long id);
 
 	List<Department> findByParentId(Long id);
+
+	List<Department> findByRegionId(Long id);
 }

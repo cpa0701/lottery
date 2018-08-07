@@ -24,6 +24,11 @@ public class Department {
 	private Long parentId;
 
 	/**
+	 * 状态
+	 */
+	private Integer status;
+
+	/**
 	 * 创建人
 	 */
 	private String createdBy;
@@ -42,6 +47,10 @@ public class Department {
 	 * 修改时间
 	 */
 	private Date modifiedAt;
+
+	public Department() {
+		this.status = 1;
+	}
 
 	public Long getId() {
 		return id;
@@ -105,6 +114,14 @@ public class Department {
 
 	public void setRegionId(Long regionId) {
 		this.regionId = regionId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

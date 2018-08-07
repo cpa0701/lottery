@@ -34,4 +34,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 		return departmentMapper.findByParentId(id);
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public List<Department> findByRegionId(Long id) {
+		return departmentMapper.findByRegionId(id);
+	}
+
 }
