@@ -9,7 +9,13 @@ public interface DepartmentService {
 
 	Department findById(Long id);
 
+	List<Department> findAll(Long parentId, Long regionId, String name);
+
 	List<Department> findByParentId(Long id);
 
 	List<Department> findByRegionId(Long id);
+
+	Department update(Department dept);
+
+	int delete(Department dept);
 }
