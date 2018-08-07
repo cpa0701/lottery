@@ -10,4 +10,8 @@ public interface UserService {
 	User findById(Long id);
 
 	List<User> findByDeptId(int pageNum, int pageSize, Long deptId);
+
+	User findByAccount(String account);
+
+	User findByNo(String no);
 }

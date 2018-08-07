@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.service.UserService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -27,6 +30,9 @@ import com.ztesoft.nps.service.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private HttpSession session;
 
 	@GetMapping
 	@ApiOperation(value = "根据部门ID查询用户", notes = "根据部门ID查询用户")
@@ -43,9 +49,9 @@ public class UserController {
 	@PostMapping
 	@ApiOperation(value = "新增用户", notes = "新增用户")
 	public Result<User> add(@RequestBody User user) {
-		// User user = UserUtil.getUser(request);
-		// category.setCreator(user.getName());
-		// category.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		user.setCreatedBy(currentUser.getAccount());
+		user.setModifiedBy(currentUser.getAccount());
 
 		userService.add(user);
 
