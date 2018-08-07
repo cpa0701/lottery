@@ -6,6 +6,7 @@
     <result column="name" property="name" />
     <result column="region_id" property="regionId" />
     <result column="parent_id" property="parentId" />
+    <result column="status" property="status" />
     <result column="created_by" property="createdBy" />
     <result column="created_at" property="createdAt" />
     <result column="modified_by" property="modifiedBy" />
@@ -13,7 +14,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, region_id, parent_id, created_by, created_at, modified_by, modified_at
+    id, name, region_id, parent_id, status, created_by, created_at, modified_by, modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
@@ -27,12 +28,19 @@
     select 
     <include refid="Base_Column_List" />
     from departments
-    where parent_id = #{id}
+    where status = 1 and parent_id = #{id}
+  </select>
+  
+  <select id="findByRegionId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from departments
+    where status = 1 and region_id = #{id}
   </select>
   
   <insert id="add" parameterType="Department" useGeneratedKeys="true" keyProperty="id">
-    insert into departments (name, region_id, parent_id, created_by, created_at, modified_by, modified_at)
-    values (#{name}, #{regionId}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into departments (name, region_id, parent_id, status, created_by, created_at, modified_by, modified_at)
+    values (#{name}, #{regionId}, #{parentId}, #{status}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>
 
 </mapper>
