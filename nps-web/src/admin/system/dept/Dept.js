@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Layout, Icon, TreeSelect, Input, Button, Tree} from 'antd';
+import {Form, Layout, Icon, TreeSelect, Input, Button, Tree, Popconfirm} from 'antd';
 import {message, Modal} from "antd"
 
 import "./Dept.less"
@@ -22,6 +22,7 @@ export default class Dept extends Component {
         domainTreeDate: [],
         departmentData: [],
         departmentDataTree: [],
+        selectedKeys: [],
         departmentEditData: null,
         modalVisible: false
     };
@@ -89,6 +90,7 @@ export default class Dept extends Component {
             collapsed: !this.state.collapsed,
         });
     }
+    //点击区域树
     onChange = (value) => {
         this.setState({value});
     }
@@ -96,7 +98,8 @@ export default class Dept extends Component {
     onSelect = (selectedKeys, info) => {
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
         this.setState({
-            departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : ""
+            departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : "",
+            selectedKeys: selectedKeys
         })
     }
     //异步加载树节点
@@ -136,7 +139,6 @@ export default class Dept extends Component {
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
-        params.region = this.state.value;
         this.setState({
             treeData: [],
         });
@@ -180,26 +182,14 @@ export default class Dept extends Component {
     //修改方法
     handleUpdate = () => {
         if (this.state.departmentEditData) {
-            if (this.state.departmentEditData.IDOMAINID !== "-1") {
-                this.setState({
-                    departmentData: this.state.departmentEditData,
-                    thisTime: '',
-                });
-                this.handleModalVisible(true);
-            } else {
-                const ref = info({
-                    title: '不能修改区域根节点！',
-                    content: '',
-                    okText: '确定',
-                    cancelText: '取消',
-                    onOk: () => {
-                        ref.destroy();
-                    }
-                });
-            }
+            this.setState({
+                departmentData: this.state.departmentEditData,
+                thisTime: 'M',
+            });
+            this.handleModalVisible(true);
         } else {
             const ref = info({
-                title: '请先选择要修改的区域',
+                title: '请先选择要修改的部门',
                 content: '',
                 okText: '确定',
                 cancelText: '取消',
@@ -211,37 +201,29 @@ export default class Dept extends Component {
     }
 
     //删除方法
-    handleDelete = (row) => {
-        let params = {};
-        let promise = null;
-        if (Array.isArray(row)) {
-            params.menuIds = row.map(item => item.menuId + ''); //平台角色id，必填
-            params.operateType = '3'; //3-删除，必填
-            promise = DeptService.DelAllMenuSys(params);
-        } else {
-            params = {
-                menuId: row.menuId,//菜单id，必填
-                operateType: '3' //3-删除，必填
-            }
-            promise = DeptService.DelMenuSys(params);
-        }
-        promise.then(result => {
-            if (!result.head) {
-                return;
-            }
-            let head = result.head;
-            // let data = result.data;
-            let success = head.resultCode;
-            if (success !== '0') {
-                message.error(head.remark);
-            }
-            else {
-                message.success('删除成功');
+    handleDelete = () => {
 
-                this.handleSearch();
-            }
-        });
+        let row = this.state.selectedKeys;
+        let params = {};
+        if (row.length !== 0) {
+            params.menuIds = row.map(item => item + ''); //平台角色id，必填
+            DeptService.dleDept(params).then(result => {
+                message.success('删除成功');
+                this.handlerSearchDepartment();
+            });
+        } else {
+            const ref = info({
+                title: '请先选择要删除的部门',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
         this.handleSelectRows([])
+
     }
 
     //点击勾选方法
@@ -311,8 +293,10 @@ export default class Dept extends Component {
                     <div className='departmentBtn'>
                         <Button onClick={this.handlerSearchDepartment} type="primary">查询</Button>
                         <Button onClick={this.handleAdd}>新增</Button>
-                        <Button type="dashed">修改</Button>
-                        <Button type="danger">删除</Button>
+                        <Button type="dashed" onClick={this.handleUpdate}>修改</Button>
+                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={this.handleDelete}>
+                            <Button type="danger">删除</Button>
+                        </Popconfirm>,
                     </div>
                     <h6 className='departmentH6'>部门导航树</h6>
                     {this.state.treeData.length

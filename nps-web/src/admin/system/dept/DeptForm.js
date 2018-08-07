@@ -38,24 +38,24 @@ class Dept extends PureComponent {
             realSysvData = nextProps.departmentData;
         }
         let action = 'A';
-        if (realSysvData && realSysvData.actionType) {
-            action = realSysvData.actionType;
+        if (nextProps && nextProps.thisTime) {
+            action = nextProps.thisTime;
         }
         this.actionType = action
         this.setState({
             actionTypeName: actionTypeMap[action]
         });
 
-        //   if('V' === action){
-        //     this.setState({
-        //       footer: null
-        //     });
-        //   }
-        //   else {
-        //     this.setState({
-        //       footer: undefined
-        //     });
-        //   }
+          if('V' === action){
+            this.setState({
+              footer: null
+            });
+          }
+          else {
+            this.setState({
+              footer: undefined
+            });
+          }
 
     }
 
@@ -94,10 +94,10 @@ class Dept extends PureComponent {
         // }
         //新增
         if (this.actionType === 'A') {
-            promise = DeptService.addMenuSys(fields)
+            promise = DeptService.addDept(fields)
         }
         else {
-            promise = DeptService.ediMenuSys({...fields, menuId: departmentData.menuId})
+            promise = DeptService.ediDept({...fields, menuId: departmentData.menuId})
         }
 
         promise.then(result => {
@@ -139,7 +139,7 @@ class Dept extends PureComponent {
                             rules: [
                                 {required: true, message: '所属区域不能为空'}
                             ],
-                            initialValue: this.props.departmentData.SDOMAINNAME,
+                            initialValue: 1,
                         })(
                             <Select disabled={actionType === "V"}>
                                 {domainSelect}
@@ -310,8 +310,8 @@ class Dept extends PureComponent {
             actionType: 'A',
             actionTypeName: '新增部门'
         }
-        if (departmentData && departmentData.IDOMAINID) {
-            if (thisTime === "") {
+        if (departmentData && departmentData.idomainId) {
+            if (thisTime === "M") {
                 action = {
                     actionType: 'M',
                     actionTypeName: '修改部门'

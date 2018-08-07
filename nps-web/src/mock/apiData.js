@@ -251,7 +251,16 @@ Mock.mock('mock/dept/checkDeptName', (params) => {
     })
 })
 //新增部门
-Mock.mock('mock/dept/addMenuSys', (params) => {
+Mock.mock('mock/dept/addDept', (params) => {
+    let params1 = JSON.parse(params.body);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//删除部门
+Mock.mock('mock/dept/dleDept', (params) => {
     let params1 = JSON.parse(params.body);
     return Mock.mock({
         'result': {
@@ -260,7 +269,7 @@ Mock.mock('mock/dept/addMenuSys', (params) => {
     })
 })
 //编辑部门
-Mock.mock('mock/dept/ediMenuSys', (params) => {
+Mock.mock('mock/dept/ediDept', (params) => {
     let params1 = JSON.parse(params.body);
     return Mock.mock({
         'result': {

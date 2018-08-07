@@ -12,13 +12,18 @@ class DeptService {
         return await Http.post(url, param);
     }
     // 新增部门
-    addMenuSys = async (param) => {
-        var url = 'mock/dept/addMenuSys';
+    addDept = async (param) => {
+        var url = 'mock/dept/addDept';
         return await Http.post(url, param);
     }
     //修改部门
-    ediMenuSys = async (param) => {
-        var url = 'mock/dept/ediMenuSys';
+    ediDept = async (param) => {
+        var url = 'mock/dept/ediDept';
+        return await Http.post(url, param);
+    }
+    //删除部门
+    dleDept = async (param) => {
+        var url = 'mock/dept/dleDept';
         return await Http.post(url, param);
     }
 }
