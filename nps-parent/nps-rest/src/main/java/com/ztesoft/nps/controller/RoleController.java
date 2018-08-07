@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Role;
+import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.service.RoleService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @RequestMapping(value = "/roles")
@@ -26,6 +30,9 @@ import com.ztesoft.nps.service.RoleService;
 public class RoleController {
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private HttpSession session;
 
 	@GetMapping
 	@ApiOperation(value = "根据父角色ID查询子角色列表", notes = "根据父角色ID查询子角色列表")
@@ -39,9 +46,9 @@ public class RoleController {
 	@PostMapping
 	@ApiOperation(value = "新增角色", notes = "新增角色")
 	public Result<Role> add(@RequestBody Role role) {
-		// User user = UserUtil.getUser(request);
-		// category.setCreator(user.getName());
-		// category.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		role.setCreatedBy(currentUser.getAccount());
+		role.setModifiedBy(currentUser.getAccount());
 
 		roleService.add(role);
 

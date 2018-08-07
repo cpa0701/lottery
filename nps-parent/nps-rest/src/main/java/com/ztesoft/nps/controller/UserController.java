@@ -42,6 +42,12 @@ public class UserController {
 			@ApiParam(value = "部门ID") @RequestParam(required = true, defaultValue = "0") Long deptId) {
 		List<User> users = userService.findByDeptId(pageNum, pageSize, deptId);
 
+		// 清空密码和盐值
+		users.stream().forEach(user -> {
+			user.setPassword(null);
+			user.setSalt(null);
+		});
+
 		PageInfo<User> page = new PageInfo<User>(users);
 		return Result.success(page);
 	}
@@ -66,6 +72,11 @@ public class UserController {
 		if (user == null) {
 			throw new NpsObjectNotFoundException(id);
 		}
+
+		// 清空密码和盐值
+		user.setPassword(null);
+		user.setSalt(null);
+
 		return Result.success(user);
 	}
 }
