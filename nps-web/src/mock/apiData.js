@@ -202,14 +202,14 @@ Mock.mock('mock/menuInfoController/qryMenu', {
     ],
 })
 
-//获取区域树
-Mock.mock('mock/region/initRegionInfo', (params) => {
+//获取部门树
+Mock.mock('mock/dept/initDeptTree', (params) => {
     let params1 = JSON.parse(params.body);
     if (!params1.rowId)
         return Mock.mock({
             'treeData|5': [{
                 'rowId|+1': 1,
-                'ideptId|+1': '@integer(1,1213123120)',
+                'ideptId|+1': 12131,
                 'iDeptLevel': '2',
                 'sdeptName': '@cname',
                 'iParentId': '0',
@@ -240,6 +240,33 @@ Mock.mock('mock/region/initRegionInfo', (params) => {
             }]
         })
     }
+})
+//判断部门唯一性
+Mock.mock('mock/dept/checkDeptName', (params) => {
+    let params1 = JSON.parse(params.body);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//新增部门
+Mock.mock('mock/dept/addMenuSys', (params) => {
+    let params1 = JSON.parse(params.body);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//编辑部门
+Mock.mock('mock/dept/ediMenuSys', (params) => {
+    let params1 = JSON.parse(params.body);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
 })
 //获取角色树
 Mock.mock('mock/system/rolesController/qryRolesTree', {
