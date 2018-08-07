@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Department;
+import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.service.DepartmentService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @RequestMapping(value = "/departments")
 @Api(value = "部门管理", description = "部门管理")
 public class DepartmentController {
-
     @Autowired
 	private DepartmentService departmentService;
+
+	@Autowired
+	private HttpSession session;
 
 	@GetMapping
 	@ApiOperation(value = "根据父部门ID查询子部门列表", notes = "根据父部门ID查询子部门列表")
@@ -40,9 +46,9 @@ public class DepartmentController {
 	@PostMapping
 	@ApiOperation(value = "新增部门", notes = "新增部门")
 	public Result<Department> add(@RequestBody Department dept) {
-		// User user = UserUtil.getUser(request);
-		// category.setCreator(user.getName());
-		// category.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		dept.setCreatedBy(currentUser.getAccount());
+		dept.setModifiedBy(currentUser.getAccount());
 
 		departmentService.add(dept);
 
