@@ -30,7 +30,7 @@
     where parent_id = #{id}
   </select>
   
-  <insert id="add" parameterType="Department" >
+  <insert id="add" parameterType="Department" useGeneratedKeys="true" keyProperty="id">
     insert into departments (name, region_id, parent_id, created_by, created_at, modified_by, modified_at)
     values (#{name}, #{regionId}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>

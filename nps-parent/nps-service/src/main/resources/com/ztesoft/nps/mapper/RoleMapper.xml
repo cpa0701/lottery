@@ -30,8 +30,8 @@
     where parent_id = #{id}
   </select>
   
-  <insert id="add" parameterType="Department" >
-    insert into departments (name, description, parent_id, created_by, created_at, modified_by, modified_at)
+  <insert id="add" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
+    insert into roles (name, description, parent_id, created_by, created_at, modified_by, modified_at)
     values (#{name}, #{description}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>
 

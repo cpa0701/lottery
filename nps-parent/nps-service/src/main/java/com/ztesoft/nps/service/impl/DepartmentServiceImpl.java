@@ -19,7 +19,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public Department add(Department dept) {
 		departmentMapper.add(dept);
-		return dept;
+		return departmentMapper.findById(dept.getId());
 	}
 
 	@Transactional(readOnly = true)
