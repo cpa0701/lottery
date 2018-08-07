@@ -7,6 +7,8 @@
     <result column="region_id" property="regionId" />
     <result column="parent_id" property="parentId" />
     <result column="status" property="status" />
+    <result column="type" property="type" />
+    <result column="level" property="level" />
     <result column="created_by" property="createdBy" />
     <result column="created_at" property="createdAt" />
     <result column="modified_by" property="modifiedBy" />
@@ -14,7 +16,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, region_id, parent_id, status, created_by, created_at, modified_by, modified_at
+    id, name, region_id, parent_id, status, type, level, created_by, created_at, modified_by, modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
@@ -22,6 +24,24 @@
     <include refid="Base_Column_List" />
     from departments
     where id = #{id}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from departments
+    <where>
+    	status = 1 
+    	<if test="parentId != null">
+    		and parent_id = #{parentId} 
+    	</if>
+    	<if test="regionId != null">
+    		and region_id = #{regionId} 
+    	</if>
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
+    	</if>
+    </where>
   </select>
   
   <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
@@ -39,8 +59,28 @@
   </select>
   
   <insert id="add" parameterType="Department" useGeneratedKeys="true" keyProperty="id">
-    insert into departments (name, region_id, parent_id, status, created_by, created_at, modified_by, modified_at)
-    values (#{name}, #{regionId}, #{parentId}, #{status}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into departments (name, region_id, parent_id, status, type, level, created_by, created_at, modified_by, modified_at)
+    values (#{name}, #{regionId}, #{parentId}, #{status}, #{type}, #{level}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>
+  
+  <update id="update" parameterType="Department" >
+    update departments
+    <set>
+      <if test="name != null" >
+        name = #{name},
+      </if>
+      <if test="level != null" >
+        level = #{level},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  
+  <update id="delete" parameterType="Department" >
+    update departments set 
+    	status = #{status},
+    	modified_by = #{modifiedBy}
+    where id = #{id}
+  </update>
 
 </mapper>

@@ -20,6 +20,8 @@ CREATE TABLE `departments`  (
   `region_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '区域ID',
   `parent_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '父部门ID',
   `status` tinyint UNSIGNED DEFAULT 1 COMMENT '状态（1:有效 0:无效）',
+  `type` tinyint UNSIGNED DEFAULT 1 COMMENT '部门类型',
+  `level` tinyint UNSIGNED DEFAULT 1 COMMENT '部门级别',
   `created_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建人',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `modified_by` varchar(64) NOT NULL DEFAULT '' COMMENT '修改人',
