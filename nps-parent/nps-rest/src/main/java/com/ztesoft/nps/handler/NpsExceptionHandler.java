@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.ResultCodeEnum;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 
 /**
@@ -27,7 +28,16 @@ public class NpsExceptionHandler {
 	@ResponseBody
 	public Result<Object> objectNotFound(NpsObjectNotFoundException e) {
 		logger.error("发生异常", e);
-		return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
+		// return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
+		return Result.failed(ResultCodeEnum.NOT_FOUND);
+	}
+
+	@ExceptionHandler(NpsDeleteException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ResponseBody
+	public Result<Object> deleteException(NpsDeleteException e) {
+		logger.error("发生异常", e);
+		return Result.failed(ResultCodeEnum.FORBIDDEN, e.getMessage());
 	}
 
 	@ExceptionHandler(Exception.class)
