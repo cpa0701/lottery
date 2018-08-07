@@ -1,1 +1,53 @@
 # nps
+
+## 项目结构
+
+- nps-parent/   ----后台代码根目录
+    - pom.xml   ----总依赖文件
+    - nps-common/   ----公共组件
+        - pom.xml   ----依赖文件
+        - .../  ----src/main/java/com.ztesoft/nps   ----源码                               
+            - exception/    ----自定义异常处理
+                - NpsBusinessException  
+                - NpsObjectNotFoundException   
+            - Result    ----RESTFul-API返回结果
+            - ResultCodeEnum    ----状态码枚举
+    - nps-rest/ ----Rest层
+        - pom.xml  
+        - .../java/.../
+            - config/   ----配置文件
+                - DruidConfiguration    ----Druid数据库连接池，提供监控和扩展功能
+                - DruidStaViewServlet
+                - DruidWebStaFilter
+                - SwaggerConfig ----swagger配置文件（自动生成接口工具）
+            - controller/   ----控制层，提供Restful-API
+                - DepartmentController  ----部门接口
+                - ...
+            - handler/  ----异常处理
+                - NpsExceptionHandler.java  ----统一异常处理
+            - NpsApplication.java   ----启动文件
+        - .../resources/    ----全局静态文件
+            - applicaation.properties   ----项目启动配置
+            - application-dev.properties    ----开发配置    
+            - application-prod.properties   ----生产配置
+            - application-test.properties   ----测试配置
+            - druid-bean.xml    ----Druid
+            - schema.sql ----数据库文件
+    - nps-service/  ----业务逻辑层
+        - pom.xml   ----maven依赖         
+        - .../java/.../nps/
+            - mapper/   ----映射层
+                - DepartmentMapper  ----部门映射类
+                - ...
+            - model/    ----实体层
+                - Department    ----部门实体类 
+                - ...
+            - service/  ----Service层
+                - impl/ ----实现层
+                    - DepartmentServicelmpl ----实现DepartmentService接口
+                    - ...
+                - DepartmentService ----定义部门service层接口
+                - ...
+        - .../resources/.../mapper/	----SQL映射文件 
+        	- DepartmentMapper.xml 	----部门sql映射文件
+        	- ... 
