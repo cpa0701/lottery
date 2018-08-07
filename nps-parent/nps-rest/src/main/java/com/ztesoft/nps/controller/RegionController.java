@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Region;
+import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.service.RegionService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @RequestMapping(value = "/regions")
@@ -29,12 +33,15 @@ public class RegionController {
 	@Autowired
 	private RegionService regionService;
 
+	@Autowired
+	private HttpSession session;
+
 	@PostMapping
 	@ApiOperation(value = "新增区域", notes = "新增区域")
 	public Result<Region> add(@RequestBody Region region) {
-		// User user = UserUtil.getUser(request);
-		// category.setCreator(user.getName());
-		// category.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		region.setCreatedBy(currentUser.getAccount());
+		region.setModifiedBy(currentUser.getAccount());
 
 		regionService.add(region);
 
@@ -71,12 +78,13 @@ public class RegionController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		// oldDept.setName(dept.getName());
-		// oldDept.setDescription(dept.getDescription());
-		// oldDept.setParentId(dept.getParentId());
+		oldRegion.setName(region.getName());
+		oldRegion.setType(region.getType());
+		oldRegion.setCode(region.getCode());
+		oldRegion.setSequence(region.getSequence());
 
-		// User user = UserUtil.getUser(request);
-		// oldCategory.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		oldRegion.setModifiedBy(currentUser.getAccount());
 
 		Region r = regionService.update(oldRegion);
 
