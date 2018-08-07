@@ -246,23 +246,26 @@ Mock.mock('mock/system/rolesController/qryRolesTree', {
     "treeData": [
         {
             name: '角色树',
-            key: '1',
+            key: '0',
             isParent: false,
             children: [
                 {
                     name: '系统管理员',
                     key: '1.1',
                     isParent: true,
+                    parentId: '0',
                     children: [
                         {
                             name: '角色A',
                             key: '1.1.1',
                             isParent: true,
+                            parentId: '1.1',
                         },
                         {
                             name: '角色B',
                             key: '1.1.2',
                             isParent: true,
+                            parentId: '1.1',
                         }
                     ]
                 },
@@ -270,20 +273,46 @@ Mock.mock('mock/system/rolesController/qryRolesTree', {
                     name: '业务员',
                     key: '1.2',
                     isParent: true,
+                    parentId: '0',
                     children: [
                         {
                             name: '角色C',
                             key: '1.2.1',
                             isParent: true,
+                            parentId: '1.2',
                         },
                         {
                             name: '角色D',
                             key: '1.2.2',
                             isParent: true,
+                            parentId: '1.2',
                         }
                     ]
                 },
             ]
+        }
+    ]
+})
+//获取用户表数据
+Mock.mock('mock/system/rolesController/getUserDate', {
+    "userData": [
+        {
+            id: 1,
+            userName: '张三',
+            deptName: '综合管理',
+            create: '人事1'
+        },
+        {
+            id: 2,
+            userName: '李四',
+            deptName: '研发部',
+            create: '人事2'
+        },
+        {
+            id: 3,
+            userName: '王五',
+            deptName: '财务',
+            create: '人事1'
         }
     ]
 })
