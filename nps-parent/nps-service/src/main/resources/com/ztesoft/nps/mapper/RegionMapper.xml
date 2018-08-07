@@ -50,7 +50,7 @@
     where id = #{id}
   </delete>
   
-  <insert id="add" parameterType="Region" >
+  <insert id="add" parameterType="Region" useGeneratedKeys="true" keyProperty="id">
     insert into regions (area_id, name, type, code, sequence, parent_id, created_by, created_at, modified_by, modified_at)
     values (#{areaId}, #{name}, #{type}, #{code}, #{sequence}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
   </insert>

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Form, Layout, Icon, TreeSelect, Input, Button, Tree} from 'antd';
-// import DeptForm from "./DeptForm"
+import {Form, Layout, Icon, TreeSelect, Input, Button, Tree, Popconfirm} from 'antd';
+import {message, Modal} from "antd"
 
 import "./Dept.less"
-import DomainService from "../../../services/DomainService"
-import {message, Modal} from "antd/lib/index"
+import DeptService from "../../../services/DeptService"
+import DeptForm from "./DeptForm"
 
 const TreeNode = Tree.TreeNode;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
@@ -21,6 +21,8 @@ export default class Dept extends Component {
         treeData: [],
         domainTreeDate: [],
         departmentData: [],
+        departmentDataTree: [],
+        selectedKeys: [],
         departmentEditData: null,
         modalVisible: false
     };
@@ -31,7 +33,6 @@ export default class Dept extends Component {
         this.handleAdd = this.handleAdd.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-        // this.onExpand = this.onExpand.bind(this);
     }
 
     componentWillMount() {
@@ -77,7 +78,7 @@ export default class Dept extends Component {
         this.setState({
             domainTreeDate: [JSON.parse(a)]
         });
-        DomainService.getDomainTree().then(result => {
+        DeptService.getDeptTree().then(result => {
             this.setState({
                 treeData: result.treeData,
             });
@@ -89,14 +90,16 @@ export default class Dept extends Component {
             collapsed: !this.state.collapsed,
         });
     }
+    //点击区域树
     onChange = (value) => {
-        console.log(arguments);
         this.setState({value});
     }
     //点击部门树节点时
     onSelect = (selectedKeys, info) => {
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
         this.setState({
-            departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : ""
+            departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : "",
+            selectedKeys: selectedKeys
         })
     }
     //异步加载树节点
@@ -106,7 +109,7 @@ export default class Dept extends Component {
                 resolve();
                 return;
             }
-            DomainService.getDomainTree(treeNode.props.dataRef).then(result => {
+            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
                 treeNode.props.dataRef.children = [...result.treeData];
                 this.setState({
                     treeData: [...this.state.treeData],
@@ -120,7 +123,7 @@ export default class Dept extends Component {
     renderTreeNodes = (data) => {
         return data.map((item) => {
             item.title = item.sdeptName;
-            item.key = item.ideptId;
+            item.key = item.ideptId
             item.isLeaf = !item.childCount;
             if (item.children) {
                 return (
@@ -136,8 +139,10 @@ export default class Dept extends Component {
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
-        params.region = this.state.value;
-        DomainService.getDomainTree(params).then(result => {
+        this.setState({
+            treeData: [],
+        });
+        DeptService.getDeptTree(params).then(result => {
             this.setState({
                 treeData: [...result.treeData]
             });
@@ -149,47 +154,42 @@ export default class Dept extends Component {
             this.setState({
                 departmentData: {
                     sdispName: this.state.departmentEditData.sdispName,
-                    idomainId: this.state.departmentEditData.idomainId,
-                    SDOMAINNAME: this.state.departmentEditData.SDOMAINNAME,
+                    parentId: this.state.departmentEditData.ideptId,
+                    sdeptName: this.state.departmentEditData.sdeptName,
                 }
-            });
-            this.handleModalVisible(true);
+            }, () => this.handleModalVisible(true));
+
         } else {
-            const ref = info({
-                title: '请先选择要新增的所属部门',
-                content: '',
-                okText: '确定',
-                cancelText: '取消',
-                onOk: () => {
-                    ref.destroy();
+            this.setState({
+                departmentData: {
+                    sdispName: "",
+                    parentId: 0,
+                    sdeptName: "",
                 }
-            });
+            }, () => this.handleModalVisible(true));
+            // const ref = info({
+            //     title: '请先选择要新增的所属部门',
+            //     content: '',
+            //     okText: '确定',
+            //     cancelText: '取消',
+            //     onOk: () => {
+            //         ref.destroy();
+            //     }
+            // });
         }
     }
 
     //修改方法
     handleUpdate = () => {
         if (this.state.departmentEditData) {
-            if (this.state.departmentEditData.IDOMAINID !== "-1") {
-                this.setState({
-                    departmentData: this.state.departmentEditData,
-                    thisTime: '',
-                });
-                this.handleModalVisible(true);
-            } else {
-                const ref = info({
-                    title: '不能修改区域根节点！',
-                    content: '',
-                    okText: '确定',
-                    cancelText: '取消',
-                    onOk: () => {
-                        ref.destroy();
-                    }
-                });
-            }
+            this.setState({
+                departmentData: this.state.departmentEditData,
+                thisTime: 'M',
+            });
+            this.handleModalVisible(true);
         } else {
             const ref = info({
-                title: '请先选择要修改的区域',
+                title: '请先选择要修改的部门',
                 content: '',
                 okText: '确定',
                 cancelText: '取消',
@@ -201,37 +201,29 @@ export default class Dept extends Component {
     }
 
     //删除方法
-    handleDelete = (row) => {
-        let params = {};
-        let promise = null;
-        if (Array.isArray(row)) {
-            params.menuIds = row.map(item => item.menuId + ''); //平台角色id，必填
-            params.operateType = '3'; //3-删除，必填
-            promise = DomainService.DelAllMenuSys(params);
-        } else {
-            params = {
-                menuId: row.menuId,//菜单id，必填
-                operateType: '3' //3-删除，必填
-            }
-            promise = DomainService.DelMenuSys(params);
-        }
-        promise.then(result => {
-            if (!result.head) {
-                return;
-            }
-            let head = result.head;
-            // let data = result.data;
-            let success = head.resultCode;
-            if (success !== '0') {
-                message.error(head.remark);
-            }
-            else {
-                message.success('删除成功');
+    handleDelete = () => {
 
-                this.handleSearch();
-            }
-        });
+        let row = this.state.selectedKeys;
+        let params = {};
+        if (row.length !== 0) {
+            params.menuIds = row.map(item => item + ''); //平台角色id，必填
+            DeptService.dleDept(params).then(result => {
+                message.success('删除成功');
+                this.handlerSearchDepartment();
+            });
+        } else {
+            const ref = info({
+                title: '请先选择要删除的部门',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
         this.handleSelectRows([])
+
     }
 
     //点击勾选方法
@@ -250,8 +242,8 @@ export default class Dept extends Component {
             modalVisible: visible,
         });
 
-        //页面关闭了要重新查询
-        // !visible && this.handleSearch();
+        // 页面关闭了要重新查询
+        !visible && this.handlerSearchDepartment();
     }
 
     render() {
@@ -301,26 +293,28 @@ export default class Dept extends Component {
                     <div className='departmentBtn'>
                         <Button onClick={this.handlerSearchDepartment} type="primary">查询</Button>
                         <Button onClick={this.handleAdd}>新增</Button>
-                        <Button type="dashed">修改</Button>
-                        <Button type="danger">删除</Button>
+                        <Button type="dashed" onClick={this.handleUpdate}>修改</Button>
+                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={this.handleDelete}>
+                            <Button type="danger">删除</Button>
+                        </Popconfirm>,
                     </div>
                     <h6 className='departmentH6'>部门导航树</h6>
-                    <Tree
-                        showLine
-                        checkable
-                        defaultExpandedKeys={['0-0-0']}
-                        onSelect={this.onSelect}
-                        loadData={this.onLoadData}
-                    >
-                        {this.renderTreeNodes(this.state.treeData)}
-                    </Tree>
-                    {/*<DeptForm*/}
-                    {/*departmentData={departmentData}*/}
-                    {/*domainTreeDate={domainTreeDate}*/}
-                    {/*modalVisible={modalVisible}*/}
-                    {/*thisTime={this.state.thisTime}*/}
-                    {/*handleModalVisible={this.handleModalVisible}*/}
-                    {/*/>*/}
+                    {this.state.treeData.length
+                        ? <Tree
+                            showLine
+                            checkable
+                            defaultExpandedKeys={['0-0-0']}
+                            onSelect={this.onSelect}
+                            onCheck={this.onSelect}
+                            loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree>
+                        : 'loading tree'}
+                    <DeptForm
+                        departmentData={departmentData}
+                        domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {key: 2, title: '北京'}]}
+                        modalVisible={modalVisible}
+                        thisTime={this.state.thisTime}
+                        handleModalVisible={this.handleModalVisible}
+                    />
                 </Sider>
                 <Layout>
                     <Header className='dept-header'>

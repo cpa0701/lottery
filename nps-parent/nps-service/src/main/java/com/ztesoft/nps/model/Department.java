@@ -2,6 +2,8 @@ package com.ztesoft.nps.model;
 
 import java.util.Date;
 
+import com.ztesoft.nps.common.Status;
+
 public class Department {
 	/**
 	 * 部门ID
@@ -24,6 +26,21 @@ public class Department {
 	private Long parentId;
 
 	/**
+	 * 状态
+	 */
+	private Integer status;
+
+	/**
+	 * 部门类型
+	 */
+	private Integer type;
+
+	/**
+	 * 部门级别
+	 */
+	private Integer level;
+
+	/**
 	 * 创建人
 	 */
 	private String createdBy;
@@ -42,6 +59,10 @@ public class Department {
 	 * 修改时间
 	 */
 	private Date modifiedAt;
+
+	public Department() {
+		this.status = Status.VALID.getCode();
+	}
 
 	public Long getId() {
 		return id;
@@ -105,6 +126,30 @@ public class Department {
 
 	public void setRegionId(Long regionId) {
 		this.regionId = regionId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
 	}
 
 }

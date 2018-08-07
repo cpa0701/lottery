@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.model.Department;
 import com.ztesoft.nps.model.Region;
+import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.service.DepartmentService;
 import com.ztesoft.nps.service.RegionService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @RequestMapping(value = "/regions")
@@ -29,16 +37,22 @@ public class RegionController {
 	@Autowired
 	private RegionService regionService;
 
+	@Autowired
+	private DepartmentService departmentService;
+
+	@Autowired
+	private HttpSession session;
+
 	@PostMapping
 	@ApiOperation(value = "新增区域", notes = "新增区域")
 	public Result<Region> add(@RequestBody Region region) {
-		// User user = UserUtil.getUser(request);
-		// category.setCreator(user.getName());
-		// category.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		region.setCreatedBy(currentUser.getAccount());
+		region.setModifiedBy(currentUser.getAccount());
 
-		regionService.add(region);
+		Region r = regionService.add(region);
 
-		return Result.success(region);
+		return Result.success(r);
 	}
 
 	@GetMapping
@@ -50,13 +64,13 @@ public class RegionController {
 		return Result.success(regions);
 	}
 
-	@GetMapping(value = "/{areaId}")
-	@ApiOperation(value = "根据区域标识查询区域", notes = "根据区域标识查询区域")
-	public Result<Region> findByAreaId(
-			@ApiParam(value = "区域标识", required = true) @PathVariable Long areaId) {
-		Region region = regionService.findByAreaId(areaId);
+	@GetMapping(value = "/{id}")
+	@ApiOperation(value = "根据ID查询区域", notes = "根据ID查询区域")
+	public Result<Region> findById(
+			@ApiParam(value = "区域ID", required = true) @PathVariable Long id) {
+		Region region = regionService.findById(id);
 		if (region == null) {
-			throw new NpsObjectNotFoundException(areaId);
+			throw new NpsObjectNotFoundException(id);
 		}
 		return Result.success(region);
 	}
@@ -71,12 +85,15 @@ public class RegionController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		// oldDept.setName(dept.getName());
-		// oldDept.setDescription(dept.getDescription());
-		// oldDept.setParentId(dept.getParentId());
+		// 只更新名称、类型、区域码、序号和父区域ID
+		oldRegion.setName(region.getName());
+		oldRegion.setType(region.getType());
+		oldRegion.setCode(region.getCode());
+		oldRegion.setSequence(region.getSequence());
+		oldRegion.setParentId(region.getParentId());
 
-		// User user = UserUtil.getUser(request);
-		// oldCategory.setModifier(user.getName());
+		User currentUser = UserUtils.getUser(session);
+		oldRegion.setModifiedBy(currentUser.getAccount());
 
 		Region r = regionService.update(oldRegion);
 
@@ -90,6 +107,16 @@ public class RegionController {
 		Region region = regionService.findById(id);
 		if (region == null) {
 			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Department> depts = departmentService.findByRegionId(id);
+		if (CollectionUtils.isNotEmpty(depts)) {
+			throw new NpsDeleteException("区域下存在部门，不能删除");
+		}
+
+		List<Region> regions = regionService.findByParentId(id);
+		if (CollectionUtils.isNotEmpty(regions)) {
+			throw new NpsDeleteException("区域下存在子节点，不能删除");
 		}
 
 		regionService.delete(region);
