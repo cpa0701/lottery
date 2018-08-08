@@ -14,4 +14,6 @@ public interface UserService {
 	User findByAccount(String account);
 
 	User findByNo(String no);
+
+	User update(User user);
 }

@@ -59,19 +59,85 @@
   </select>
   
   <insert id="add" parameterType="Department" useGeneratedKeys="true" keyProperty="id">
-    insert into departments (name, region_id, parent_id, status, type, level, created_by, created_at, modified_by, modified_at)
-    values (#{name}, #{regionId}, #{parentId}, #{status}, #{type}, #{level}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into departments 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	<if test="name != null">
+    		name,
+    	</if>
+    	<if test="regionId != null">
+    		region_id,
+    	</if>
+    	<if test="parentId != null">
+    		parent_id,
+    	</if>
+    	<if test="status != null">
+    		status,
+    	</if>
+    	<if test="type != null">
+    		type,
+    	</if>
+    	<if test="level != null">
+    		level,
+    	</if>
+    	<if test="createdBy != null">
+    		created_by,
+    	</if>
+    	<if test="modifiedBy != null">
+    		modified_by,
+    	</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	<if test="name != null">
+    		#{name},
+    	</if>
+    	<if test="regionId != null">
+    		#{regionId},
+    	</if>
+    	<if test="parentId != null">
+    		#{parentId},
+    	</if>
+    	<if test="status != null">
+    		#{status},
+    	</if>
+    	<if test="type != null">
+    		#{type},
+    	</if>
+    	<if test="level != null">
+    		#{level},
+    	</if>
+    	<if test="createdBy != null">
+    		#{createdBy},
+    	</if>
+    	<if test="modifiedBy != null">
+    		#{modifiedBy},
+    	</if>
+    </trim>
   </insert>
   
   <update id="update" parameterType="Department" >
     update departments
     <set>
-      <if test="name != null" >
-        name = #{name},
-      </if>
-      <if test="level != null" >
-        level = #{level},
-      </if>
+		<if test="name != null" >
+			name = #{name},
+		</if>
+		<if test="regionId != null" >
+			region_id = #{regionId},
+		</if>
+		<if test="parentId != null" >
+			parent_id = #{parentId},
+		</if>
+		<if test="status != null" >
+			status = #{status},
+		</if>
+		<if test="type != null" >
+			type = #{type},
+		</if>
+		<if test="level != null" >
+			level = #{level},
+		</if>
+		<if test="modifiedBy != null" >
+			modified_by = #{modifiedBy},
+		</if>
     </set>
     where id = #{id}
   </update>

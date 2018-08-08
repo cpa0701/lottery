@@ -51,25 +51,82 @@
   </delete>
   
   <insert id="add" parameterType="Region" useGeneratedKeys="true" keyProperty="id">
-    insert into regions (area_id, name, type, code, sequence, parent_id, created_by, created_at, modified_by, modified_at)
-    values (#{areaId}, #{name}, #{type}, #{code}, #{sequence}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into regions 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	<if test="areaId != null">
+    		area_id,
+    	</if>
+    	<if test="name != null">
+    		name,
+    	</if>
+    	<if test="type != null">
+    		type,
+    	</if>
+    	<if test="code != null">
+    		code,
+    	</if>
+    	<if test="sequence != null">
+    		sequence,
+    	</if>
+    	<if test="parentId != null">
+    		parent_id,
+    	</if>
+    	<if test="createdBy != null">
+    		created_by,
+    	</if>
+    	<if test="modifiedBy != null">
+    		modified_by,
+    	</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	<if test="areaId != null">
+    		#{areaId},
+    	</if>
+    	<if test="name != null">
+    		#{name},
+    	</if>
+    	<if test="type != null">
+    		#{type},
+    	</if>
+    	<if test="code != null">
+    		#{code},
+    	</if>
+    	<if test="sequence != null">
+    		#{sequence},
+    	</if>
+    	<if test="parentId != null">
+    		#{parent_id},
+    	</if>
+    	<if test="createdBy != null">
+    		#{createdBy},
+    	</if>
+    	<if test="modifiedBy != null">
+    		#{modifiedBy},
+    	</if>
+    </trim>
   </insert>
 
   <update id="update" parameterType="Region" >
     update regions
     <set>
-      <if test="name != null" >
-        name = #{name},
-      </if>
-      <if test="type != null" >
-        type = #{type},
-      </if>
-      <if test="sequence != null" >
-        sequence = #{sequence},
-      </if>
-      <if test="code != null" >
-        code = #{code},
-      </if>
+		<if test="areaId != null" >
+			area_id = #{areaId},
+		</if>
+		<if test="name != null" >
+			name = #{name},
+		</if>
+		<if test="type != null" >
+			type = #{type},
+		</if>
+		<if test="sequence != null" >
+			sequence = #{sequence},
+		</if>
+		<if test="code != null" >
+			code = #{code},
+		</if>
+		<if test="modifiedBy != null" >
+			modified_by = #{modifiedBy},
+		</if>
     </set>
     where id = #{id}
   </update>

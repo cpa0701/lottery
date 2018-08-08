@@ -16,4 +16,6 @@ public interface UserMapper {
 	User findByAccount(String account);
 
 	User findByNo(String no);
+
+	int update(User user);
 }

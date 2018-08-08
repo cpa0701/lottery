@@ -85,7 +85,7 @@ public class RegionController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		// 只更新名称、类型、区域码、序号和父区域ID
+		oldRegion.setAreaId(region.getAreaId());
 		oldRegion.setName(region.getName());
 		oldRegion.setType(region.getType());
 		oldRegion.setCode(region.getCode());

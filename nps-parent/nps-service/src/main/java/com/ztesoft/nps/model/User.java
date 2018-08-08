@@ -2,6 +2,8 @@ package com.ztesoft.nps.model;
 
 import java.util.Date;
 
+import com.ztesoft.nps.common.Status;
+
 public class User {
 	/**
 	 * 用户ID
@@ -24,6 +26,31 @@ public class User {
 	private String name;
 
 	/**
+	 * 性别
+	 */
+	private String sex;
+
+	/**
+	 * 手机号
+	 */
+	private String cellphone;
+
+	/**
+	 * 邮箱
+	 */
+	private String email;
+
+	/**
+	 * 身份证
+	 */
+	private String identityCard;
+
+	/**
+	 * 状态
+	 */
+	private Integer status;
+
+	/**
 	 * 帐号密码
 	 */
 	private String password;
@@ -37,6 +64,11 @@ public class User {
 	 * 部门ID
 	 */
 	private Long deptId;
+
+	/**
+	 * 备注
+	 */
+	private String remark;
 
 	/**
 	 * 创建人
@@ -57,6 +89,10 @@ public class User {
 	 * 修改时间
 	 */
 	private Date modifiedAt;
+
+	public User() {
+		this.status = Status.VALID.getCode();
+	}
 
 	public Long getId() {
 		return id;
@@ -144,6 +180,54 @@ public class User {
 
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getCellphone() {
+		return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getIdentityCard() {
+		return identityCard;
+	}
+
+	public void setIdentityCard(String identityCard) {
+		this.identityCard = identityCard;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }

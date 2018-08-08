@@ -6,6 +6,12 @@
     <result column="no" property="no" />
     <result column="account" property="account" />
     <result column="name" property="name" />
+    <result column="sex" property="sex" />
+    <result column="cellphone" property="cellphone" />
+    <result column="email" property="email" />
+    <result column="identity_card" property="identityCard" />
+    <result column="status" property="status" />
+    <result column="remark" property="remark" />
     <result column="password" property="password" />
     <result column="salt" property="salt" />
     <result column="dept_id" property="deptId" />
@@ -16,7 +22,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, no, account, name, password, salt, dept_id, created_by, created_at, modified_by, modified_at
+    id, no, account, name, sex, cellphone, email, identity_card, status, remark, password, salt, dept_id, created_by, created_at, modified_by, modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
@@ -34,8 +40,95 @@
   </select>
   
   <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-    insert into users (no, account, name, password, salt, dept_id, created_by, created_at, modified_by, modified_at)
-    values (#{no}, #{account}, #{name}, #{password}, #{salt}, #{deptId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into users 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	<if test="no != null">
+    		no,
+    	</if>
+    	<if test="account != null">
+    		account,
+    	</if>
+    	<if test="name != null">
+    		name,
+    	</if>
+    	<if test="sex != null">
+    		sex,
+    	</if>
+    	<if test="cellphone != null">
+    		cellphone,
+    	</if>
+    	<if test="email != null">
+    		email,
+    	</if>
+    	<if test="identityCard != null">
+    		identity_card,
+    	</if>
+    	<if test="status != null">
+    		status,
+    	</if>
+    	<if test="remark != null">
+    		remark,
+    	</if>
+    	<if test="password != null">
+    		password,
+    	</if>
+    	<if test="salt != null">
+    		salt,
+    	</if>
+    	<if test="deptId != null">
+    		dept_id,
+    	</if>
+    	<if test="createdBy != null">
+    		created_by,
+    	</if>
+    	<if test="modifiedBy != null">
+    		modified_by,
+    	</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	<if test="no != null">
+    		#{no},
+    	</if>
+    	<if test="account != null">
+    		#{account},
+    	</if>
+    	<if test="name != null">
+    		#{name},
+    	</if>
+    	<if test="sex != null">
+    		#{sex},
+    	</if>
+    	<if test="cellphone != null">
+    		#{cellphone},
+    	</if>
+    	<if test="email != null">
+    		#{email},
+    	</if>
+    	<if test="identityCard != null">
+    		#{identityCard},
+    	</if>
+    	<if test="status != null">
+    		#{status},
+    	</if>
+    	<if test="remark != null">
+    		#{remark},
+    	</if>
+    	<if test="password != null">
+    		#{password},
+    	</if>
+    	<if test="salt != null">
+    		#{salt},
+    	</if>
+    	<if test="deptId != null">
+    		#{deptId},
+    	</if>
+    	<if test="createdBy != null">
+    		#{createdBy},
+    	</if>
+    	<if test="modifiedBy != null">
+    		#{modifiedBy},
+    	</if>
+    </trim>
   </insert>
   
   <select id="findByAccount" resultMap="BaseResultMap" parameterType="String" >
@@ -51,5 +144,51 @@
     from users
     where no = #{no}
   </select>
+  
+  <update id="update" parameterType="User" >
+    update users
+    <set>
+    	<if test="no != null" >
+			no = #{no},
+		</if>
+		<if test="account != null" >
+			account = #{account},
+		</if>
+		<if test="name != null" >
+			name = #{name},
+		</if>
+		<if test="sex != null" >
+			sex = #{sex},
+		</if>
+		<if test="cellphone != null" >
+			cellphone = #{cellphone},
+		</if>
+		<if test="email != null" >
+			email = #{email},
+		</if>
+		<if test="identityCard != null" >
+			identity_card = #{identityCard},
+		</if>
+		<if test="status != null" >
+			status = #{status},
+		</if>
+		<if test="password != null" >
+			password = #{password},
+		</if>
+		<if test="salt != null" >
+			salt = #{salt},
+		</if>
+		<if test="deptId != null" >
+			dept_id = #{deptId},
+		</if>
+		<if test="remark != null" >
+			remark = #{remark},
+		</if>
+		<if test="modifiedBy != null" >
+			modified_by = #{modifiedBy},
+		</if>
+	</set>
+	where id = #{id}
+	</update>
 
 </mapper>
