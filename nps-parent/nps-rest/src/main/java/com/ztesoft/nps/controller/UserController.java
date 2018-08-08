@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,5 +79,35 @@ public class UserController {
 		user.setSalt(null);
 
 		return Result.success(user);
+	}
+
+	@PutMapping(value = "/{id}")
+	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+	public Result<User> update(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id,
+			@RequestBody User user) {
+		User oldUser = userService.findById(id);
+		if (oldUser == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		oldUser.setNo(user.getNo());
+		oldUser.setAccount(user.getAccount());
+		oldUser.setName(user.getName());
+		oldUser.setSex(user.getSex());
+		oldUser.setCellphone(user.getCellphone());
+		oldUser.setEmail(user.getEmail());
+		oldUser.setIdentityCard(user.getIdentityCard());
+		oldUser.setStatus(user.getStatus());
+		oldUser.setPassword(user.getPassword());
+		oldUser.setDeptId(user.getDeptId());
+		oldUser.setRemark(user.getRemark());
+
+		User currentUser = UserUtils.getUser(session);
+		oldUser.setModifiedBy(currentUser.getAccount());
+
+		User u = userService.update(oldUser);
+
+		return Result.success(u);
 	}
 }

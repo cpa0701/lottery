@@ -144,5 +144,51 @@
     from users
     where no = #{no}
   </select>
+  
+  <update id="update" parameterType="User" >
+    update users
+    <set>
+    	<if test="no != null" >
+			no = #{no},
+		</if>
+		<if test="account != null" >
+			account = #{account},
+		</if>
+		<if test="name != null" >
+			name = #{name},
+		</if>
+		<if test="sex != null" >
+			sex = #{sex},
+		</if>
+		<if test="cellphone != null" >
+			cellphone = #{cellphone},
+		</if>
+		<if test="email != null" >
+			email = #{email},
+		</if>
+		<if test="identityCard != null" >
+			identity_card = #{identityCard},
+		</if>
+		<if test="status != null" >
+			status = #{status},
+		</if>
+		<if test="password != null" >
+			password = #{password},
+		</if>
+		<if test="salt != null" >
+			salt = #{salt},
+		</if>
+		<if test="deptId != null" >
+			dept_id = #{deptId},
+		</if>
+		<if test="remark != null" >
+			remark = #{remark},
+		</if>
+		<if test="modifiedBy != null" >
+			modified_by = #{modifiedBy},
+		</if>
+	</set>
+	where id = #{id}
+	</update>
 
 </mapper>
