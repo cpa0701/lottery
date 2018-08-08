@@ -88,8 +88,11 @@ public class DepartmentController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		// 只更部门名称和部门级别
 		oldDepartment.setName(department.getName());
+		oldDepartment.setRegionId(department.getRegionId());
+		oldDepartment.setParentId(department.getParentId());
+		oldDepartment.setStatus(department.getStatus());
+		oldDepartment.setType(department.getType());
 		oldDepartment.setLevel(department.getLevel());
 
 		User currentUser = UserUtils.getUser(session);
