@@ -10,5 +10,8 @@ export default {
     },
     'footer':{
         'text':'© 中兴软创科技股份有限公司 | 版权所有'
+    },
+    'header':{
+        'logout':'登出'
     }
 }

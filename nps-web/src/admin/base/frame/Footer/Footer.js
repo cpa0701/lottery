@@ -7,8 +7,7 @@ import {inject, observer} from "mobx-react/index"
 const { Footer } = Layout;
 
 @inject('stores')
-@observer
-class Foot extends React.PureComponent {
+class Foot extends React.Component {
     render() {
         return (
             <Footer>

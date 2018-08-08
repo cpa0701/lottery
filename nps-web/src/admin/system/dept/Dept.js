@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
     Form,
     Layout,
@@ -20,6 +20,7 @@ import DeptService from "../../../services/DeptService"
 import DeptModal from "./DeptModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/index';
+import {inject, observer} from "mobx-react/index"
 
 const TreeNode = Tree.TreeNode;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
@@ -30,7 +31,8 @@ const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 
 @Form.create({})
-export default class Dept extends Component {
+@inject('stores')
+export default class Dept extends PureComponent {
     state = {
         collapsed: false,
         value: undefined,

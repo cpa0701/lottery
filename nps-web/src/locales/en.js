@@ -10,5 +10,8 @@ export default {
     },
     'footer':{
         'text':'© Powered by ZteSoft | All Rights Reserved'
+    },
+    'header':{
+        'logout':'Logout'
     }
 }
