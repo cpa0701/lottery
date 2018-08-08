@@ -109,18 +109,24 @@
   <update id="update" parameterType="Region" >
     update regions
     <set>
-      <if test="name != null" >
-        name = #{name},
-      </if>
-      <if test="type != null" >
-        type = #{type},
-      </if>
-      <if test="sequence != null" >
-        sequence = #{sequence},
-      </if>
-      <if test="code != null" >
-        code = #{code},
-      </if>
+		<if test="areaId != null" >
+			area_id = #{areaId},
+		</if>
+		<if test="name != null" >
+			name = #{name},
+		</if>
+		<if test="type != null" >
+			type = #{type},
+		</if>
+		<if test="sequence != null" >
+			sequence = #{sequence},
+		</if>
+		<if test="code != null" >
+			code = #{code},
+		</if>
+		<if test="modifiedBy != null" >
+			modified_by = #{modifiedBy},
+		</if>
     </set>
     where id = #{id}
   </update>
