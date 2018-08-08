@@ -5,7 +5,7 @@ import { Tree } from 'antd';
 const TreeNode = Tree.TreeNode;
 
 const TreePic = ({treeData, onSelect, onCheck, checkedKeys, onLoadData, selectedKey, checkable}) => {
-    const loop = data => data.map((item) => {
+    const loop = (data = []) => data.map((item) => {
         if (item.children) {
             return <TreeNode title={item.name} key={item.key} dataRef={item}>{loop(item.children)}</TreeNode>;
         }
