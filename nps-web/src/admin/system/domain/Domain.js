@@ -210,11 +210,8 @@ export default class Domain extends PureComponent {
             <div>
                 <div className="headerDomain">
                     <Button type="primary" icon="plus-circle-o" onClick={this.handleAdd}>{domain.insert}</Button>
-                    {/*<Divider type="vertical" />*/}
                     <Button type="primary" icon="edit" onClick={this.handleUpdate}>{domain.modify}</Button>
-                    {/*<Divider type="vertical" />*/}
                     <Button type="danger" icon="delete" onClick={this.handleDelete}>{domain.delete}</Button>
-                    {/*<Divider type="vertical" />*/}
                     <Button type="primary" icon="user" onClick={this.handleDetail}>{domain.detail}</Button>
                 </div>
                 <div className="gridTree">
@@ -223,6 +220,15 @@ export default class Domain extends PureComponent {
                             onClick: (e) => {
                                 e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click()
                             },       // 点击行
+                            onDoubleClick: (e) => {
+                                this.setState({
+                                    domainUserData:true
+                                },()=>{
+                                    this.handleDetail()
+                                });
+
+
+                            },
                         }
                     }
                     }/>
