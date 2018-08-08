@@ -7,5 +7,8 @@ export default {
         'rememberPassword': '记住密码',
         'loginButton': '登录',
         'forgetPassword': '忘记密码？',
+    },
+    'footer':{
+        'text':'© 中兴软创科技股份有限公司 | 版权所有'
     }
 }

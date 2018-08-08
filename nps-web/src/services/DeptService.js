@@ -26,6 +26,11 @@ class DeptService {
         var url = 'mock/dept/dleDept';
         return await Http.post(url, param);
     }
+    //删除部门
+    getStaffData = async (param) => {
+        var url = 'mock/dept/getStaffData';
+        return await Http.post(url, param);
+    }
 }
 
 export default new DeptService();

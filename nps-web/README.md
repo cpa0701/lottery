@@ -11,7 +11,7 @@ mock的接口规则在mock文件夹下的apiData.js中按接口名称进行配�
 
 ##国际化
 当前项目国际化为基于mobx进行配置，需将所有在前端页面中写死的文字进行国际化。
-配置地址为locales文件夹下的en和zh-CN两个文件，注意配一个中文就要配一个对应英文，使用方法为通过注入自定义的stores（@inject('stores')），然后调用this.props.stores.I18nModel.outputLocale，
+配置地址为locales文件夹下的en和zh-CN两个文件，注意配一个中文就要配一个对应英文，使用方法为通过注入自定义的stores（@inject('stores')）同时引入@observer进行观察，然后调用this.props.stores.I18nModel.outputLocale，
 配置国际化时注意按模块进行划分，方便调用和管理
 
 ##样式

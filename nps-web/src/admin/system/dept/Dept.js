@@ -1,17 +1,33 @@
 import React, {Component} from 'react';
-import {Form, Layout, Icon, TreeSelect, Input, Button, Tree, Popconfirm} from 'antd';
-import {message, Modal} from "antd"
+import {
+    Form,
+    Layout,
+    Icon,
+    TreeSelect,
+    Input,
+    Button,
+    Tree,
+    Popconfirm,
+    Tabs,
+    Radio,
+    Table,
+    message,
+    Modal
+} from 'antd';
 
 import "./Dept.less"
 import DeptService from "../../../services/DeptService"
+import DeptModal from "./DeptModal"
 import DeptForm from "./DeptForm"
+import StandardTable from '../../../common/components/table/index';
 
 const TreeNode = Tree.TreeNode;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 const info = Modal.info;
 const {Header, Sider, Content} = Layout;
+const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 
 @Form.create({})
 export default class Dept extends Component {
@@ -24,7 +40,73 @@ export default class Dept extends Component {
         departmentDataTree: [],
         selectedKeys: [],
         departmentEditData: null,
-        modalVisible: false
+        modalVisible: false,
+        columns: [
+            {
+                title: '登录账号',
+                dataIndex: 'sStaffAccount',
+                render: (text, record, index) => {
+                    return (
+                        <span>
+                            <Icon type="user"/>{text}
+                        </span>
+                    )
+                }
+            },
+            {
+                title: '人员工号',
+                dataIndex: 'sStaffNo'
+            },
+            {
+                title: '人员姓名',
+                dataIndex: 'sStaffName',
+            },
+            {
+                title: '性别',
+                dataIndex: 'sSex',
+            },
+            {
+                title: '账号状态',
+                dataIndex: 'iDelFlag',
+            },
+            {
+                title: '是否有效',
+                dataIndex: 'sValid',
+            },
+            {
+                title: '电话号码',
+                dataIndex: 'sTelphone'
+            },
+            {
+                title: '手机号码',
+                dataIndex: 'sMobile',
+            },
+            {
+                title: '内部邮箱',
+                dataIndex: 'sInEmail',
+            },
+            {
+                title: '传真号码',
+                dataIndex: 'sFaxCode',
+            },
+            {
+                title: '部门名称',
+                dataIndex: 'sDispName',
+            },
+            {
+                title: '公司名称',
+                dataIndex: 'sDomainName',
+            },
+            {
+                title: '职位名称',
+                dataIndex: 'sTitleName',
+            },
+            {
+                title: '上级领导',
+                dataIndex: 'sLeaderName',
+            }
+        ],
+        formValues: {}
     };
 
     constructor(props) {
@@ -83,6 +165,11 @@ export default class Dept extends Component {
                 treeData: result.treeData,
             });
         });
+    }
+
+    componentDidMount() {
+        //第一次默认加载
+        this.standardTable.handleSearch({current: 1, pageSize: 10})
     }
 
     toggle = () => {
@@ -225,7 +312,6 @@ export default class Dept extends Component {
         this.handleSelectRows([])
 
     }
-
     //点击勾选方法
     handleSelectRows = (record, selected, selectedRows) => {
         this.setState({
@@ -233,7 +319,6 @@ export default class Dept extends Component {
             departmentEditData: record[record.length - 1],
         });
     }
-
 
     //控制弹出框的显示状态
     handleModalVisible = (flag) => {
@@ -245,9 +330,21 @@ export default class Dept extends Component {
         // 页面关闭了要重新查询
         !visible && this.handlerSearchDepartment();
     }
+    //获取人员表格数据
+    getStaffData = (params) => {
+        this.setState({
+            formValues: params
+        }, () => {
+            this.standardTable.handleSearch({current: 1, pageSize: 10, ...params})
+        });
+    }
+    // 获取第三区域的数据
+    getThirdData = (data) => {
+        console.log(data)
+    }
 
     render() {
-        const {departmentData, modalVisible, domainTreeDate} = this.state;
+        const {departmentData, modalVisible, domainTreeDate, columns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
         return (
             <Layout className='dept'>
@@ -259,7 +356,14 @@ export default class Dept extends Component {
                     style={{background: '#fff'}}
                     width={300}
                 >
-                    <div className='dept-logo'>部门列表</div>
+                    <div className='dept-logo'>部门列表
+                        <Icon
+                            className={this.state.collapsed ? 'trigger triggered' : 'trigger'}
+                            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                            onClick={this.toggle}
+                            style={{'float': 'right'}}
+                        />
+                    </div>
                     <Form>
                         <FormItem
                             labelCol={{span: 6}}
@@ -308,7 +412,7 @@ export default class Dept extends Component {
                             onCheck={this.onSelect}
                             loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree>
                         : 'loading tree'}
-                    <DeptForm
+                    <DeptModal
                         departmentData={departmentData}
                         domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {key: 2, title: '北京'}]}
                         modalVisible={modalVisible}
@@ -317,15 +421,40 @@ export default class Dept extends Component {
                     />
                 </Sider>
                 <Layout>
-                    <Header className='dept-header'>
-                        <Icon
-                            className='trigger'
-                            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-                            onClick={this.toggle}
-                        />
-                    </Header>
                     <Content style={{background: '#fff', minHeight: 280, paddingLeft: "10px"}}>
-                        Content
+                        <div>
+                            <Tabs type="card">
+                                <TabPane tab="人员管理" key="1">
+                                    <DeptForm getStaffParams={this.getStaffData}/>
+                                    <StandardTable
+                                        ref={child => this.standardTable = child}
+                                        rowKey={"iStaffId"}
+                                        // rowSelection={{selectedRowKeys:[10000]}}
+                                        columns={columns}
+                                        service={DeptService}
+                                        method="getStaffData"
+                                        formValues={formValues}
+                                        onSelectRow={this.getThirdData}
+                                    />
+                                </TabPane>
+                                <TabPane tab="职位管理" key="2">
+                                    待开发
+                                </TabPane>
+                                <TabPane tab="岗位管理" key="3">
+                                    待开发
+                                </TabPane>
+                            </Tabs>
+                        </div>
+                        <div>
+                            <Tabs type="card">
+                                <TabPane tab="角色" key="1">
+                                    角色页面
+                                </TabPane>
+                                <TabPane tab="权限" key="2">
+                                    待开发
+                                </TabPane>
+                            </Tabs>
+                        </div>
                     </Content>
                 </Layout>
             </Layout>

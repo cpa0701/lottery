@@ -71,7 +71,7 @@ class Head extends React.Component {
                                         {this.initMenu(vl.children)}</SubMenu>)
                                 } else {
                                     return (
-                                        <Menu.Item key={vl.menuId}><Link to={vl.menuUrl}>{vl.menuName}</Link></Menu.Item>
+                                        <Menu.Item key={vl.menuId}><Link to={vl.menuUrl} replace>{vl.menuName}</Link></Menu.Item>
                                     )
                                 }
                             })}
@@ -79,7 +79,7 @@ class Head extends React.Component {
                     )
                 } else {
                     return (<Menu.Item key={item.menuId}>
-                        <Link to={item.menuUrl}>
+                        <Link to={item.menuUrl} replace>
                             <Icon type={item.icon}/>{item.menuName}
                         </Link>
                     </Menu.Item>)
