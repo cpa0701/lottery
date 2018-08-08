@@ -454,6 +454,39 @@ Mock.mock('mock/system/rolesController/qryRolesTree', {
         }
     ]
 })
+//区域管理
+Mock.mock("mock/SystemController/doMain",{
+    "domainData" : [
+        {
+            key: 1,
+            name: '区域树',
+            type: '省',
+            id: '',
+            No:'1',
+            'children': [{
+                key: 11,
+                name: '集团',
+                'type|1': [1, 2, 3],
+                'id|1': [1, 2, 3],
+                No:'2',
+                'children|3': [
+                    {
+                        key: "@natural(1,10000)",
+                        name: '@cname',
+                        'type|1': [1, 2, 3],
+                        'id|1': [1, 2, 3],
+                        No: "@natural(1,10000)",
+                    }],
+            }]
+        },{
+            key: 12,
+            name: '重保域',
+            type: '本地网',
+            id: 'ZB',
+            No:'5'
+        }],
+
+})
 //获取用户表数据
 Mock.mock('mock/system/rolesController/getUserDate', {
     "userData": [

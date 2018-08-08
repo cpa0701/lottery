@@ -8,6 +8,15 @@ export default {
         "loginButton":"Sign in",
         "forgetPassword":"Forgot password?"
     },
+    'domain':{
+        'insert':'Insert',
+        'modify':'Modify',
+        'delete':'Delete',
+        'detail':'Details',
+        'domainName':'DomainName',
+        'domainType':'DomainType',
+        'domainID':'DomainID'
+    },
     'footer':{
         'text':'© Powered by ZteSoft | All Rights Reserved'
     },
