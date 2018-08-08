@@ -31,6 +31,16 @@ class DeptService {
         var url = 'mock/dept/getStaffData';
         return await Http.post(url, param);
     }
+    // 获取角色树
+    getRoleTree= async (param) => {
+        var url = 'mock/dept/getRoleTree';
+        return await Http.post(url, param);
+    }
+    // 获取权限树
+    getAuthorityTree= async (param) => {
+        var url = 'mock/dept/getAuthorityTree';
+        return await Http.post(url, param);
+    }
 }
 
 export default new DeptService();

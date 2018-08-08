@@ -402,6 +402,85 @@ Mock.mock('mock/dept/getStaffData', (params) => {
         }
     })
 })
+//获取部门页面角色树
+Mock.mock('mock/dept/getRoleTree', (params) => {
+    let params1 = JSON.parse(params.body);
+    if (!params1.rowId)
+        return Mock.mock({
+            'treeData|5': [{
+                'rowId|+1': 1,
+                'ideptId|+1': 12131,
+                'iDeptLevel': '2',
+                'sdeptName': '@cname',
+                'iParentId': '0',
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': 1010001,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '2'
+            }]
+        })
+    else {
+        return Mock.mock({
+            'treeData|2': [{
+                'rowId|+1': params1.rowId * 10 + 1,
+                'ideptId|+1': params1.rowId * 10 + 1,
+                'iDeptLevel': params1.iDeptLevel + 1,
+                'sdeptName': '@cname',
+                'iParentId': params1.rowId,
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': params1.idomainId * 10 + 1,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '@integer(0,10)'
+            }]
+        })
+    }
+})
+//获取部门页面权限树
+Mock.mock('mock/dept/getAuthorityTree', (params) => {
+    let params1 = JSON.parse(params.body);
+    if (!params1.rowId)
+        return Mock.mock({
+            'treeData|5': [{
+                'rowId|+1': 1,
+                'ideptId|+1': 12131,
+                'iDeptLevel': '2',
+                'sdeptName': '@cname',
+                'iParentId': '0',
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': 1010001,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '2'
+            }]
+        })
+    else {
+        return Mock.mock({
+            'treeData|2': [{
+                'rowId|+1': params1.rowId * 100 + 1,
+                'ideptId|+1': params1.rowId * 10 + 1,
+                'iDeptLevel': params1.iDeptLevel + 1,
+                'sdeptName': '@cname',
+                'iParentId': params1.rowId,
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': params1.idomainId * 10 + 1,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '@integer(0,10)'
+            }]
+        })
+    }
+})
+
 //获取角色树
 Mock.mock('mock/system/rolesController/qryRolesTree', {
     "treeData": [

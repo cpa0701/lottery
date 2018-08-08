@@ -6,23 +6,21 @@ import {
     TreeSelect,
     Input,
     Button,
-    Tree,
     Popconfirm,
     Tabs,
     Radio,
-    Table,
     message,
-    Modal
+    Modal, Row, Col,
 } from 'antd';
 
 import "./Dept.less"
 import DeptService from "../../../services/DeptService"
 import DeptModal from "./DeptModal"
 import DeptForm from "./DeptForm"
-import StandardTable from '../../../common/components/table/index';
+import StandardTable from '../../../common/components/table/table';
+import TreeComponent from '../../../common/components/tree/tree';
 import {inject, observer} from "mobx-react/index"
 
-const TreeNode = Tree.TreeNode;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 const FormItem = Form.Item;
 const info = Modal.info;
@@ -36,7 +34,9 @@ export default class Dept extends PureComponent {
     state = {
         collapsed: false,
         value: undefined,
-        treeData: [],
+        deptTreeData: [],
+        roleTreeData: [],
+        authorityTreeData: [],
         domainTreeDate: [],
         departmentData: [],
         departmentDataTree: [],
@@ -162,11 +162,7 @@ export default class Dept extends PureComponent {
         this.setState({
             domainTreeDate: [JSON.parse(a)]
         });
-        DeptService.getDeptTree().then(result => {
-            this.setState({
-                treeData: result.treeData,
-            });
-        });
+        this.getDeptTree();
     }
 
     componentDidMount() {
@@ -174,6 +170,7 @@ export default class Dept extends PureComponent {
         this.standardTable.handleSearch({current: 1, pageSize: 10})
     }
 
+    //收起展开部门
     toggle = () => {
         this.setState({
             collapsed: !this.state.collapsed,
@@ -183,45 +180,130 @@ export default class Dept extends PureComponent {
     onChange = (value) => {
         this.setState({value});
     }
+    //获取部门树
+    getDeptTree = (params) => {
+        DeptService.getDeptTree(params).then(result => {
+            result.treeData.map(item => {
+                item.title = item.sdeptName;
+                item.key = item.ideptId
+                item.isLeaf = !item.childCount;
+            })
+            this.setState({
+                deptTreeData: result.treeData,
+            });
+        });
+    }
+    //获取角色树
+    getRoleTree = (params) => {
+        DeptService.getRoleTree(params).then(result => {
+            result.treeData.map(item => {
+                item.title = item.sdeptName;
+                item.key = item.ideptId
+                item.isLeaf = !item.childCount;
+            })
+            this.setState({
+                roleTreeData: result.treeData,
+            });
+        });
+    }
+    //获取权限树
+    getAuthorityTree = (params) => {
+        DeptService.getAuthorityTree(params).then(result => {
+            result.treeData.map(item => {
+                item.title = item.sdeptName;
+                item.key = item.ideptId
+                item.isLeaf = !item.childCount;
+            })
+            this.setState({
+                authorityTreeData: result.treeData,
+            });
+        });
+    }
     //点击部门树节点时
-    onSelect = (selectedKeys, info) => {
+    onSelectDeptTree = (selectedKeys, info) => {
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
         this.setState({
             departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : "",
             selectedKeys: selectedKeys
         })
     }
-    //异步加载树节点
-    onLoadData = (treeNode) => {
+    //异步加载部门树节点
+    onLoadDeptTreeData = (treeNode) => {
         return new Promise((resolve) => {
             if (treeNode.props.children) {
                 resolve();
                 return;
             }
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
+                result.treeData.map(item => {
+                    item.title = item.sdeptName;
+                    item.key = item.ideptId
+                    item.isLeaf = !item.childCount;
+                })
                 treeNode.props.dataRef.children = [...result.treeData];
                 this.setState({
-                    treeData: [...this.state.treeData],
+                    deptTreeData: [...this.state.deptTreeData],
                 });
                 resolve();
             })
         });
     }
 
-    //渲染树节点
-    renderTreeNodes = (data) => {
-        return data.map((item) => {
-            item.title = item.sdeptName;
-            item.key = item.ideptId
-            item.isLeaf = !item.childCount;
-            if (item.children) {
-                return (
-                    <TreeNode title={item.title} key={item.key} dataRef={item} isLeaf={item.isLeaf}>
-                        {this.renderTreeNodes(item.children)}
-                    </TreeNode>
-                );
+    //点击角色树节点时
+    onSelectRoleTree = (selectedKeys, info) => {
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+        this.setState({})
+        this.getAuthorityTree(info.selectedNodes.length ? info.selectedNodes[0].props : "")
+    }
+    //异步加载角色树节点
+    onLoadRoleTreeData = (treeNode) => {
+        return new Promise((resolve) => {
+            if (treeNode.props.children) {
+                resolve();
+                return;
             }
-            return <TreeNode {...item} dataRef={item}/>;
+            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
+                result.treeData.map(item => {
+                    item.title = item.sdeptName;
+                    item.key = item.ideptId
+                    item.isLeaf = !item.childCount;
+                })
+                treeNode.props.dataRef.children = [...result.treeData];
+                this.setState({
+                    roleTreeData: [...this.state.roleTreeData],
+                });
+                resolve();
+            })
+        });
+    }
+
+    //点击权限树节点时
+    onSelectAuthorityTree = (selectedKeys, info) => {
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+        this.setState({
+            departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : "",
+            selectedKeys: selectedKeys
+        })
+    }
+    //异步加载权限树节点
+    onLoadAuthorityTreeData = (treeNode) => {
+        return new Promise((resolve) => {
+            if (treeNode.props.children) {
+                resolve();
+                return;
+            }
+            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
+                result.treeData.map(item => {
+                    item.title = item.sdeptName;
+                    item.key = item.ideptId
+                    item.isLeaf = !item.childCount;
+                })
+                treeNode.props.dataRef.children = [...result.treeData];
+                this.setState({
+                    authorityTreeData: [...this.state.authorityTreeData],
+                });
+                resolve();
+            })
         });
     }
 
@@ -229,13 +311,9 @@ export default class Dept extends PureComponent {
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
         this.setState({
-            treeData: [],
+            deptTreeData: [],
         });
-        DeptService.getDeptTree(params).then(result => {
-            this.setState({
-                treeData: [...result.treeData]
-            });
-        });
+        this.getDeptTree(params);
     }
     //新增方法
     handleAdd = () => {
@@ -342,11 +420,11 @@ export default class Dept extends PureComponent {
     }
     // 获取第三区域的数据
     getThirdData = (data) => {
-        console.log(data)
+        this.getRoleTree(data)
     }
 
     render() {
-        const {departmentData, modalVisible, domainTreeDate, columns, formValues} = this.state;
+        const {departmentData, modalVisible, domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, columns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
         return (
             <Layout className='dept'>
@@ -405,15 +483,14 @@ export default class Dept extends PureComponent {
                         </Popconfirm>,
                     </div>
                     <h6 className='departmentH6'>部门导航树</h6>
-                    {this.state.treeData.length
-                        ? <Tree
-                            showLine
-                            checkable
-                            defaultExpandedKeys={['0-0-0']}
-                            onSelect={this.onSelect}
-                            onCheck={this.onSelect}
-                            loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree>
-                        : 'loading tree'}
+                    <TreeComponent
+                        showLine={true}
+                        checkable={true}
+                        defaultExpandedKeys={['0-0-0']}
+                        onSelect={this.onSelectDeptTree}
+                        onCheck={this.onSelectDeptTree}
+                        treeData={deptTreeData}
+                        onLoadData={this.onLoadDeptTreeData}/>
                     <DeptModal
                         departmentData={departmentData}
                         domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {key: 2, title: '北京'}]}
@@ -422,7 +499,7 @@ export default class Dept extends PureComponent {
                         handleModalVisible={this.handleModalVisible}
                     />
                 </Sider>
-                <Layout>
+                <Layout style={{overflow: 'hidden'}}>
                     <Content style={{background: '#fff', minHeight: 280, paddingLeft: "10px"}}>
                         <div>
                             <Tabs type="card">
@@ -439,23 +516,52 @@ export default class Dept extends PureComponent {
                                         onSelectRow={this.getThirdData}
                                     />
                                 </TabPane>
-                                <TabPane tab="职位管理" key="2">
-                                    待开发
-                                </TabPane>
-                                <TabPane tab="岗位管理" key="3">
-                                    待开发
-                                </TabPane>
                             </Tabs>
                         </div>
                         <div>
                             <Tabs type="card">
                                 <TabPane tab="角色" key="1">
-                                    角色页面
+                                    <Row className={'thirdBlockBtn'}>
+                                        <Col span={24}>
+                                            <Button type="primary">新增</Button>
+                                            <Button type="dashed">修改</Button>
+                                            <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消"
+                                                        onConfirm={this.handleDelete}>
+                                                <Button type="danger">删除</Button>
+                                            </Popconfirm>
+                                        </Col>
+                                    </Row>
                                 </TabPane>
                                 <TabPane tab="权限" key="2">
                                     待开发
                                 </TabPane>
                             </Tabs>
+                            <Row>
+                                <Col span={12}>
+                                    <h6 className='departmentH6'>角色树</h6>
+                                    <div style={{'borderRight': '1px solid #ddd'}}>
+                                        <TreeComponent
+                                            showLine={true}
+                                            checkable={true}
+                                            defaultExpandedKeys={['0-0-0']}
+                                            onSelect={this.onSelectRoleTree}
+                                            onCheck={this.onSelectRoleTree}
+                                            treeData={roleTreeData}
+                                            onLoadData={this.onLoadRoleTreeData}/>
+                                    </div>
+                                </Col>
+                                <Col span={12}>
+                                    <h6 className='departmentH6'>权限树</h6>
+                                    <TreeComponent
+                                        showLine={true}
+                                        checkable={true}
+                                        defaultExpandedKeys={['0-0-0']}
+                                        onSelect={this.onSelectAuthorityTree}
+                                        onCheck={this.onSelectAuthorityTree}
+                                        treeData={authorityTreeData}
+                                        onLoadData={this.onLoadAuthorityTreeData}/>
+                                </Col>
+                            </Row>
                         </div>
                     </Content>
                 </Layout>
