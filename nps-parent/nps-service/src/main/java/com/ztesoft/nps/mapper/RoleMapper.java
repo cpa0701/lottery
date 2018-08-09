@@ -10,4 +10,6 @@ public interface RoleMapper {
 	Role findById(Long id);
 
 	List<Role> findByParentId(Long id);
+
+	int update(Role role);
 }

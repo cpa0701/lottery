@@ -10,4 +10,6 @@ public interface RoleService {
 	Role findById(Long id);
 
 	List<Role> findByParentId(Long id);
+
+	Role update(Role role);
 }

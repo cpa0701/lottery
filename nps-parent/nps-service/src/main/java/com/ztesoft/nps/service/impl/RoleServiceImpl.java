@@ -34,4 +34,10 @@ public class RoleServiceImpl implements RoleService {
 		return roleMapper.findByParentId(id);
 	}
 
+	@Override
+	public Role update(Role role) {
+		roleMapper.update(role);
+		return roleMapper.findById(role.getId());
+	}
+
 }
