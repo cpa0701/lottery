@@ -36,9 +36,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByDeptId(int pageNum, int pageSize, Long deptId) {
-		PageHelper.startPage(pageNum, pageSize);
-
+	public List<User> findByDeptId(Long deptId) {
 		return userMapper.findByDeptId(deptId);
 	}
 
@@ -65,6 +63,13 @@ public class UserServiceImpl implements UserService {
 		userMapper.update(user);
 
 		return userMapper.findById(user.getId());
+	}
+
+	@Override
+	public List<User> findByCondition(int pageNum, int pageSize, User user) {
+		PageHelper.startPage(pageNum, pageSize);
+
+		return userMapper.findByCondition(user);
 	}
 
 }

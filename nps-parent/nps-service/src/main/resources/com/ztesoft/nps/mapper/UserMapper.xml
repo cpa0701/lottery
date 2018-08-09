@@ -187,8 +187,31 @@
 		<if test="modifiedBy != null" >
 			modified_by = #{modifiedBy},
 		</if>
-	</set>
-	where id = #{id}
+	  </set>
+	  where id = #{id}
 	</update>
+	
+	<select id="findByCondition" resultMap="BaseResultMap" parameterType="User" >
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    <where>
+    	<if test="no != null and no != ''">
+    		and no like concat('%', #{no}, '%')
+    	</if>
+    	<if test="account != null and account != ''">
+    		and account like concat('%', #{account}, '%')
+    	</if>
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
+    	</if>
+    	<if test="status != null">
+    		and status = #{status} 
+    	</if>
+    	<if test="deptId != null">
+    		and dept_id = #{deptId} 
+    	</if>
+    </where>
+  </select>
 
 </mapper>

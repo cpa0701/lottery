@@ -18,4 +18,6 @@ public interface UserMapper {
 	User findByNo(String no);
 
 	int update(User user);
+
+	List<User> findByCondition(User user);
 }

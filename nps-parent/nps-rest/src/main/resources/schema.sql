@@ -34,7 +34,7 @@ CREATE TABLE `users`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `no` varchar(64) NOT NULL DEFAULT '' COMMENT '用户工号',
   `account` varchar(64) NOT NULL DEFAULT '' COMMENT '用户帐号',
-  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '用户名称',
+  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '用户姓名',
   `sex` varchar(32) NOT NULL DEFAULT 'F' COMMENT '性别',
   `cellphone` varchar(64) NOT NULL DEFAULT '' COMMENT '手机号',
   `email` varchar(128) NOT NULL DEFAULT '' COMMENT '邮箱',

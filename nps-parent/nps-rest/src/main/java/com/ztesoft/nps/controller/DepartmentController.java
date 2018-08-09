@@ -112,7 +112,7 @@ public class DepartmentController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		List<User> users = userService.findByDeptId(1, 10, id);
+		List<User> users = userService.findByDeptId(id);
 		if (CollectionUtils.isNotEmpty(users)) {
 			throw new NpsDeleteException("部门下存在用户，不能删除");
 		}
