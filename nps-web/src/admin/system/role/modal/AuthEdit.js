@@ -3,6 +3,7 @@ import {Modal} from 'antd';
 
 import Tree from '../Tree';
 import SysRoleMgService from "../../../../services/RoleService";
+import DeptService from "../../../../services/DeptService";
 
 export default class extends Component {
   state = {
@@ -13,9 +14,14 @@ export default class extends Component {
         this.authQuery();
   }
   // 获取所有权限树数据
-  authQuery = () => {
-      SysRoleMgService.qryAuthTree()
+  authQuery = (params) => {
+      DeptService.getDeptTree(params)
             .then(res => {
+                res.treeData.map(item => {
+                    item.title = item.sdeptName;
+                    item.key = item.ideptId;
+                    item.isLeaf = !item.childCount;
+                });
                 this.setState({
                     authData: res.treeData,
                 });
@@ -28,8 +34,13 @@ export default class extends Component {
                 resolve();
                 return;
             }
-            SysRoleMgService.qryAuthTree(treeNode.props.dataRef)
+            DeptService.getDeptTree(treeNode.props.dataRef)
                 .then(result => {
+                    result.treeData.map(item => {
+                        item.title = item.sdeptName;
+                        item.key = item.ideptId;
+                        item.isLeaf = !item.childCount;
+                    });
                     treeNode.props.dataRef.children = [...result.treeData];
                     this.setState({
                         authData: [...this.state.authData]
@@ -40,11 +51,7 @@ export default class extends Component {
     };
 
   onSubmit = () => {
-      this.props.onCreate(this.state.checkedKeys);
-  };
-  // 勾选权限树树节点时
-  onCheck = (checkedKeys) => {
-      this.props.onCheck(checkedKeys);
+      this.props.onCreate();
   };
 
   render() {
@@ -53,9 +60,8 @@ export default class extends Component {
           treeData: this.state.authData, // 要一级数据.
           checkedKeys,
           checkable: true,
-          onLoadData: (treeNode) => { // 载入数据.
-              this.loadAuthData(treeNode);
-          },
+          onCheck: this.props.onCheck,
+          onLoadData: this.loadAuthData
       };
 
     return (
@@ -66,6 +72,7 @@ export default class extends Component {
         visible={editAuth}
         onOk={this.onSubmit}
         onCancel={() => this.props.onClose()}
+        className="authModal-content"
       >
        <Tree {...authProps}/>
       </Modal>
