@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageHelper;
 import com.ztesoft.nps.mapper.UserMapper;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.UserQuery;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.PasswordUtils;
 
@@ -36,9 +37,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByDeptId(int pageNum, int pageSize, Long deptId) {
-		PageHelper.startPage(pageNum, pageSize);
-
+	public List<User> findByDeptId(Long deptId) {
 		return userMapper.findByDeptId(deptId);
 	}
 
@@ -65,6 +64,14 @@ public class UserServiceImpl implements UserService {
 		userMapper.update(user);
 
 		return userMapper.findById(user.getId());
+	}
+
+	@Override
+	public List<User> findByCondition(int pageNum, int pageSize,
+			UserQuery condition) {
+		PageHelper.startPage(pageNum, pageSize);
+
+		return userMapper.findByCondition(condition);
 	}
 
 }

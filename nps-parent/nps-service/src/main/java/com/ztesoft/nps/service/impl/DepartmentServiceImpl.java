@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.mapper.DepartmentMapper;
 import com.ztesoft.nps.model.Department;
+import com.ztesoft.nps.query.DepartmentQuery;
 import com.ztesoft.nps.service.DepartmentService;
 
 @Service("departmentService")
@@ -30,8 +31,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<Department> findAll(Long parentId, Long regionId, String name) {
-		return departmentMapper.findAll(parentId, regionId, name);
+	public List<Department> findByCondition(DepartmentQuery condition) {
+		return departmentMapper.findByCondition(condition);
 	}
 
 	@Transactional(readOnly = true)

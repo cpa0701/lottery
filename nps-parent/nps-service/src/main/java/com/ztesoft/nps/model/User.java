@@ -1,97 +1,116 @@
 package com.ztesoft.nps.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
-import com.ztesoft.nps.common.Status;
-
+@ApiModel
 public class User {
 	/**
 	 * 用户ID
 	 */
+	@ApiModelProperty("用户ID")
 	private Long id;
 
 	/**
 	 * 用户工号
 	 */
+	@ApiModelProperty("用户工号")
 	private String no;
 
 	/**
 	 * 用户帐号
 	 */
+	@ApiModelProperty("用户帐号")
 	private String account;
 
 	/**
-	 * 用户名称
+	 * 用户姓名
 	 */
+	@ApiModelProperty("用户姓名")
 	private String name;
 
 	/**
 	 * 性别
 	 */
+	@ApiModelProperty("性别(M:男 F:女)")
 	private String sex;
 
 	/**
 	 * 手机号
 	 */
+	@ApiModelProperty("手机号")
 	private String cellphone;
 
 	/**
 	 * 邮箱
 	 */
+	@ApiModelProperty("邮箱")
 	private String email;
 
 	/**
 	 * 身份证
 	 */
+	@ApiModelProperty("身份证")
 	private String identityCard;
 
 	/**
 	 * 状态
 	 */
+	@ApiModelProperty("状态")
 	private Integer status;
 
 	/**
 	 * 帐号密码
 	 */
+	@ApiModelProperty("帐号密码")
 	private String password;
 
 	/**
 	 * 密码盐值
 	 */
+	@ApiModelProperty("密码盐值")
 	private String salt;
 
 	/**
 	 * 部门ID
 	 */
+	@ApiModelProperty("部门ID")
 	private Long deptId;
 
 	/**
 	 * 备注
 	 */
+	@ApiModelProperty("备注")
 	private String remark;
 
 	/**
 	 * 创建人
 	 */
+	@ApiModelProperty("创建人")
 	private String createdBy;
 
 	/**
 	 * 创建时间
 	 */
+	@ApiModelProperty("创建时间")
 	private Date createdAt;
 
 	/**
 	 * 修改人
 	 */
+	@ApiModelProperty("修改人")
 	private String modifiedBy;
 
 	/**
 	 * 修改时间
 	 */
+	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
 	public User() {
-		this.status = Status.VALID.getCode();
+
 	}
 
 	public Long getId() {

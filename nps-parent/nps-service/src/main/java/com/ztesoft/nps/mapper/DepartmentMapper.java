@@ -2,17 +2,15 @@ package com.ztesoft.nps.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.ztesoft.nps.model.Department;
+import com.ztesoft.nps.query.DepartmentQuery;
 
 public interface DepartmentMapper {
 	int add(Department dept);
 
 	Department findById(Long id);
 
-	List<Department> findAll(@Param("parentId") Long parentId,
-			@Param("regionId") Long regionId, @Param("name") String name);
+	List<Department> findByCondition(DepartmentQuery condition);
 
 	List<Department> findByParentId(Long id);
 

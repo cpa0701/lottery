@@ -6,30 +6,36 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 
 @ApiModel
-public class Department {
+public class Permission {
 	/**
-	 * 部门ID
+	 * 权限ID
 	 */
-	@ApiModelProperty("部门ID")
+	@ApiModelProperty("权限ID")
 	private Long id;
 
 	/**
-	 * 部门名称
+	 * 权限名称
 	 */
-	@ApiModelProperty("部门名称")
+	@ApiModelProperty("权限名称")
 	private String name;
 
 	/**
-	 * 区域ID
+	 * 权限类型
 	 */
-	@ApiModelProperty("区域ID")
-	private Long regionId;
+	@ApiModelProperty("权限类型(1:菜单 2:功能按钮 3:C/S权限 4:其他 5:tab页 6:多数据源权限)")
+	private Integer type;
 
 	/**
-	 * 父部门ID
+	 * 链接URL
 	 */
-	@ApiModelProperty("父部门ID")
-	private Long parentId;
+	@ApiModelProperty("链接URL")
+	private String url;
+
+	/**
+	 * 应用类型
+	 */
+	@ApiModelProperty("应用类型(1:全局 2:网管系统 3:大客户系统 4:江苏有线-移动端 5:报表分析 6:自定义报表 7:统计分析 8:重保 9:广西门户 10:广东资源树)")
+	private Integer appType;
 
 	/**
 	 * 状态
@@ -38,16 +44,16 @@ public class Department {
 	private Integer status;
 
 	/**
-	 * 部门类型
+	 * 父权限ID
 	 */
-	@ApiModelProperty("部门类型(1:常规部门 2:代维部门 3:团队)")
-	private Integer type;
+	@ApiModelProperty("父权限ID")
+	private Integer parentId;
 
 	/**
-	 * 部门级别
+	 * 权限描述
 	 */
-	@ApiModelProperty("部门级别(1:中心 2:科室 3:班组)")
-	private Integer level;
+	@ApiModelProperty("权限描述")
+	private String description;
 
 	/**
 	 * 创建人
@@ -73,7 +79,7 @@ public class Department {
 	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
-	public Department() {
+	public Permission() {
 
 	}
 
@@ -93,12 +99,52 @@ public class Department {
 		this.name = name;
 	}
 
-	public Long getParentId() {
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Integer getAppType() {
+		return appType;
+	}
+
+	public void setAppType(Integer appType) {
+		this.appType = appType;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Integer getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(Long parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getCreatedBy() {
@@ -131,38 +177,6 @@ public class Department {
 
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
-	}
-
-	public Long getRegionId() {
-		return regionId;
-	}
-
-	public void setRegionId(Long regionId) {
-		this.regionId = regionId;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public Integer getLevel() {
-		return level;
-	}
-
-	public void setLevel(Integer level) {
-		this.level = level;
 	}
 
 }

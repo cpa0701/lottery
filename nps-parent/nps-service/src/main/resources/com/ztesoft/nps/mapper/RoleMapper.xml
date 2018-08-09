@@ -2,37 +2,114 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ztesoft.nps.mapper.RoleMapper" >
   <resultMap id="BaseResultMap" type="Role" >
-    <id column="id" property="id" />
-    <result column="name" property="name" />
-    <result column="description" property="description" />
-    <result column="parent_id" property="parentId" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_at" property="createdAt" />
-    <result column="modified_by" property="modifiedBy" />
-    <result column="modified_at" property="modifiedAt" />
+    <id column="r_id" property="id" />
+    <result column="r_name" property="name" />
+    <result column="r_description" property="description" />
+    <result column="r_parent_id" property="parentId" />
+    <result column="r_created_by" property="createdBy" />
+    <result column="r_created_at" property="createdAt" />
+    <result column="r_modified_by" property="modifiedBy" />
+    <result column="r_modified_at" property="modifiedAt" />
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, description, parent_id, created_by, created_at, modified_by, modified_at
+    r.id r_id, r.name r_name, r.description r_description, 
+    r.parent_id r_parent_id, r.created_by r_created_by, 
+    r.created_at r_created_at, r.modified_by r_modified_by, 
+    r.modified_at r_modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from roles
+    from roles r
     where id = #{id}
   </select>
   
   <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from roles
+    from roles r
     where parent_id = #{id}
   </select>
   
   <insert id="add" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
-    insert into roles (name, description, parent_id, created_by, created_at, modified_by, modified_at)
-    values (#{name}, #{description}, #{parentId}, #{createdBy}, #{createdAt}, #{modifiedBy}, #{modifiedAt})
+    insert into roles 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	<if test="name != null">
+    		name,
+    	</if>
+    	<if test="description != null">
+    		description,
+    	</if>
+    	<if test="parentId != null">
+    		parent_id,
+    	</if>
+    	<if test="createdBy != null">
+    		created_by,
+    	</if>
+    	<if test="modifiedBy != null">
+    		modified_by,
+    	</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	<if test="name != null">
+    		#{name},
+    	</if>
+    	<if test="description != null">
+    		#{description},
+    	</if>
+    	<if test="parentId != null">
+    		#{parentId},
+    	</if>
+    	<if test="createdBy != null">
+    		#{createdBy},
+    	</if>
+    	<if test="modifiedBy != null">
+    		#{modifiedBy},
+    	</if>
+    </trim>
   </insert>
+  
+  <update id="update" parameterType="Role">
+  	update roles 
+  	<set>
+  		<if test="name != null">
+  			name = #{name},
+  		</if>
+  		<if test="description != null">
+  			description = #{description},
+  		</if>
+  		<if test="parentId != null">
+  			parent_id = #{parentId},
+  		</if>
+  		<if test="modifiedBy != null">
+  			modified_by = #{modifiedBy},
+  		</if>
+  	</set>
+  	where id = #{id}
+  </update>
+  
+  <select id="findByCondition" resultMap="BaseResultMap" parameterType="RoleQuery" >
+    select 
+    <include refid="Base_Column_List" />
+    from roles r
+    <where>
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
+    	</if>
+    	<if test="parentId != null">
+    		and parent_id = #{parentId} 
+    	</if>
+    </where>
+  </select>
+  
+  <select id="findByPermissionId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from roles r inner join role_permission rp 
+    on r.id = rp.role_id
+    where rp.permission_id = #{id}
+  </select>
 
 </mapper>

@@ -1,61 +1,76 @@
 package com.ztesoft.nps.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
+@ApiModel
 public class Region {
 	/**
 	 * 区域ID
 	 */
+	@ApiModelProperty("区域ID")
 	private Long id;
 
 	/**
 	 * 区域标识
 	 */
+	@ApiModelProperty("区域标识")
 	private Long areaId;
 
 	/**
 	 * 区域名称
 	 */
+	@ApiModelProperty("区域名称")
 	private String name;
 
 	/**
 	 * 区域类型
 	 */
+	@ApiModelProperty("区域类型(1:省 2:本地网 3:县市 4:扇区 5:自定义)")
 	private Integer type;
 
 	/**
 	 * 区域码
 	 */
+	@ApiModelProperty("区域码")
 	private String code;
 
 	/**
 	 * 序号
 	 */
+	@ApiModelProperty("序号")
 	private Integer sequence;
 
 	/**
 	 * 父区域ID
 	 */
+	@ApiModelProperty("父区域ID")
 	private Long parentId;
 
 	/**
 	 * 创建人
 	 */
+	@ApiModelProperty("创建人")
 	private String createdBy;
 
 	/**
 	 * 创建时间
 	 */
+	@ApiModelProperty("创建时间")
 	private Date createdAt;
 
 	/**
 	 * 修改人
 	 */
+	@ApiModelProperty("修改人")
 	private String modifiedBy;
 
 	/**
 	 * 修改时间
 	 */
+	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
 	public Long getId() {

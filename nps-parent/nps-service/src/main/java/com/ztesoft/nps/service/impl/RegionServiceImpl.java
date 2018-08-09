@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.mapper.RegionMapper;
 import com.ztesoft.nps.model.Region;
+import com.ztesoft.nps.query.RegionQuery;
 import com.ztesoft.nps.service.RegionService;
 
 @Service("regionService")
@@ -58,6 +59,11 @@ public class RegionServiceImpl implements RegionService {
 	@Override
 	public Region findById(Long id) {
 		return regionMapper.findById(id);
+	}
+
+	@Override
+	public List<Region> findByCondition(RegionQuery condition) {
+		return regionMapper.findByCondition(condition);
 	}
 
 }

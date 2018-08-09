@@ -26,20 +26,28 @@
     where id = #{id}
   </select>
   
-  <select id="findAll" resultMap="BaseResultMap" >
+  <select id="findByCondition" resultMap="BaseResultMap" parameterType="DepartmentQuery">
     select 
     <include refid="Base_Column_List" />
     from departments
     <where>
-    	status = 1 
-    	<if test="parentId != null">
-    		and parent_id = #{parentId} 
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
     	</if>
     	<if test="regionId != null">
     		and region_id = #{regionId} 
     	</if>
-    	<if test="name != null and name != ''">
-    		and name like concat('%', #{name}, '%')
+    	<if test="parentId != null">
+    		and parent_id = #{parentId} 
+    	</if>
+    	<if test="status != null">
+    		and status = #{status} 
+    	</if>
+    	<if test="type != null">
+    		and type = #{type} 
+    	</if>
+    	<if test="level != null">
+    		and level = #{level} 
     	</if>
     </where>
   </select>
