@@ -8,7 +8,6 @@ import {
     Button,
     Popconfirm,
     Tabs,
-    Radio,
     message,
     Modal, Row, Col,
 } from 'antd';
@@ -25,9 +24,8 @@ import {inject} from "mobx-react/index"
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 const FormItem = Form.Item;
 const info = Modal.info;
-const {Header, Sider, Content} = Layout;
+const {Sider, Content} = Layout;
 const TabPane = Tabs.TabPane;
-const RadioGroup = Radio.Group;
 
 @Form.create({})
 @inject('stores')
@@ -171,13 +169,14 @@ export default class Dept extends PureComponent {
     //获取部门树
     getDeptTree = (params) => {
         DeptService.getDeptTree(params).then(result => {
-            result.treeData.map(item => {
+            let treeData = result.treeData.map(item => {
                 item.title = item.sdeptName;
                 item.key = item.ideptId
                 item.isLeaf = !item.childCount;
+                return item;
             })
             this.setState({
-                deptTreeData: result.treeData,
+                deptTreeData: treeData,
             });
         });
     }
@@ -185,26 +184,28 @@ export default class Dept extends PureComponent {
     getRoleTree = (params) => {
         let data = params[params.length - 1];
         DeptService.getRoleTree(data).then(result => {
-            result.treeData.map(item => {
+            let treeData = result.treeData.map(item => {
                 item.title = item.sdeptName;
                 item.key = item.ideptId
                 item.isLeaf = !item.childCount;
+                return item;
             })
             this.setState({
-                roleTreeData: result.treeData,
+                roleTreeData: treeData,
             });
         });
     }
     //获取权限树
     getAuthorityTree = (params) => {
         DeptService.getAuthorityTree(params).then(result => {
-            result.treeData.map(item => {
+            let treeData = result.treeData.map(item => {
                 item.title = item.sdeptName;
                 item.key = item.ideptId
                 item.isLeaf = !item.childCount;
+                return item;
             })
             this.setState({
-                authorityTreeData: result.treeData,
+                authorityTreeData: treeData,
             });
         });
     }
@@ -226,12 +227,13 @@ export default class Dept extends PureComponent {
                 return;
             }
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                result.treeData.map(item => {
+                let treeData = result.treeData.map(item => {
                     item.title = item.sdeptName;
                     item.key = item.ideptId
                     item.isLeaf = !item.childCount;
+                    return item;
                 })
-                treeNode.props.dataRef.children = [...result.treeData];
+                treeNode.props.dataRef.children = [...treeData];
                 this.setState({
                     deptTreeData: [...this.state.deptTreeData],
                 });
@@ -253,12 +255,13 @@ export default class Dept extends PureComponent {
                 return;
             }
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                result.treeData.map(item => {
+                let treeData = result.treeData.map(item => {
                     item.title = item.sdeptName;
                     item.key = item.ideptId
                     item.isLeaf = !item.childCount;
+                    return item;
                 })
-                treeNode.props.dataRef.children = [...result.treeData];
+                treeNode.props.dataRef.children = [...treeData];
                 this.setState({
                     roleTreeData: [...this.state.roleTreeData],
                 });
@@ -282,12 +285,13 @@ export default class Dept extends PureComponent {
                 return;
             }
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                result.treeData.map(item => {
+                let treeData = result.treeData.map(item => {
                     item.title = item.sdeptName;
                     item.key = item.ideptId
                     item.isLeaf = !item.childCount;
+                    return item;
                 })
-                treeNode.props.dataRef.children = [...result.treeData];
+                treeNode.props.dataRef.children = [...treeData];
                 this.setState({
                     authorityTreeData: [...this.state.authorityTreeData],
                 });
@@ -306,11 +310,12 @@ export default class Dept extends PureComponent {
     //新增部门
     handleDeptAdd = () => {
         if (this.state.departmentEditData) {
+            debugger;
             this.setState({
                 departmentData: {
                     sdispName: this.state.departmentEditData.sdispName,
                     parentId: this.state.departmentEditData.ideptId,
-                    sdeptName: this.state.departmentEditData.sdeptName,
+                    sdeptName: "",
                 }
             }, () => this.handleDeptModalVisible(true));
 
@@ -453,7 +458,7 @@ export default class Dept extends PureComponent {
         }
     }
     // 双击表格查看人员信息
-    handelViewStaff=(data)=>{
+    handelViewStaff = (data) => {
         this.setState({
             staffEditData: data,
             thisTime: 'V',
@@ -495,8 +500,8 @@ export default class Dept extends PureComponent {
     }
     // 获取第三区域的数据
     getThirdData = (data) => {
-        let staffIds=[];
-        if(data.length!==0){
+        let staffIds = [];
+        if (data.length !== 0) {
             data = data[data.length - 1];
             staffIds = (data.id ? data.id : []);
         }

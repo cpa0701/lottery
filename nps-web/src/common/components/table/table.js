@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Table, Alert, Spin, Button, message} from 'antd';
+import {Table, Alert, Spin, Button} from 'antd';
 import './table.less';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
@@ -61,7 +61,7 @@ class StandardTable extends PureComponent {
     }
 
     handleSearch = (params) => {
-        const {service, method, cusParams, list} = this.props;
+        const {service, method, cusParams} = this.props;
 
         let _params = {};
         if (cusParams) {

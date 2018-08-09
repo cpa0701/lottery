@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Row, Col, Input, Button, Icon, Select, Popconfirm} from 'antd';
+import {Form, Row, Col, Input, Button, Select, Popconfirm} from 'antd';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
