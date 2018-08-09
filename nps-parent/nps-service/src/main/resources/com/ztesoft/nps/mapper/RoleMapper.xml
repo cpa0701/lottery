@@ -86,5 +86,19 @@
   	</set>
   	where id = #{id}
   </update>
+  
+  <select id="findByCondition" resultMap="BaseResultMap" parameterType="RoleQuery" >
+    select 
+    <include refid="Base_Column_List" />
+    from roles
+    <where>
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
+    	</if>
+    	<if test="parentId != null">
+    		and parent_id = #{parentId} 
+    	</if>
+    </where>
+  </select>
 
 </mapper>

@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.RoleQuery;
 import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.utils.UserUtils;
 
@@ -36,10 +36,9 @@ public class RoleController {
 	private HttpSession session;
 
 	@GetMapping
-	@ApiOperation(value = "根据父角色ID查询子角色列表", notes = "根据父角色ID查询子角色列表")
-	public Result<List<Role>> findAll(
-			@ApiParam(value = "父角色ID") @RequestParam(defaultValue = "0", required = true) Long parentId) {
-		List<Role> roles = roleService.findByParentId(parentId);
+	@ApiOperation(value = "查询角色列表", notes = "查询角色列表")
+	public Result<List<Role>> findByCondition(RoleQuery condition) {
+		List<Role> roles = roleService.findByCondition(condition);
 
 		return Result.success(roles);
 	}

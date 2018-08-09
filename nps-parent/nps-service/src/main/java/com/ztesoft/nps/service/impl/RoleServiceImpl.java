@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.mapper.RoleMapper;
 import com.ztesoft.nps.model.Role;
+import com.ztesoft.nps.query.RoleQuery;
 import com.ztesoft.nps.service.RoleService;
 
 @Service("roleService")
@@ -38,6 +39,11 @@ public class RoleServiceImpl implements RoleService {
 	public Role update(Role role) {
 		roleMapper.update(role);
 		return roleMapper.findById(role.getId());
+	}
+
+	@Override
+	public List<Role> findByCondition(RoleQuery condition) {
+		return roleMapper.findByCondition(condition);
 	}
 
 }
