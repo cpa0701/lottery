@@ -3,7 +3,7 @@ import Http from '../common/Http';
 class DeptService {
     // 获取部门树
     getDeptTree = async (param) => {
-        var url = 'mock/dept/initDeptTree';
+        var url = 'mock/dept/getDeptTree';
         return await Http.post(url, param);
     }
     //校验部门名唯一性
@@ -54,6 +54,11 @@ class DeptService {
     // 获取权限树
     getAuthorityTree= async (param) => {
         var url = 'mock/dept/getAuthorityTree';
+        return await Http.post(url, param);
+    }
+    // 获取权限树
+    changeDept= async (param) => {
+        var url = 'mock/dept/changeDept';
         return await Http.post(url, param);
     }
 }

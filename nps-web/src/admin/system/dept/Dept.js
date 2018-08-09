@@ -521,7 +521,7 @@ export default class Dept extends PureComponent {
         }
     }
     //控制更改部门弹出框显示状态
-    handleChangeDeptVisible=(flag)=>{
+    handleChangeDeptVisible = (flag) => {
         let visible = !!flag
         this.setState({
             modalChangeDeptVisible: visible,
@@ -556,8 +556,9 @@ export default class Dept extends PureComponent {
     }
 
     render() {
-        const {departmentData,deptTreeForChangeData, staffEditData, modalDeptVisible, modalStaffVisible, modalChangeDeptVisible,domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, staffColumns, formValues} = this.state;
+        const {departmentData, deptTreeForChangeData, staffEditData, modalDeptVisible, modalStaffVisible, modalChangeDeptVisible, domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, staffColumns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
+        // const defaultDeptSelectedKeys=deptTreeData.length!==0?deptTreeData[0].ideptId.toString():'';
         return (
             <Layout className='dept'>
                 <Sider
@@ -618,7 +619,6 @@ export default class Dept extends PureComponent {
                     <TreeComponent
                         showLine={true}
                         checkable={true}
-                        defaultExpandedKeys={['0-0-0']}
                         onSelect={this.onSelectDeptTree}
                         onCheck={this.onSelectDeptTree}
                         treeData={deptTreeData}
@@ -673,13 +673,15 @@ export default class Dept extends PureComponent {
                             <Tabs type="card">
                                 <TabPane tab="角色" key="1">
                                     <Row className={'thirdBlockBtn'}>
-                                        <Col span={24}>
+                                        <Col span={12}>
                                             <Button type="primary">新增</Button>
-                                            <Button type="dashed">修改</Button>
                                             <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消"
                                                         onConfirm={this.handleDeptDelete}>
                                                 <Button type="danger">删除</Button>
                                             </Popconfirm>
+                                        </Col>
+                                        <Col span={12}>
+                                            <Button type="dashed">修改</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -710,15 +712,24 @@ export default class Dept extends PureComponent {
                                     </Row>
                                 </TabPane>
                                 <TabPane tab="权限" key="2">
-                                    <h6 className='departmentH6'>权限树</h6>
-                                    <TreeComponent
-                                        showLine={true}
-                                        checkable={true}
-                                        defaultExpandedKeys={['0-0-0']}
-                                        onSelect={this.onSelectAuthorityTree}
-                                        onCheck={this.onSelectAuthorityTree}
-                                        treeData={authorityTreeData}
-                                        onLoadData={this.onLoadAuthorityTreeData}/>
+                                    <Row className={'thirdBlockBtn'}>
+                                        <Col span={24}>
+                                            <Button type="dashed">修改</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span={24}>
+                                            <h6 className='departmentH6'>权限树</h6>
+                                            <TreeComponent
+                                                showLine={true}
+                                                checkable={true}
+                                                defaultExpandedKeys={['0-0-0']}
+                                                onSelect={this.onSelectAuthorityTree}
+                                                onCheck={this.onSelectAuthorityTree}
+                                                treeData={authorityTreeData}
+                                                onLoadData={this.onLoadAuthorityTreeData}/>
+                                        </Col>
+                                    </Row>
                                 </TabPane>
                             </Tabs>
                         </div>

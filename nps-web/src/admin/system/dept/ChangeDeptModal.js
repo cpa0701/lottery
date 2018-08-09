@@ -27,12 +27,11 @@ class changeDeptModal extends PureComponent {
         this.setState({
             confirmLoading: true,
         });
-        setTimeout(() => {
-            console.log(this.state.selectedKeys)
+        DeptService.changeDept(this.state.selectedKeys).then(result => {
             this.setState({
                 confirmLoading: false,
             }, () => this.props.changeDeptVisible(false));
-        }, 2000);
+        })
     }
 
     //获取部门树
@@ -93,20 +92,21 @@ class changeDeptModal extends PureComponent {
             >
                 <Row>
                     <Col span={8}>所属区域</Col>
-                    <Col span={16}><TreeSelect
-                        value={selectDomain}
-                        dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                        treeData={domainTreeDate}
-                        showCheckedStrategy={SHOW_PARENT}
-                        searchPlaceholder={'请选择区域'}
-                        onChange={this.onChange}
-                        style={{'width': '100%'}}
-                    /></Col>
+                    <Col span={16}>
+                        <TreeSelect
+                            value={selectDomain}
+                            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                            treeData={domainTreeDate}
+                            showCheckedStrategy={SHOW_PARENT}
+                            searchPlaceholder={'请选择区域'}
+                            onChange={this.onChange}
+                            style={{'width': '100%'}}
+                        />
+                    </Col>
                     <Col span={24}>
                         <TreeComponent
                             showLine={true}
                             checkable={false}
-                            defaultExpandedKeys={['0-0-0']}
                             onSelect={this.onSelectDeptTree}
                             onCheck={this.onSelectDeptTree}
                             treeData={deptTree}

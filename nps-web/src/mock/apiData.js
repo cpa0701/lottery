@@ -203,7 +203,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
 })
 
 //获取部门树
-Mock.mock('mock/dept/initDeptTree', (params) => {
+Mock.mock('mock/dept/getDeptTree', (params) => {
     let params1 = JSON.parse(params.body);
     if (!params1.rowId)
         return Mock.mock({
@@ -330,6 +330,16 @@ Mock.mock('mock/dept/dleStaff', (params) => {
 })
 //编辑人员
 Mock.mock('mock/dept/ediStaff', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//更改部门
+Mock.mock('mock/dept/changeDept', (params) => {
     let params1 = JSON.parse(params.body);
     console.log(params1);
     return Mock.mock({
