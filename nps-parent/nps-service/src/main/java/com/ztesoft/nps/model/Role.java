@@ -1,46 +1,58 @@
 package com.ztesoft.nps.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
+@ApiModel
 public class Role {
 	/**
 	 * 角色ID
 	 */
+	@ApiModelProperty("角色ID")
 	private Long id;
 
 	/**
 	 * 角色名称
 	 */
+	@ApiModelProperty("角色名称")
 	private String name;
 
 	/**
 	 * 角色描述
 	 */
+	@ApiModelProperty("角色描述")
 	private String description;
 
 	/**
 	 * 父角色ID
 	 */
+	@ApiModelProperty("父角色ID")
 	private Long parentId;
 
 	/**
 	 * 创建人
 	 */
+	@ApiModelProperty("创建人")
 	private String createdBy;
 
 	/**
 	 * 创建时间
 	 */
+	@ApiModelProperty("创建时间")
 	private Date createdAt;
 
 	/**
 	 * 修改人
 	 */
+	@ApiModelProperty("修改人")
 	private String modifiedBy;
 
 	/**
 	 * 修改时间
 	 */
+	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
 	public Long getId() {
