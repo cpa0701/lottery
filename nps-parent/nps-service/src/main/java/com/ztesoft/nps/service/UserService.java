@@ -3,6 +3,7 @@ package com.ztesoft.nps.service;
 import java.util.List;
 
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.UserQuery;
 
 public interface UserService {
 	User add(User user);
@@ -11,7 +12,7 @@ public interface UserService {
 
 	List<User> findByDeptId(Long deptId);
 
-	List<User> findByCondition(int pageNum, int pageSize, User user);
+	List<User> findByCondition(int pageNum, int pageSize, UserQuery condition);
 
 	User findByAccount(String account);
 

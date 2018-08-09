@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.UserQuery;
 
 public interface UserMapper {
 	int add(User user);
@@ -19,5 +20,5 @@ public interface UserMapper {
 
 	int update(User user);
 
-	List<User> findByCondition(User user);
+	List<User> findByCondition(UserQuery condition);
 }

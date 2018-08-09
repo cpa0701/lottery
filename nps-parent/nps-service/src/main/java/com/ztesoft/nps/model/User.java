@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-import com.ztesoft.nps.common.Status;
-
 @ApiModel
 public class User {
 	/**
@@ -112,7 +110,7 @@ public class User {
 	private Date modifiedAt;
 
 	public User() {
-		this.status = Status.VALID.getCode();
+
 	}
 
 	public Long getId() {

@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.Status;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.UserQuery;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
 
@@ -37,11 +39,12 @@ public class UserController {
 
 	@GetMapping
 	@ApiOperation(value = "查询用户列表", notes = "查询用户列表")
-	public Result<PageInfo<User>> findByDeptId(
+	public Result<PageInfo<User>> findByCondition(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
 			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@RequestBody(required = false) User user) {
-		List<User> users = userService.findByCondition(pageNum, pageSize, user);
+			UserQuery condition) {
+		List<User> users = userService.findByCondition(pageNum, pageSize,
+				condition);
 
 		// 清空密码和盐值
 		users.stream().forEach(u -> {
@@ -59,6 +62,8 @@ public class UserController {
 		User currentUser = UserUtils.getUser(session);
 		user.setCreatedBy(currentUser.getAccount());
 		user.setModifiedBy(currentUser.getAccount());
+
+		user.setStatus(Status.VALID.getCode());
 
 		userService.add(user);
 

@@ -191,7 +191,7 @@
 	  where id = #{id}
 	</update>
 	
-	<select id="findByCondition" resultMap="BaseResultMap" parameterType="User" >
+	<select id="findByCondition" resultMap="BaseResultMap" parameterType="UserQuery" >
     select 
     <include refid="Base_Column_List" />
     from users
@@ -204,6 +204,18 @@
     	</if>
     	<if test="name != null and name != ''">
     		and name like concat('%', #{name}, '%')
+    	</if>
+    	<if test="sex != null and sex != ''">
+    		and sex = #{sex} 
+    	</if>
+    	<if test="cellphone != null and cellphone != ''">
+    		and cellphone like concat('%', #{cellphone}, '%') 
+    	</if>
+    	<if test="email != null and email != ''">
+    		and email like concat('%', #{email}, '%') 
+    	</if>
+    	<if test="identityCard != null and identityCard != ''">
+    		and identity_card like concat('%', #{identityCard}, '%') 
     	</if>
     	<if test="status != null">
     		and status = #{status} 
