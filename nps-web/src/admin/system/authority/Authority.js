@@ -1,9 +1,8 @@
 import React, {PureComponent} from 'react';
-import {Col,Row,Select,Button,Divider,Table,Input } from 'antd';
+import {Col,Row,Select,Button,Divider,Table,Input,Form, Modal } from 'antd';
 import './Authority.less'
 import {inject, observer} from "mobx-react/index";
 import AuthorityService from "../../../services/AuthorityService";
-import {Form, Modal} from "antd/lib/index";
 
 
 const Option = Select.Option;//是否激活选择框

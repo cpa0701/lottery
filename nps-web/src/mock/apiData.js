@@ -241,6 +241,45 @@ Mock.mock('mock/dept/getDeptTree', (params) => {
         })
     }
 })
+//获取所有权限树
+Mock.mock('mock/dept/getAllAuthorityData', (params) => {
+    let params1 = JSON.parse(params.body);
+    if (!params1.rowId)
+        return Mock.mock({
+            'treeData|10': [{
+                'rowId|+1': 1,
+                'ideptId|+1': 12131,
+                'iDeptLevel': '2',
+                'sdeptName': '@cname',
+                'iParentId': '0',
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': 1010001,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '2'
+            }]
+        })
+    else {
+        return Mock.mock({
+            'treeData|5': [{
+                'rowId|+1': params1.rowId * 10 + 1,
+                'ideptId|+1': params1.ideptId * 10 + 1,
+                'iDeptLevel': params1.iDeptLevel + 1,
+                'sdeptName': '@cname',
+                'iParentId': params1.rowId,
+                'sdispName': '/常规/',
+                'spathId': '/0/412530/',
+                'idomainId|+1': params1.idomainId * 10 + 1,
+                'sDomainName': '@cname',
+                'iSortIndex': '1',
+                'iDeptType|+1': 1,
+                'childCount': '@integer(0,10)'
+            }]
+        })
+    }
+})
 //判断部门唯一性
 Mock.mock('mock/dept/checkDeptName', (params) => {
     let params1 = JSON.parse(params.body);
@@ -253,6 +292,17 @@ Mock.mock('mock/dept/checkDeptName', (params) => {
 //新增部门
 Mock.mock('mock/dept/addDept', (params) => {
     let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//删除角色
+Mock.mock('mock/dept/dleRole', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
     return Mock.mock({
         'result': {
             'code': 0
@@ -262,6 +312,7 @@ Mock.mock('mock/dept/addDept', (params) => {
 //删除部门
 Mock.mock('mock/dept/dleDept', (params) => {
     let params1 = JSON.parse(params.body);
+    console.log(params1);
     return Mock.mock({
         'result': {
             'code': 0
@@ -271,6 +322,27 @@ Mock.mock('mock/dept/dleDept', (params) => {
 //编辑部门
 Mock.mock('mock/dept/ediDept', (params) => {
     let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//编辑部门
+Mock.mock('mock/dept/editAuthority', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//新增角色
+Mock.mock('mock/dept/addRole', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
     return Mock.mock({
         'result': {
             'code': 0

@@ -51,12 +51,32 @@ class DeptService {
         var url = 'mock/dept/getRoleTree';
         return await Http.post(url, param);
     }
+    // 新增角色
+    addRole= async (param) => {
+        var url = 'mock/dept/addRole';
+        return await Http.post(url, param);
+    }
+    // 新增角色
+    editAuthority= async (param) => {
+        var url = 'mock/dept/editAuthority';
+        return await Http.post(url, param);
+    }
+    // 删除角色
+    dleRole= async (param) => {
+        var url = 'mock/dept/dleRole';
+        return await Http.post(url, param);
+    }
     // 获取权限树
     getAuthorityTree= async (param) => {
         var url = 'mock/dept/getAuthorityTree';
         return await Http.post(url, param);
     }
-    // 获取权限树
+    // 获取所有权限数据
+    getAllAuthorityData= async (param) => {
+        var url = 'mock/dept/getAllAuthorityData';
+        return await Http.post(url, param);
+    }
+    // 更改部门
     changeDept= async (param) => {
         var url = 'mock/dept/changeDept';
         return await Http.post(url, param);
