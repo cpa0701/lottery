@@ -16,10 +16,11 @@ import {
 import "./Dept.less"
 import DeptService from "../../../services/DeptService"
 import DeptModal from "./DeptModal"
+import StaffModal from "./StaffModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/table';
 import TreeComponent from '../../../common/components/tree/tree';
-import {inject, observer} from "mobx-react/index"
+import {inject} from "mobx-react/index"
 
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 const FormItem = Form.Item;
@@ -40,13 +41,17 @@ export default class Dept extends PureComponent {
         domainTreeDate: [],
         departmentData: [],
         departmentDataTree: [],
+        staffData: [],
+        staffEditData: [],
         selectedKeys: [],
+        selectedStaffIds: [],
         departmentEditData: null,
-        modalVisible: false,
-        columns: [
+        modalStaffVisible: false,
+        modalDeptVisible: false,
+        staffColumns: [
             {
                 title: '登录账号',
-                dataIndex: 'sStaffAccount',
+                dataIndex: 'account',
                 render: (text, record, index) => {
                     return (
                         <span>
@@ -57,55 +62,34 @@ export default class Dept extends PureComponent {
             },
             {
                 title: '人员工号',
-                dataIndex: 'sStaffNo'
+                dataIndex: 'no'
             },
             {
                 title: '人员姓名',
-                dataIndex: 'sStaffName',
+                dataIndex: 'name',
             },
             {
                 title: '性别',
-                dataIndex: 'sSex',
+                dataIndex: 'sex',
+                render: (text, record, index) => {
+                    return (text === 'M' ? '男' : '女')
+                }
             },
             {
                 title: '账号状态',
-                dataIndex: 'iDelFlag',
-            },
-            {
-                title: '是否有效',
-                dataIndex: 'sValid',
-            },
-            {
-                title: '电话号码',
-                dataIndex: 'sTelphone'
+                dataIndex: 'state',
             },
             {
                 title: '手机号码',
-                dataIndex: 'sMobile',
+                dataIndex: 'cellphone',
             },
             {
                 title: '内部邮箱',
-                dataIndex: 'sInEmail',
-            },
-            {
-                title: '传真号码',
-                dataIndex: 'sFaxCode',
+                dataIndex: 'email',
             },
             {
                 title: '部门名称',
-                dataIndex: 'sDispName',
-            },
-            {
-                title: '公司名称',
-                dataIndex: 'sDomainName',
-            },
-            {
-                title: '职位名称',
-                dataIndex: 'sTitleName',
-            },
-            {
-                title: '上级领导',
-                dataIndex: 'sLeaderName',
+                dataIndex: 'deptId',
             }
         ],
         formValues: {}
@@ -114,9 +98,12 @@ export default class Dept extends PureComponent {
     constructor(props) {
         super(props);
         this.handlerSearchDepartment = this.handlerSearchDepartment.bind(this);
-        this.handleAdd = this.handleAdd.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
+        this.handleDeptAdd = this.handleDeptAdd.bind(this);
+        this.handleDeptUpdate = this.handleDeptUpdate.bind(this);
+        this.handleDeptDelete = this.handleDeptDelete.bind(this);
+        this.handleStaffAdd = this.handleStaffAdd.bind(this);
+        this.handleStaffEdit = this.handleStaffEdit.bind(this);
+        this.handleStaffDelete = this.handleStaffDelete.bind(this);
     }
 
     componentWillMount() {
@@ -167,7 +154,7 @@ export default class Dept extends PureComponent {
 
     componentDidMount() {
         //第一次默认加载
-        this.standardTable.handleSearch({current: 1, pageSize: 10})
+        // this.standardTable.handleSearch({current: 1, pageSize: 10})
     }
 
     //收起展开部门
@@ -195,7 +182,8 @@ export default class Dept extends PureComponent {
     }
     //获取角色树
     getRoleTree = (params) => {
-        DeptService.getRoleTree(params).then(result => {
+        let data = params[params.length - 1];
+        DeptService.getRoleTree(data).then(result => {
             result.treeData.map(item => {
                 item.title = item.sdeptName;
                 item.key = item.ideptId
@@ -225,6 +213,8 @@ export default class Dept extends PureComponent {
         this.setState({
             departmentEditData: info.selectedNodes.length ? info.selectedNodes[0].props : "",
             selectedKeys: selectedKeys
+        }, () => {
+            this.getStaffData(this.state.departmentEditData)
         })
     }
     //异步加载部门树节点
@@ -248,7 +238,6 @@ export default class Dept extends PureComponent {
             })
         });
     }
-
     //点击角色树节点时
     onSelectRoleTree = (selectedKeys, info) => {
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
@@ -276,7 +265,6 @@ export default class Dept extends PureComponent {
             })
         });
     }
-
     //点击权限树节点时
     onSelectAuthorityTree = (selectedKeys, info) => {
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
@@ -306,7 +294,6 @@ export default class Dept extends PureComponent {
             })
         });
     }
-
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
@@ -315,8 +302,8 @@ export default class Dept extends PureComponent {
         });
         this.getDeptTree(params);
     }
-    //新增方法
-    handleAdd = () => {
+    //新增部门
+    handleDeptAdd = () => {
         if (this.state.departmentEditData) {
             this.setState({
                 departmentData: {
@@ -324,7 +311,7 @@ export default class Dept extends PureComponent {
                     parentId: this.state.departmentEditData.ideptId,
                     sdeptName: this.state.departmentEditData.sdeptName,
                 }
-            }, () => this.handleModalVisible(true));
+            }, () => this.handleDeptModalVisible(true));
 
         } else {
             this.setState({
@@ -333,7 +320,7 @@ export default class Dept extends PureComponent {
                     parentId: 0,
                     sdeptName: "",
                 }
-            }, () => this.handleModalVisible(true));
+            }, () => this.handleDeptModalVisible(true));
             // const ref = info({
             //     title: '请先选择要新增的所属部门',
             //     content: '',
@@ -345,15 +332,14 @@ export default class Dept extends PureComponent {
             // });
         }
     }
-
-    //修改方法
-    handleUpdate = () => {
+    //修改部门
+    handleDeptUpdate = () => {
         if (this.state.departmentEditData) {
             this.setState({
                 departmentData: this.state.departmentEditData,
                 thisTime: 'M',
             });
-            this.handleModalVisible(true);
+            this.handleDeptModalVisible(true);
         } else {
             const ref = info({
                 title: '请先选择要修改的部门',
@@ -366,10 +352,8 @@ export default class Dept extends PureComponent {
             });
         }
     }
-
-    //删除方法
-    handleDelete = () => {
-
+    //删除部门
+    handleDeptDelete = () => {
         let row = this.state.selectedKeys;
         let params = {};
         if (row.length !== 0) {
@@ -392,23 +376,22 @@ export default class Dept extends PureComponent {
         this.handleSelectRows([])
 
     }
+    //控制弹出框的显示状态
+    handleDeptModalVisible = (flag) => {
+        let visible = !!flag
+        this.setState({
+            modalDeptVisible: visible,
+        });
+
+        // 页面关闭了要重新查询
+        !visible && this.handlerSearchDepartment();
+    }
     //点击勾选方法
     handleSelectRows = (record, selected, selectedRows) => {
         this.setState({
             selectedRows: record,
             departmentEditData: record[record.length - 1],
         });
-    }
-
-    //控制弹出框的显示状态
-    handleModalVisible = (flag) => {
-        let visible = !!flag
-        this.setState({
-            modalVisible: visible,
-        });
-
-        // 页面关闭了要重新查询
-        !visible && this.handlerSearchDepartment();
     }
     //获取人员表格数据
     getStaffData = (params) => {
@@ -418,13 +401,100 @@ export default class Dept extends PureComponent {
             this.standardTable.handleSearch({current: 1, pageSize: 10, ...params})
         });
     }
+    //新增人员
+    handleStaffAdd = () => {
+        if (this.state.departmentEditData.length !== 0) {
+            this.setState({staffEditData: []})
+            this.handleStaffModalVisible(true);
+        } else {
+            const ref = info({
+                title: '请先选择要新增人员的所属部门',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
+    }
+    //修改人员
+    handleStaffEdit = () => {
+        if (this.state.departmentEditData.length !== 0) {
+            if (this.state.staffData.length !== 0) {
+                this.setState({
+                    staffEditData: this.state.staffData,
+                    thisTime: 'M',
+                }, () => {
+                    this.handleStaffModalVisible(true);
+                });
+            } else {
+                const ref = info({
+                    title: '请先选择要修改的人员',
+                    content: '',
+                    okText: '确定',
+                    cancelText: '取消',
+                    onOk: () => {
+                        ref.destroy();
+                    }
+                });
+            }
+        } else {
+            const ref = info({
+                title: '请先选择要修改人员的所属部门',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
+    }
+    //删除人员
+    handleStaffDelete = () => {
+        let row = this.state.selectedStaffIds;
+        if (row.length !== 0) {
+            DeptService.dleDept(row).then(result => {
+                message.success('删除成功');
+                this.getStaffData();
+            });
+        } else {
+            const ref = info({
+                title: '请先选择要删除的部门',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
+        this.handleSelectRows([])
+
+    }
+    //控制弹出框的显示状态
+    handleStaffModalVisible = (flag) => {
+        let visible = !!flag
+        this.setState({
+            modalStaffVisible: visible,
+        });
+
+        // 页面关闭了要重新查询
+        !visible && this.getStaffData();
+    }
     // 获取第三区域的数据
     getThirdData = (data) => {
+        let staffIds = data.map(data => data.id)
+        this.setState({
+            staffData: data,
+            selectedStaffIds: staffIds
+        })
         this.getRoleTree(data)
     }
 
     render() {
-        const {departmentData, modalVisible, domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, columns, formValues} = this.state;
+        const {departmentData, staffEditData, modalDeptVisible, modalStaffVisible, domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, staffColumns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
         return (
             <Layout className='dept'>
@@ -476,9 +546,9 @@ export default class Dept extends PureComponent {
                     </Form>
                     <div className='departmentBtn'>
                         <Button onClick={this.handlerSearchDepartment} type="primary">查询</Button>
-                        <Button onClick={this.handleAdd}>新增</Button>
-                        <Button type="dashed" onClick={this.handleUpdate}>修改</Button>
-                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={this.handleDelete}>
+                        <Button onClick={this.handleDeptAdd}>新增</Button>
+                        <Button type="dashed" onClick={this.handleDeptUpdate}>修改</Button>
+                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={this.handleDeptDelete}>
                             <Button type="danger">删除</Button>
                         </Popconfirm>,
                     </div>
@@ -494,9 +564,9 @@ export default class Dept extends PureComponent {
                     <DeptModal
                         departmentData={departmentData}
                         domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {key: 2, title: '北京'}]}
-                        modalVisible={modalVisible}
+                        modalVisible={modalDeptVisible}
                         thisTime={this.state.thisTime}
-                        handleModalVisible={this.handleModalVisible}
+                        handleModalVisible={this.handleDeptModalVisible}
                     />
                 </Sider>
                 <Layout style={{overflow: 'hidden'}}>
@@ -504,16 +574,30 @@ export default class Dept extends PureComponent {
                         <div>
                             <Tabs type="card">
                                 <TabPane tab="人员管理" key="1">
-                                    <DeptForm getStaffParams={this.getStaffData}/>
+                                    <DeptForm handleAdd={this.handleStaffAdd}
+                                              handleEdit={this.handleStaffEdit}
+                                              handleDelete={this.handleStaffDelete}
+                                              getStaffParams={this.getStaffData}/>
                                     <StandardTable
                                         ref={child => this.standardTable = child}
-                                        rowKey={"iStaffId"}
+                                        rowKey={"id"}
                                         // rowSelection={{selectedRowKeys:[10000]}}
-                                        columns={columns}
+                                        columns={staffColumns}
                                         service={DeptService}
                                         method="getStaffData"
                                         formValues={formValues}
                                         onSelectRow={this.getThirdData}
+                                    />
+                                    <StaffModal
+                                        departmentData={departmentData}
+                                        staffData={staffEditData}
+                                        domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {
+                                            key: 2,
+                                            title: '北京'
+                                        }]}
+                                        modalVisible={modalStaffVisible}
+                                        thisTime={this.state.thisTime}
+                                        handleModalVisible={this.handleStaffModalVisible}
                                     />
                                 </TabPane>
                             </Tabs>
@@ -526,31 +610,39 @@ export default class Dept extends PureComponent {
                                             <Button type="primary">新增</Button>
                                             <Button type="dashed">修改</Button>
                                             <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消"
-                                                        onConfirm={this.handleDelete}>
+                                                        onConfirm={this.handleDeptDelete}>
                                                 <Button type="danger">删除</Button>
                                             </Popconfirm>
                                         </Col>
                                     </Row>
+                                    <Row>
+                                        <Col span={12}>
+                                            <h6 className='departmentH6'>角色树</h6>
+                                            <div style={{'borderRight': '1px solid #ddd'}}>
+                                                <TreeComponent
+                                                    showLine={true}
+                                                    checkable={true}
+                                                    defaultExpandedKeys={['0-0-0']}
+                                                    onSelect={this.onSelectRoleTree}
+                                                    onCheck={this.onSelectRoleTree}
+                                                    treeData={roleTreeData}
+                                                    onLoadData={this.onLoadRoleTreeData}/>
+                                            </div>
+                                        </Col>
+                                        <Col span={12}>
+                                            <h6 className='departmentH6'>权限树</h6>
+                                            <TreeComponent
+                                                showLine={true}
+                                                checkable={true}
+                                                defaultExpandedKeys={['0-0-0']}
+                                                onSelect={this.onSelectAuthorityTree}
+                                                onCheck={this.onSelectAuthorityTree}
+                                                treeData={authorityTreeData}
+                                                onLoadData={this.onLoadAuthorityTreeData}/>
+                                        </Col>
+                                    </Row>
                                 </TabPane>
                                 <TabPane tab="权限" key="2">
-                                    待开发
-                                </TabPane>
-                            </Tabs>
-                            <Row>
-                                <Col span={12}>
-                                    <h6 className='departmentH6'>角色树</h6>
-                                    <div style={{'borderRight': '1px solid #ddd'}}>
-                                        <TreeComponent
-                                            showLine={true}
-                                            checkable={true}
-                                            defaultExpandedKeys={['0-0-0']}
-                                            onSelect={this.onSelectRoleTree}
-                                            onCheck={this.onSelectRoleTree}
-                                            treeData={roleTreeData}
-                                            onLoadData={this.onLoadRoleTreeData}/>
-                                    </div>
-                                </Col>
-                                <Col span={12}>
                                     <h6 className='departmentH6'>权限树</h6>
                                     <TreeComponent
                                         showLine={true}
@@ -560,8 +652,8 @@ export default class Dept extends PureComponent {
                                         onCheck={this.onSelectAuthorityTree}
                                         treeData={authorityTreeData}
                                         onLoadData={this.onLoadAuthorityTreeData}/>
-                                </Col>
-                            </Row>
+                                </TabPane>
+                            </Tabs>
                         </div>
                     </Content>
                 </Layout>

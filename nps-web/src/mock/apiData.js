@@ -278,130 +278,67 @@ Mock.mock('mock/dept/ediDept', (params) => {
     })
 })
 
-//编辑部门
+//获取人员信息
 Mock.mock('mock/dept/getStaffData', (params) => {
     let params1 = JSON.parse(params.body);
     return Mock.mock({
-        'dataList': [
+        'dataList|10': [
             {
-            "rowId": "1",
-            "iRecCount": "3",
-            "totalCount": "3",
-            "RN": "1",
-            "dBirthday": null,
-            "dEntryDate": null,
-            "sOutEmail": null,
-            "cCDMA": "18122038821",
-            "sPHS": null,
-            "iKnowledge": "0",
-            "iPubAccount": "2",
-            "sRemark": null,
-            "dAvailBeginDate": "2012-10-01 00:00:00.0",
-            "dAvailEndDate": "2040-10-19 23:59:59.0",
-            "iStaffId": "211033",
-            "iDeptId": "2306575",
-            "iTitleId": "-1",
-            "iDomainId": "1010001",
-            "sStaffNo": "1",
-            "sStaffName": "nocjktest",
-            "sTelphone": "18122038821",
-            "sMobile": "18122038821",
-            "sInEmail": null,
-            "sFaxCode": null,
-            "sDispName": "/常规/集团NOC/集团北京NOC/",
-            "sDomainName": "集团",
-            "sStaffAccount": "nocjktest",
-            "iSex": "1",
-            "sValid": "有效",
-            "sSex": "男",
-            "iDelFlag": "正常",
-            "sTitleName": null,
-            "iIsSynch": "0",
-            "iLeaderId": null,
-            "sLeaderName": null,
-            "sLeaderAccount": null
-        }, {
-            "rowId": "2",
-            "iRecCount": "3",
-            "totalCount": "3",
-            "RN": "2",
-            "dBirthday": null,
-            "dEntryDate": null,
-            "sOutEmail": null,
-            "cCDMA": null,
-            "sPHS": null,
-            "iKnowledge": "0",
-            "iPubAccount": "2",
-            "sRemark": null,
-            "dAvailBeginDate": "2018-08-01 00:00:00.0",
-            "dAvailEndDate": "2018-08-24 23:59:59.0",
-            "iStaffId": "1748300853",
-            "iDeptId": "412530",
-            "iTitleId": "-1",
-            "iDomainId": "1010001",
-            "sStaffNo": "123",
-            "sStaffName": "123",
-            "sTelphone": null,
-            "sMobile": null,
-            "sInEmail": null,
-            "sFaxCode": null,
-            "sDispName": "/常规/",
-            "sDomainName": "集团",
-            "sStaffAccount": "123",
-            "iSex": "1",
-            "sValid": "有效",
-            "sSex": "男",
-            "iDelFlag": "待修改密码",
-            "sTitleName": null,
-            "iIsSynch": null,
-            "iLeaderId": null,
-            "sLeaderName": null,
-            "sLeaderAccount": null
-        }, {
-            "rowId": "3",
-            "iRecCount": "3",
-            "totalCount": "3",
-            "RN": "3",
-            "dBirthday": null,
-            "dEntryDate": null,
-            "sOutEmail": null,
-            "cCDMA": null,
-            "sPHS": null,
-            "iKnowledge": "0",
-            "iPubAccount": "2",
-            "sRemark": null,
-            "dAvailBeginDate": "2018-07-03 00:00:00.0",
-            "dAvailEndDate": "2018-07-31 23:59:59.0",
-            "iStaffId": "1748300840",
-            "iDeptId": "412530",
-            "iTitleId": "1748300843",
-            "iDomainId": "1010001",
-            "sStaffNo": "1314",
-            "sStaffName": "李亚会",
-            "sTelphone": null,
-            "sMobile": null,
-            "sInEmail": null,
-            "sFaxCode": null,
-            "sDispName": "/常规/",
-            "sDomainName": "集团",
-            "sStaffAccount": "lyh",
-            "iSex": "1",
-            "sValid": "失效",
-            "sSex": "男",
-            "iDelFlag": "待修改密码",
-            "sTitleName": "牛逼的职位",
-            "iIsSynch": null,
-            "iLeaderId": null,
-            "sLeaderName": null,
-            "sLeaderAccount": null
-        }],
-        'pageInfo':{
-            'totalRow':'@integer(1,500)',
-            'pageNum':10,
-            'pageIndex':'@integer(1,50)'
+                "account": "@integer(100000,200000)",
+                "cellphone": /^((13[0-9])|(15([0-3]|[5-9]))|(18[0,5-9]))-\d{4}-\d{4}$/,
+                "createdAt": "@date",
+                "createdBy": "@cname",
+                "deptId": '@integer(1,9999999)',
+                "email": "@email",
+                "id": '@integer(1,9999999)',
+                "identityCard": /\d{18}/,
+                "modifiedAt": "@date",
+                "modifiedBy": "@cname",
+                "name": "@cname",
+                "no": /\d{8}/,
+                "password": "@integer(1,9999999)",
+                "remark": "@cparagraph",
+                "sex|1": ['M', 'F'],
+                "state|1":[0,1,2]
+            }
+        ],
+        'pageInfo': {
+            'totalRow': '@integer(1,500)',
+            'pageNum': 10,
+            'pageIndex': params1.current
         }
     })
 })
+//新增人员
+Mock.mock('mock/dept/addStaff', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//删除人员
+Mock.mock('mock/dept/dleStaff', (params) => {
+    let params1 = JSON.parse(params.body);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+//编辑人员
+Mock.mock('mock/dept/ediStaff', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+})
+
 //获取部门页面角色树
 Mock.mock('mock/dept/getRoleTree', (params) => {
     let params1 = JSON.parse(params.body);
@@ -534,20 +471,20 @@ Mock.mock('mock/system/rolesController/qryRolesTree', {
     ]
 })
 //区域管理
-Mock.mock("mock/SystemController/doMain",{
-    "domainData" : [
+Mock.mock("mock/SystemController/doMain", {
+    "domainData": [
         {
             key: 1,
             name: '区域树',
             type: '省',
             id: '',
-            No:'1',
+            No: '1',
             'children': [{
                 key: 11,
                 name: '集团',
                 'type|1': [1, 2, 3],
                 'id|1': [1, 2, 3],
-                No:'2',
+                No: '2',
                 'children|3': [
                     {
                         key: "@natural(1,10000)",
@@ -557,12 +494,12 @@ Mock.mock("mock/SystemController/doMain",{
                         No: "@natural(1,10000)",
                     }],
             }]
-        },{
+        }, {
             key: 12,
             name: '重保域',
             type: '本地网',
             id: 'ZB',
-            No:'5'
+            No: '5'
         }],
 
 })

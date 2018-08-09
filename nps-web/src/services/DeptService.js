@@ -26,9 +26,24 @@ class DeptService {
         var url = 'mock/dept/dleDept';
         return await Http.post(url, param);
     }
-    //删除部门
+    //获取员工数据
     getStaffData = async (param) => {
         var url = 'mock/dept/getStaffData';
+        return await Http.post(url, param);
+    }
+    // 新增员工
+    addStaff = async (param) => {
+        var url = 'mock/dept/addStaff';
+        return await Http.post(url, param);
+    }
+    //修改员工
+    ediStaff = async (param) => {
+        var url = 'mock/dept/ediStaff';
+        return await Http.post(url, param);
+    }
+    //删除员工
+    dleStaff = async (param) => {
+        var url = 'mock/dept/dleStaff';
         return await Http.post(url, param);
     }
     // 获取角色树

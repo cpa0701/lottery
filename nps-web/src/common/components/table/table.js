@@ -118,7 +118,7 @@ class StandardTable extends PureComponent {
                         selectedRowKeys: [dataSource[0][this.props.rowKey]],
                         clickedRowIndex: dataSource[0][this.props.rowKey],
                     });
-                    this.props.onSelectRow(dataSource[0])
+                    this.props.onSelectRow([dataSource[0]])
                 // }
             });
     }
@@ -308,7 +308,7 @@ class StandardTable extends PureComponent {
                             },  // 鼠标移入行
                         }
                     }}
-                    scroll={{x: 2000,y:500}}
+                    scroll={{x: 2000,y:300}}
                     rowClassName={this.rowClassName}
                     dataSource={list}
                     columns={columns}
