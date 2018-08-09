@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.RolePermission;
+import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.RoleQuery;
 
 public interface RoleService {
@@ -22,4 +23,10 @@ public interface RoleService {
 	int deletePermission(RolePermission rolePermission);
 
 	List<Role> findByPermissionId(Long id);
+
+	int addUser(UserRole userRole);
+
+	int deleteUser(UserRole userRole);
+
+	List<Role> findByUserId(Long id);
 }

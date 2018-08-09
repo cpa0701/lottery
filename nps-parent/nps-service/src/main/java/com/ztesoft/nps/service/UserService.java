@@ -3,6 +3,7 @@ package com.ztesoft.nps.service;
 import java.util.List;
 
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.UserQuery;
 
 public interface UserService {
@@ -19,4 +20,10 @@ public interface UserService {
 	User findByNo(String no);
 
 	User update(User user);
+
+	int addRole(UserRole userRole);
+
+	int deleteRole(UserRole userRole);
+
+	List<User> findByRoleId(int pageNum, int pageSize, Long id);
 }

@@ -21,4 +21,6 @@ public interface UserMapper {
 	int update(User user);
 
 	List<User> findByCondition(UserQuery condition);
+
+	List<User> findByRoleId(Long id);
 }

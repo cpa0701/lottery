@@ -16,17 +16,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Permission;
 import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.RoleQuery;
 import com.ztesoft.nps.service.PermissionService;
 import com.ztesoft.nps.service.RoleService;
+import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
@@ -38,6 +42,9 @@ public class RoleController {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private HttpSession session;
@@ -144,6 +151,60 @@ public class RoleController {
 		RolePermission rp = new RolePermission(rid, pid);
 
 		roleService.deletePermission(rp);
+
+		return Result.success();
+	}
+
+	@GetMapping(value = "/{id}/users")
+	@ApiOperation(value = "查询角色关联的用户", notes = "查询角色关联的用户")
+	public Result<PageInfo<User>> findRoleUser(
+			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
+			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+		Role role = roleService.findById(id);
+		if (role == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<User> users = userService.findByRoleId(pageNum, pageSize, id);
+		PageInfo<User> page = new PageInfo<User>(users);
+		return Result.success(page);
+	}
+
+	@PostMapping(value = "/{id}/users")
+	@ApiOperation(value = "为角色关联用户", notes = "为角色关联用户")
+	public Result<Object> addUser(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
+			@RequestBody UserRole userRole) {
+		Role role = roleService.findById(id);
+		if (role == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		User user = userService.findById(userRole.getUserId());
+		if (user == null) {
+			throw new NpsObjectNotFoundException(userRole.getUserId());
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		userRole.setCreatedBy(currentUser.getAccount());
+		userRole.setModifiedBy(currentUser.getAccount());
+
+		userRole.setRoleId(id);
+
+		roleService.addUser(userRole);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{rid}/users/{uid}")
+	@ApiOperation(value = "删除角色关联的用户", notes = "删除角色关联的用户")
+	public Result<Object> deleteUser(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long uid) {
+		UserRole ur = new UserRole(uid, rid);
+
+		roleService.deleteUser(ur);
 
 		return Result.success();
 	}

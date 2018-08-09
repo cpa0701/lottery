@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.ztesoft.nps.mapper.UserMapper;
+import com.ztesoft.nps.mapper.UserRoleMapper;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.UserQuery;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.PasswordUtils;
@@ -17,6 +19,9 @@ import com.ztesoft.nps.utils.PasswordUtils;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private UserRoleMapper userRoleMapper;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -72,6 +77,23 @@ public class UserServiceImpl implements UserService {
 		PageHelper.startPage(pageNum, pageSize);
 
 		return userMapper.findByCondition(condition);
+	}
+
+	@Override
+	public int addRole(UserRole userRole) {
+		return userRoleMapper.addRole(userRole);
+	}
+
+	@Override
+	public int deleteRole(UserRole userRole) {
+		return userRoleMapper.delete(userRole);
+	}
+
+	@Override
+	public List<User> findByRoleId(int pageNum, int pageSize, Long id) {
+		PageHelper.startPage(pageNum, pageSize);
+
+		return userMapper.findByRoleId(id);
 	}
 
 }

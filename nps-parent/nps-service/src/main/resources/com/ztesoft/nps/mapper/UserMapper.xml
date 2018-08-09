@@ -2,40 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ztesoft.nps.mapper.UserMapper" >
   <resultMap id="BaseResultMap" type="User" >
-    <id column="id" property="id" />
-    <result column="no" property="no" />
-    <result column="account" property="account" />
-    <result column="name" property="name" />
-    <result column="sex" property="sex" />
-    <result column="cellphone" property="cellphone" />
-    <result column="email" property="email" />
-    <result column="identity_card" property="identityCard" />
-    <result column="status" property="status" />
-    <result column="remark" property="remark" />
-    <result column="password" property="password" />
-    <result column="salt" property="salt" />
-    <result column="dept_id" property="deptId" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_at" property="createdAt" />
-    <result column="modified_by" property="modifiedBy" />
-    <result column="modified_at" property="modifiedAt" />
+    <id column="u_id" property="id" />
+    <result column="u_no" property="no" />
+    <result column="u_account" property="account" />
+    <result column="u_name" property="name" />
+    <result column="u_sex" property="sex" />
+    <result column="u_cellphone" property="cellphone" />
+    <result column="u_email" property="email" />
+    <result column="u_identity_card" property="identityCard" />
+    <result column="u_status" property="status" />
+    <result column="u_remark" property="remark" />
+    <result column="u_password" property="password" />
+    <result column="u_salt" property="salt" />
+    <result column="u_dept_id" property="deptId" />
+    <result column="u_created_by" property="createdBy" />
+    <result column="u_created_at" property="createdAt" />
+    <result column="u_modified_by" property="modifiedBy" />
+    <result column="u_modified_at" property="modifiedAt" />
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, no, account, name, sex, cellphone, email, identity_card, status, remark, password, salt, dept_id, created_by, created_at, modified_by, modified_at
+    u.id u_id, u.no u_no, u.account u_account, u.name u_name, u.sex u_sex, 
+    u.cellphone u_cellphone, u.email u_email, u.identity_card u_identity_card, 
+    u.status u_status, u.remark u_remark, u.password u_password, u.salt u_salt, 
+    u.dept_id u_dept_id, u.created_by u_created_by, u.created_at u_created_at, 
+    u.modified_by u_modified_by, u.modified_at u_modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from users
+    from users u
     where id = #{id}
   </select>
   
   <select id="findByDeptId" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from users
+    from users u
     where dept_id = #{deptId}
   </select>
   
@@ -134,14 +138,14 @@
   <select id="findByAccount" resultMap="BaseResultMap" parameterType="String" >
     select 
     <include refid="Base_Column_List" />
-    from users
+    from users u
     where account = #{account}
   </select>
   
   <select id="findByNo" resultMap="BaseResultMap" parameterType="String" >
     select 
     <include refid="Base_Column_List" />
-    from users
+    from users u
     where no = #{no}
   </select>
   
@@ -194,7 +198,7 @@
 	<select id="findByCondition" resultMap="BaseResultMap" parameterType="UserQuery" >
     select 
     <include refid="Base_Column_List" />
-    from users
+    from users u
     <where>
     	<if test="no != null and no != ''">
     		and no like concat('%', #{no}, '%')
@@ -224,6 +228,14 @@
     		and dept_id = #{deptId} 
     	</if>
     </where>
+  </select>
+  
+  <select id="findByRoleId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from users u inner join user_role ur 
+    on u.id = ur.user_id
+    where ur.role_id = #{id}
   </select>
 
 </mapper>

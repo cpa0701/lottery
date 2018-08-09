@@ -17,4 +17,6 @@ public interface RoleMapper {
 	List<Role> findByCondition(RoleQuery condition);
 
 	List<Role> findByPermissionId(Long id);
+
+	List<Role> findByUserId(Long id);
 }

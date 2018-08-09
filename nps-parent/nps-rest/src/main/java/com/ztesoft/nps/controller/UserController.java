@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +23,11 @@ import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.Status;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.UserQuery;
+import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
 
@@ -33,6 +37,9 @@ import com.ztesoft.nps.utils.UserUtils;
 public class UserController {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RoleService roleService;
 
 	@Autowired
 	private HttpSession session;
@@ -114,5 +121,56 @@ public class UserController {
 		User u = userService.update(oldUser);
 
 		return Result.success(u);
+	}
+
+	@GetMapping(value = "/{id}/roles")
+	@ApiOperation(value = "查询用户的角色", notes = "查询用户的角色")
+	public Result<List<Role>> findUserRole(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
+		User user = userService.findById(id);
+		if (user == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Role> roles = roleService.findByUserId(id);
+		return Result.success(roles);
+	}
+
+	@PostMapping(value = "/{id}/roles")
+	@ApiOperation(value = "为用户增加角色", notes = "为用户增加角色")
+	public Result<Object> addRole(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id,
+			@RequestBody UserRole userRole) {
+		User user = userService.findById(id);
+		if (user == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		Role role = roleService.findById(userRole.getRoleId());
+		if (role == null) {
+			throw new NpsObjectNotFoundException(userRole.getRoleId());
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		userRole.setCreatedBy(currentUser.getAccount());
+		userRole.setModifiedBy(currentUser.getAccount());
+
+		userRole.setUserId(id);
+
+		userService.addRole(userRole);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{uid}/roles/{rid}")
+	@ApiOperation(value = "删除用户的角色", notes = "删除用户的角色")
+	public Result<Object> deleteUser(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long uid) {
+		UserRole ur = new UserRole(uid, rid);
+
+		userService.deleteRole(ur);
+
+		return Result.success();
 	}
 }
