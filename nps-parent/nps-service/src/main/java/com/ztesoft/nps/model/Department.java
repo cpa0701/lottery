@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-import com.ztesoft.nps.common.Status;
-
 @ApiModel
 public class Department {
 	/**
@@ -76,7 +74,7 @@ public class Department {
 	private Date modifiedAt;
 
 	public Department() {
-		this.status = Status.VALID.getCode();
+
 	}
 
 	public Long getId() {

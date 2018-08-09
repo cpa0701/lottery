@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
@@ -26,6 +25,7 @@ import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Department;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.DepartmentQuery;
 import com.ztesoft.nps.service.DepartmentService;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
@@ -45,12 +45,8 @@ public class DepartmentController {
 
 	@GetMapping
 	@ApiOperation(value = "查询部门列表", notes = "查询部门列表")
-	public Result<List<Department>> findAll(
-			@ApiParam(value = "父部门ID") @RequestParam(required = false) Long parentId,
-			@ApiParam(value = "区域ID") @RequestParam(required = false) Long regionId,
-			@ApiParam(value = "部门名称") @RequestParam(required = false) String name) {
-		List<Department> depts = departmentService.findAll(parentId, regionId,
-				name);
+	public Result<List<Department>> findByCondition(DepartmentQuery condition) {
+		List<Department> depts = departmentService.findByCondition(condition);
 
 		return Result.success(depts);
 	}
@@ -62,6 +58,7 @@ public class DepartmentController {
 		dept.setCreatedBy(currentUser.getAccount());
 		dept.setModifiedBy(currentUser.getAccount());
 
+		dept.setStatus(Status.VALID.getCode());
 		Department d = departmentService.add(dept);
 
 		return Result.success(d);
