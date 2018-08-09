@@ -28,7 +28,7 @@ public class Region {
 	/**
 	 * 区域类型
 	 */
-	@ApiModelProperty("区域类型")
+	@ApiModelProperty("区域类型(1:省 2:本地网 3:县市 4:扇区 5:自定义)")
 	private Integer type;
 
 	/**

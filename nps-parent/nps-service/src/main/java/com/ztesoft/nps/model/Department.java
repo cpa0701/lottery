@@ -42,13 +42,13 @@ public class Department {
 	/**
 	 * 部门类型
 	 */
-	@ApiModelProperty("部门类型")
+	@ApiModelProperty("部门类型(1:常规部门 2:代维部门 3:团队)")
 	private Integer type;
 
 	/**
 	 * 部门级别
 	 */
-	@ApiModelProperty("部门级别")
+	@ApiModelProperty("部门级别(1:中心 2:科室 3:班组)")
 	private Integer level;
 
 	/**

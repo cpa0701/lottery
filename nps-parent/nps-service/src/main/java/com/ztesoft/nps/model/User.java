@@ -36,7 +36,7 @@ public class User {
 	/**
 	 * 性别
 	 */
-	@ApiModelProperty("性别")
+	@ApiModelProperty("性别(M:男 F:女)")
 	private String sex;
 
 	/**
