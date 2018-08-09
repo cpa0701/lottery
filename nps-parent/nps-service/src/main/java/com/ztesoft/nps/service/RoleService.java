@@ -3,6 +3,7 @@ package com.ztesoft.nps.service;
 import java.util.List;
 
 import com.ztesoft.nps.model.Role;
+import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.query.RoleQuery;
 
 public interface RoleService {
@@ -15,4 +16,10 @@ public interface RoleService {
 	Role update(Role role);
 
 	List<Role> findByCondition(RoleQuery condition);
+
+	int addPermission(RolePermission rolePermission);
+
+	int deletePermission(RolePermission rolePermission);
+
+	List<Role> findByPermissionId(Long id);
 }

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.mapper.PermissionMapper;
+import com.ztesoft.nps.mapper.RolePermissionMapper;
 import com.ztesoft.nps.model.Permission;
+import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.query.PermissionQuery;
 import com.ztesoft.nps.service.PermissionService;
 
@@ -15,6 +17,9 @@ import com.ztesoft.nps.service.PermissionService;
 public class PermissionServiceImpl implements PermissionService {
 	@Autowired
 	private PermissionMapper permissionMapper;
+
+	@Autowired
+	private RolePermissionMapper rolePermissionMapper;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -40,6 +45,21 @@ public class PermissionServiceImpl implements PermissionService {
 	@Override
 	public List<Permission> findByCondition(PermissionQuery condition) {
 		return permissionMapper.findByCondition(condition);
+	}
+
+	@Override
+	public List<Permission> findByRoleId(Long id) {
+		return permissionMapper.findByRoleId(id);
+	}
+
+	@Override
+	public int addRole(RolePermission rolePermission) {
+		return rolePermissionMapper.addRole(rolePermission);
+	}
+
+	@Override
+	public int deleteRole(RolePermission rolePermission) {
+		return rolePermissionMapper.delete(rolePermission);
 	}
 
 }

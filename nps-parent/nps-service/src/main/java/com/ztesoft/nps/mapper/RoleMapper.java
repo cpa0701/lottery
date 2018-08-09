@@ -15,4 +15,6 @@ public interface RoleMapper {
 	int update(Role role);
 
 	List<Role> findByCondition(RoleQuery condition);
+
+	List<Role> findByPermissionId(Long id);
 }

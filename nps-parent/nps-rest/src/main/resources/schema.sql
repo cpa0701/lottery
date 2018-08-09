@@ -80,3 +80,13 @@ CREATE TABLE `permissions`  (
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) engine=innodb charset=utf8mb4 comment '权限';
+
+CREATE TABLE `role_permission`  (
+  `role_id` bigint UNSIGNED NOT NULL COMMENT '角色ID',
+  `permission_id` bigint UNSIGNED NOT NULL COMMENT '权限ID',
+  `created_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建人',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `modified_by` varchar(64) NOT NULL DEFAULT '' COMMENT '修改人',
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`role_id`, `permission_id`)
+) engine=innodb charset=utf8mb4 comment '角色权限';

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.mapper.RoleMapper;
+import com.ztesoft.nps.mapper.RolePermissionMapper;
 import com.ztesoft.nps.model.Role;
+import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.query.RoleQuery;
 import com.ztesoft.nps.service.RoleService;
 
@@ -15,6 +17,9 @@ import com.ztesoft.nps.service.RoleService;
 public class RoleServiceImpl implements RoleService {
 	@Autowired
 	private RoleMapper roleMapper;
+
+	@Autowired
+	private RolePermissionMapper rolePermissionMapper;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -35,15 +40,35 @@ public class RoleServiceImpl implements RoleService {
 		return roleMapper.findByParentId(id);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Role update(Role role) {
 		roleMapper.update(role);
 		return roleMapper.findById(role.getId());
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Role> findByCondition(RoleQuery condition) {
 		return roleMapper.findByCondition(condition);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int addPermission(RolePermission rolePermission) {
+		return rolePermissionMapper.addPermission(rolePermission);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int deletePermission(RolePermission rolePermission) {
+		return rolePermissionMapper.delete(rolePermission);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Role> findByPermissionId(Long id) {
+		return roleMapper.findByPermissionId(id);
 	}
 
 }

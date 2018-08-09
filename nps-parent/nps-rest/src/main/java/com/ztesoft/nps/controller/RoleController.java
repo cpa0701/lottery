@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.model.Permission;
 import com.ztesoft.nps.model.Role;
+import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.query.RoleQuery;
+import com.ztesoft.nps.service.PermissionService;
 import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.utils.UserUtils;
 
@@ -31,6 +35,9 @@ import com.ztesoft.nps.utils.UserUtils;
 public class RoleController {
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private PermissionService permissionService;
 
 	@Autowired
 	private HttpSession session;
@@ -86,5 +93,58 @@ public class RoleController {
 		Role r = roleService.update(oldRole);
 
 		return Result.success(r);
+	}
+
+	@GetMapping(value = "/{id}/permissions")
+	@ApiOperation(value = "查询角色的权限", notes = "查询角色的权限")
+	public Result<List<Permission>> findRolePermission(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+		Role role = roleService.findById(id);
+		if (role == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Permission> permissions = permissionService.findByRoleId(id);
+		return Result.success(permissions);
+	}
+
+	@PostMapping(value = "/{id}/permissions")
+	@ApiOperation(value = "为角色增加权限", notes = "为角色增加权限")
+	public Result<Object> addPermission(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
+			@RequestBody RolePermission rolePermission) {
+		Role role = roleService.findById(id);
+		if (role == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		Permission permission = permissionService.findById(rolePermission
+				.getPermissionId());
+		if (permission == null) {
+			throw new NpsObjectNotFoundException(
+					rolePermission.getPermissionId());
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		rolePermission.setCreatedBy(currentUser.getAccount());
+		rolePermission.setModifiedBy(currentUser.getAccount());
+
+		rolePermission.setRoleId(id);
+
+		roleService.addPermission(rolePermission);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{rid}/permissions/{pid}")
+	@ApiOperation(value = "删除角色的权限", notes = "删除角色的权限")
+	public Result<Object> deletePermission(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
+			@ApiParam(value = "权限ID", required = true) @PathVariable Long pid) {
+		RolePermission rp = new RolePermission(rid, pid);
+
+		roleService.deletePermission(rp);
+
+		return Result.success();
 	}
 }
