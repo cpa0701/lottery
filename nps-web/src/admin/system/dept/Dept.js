@@ -452,6 +452,15 @@ export default class Dept extends PureComponent {
             });
         }
     }
+    // 双击表格查看人员信息
+    handelViewStaff=(data)=>{
+        this.setState({
+            staffEditData: data,
+            thisTime: 'V',
+        }, () => {
+            this.handleStaffModalVisible(true);
+        });
+    }
     //删除人员
     handleStaffDelete = () => {
         let row = this.state.selectedStaffIds;
@@ -590,6 +599,7 @@ export default class Dept extends PureComponent {
                                         columns={staffColumns}
                                         service={DeptService}
                                         method="getStaffData"
+                                        onDoubleClick={this.handelViewStaff}
                                         formValues={formValues}
                                         onSelectRow={this.getThirdData}
                                     />
