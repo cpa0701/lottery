@@ -5,86 +5,73 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
+/**
+ * 用户角色
+ * 
+ * @author huyao
+ *
+ */
 @ApiModel
-public class Role {
+public class UserRole {
+	/**
+	 * 用户ID
+	 */
+	@ApiModelProperty("用户ID")
+	private Long userId;
+
 	/**
 	 * 角色ID
 	 */
 	@ApiModelProperty("角色ID")
-	private Long id;
-
-	/**
-	 * 角色名称
-	 */
-	@ApiModelProperty("角色名称")
-	private String name;
-
-	/**
-	 * 角色描述
-	 */
-	@ApiModelProperty("角色描述")
-	private String description;
-
-	/**
-	 * 父角色ID
-	 */
-	@ApiModelProperty("父角色ID")
-	private Long parentId;
+	private Long roleId;
 
 	/**
 	 * 创建人
 	 */
-	@ApiModelProperty("创建人")
+	@ApiModelProperty(value = "创建人", hidden = true)
 	private String createdBy;
 
 	/**
 	 * 创建时间
 	 */
-	@ApiModelProperty("创建时间")
+	@ApiModelProperty(value = "创建时间", hidden = true)
 	private Date createdAt;
 
 	/**
 	 * 修改人
 	 */
-	@ApiModelProperty("修改人")
+	@ApiModelProperty(value = "修改人", hidden = true)
 	private String modifiedBy;
 
 	/**
 	 * 修改时间
 	 */
-	@ApiModelProperty("修改时间")
+	@ApiModelProperty(value = "修改时间", hidden = true)
 	private Date modifiedAt;
 
-	public Long getId() {
-		return id;
+	public UserRole() {
+
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public UserRole(Long userId, Long roleId) {
+		this.roleId = roleId;
+		this.userId = userId;
 	}
 
-	public String getName() {
-		return name;
+	public Long getRoleId() {
+		return roleId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
 	}
 
-	public String getDescription() {
-		return description;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Long getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public String getCreatedBy() {

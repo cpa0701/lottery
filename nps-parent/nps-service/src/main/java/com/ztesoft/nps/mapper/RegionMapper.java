@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ztesoft.nps.model.Region;
+import com.ztesoft.nps.query.RegionQuery;
 
 public interface RegionMapper {
 	int add(Region region);
@@ -20,4 +21,6 @@ public interface RegionMapper {
 	Region findByAreaId(@Param("areaId") Long areaId);
 
 	List<Region> findByParentId(Long id);
+
+	List<Region> findByCondition(RegionQuery condition);
 }

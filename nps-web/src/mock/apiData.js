@@ -526,3 +526,47 @@ Mock.mock('mock/system/rolesController/getUserDate', {
         }
     ]
 })
+//权限配置管理
+Mock.mock("mock/systemController/Authority",{
+    "authorityData":[
+        {   key:0,
+            name:'权限树',
+            url:'',
+            icon:'qwerer',
+            describe:'权限树',
+            No:1,
+            type:'菜单',
+            area:'全局',
+            activate:'是',
+            sensitive:'',
+            'children|7':[
+                {
+                    key: "@natural(1,10000)",
+                    name:'@cname',
+                    url:'@url',
+                    icon:'@cname',
+                    describe:'@cword(5)',
+                    No: "@natural(1,10000)",
+                    'type|1':['菜单','其他'],
+                    'area|1':['全局','信管系统','重保','统计分析'],
+                    'activate|1':['是','否'],
+                    sensitive:'',
+                    'children|2':[
+                        {
+                            key: "@natural(1,10000)",
+                            name:'@cname',
+                            url:'@url',
+                            icon:'@cname',
+                            describe:'@cword(5)',
+                            No: "@natural(1,10000)",
+                            'type|1':['菜单','其他'],
+                            'area|1':['全局','信管系统','重保','统计分析'],
+                            'activate|1':['是','否'],
+                            sensitive:'',
+                        }
+                    ]
+                }
+            ]
+        },
+    ]
+})

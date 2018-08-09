@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.Status;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.model.UserRole;
+import com.ztesoft.nps.query.UserQuery;
+import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
 
@@ -33,20 +39,24 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
+	private RoleService roleService;
+
+	@Autowired
 	private HttpSession session;
 
 	@GetMapping
-	@ApiOperation(value = "根据部门ID查询用户", notes = "根据部门ID查询用户")
-	public Result<PageInfo<User>> findByDeptId(
+	@ApiOperation(value = "查询用户列表", notes = "查询用户列表")
+	public Result<PageInfo<User>> findByCondition(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
 			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@ApiParam(value = "部门ID") @RequestParam(required = true, defaultValue = "0") Long deptId) {
-		List<User> users = userService.findByDeptId(pageNum, pageSize, deptId);
+			UserQuery condition) {
+		List<User> users = userService.findByCondition(pageNum, pageSize,
+				condition);
 
 		// 清空密码和盐值
-		users.stream().forEach(user -> {
-			user.setPassword(null);
-			user.setSalt(null);
+		users.stream().forEach(u -> {
+			u.setPassword(null);
+			u.setSalt(null);
 		});
 
 		PageInfo<User> page = new PageInfo<User>(users);
@@ -59,6 +69,8 @@ public class UserController {
 		User currentUser = UserUtils.getUser(session);
 		user.setCreatedBy(currentUser.getAccount());
 		user.setModifiedBy(currentUser.getAccount());
+
+		user.setStatus(Status.VALID.getCode());
 
 		userService.add(user);
 
@@ -109,5 +121,56 @@ public class UserController {
 		User u = userService.update(oldUser);
 
 		return Result.success(u);
+	}
+
+	@GetMapping(value = "/{id}/roles")
+	@ApiOperation(value = "查询用户的角色", notes = "查询用户的角色")
+	public Result<List<Role>> findUserRole(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
+		User user = userService.findById(id);
+		if (user == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Role> roles = roleService.findByUserId(id);
+		return Result.success(roles);
+	}
+
+	@PostMapping(value = "/{id}/roles")
+	@ApiOperation(value = "为用户增加角色", notes = "为用户增加角色")
+	public Result<Object> addRole(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id,
+			@RequestBody UserRole userRole) {
+		User user = userService.findById(id);
+		if (user == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		Role role = roleService.findById(userRole.getRoleId());
+		if (role == null) {
+			throw new NpsObjectNotFoundException(userRole.getRoleId());
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		userRole.setCreatedBy(currentUser.getAccount());
+		userRole.setModifiedBy(currentUser.getAccount());
+
+		userRole.setUserId(id);
+
+		userService.addRole(userRole);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{uid}/roles/{rid}")
+	@ApiOperation(value = "删除用户的角色", notes = "删除用户的角色")
+	public Result<Object> deleteUser(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long uid) {
+		UserRole ur = new UserRole(uid, rid);
+
+		userService.deleteRole(ur);
+
+		return Result.success();
 	}
 }

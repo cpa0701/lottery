@@ -3,6 +3,7 @@ package com.ztesoft.nps.service;
 import java.util.List;
 
 import com.ztesoft.nps.model.Region;
+import com.ztesoft.nps.query.RegionQuery;
 
 public interface RegionService {
 	Region add(Region region);
@@ -18,4 +19,6 @@ public interface RegionService {
 	Region findByAreaId(Long areaId);
 
 	List<Region> findByParentId(Long id);
+
+	List<Region> findByCondition(RegionQuery condition);
 }
