@@ -16,6 +16,7 @@ import "./Dept.less"
 import DeptService from "../../../services/DeptService"
 import DeptModal from "./DeptModal"
 import StaffModal from "./StaffModal"
+import ChangeDeptModal from "./ChangeDeptModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/table';
 import TreeComponent from '../../../common/components/tree/tree';
@@ -38,6 +39,7 @@ export default class Dept extends PureComponent {
         authorityTreeData: [],
         domainTreeDate: [],
         departmentData: [],
+        deptTreeForChangeData: [],
         departmentDataTree: [],
         staffData: [],
         staffEditData: [],
@@ -46,6 +48,7 @@ export default class Dept extends PureComponent {
         departmentEditData: null,
         modalStaffVisible: false,
         modalDeptVisible: false,
+        modalChangeDeptVisible: false,
         staffColumns: [
             {
                 title: '登录账号',
@@ -107,12 +110,12 @@ export default class Dept extends PureComponent {
 
     componentWillMount() {
         let a = JSON.stringify({
-            "IDOMAINID": 10000,
+            "IDOMAINID": '10000',
             "ISEQ": 1,
             "SDOMAINNAME": "全国",
             "children": [
                 {
-                    "IDOMAINID": 20000,
+                    "IDOMAINID": '20000',
                     "ISEQ": 1,
                     "SDOMAINNAME": "北京",
                     "SDOMAINCODE": "beijing",
@@ -121,11 +124,11 @@ export default class Dept extends PureComponent {
                     "IDOMAINTYPE": 1
                 },
                 {
-                    "IDOMAINID": 30000,
+                    "IDOMAINID": '30000',
                     "ISEQ": 1,
                     "SDOMAINNAME": "湖南",
                     "children": [{
-                        "IDOMAINID": 31000,
+                        "IDOMAINID": '31000',
                         "ISEQ": 1,
                         "SDOMAINNAME": "长沙",
                         "SDOMAINCODE": "changsha",
@@ -488,7 +491,7 @@ export default class Dept extends PureComponent {
         this.handleSelectRows([])
 
     }
-    //控制弹出框的显示状态
+    //控制人员弹出框的显示状态
     handleStaffModalVisible = (flag) => {
         let visible = !!flag
         this.setState({
@@ -498,6 +501,36 @@ export default class Dept extends PureComponent {
         // 页面关闭了要重新查询
         !visible && this.getStaffData();
     }
+    //更改部门
+    handleChangeDept = () => {
+        if (this.state.staffData.length !== 0) {
+            this.setState({
+                staffEditData: this.state.staffData,
+                modalChangeDeptVisible: true,
+            });
+        } else {
+            const ref = info({
+                title: '请先选择要修改的人员',
+                content: '',
+                okText: '确定',
+                cancelText: '取消',
+                onOk: () => {
+                    ref.destroy();
+                }
+            });
+        }
+    }
+    //控制更改部门弹出框显示状态
+    handleChangeDeptVisible=(flag)=>{
+        let visible = !!flag
+        this.setState({
+            modalChangeDeptVisible: visible,
+        });
+
+        // 页面关闭了要重新查询
+        !visible && this.getStaffData();
+    }
+
     // 获取第三区域的数据
     getThirdData = (data) => {
         let staffIds = [];
@@ -505,15 +538,25 @@ export default class Dept extends PureComponent {
             data = data[data.length - 1];
             staffIds = (data.id ? data.id : []);
         }
-        this.setState({
-            staffData: data,
-            selectedStaffIds: staffIds
-        })
+        DeptService.getDeptTree(data.deptId).then(result => {
+            let treeData = result.treeData.map(item => {
+                item.title = item.sdeptName;
+                item.key = item.ideptId
+                item.isLeaf = !item.childCount;
+                return item;
+            })
+            this.setState({
+                staffData: data,
+                selectedStaffIds: staffIds,
+                deptTreeForChangeData: treeData,
+            })
+        });
+
         this.getRoleTree(data)
     }
 
     render() {
-        const {departmentData, staffEditData, modalDeptVisible, modalStaffVisible, domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, staffColumns, formValues} = this.state;
+        const {departmentData,deptTreeForChangeData, staffEditData, modalDeptVisible, modalStaffVisible, modalChangeDeptVisible,domainTreeDate, deptTreeData, roleTreeData, authorityTreeData, staffColumns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
         return (
             <Layout className='dept'>
@@ -596,6 +639,7 @@ export default class Dept extends PureComponent {
                                     <DeptForm handleAdd={this.handleStaffAdd}
                                               handleEdit={this.handleStaffEdit}
                                               handleDelete={this.handleStaffDelete}
+                                              handleChangeDept={this.handleChangeDept}
                                               getStaffParams={this.getStaffData}/>
                                     <StandardTable
                                         ref={child => this.standardTable = child}
@@ -614,6 +658,13 @@ export default class Dept extends PureComponent {
                                         modalVisible={modalStaffVisible}
                                         thisTime={this.state.thisTime}
                                         handleModalVisible={this.handleStaffModalVisible}
+                                    />
+                                    <ChangeDeptModal
+                                        staffData={staffEditData}
+                                        domainTreeDate={domainTreeDate}
+                                        deptTreeForChangeData={deptTreeForChangeData}
+                                        modalChangeDeptVisible={modalChangeDeptVisible}
+                                        changeDeptVisible={this.handleChangeDeptVisible}
                                     />
                                 </TabPane>
                             </Tabs>

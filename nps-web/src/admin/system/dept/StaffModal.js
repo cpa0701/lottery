@@ -17,7 +17,6 @@ class StaffModal extends PureComponent {
         super(props);
         this.state = {
             actionTypeName: actionTypeMap['A'],
-            disabledParentTree: false
         }
         this.actionType = 'A';
     }
@@ -289,7 +288,6 @@ class StaffModal extends PureComponent {
                 destroyOnClose={true}
                 onOk={okHandle}
                 onCancel={() => handleModalVisible()}
-                {...this.props.thisTime}
             >
                 <Form>
                     <Row gutter={24}>

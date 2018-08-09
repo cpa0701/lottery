@@ -69,7 +69,7 @@ class AdvancedSearchForm extends Component {
     }
 
     render() {
-        const {handleAdd, handleEdit, handleDelete} = this.props
+        const {handleAdd, handleEdit, handleDelete,handleChangeDept} = this.props
         return (
             <Form
                 className="ant-advanced-search-form"
@@ -83,6 +83,9 @@ class AdvancedSearchForm extends Component {
                         <Button onClick={handleEdit} type="dashed">修改</Button>
                         <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={handleDelete}>
                             <Button type="danger">删除</Button>
+                        </Popconfirm>
+                        <Popconfirm title="确定更改吗?" okText="确定" cancelText="取消" onConfirm={handleChangeDept}>
+                            <Button>更改部门</Button>
                         </Popconfirm>
                     </Col>
                 </Row>
