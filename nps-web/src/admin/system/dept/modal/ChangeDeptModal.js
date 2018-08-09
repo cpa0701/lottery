@@ -1,8 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Modal, TreeSelect, Row, Col} from 'antd';
 
-import DeptService from '../../../services/DeptService';
-import TreeComponent from '../../../common/components/tree/tree';
+import DeptService from '../../../../services/DeptService';
+import TreeComponent from '../../../../common/components/tree/tree';
 
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 

@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Form, Input, Modal, message, Select, Row, Col} from 'antd';
 
-import DeptService from '../../../services/DeptService';
+import DeptService from '../../../../services/DeptService';
 
 const FormItem = Form.Item;
 const {Option} = Select;

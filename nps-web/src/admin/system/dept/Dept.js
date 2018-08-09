@@ -14,11 +14,11 @@ import {
 
 import "./Dept.less"
 import DeptService from "../../../services/DeptService"
-import DeptModal from "./DeptModal"
-import StaffModal from "./StaffModal"
-import ChangeDeptModal from "./ChangeDeptModal"
-import AddRoleModal from "./AddRoleModal"
-import EditAuthorityModal from "./EditAuthorityModal"
+import DeptModal from "./modal/DeptModal"
+import StaffModal from "./modal/StaffModal"
+import ChangeDeptModal from "./modal/ChangeDeptModal"
+import AddRoleModal from "./modal/AddRoleModal"
+import EditAuthorityModal from "./modal/EditAuthorityModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/table';
 import TreeComponent from '../../../common/components/tree/tree';
