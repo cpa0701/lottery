@@ -130,5 +130,28 @@
     </set>
     where id = #{id}
   </update>
+  
+  <select id="findByCondition" resultMap="BaseResultMap" parameterType="RegionQuery">
+    select 
+    <include refid="Base_Column_List" />
+    from regions
+    <where>
+    	<if test="areaId != null">
+    		and area_id = #{areaId} 
+    	</if>
+    	<if test="name != null and name != ''">
+    		and name like concat('%', #{name}, '%')
+    	</if>
+    	<if test="type != null">
+    		and type = #{type} 
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like concat('%', #{code}, '%')
+    	</if>
+    	<if test="parentId != null">
+    		and parent_id = #{parentId} 
+    	</if>
+    </where>
+  </select>
 
 </mapper>
