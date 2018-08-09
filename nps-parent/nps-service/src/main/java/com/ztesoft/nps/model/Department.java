@@ -1,63 +1,78 @@
 package com.ztesoft.nps.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 import com.ztesoft.nps.common.Status;
 
+@ApiModel
 public class Department {
 	/**
 	 * 部门ID
 	 */
+	@ApiModelProperty("部门ID")
 	private Long id;
 
 	/**
 	 * 部门名称
 	 */
+	@ApiModelProperty("部门名称")
 	private String name;
 
 	/**
 	 * 区域ID
 	 */
+	@ApiModelProperty("区域ID")
 	private Long regionId;
 
 	/**
 	 * 父部门ID
 	 */
+	@ApiModelProperty("父部门ID")
 	private Long parentId;
 
 	/**
 	 * 状态
 	 */
+	@ApiModelProperty("状态")
 	private Integer status;
 
 	/**
 	 * 部门类型
 	 */
+	@ApiModelProperty("部门类型")
 	private Integer type;
 
 	/**
 	 * 部门级别
 	 */
+	@ApiModelProperty("部门级别")
 	private Integer level;
 
 	/**
 	 * 创建人
 	 */
+	@ApiModelProperty("创建人")
 	private String createdBy;
 
 	/**
 	 * 创建时间
 	 */
+	@ApiModelProperty("创建时间")
 	private Date createdAt;
 
 	/**
 	 * 修改人
 	 */
+	@ApiModelProperty("修改人")
 	private String modifiedBy;
 
 	/**
 	 * 修改时间
 	 */
+	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
 	public Department() {
