@@ -118,6 +118,22 @@ class StaffModal extends PureComponent {
             <div>
                 <Col span={12}>
                     <FormItem
+                        label="人员姓名"
+                        labelCol={{span: 10}}
+                        wrapperCol={{span: 14}}
+                    >
+                        {form.getFieldDecorator('name', {
+                            rules: [
+                                {required: true, message: '人员姓名不能为空'}
+                            ],
+                            initialValue: staffData.name,
+                        })(
+                            <Input disabled={actionType === "V"}/>
+                        )}
+                    </FormItem>
+                </Col>
+                <Col span={12}>
+                    <FormItem
                         label="登录账号"
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}

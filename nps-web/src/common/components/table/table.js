@@ -308,7 +308,7 @@ class StandardTable extends PureComponent {
                             },  // 鼠标移入行
                         }
                     }}
-                    scroll={{x: 2000,y:300}}
+                    scroll={{y:300}}
                     rowClassName={this.rowClassName}
                     dataSource={list}
                     columns={columns}

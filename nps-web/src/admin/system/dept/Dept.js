@@ -71,9 +71,10 @@ export default class Dept extends PureComponent {
             {
                 title: '性别',
                 dataIndex: 'sex',
-                render: (text, record, index) => {
-                    return (text === 'M' ? '男' : '女')
-                }
+                filters: [
+                    {text: 'M', value: '男'},
+                    {text: 'F', value: '女'},
+                ]
             },
             {
                 title: '账号状态',
@@ -84,7 +85,7 @@ export default class Dept extends PureComponent {
                 dataIndex: 'cellphone',
             },
             {
-                title: '内部邮箱',
+                title: '邮箱',
                 dataIndex: 'email',
             },
             {
@@ -398,7 +399,7 @@ export default class Dept extends PureComponent {
         this.setState({
             formValues: params
         }, () => {
-            this.standardTable.handleSearch({current: 1, pageSize: 10, ...params})
+            this.standardTable.handleSearch({pageInfo: {pageIndex: 1, pageSize: 10}, ...params})
         });
     }
     //新增人员
@@ -485,7 +486,11 @@ export default class Dept extends PureComponent {
     }
     // 获取第三区域的数据
     getThirdData = (data) => {
-        let staffIds = data.map(data => data.id)
+        let staffIds=[];
+        if(data.length!==0){
+            data = data[data.length - 1];
+            staffIds = (data.id ? data.id : []);
+        }
         this.setState({
             staffData: data,
             selectedStaffIds: staffIds
@@ -591,10 +596,6 @@ export default class Dept extends PureComponent {
                                     <StaffModal
                                         departmentData={departmentData}
                                         staffData={staffEditData}
-                                        domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {
-                                            key: 2,
-                                            title: '北京'
-                                        }]}
                                         modalVisible={modalStaffVisible}
                                         thisTime={this.state.thisTime}
                                         handleModalVisible={this.handleStaffModalVisible}

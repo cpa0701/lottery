@@ -305,7 +305,7 @@ Mock.mock('mock/dept/getStaffData', (params) => {
         'pageInfo': {
             'totalRow': '@integer(1,500)',
             'pageNum': 10,
-            'pageIndex': params1.current
+            'pageIndex': params1.pageInfo.pageIndex
         }
     })
 })
