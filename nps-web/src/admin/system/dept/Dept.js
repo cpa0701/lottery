@@ -186,10 +186,11 @@ export default class Dept extends PureComponent {
     //获取部门树
     getDeptTree = (params) => {
         DeptService.getDeptTree(params).then(result => {
+            result.treeData = result.data.data;
             let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId
-                item.isLeaf = !item.childCount;
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = !item.leaf;
                 return item;
             })
             this.setState({
@@ -246,17 +247,21 @@ export default class Dept extends PureComponent {
                 resolve();
                 return;
             }
+            treeNode.props.dataRef.parentId = treeNode.props.dataRef.id;
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
-                    return item;
-                })
-                treeNode.props.dataRef.children = [...treeData];
-                this.setState({
-                    deptTreeData: [...this.state.deptTreeData],
-                });
+                result.treeData = result.data.data;
+                if (result.treeData.length) {
+                    let treeData = result.treeData.map(item => {
+                        item.title = item.name;
+                        item.key = item.id
+                        item.isLeaf = !item.leaf;
+                        return item;
+                    })
+                    treeNode.props.dataRef.children = [...treeData];
+                    this.setState({
+                        deptTreeData: [...this.state.deptTreeData],
+                    });
+                }
                 resolve();
             })
         });

@@ -31,7 +31,7 @@ export class Http {
         return url;
     }
 
-    async get(api, config = {}) {
+    async get(api,data = {}, config = {}) {
         api = this.getUrl(api);
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
@@ -50,14 +50,13 @@ export class Http {
                 {
                     url: api,
                     method: 'GET',
+                    params: data,
                 }, config
             );
     }
 
     async post(api, data = {}, config = {}) {
         api = this.getUrl(api);
-
-        // const formBody = JSON.stringify(data);
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
                 $.ajax({
@@ -70,7 +69,7 @@ export class Http {
                     }
                 });
             })
-        } else
+        } else {
             return await this._request(
                 {
                     url: api,
@@ -78,6 +77,8 @@ export class Http {
                     data: data,
                 }, config
             );
+        }
+
     }
 
     async delete(api, config = {}) {
@@ -107,7 +108,6 @@ export class Http {
         baseURL: '',
     }) {
         params = Object.assign(params, config);
-
         return await axios(params).catch(function (error) {
             if (error.response) {
                 // 发送请求后，服务端返回的响应码不是 2xx

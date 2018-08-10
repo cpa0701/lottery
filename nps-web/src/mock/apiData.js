@@ -244,7 +244,7 @@ Mock.mock('mock/dept/getDeptTree', (params) => {
 //获取所有权限树
 Mock.mock('mock/dept/getAllAuthorityData', (params) => {
     let params1 = JSON.parse(params.body);
-    if (!params1.rowId)
+    if (!params1||!params1.rowId)
         return Mock.mock({
             'treeData|10': [{
                 'rowId|+1': 1,

@@ -3,8 +3,8 @@ import Http from '../common/Http';
 class DeptService {
     // 获取部门树
     getDeptTree = async (param) => {
-        var url = 'mock/dept/getDeptTree';
-        // var url = 'departments';
+        // var url = 'mock/dept/getDeptTree';
+        var url = 'departments';
         return await Http.get(url, param);
     }
     //校验部门名唯一性
