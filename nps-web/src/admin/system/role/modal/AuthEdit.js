@@ -11,7 +11,7 @@ export default class extends Component {
   };
   componentDidMount() {
         // 获取权限树
-        this.authQuery();
+        // this.authQuery();
   }
   // 获取所有权限树数据
   authQuery = (params) => {

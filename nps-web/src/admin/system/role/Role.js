@@ -73,7 +73,7 @@ export default class Role extends PureComponent {
     };
 
     // 获取角色树
-    roleQuery = (params) => {
+    roleQuery = () => {
         const fullPaths = [];
         const spread = dataModel => dataModel.map((item) => {
             fullPaths.push(item);
@@ -82,48 +82,59 @@ export default class Role extends PureComponent {
             }
             return '';
         });
-        DeptService.getDeptTree(params)
+        SysRoleMgService.roleTree()
             .then(res => {
-                res.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId;
-                    item.isLeaf = !item.childCount;
-                });
-                this.setState({
-                    treeData: res.treeData,
-                });
-                spread(res.treeData);
-                this.setState({fullPaths});
+                let data = res.data;
+                if (data.code === 200) {
+                    data.data.map(item => {
+                        item.title = item.name;
+                        item.key = item.id;
+                        item.isLeaf = !item.leaf;
+                    });
+                    this.setState({
+                        treeData: data.data,
+                    });
+                    spread(data.data);
+                    this.setState({fullPaths});
+                } else {
+                    message.error(data.description)
+                }
             });
     };
     // 异步加载角色树节点
     loadRoleData = (treeNode) => {
-        const fullPaths = [];
-        const spread = dataModel => dataModel.map((item) => {
-            fullPaths.push(item);
-            if (item.children) {
-                spread(item.children);
-            }
-            return '';
-        });
+        console.log(treeNode);
+        // const fullPaths = [];
+        // const spread = dataModel => dataModel.map((item) => {
+        //     fullPaths.push(item);
+        //     if (item.children) {
+        //         spread(item.children);
+        //     }
+        //     return '';
+        // });
         return new Promise((resolve) => {
             if (treeNode.props.children) {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef)
+            SysRoleMgService.roleTree({parentId: treeNode.props.dataRef.id})
                 .then(result => {
-                    result.treeData.map(item => {
-                        item.title = item.sdeptName;
-                        item.key = item.ideptId;
-                        item.isLeaf = !item.childCount;
-                    });
-                    treeNode.props.dataRef.children = [...result.treeData];
-                    this.setState({
-                        treeData: [...this.state.treeData]
-                    });
-                    spread(result.treeData);
-                    this.setState({fullPaths});
+                    let data = result.data;
+                    if (data.code === 200) {
+                        data.data.map(item => {
+                            item.title = item.name;
+                            item.key = item.id;
+                            item.isLeaf = !item.leaf;
+                        });
+                        treeNode.props.dataRef.children = [...data.data];
+                        this.setState({
+                            treeData: [...this.state.treeData]
+                        });
+                        // spread(data);
+                        // this.setState({fullPaths});
+                    } else {
+                        message.error(data.description)
+                    }
                     resolve();
                 })
         });
@@ -143,8 +154,8 @@ export default class Role extends PureComponent {
     onCheck = (checkedKeys) => {
         let params = {roleId: checkedKeys};
         this.setState({ checkedKeys });
-        this.authQuery(params);
-        this.getUserData(params);
+        // this.authQuery(params);
+        // this.getUserData(params);
     };
     // 新增角色
     addRoleModal = (show) => {
@@ -227,32 +238,19 @@ export default class Role extends PureComponent {
 
     // 获取角色拥有权限树
     authQuery = (params) => {
-        const fullPaths = [];
-        const spread = dataModel => dataModel.map((item) => {
-            fullPaths.push(item);
-            if (item.children) {
-                spread(item.children);
-            }
-            return '';
-        });
+        let authCheckedKeys = [];
         DeptService.getDeptTree(params)
             .then(res => {
                 res.treeData.map(item => {
                     item.title = item.sdeptName;
                     item.key = item.ideptId;
+                    authCheckedKeys.push(item.key);
                     item.isLeaf = !item.childCount;
                 });
                 this.setState({
+                    authCheckedKeys,
                     authData: res.treeData,
                 });
-
-                spread(res.treeData);
-                let authCheckedKeys = [];
-                fullPaths.map(item => {
-                    authCheckedKeys.push(item.ideptId);
-                });
-                console.log('rrr',authCheckedKeys);
-                this.setState({authCheckedKeys});
             });
     };
     //异步加载权限树节点
@@ -491,7 +489,7 @@ export default class Role extends PureComponent {
             pagination,
             loading,
             userData,
-            deptData,
+            // deptData,
             treeData,
             authData,
             regionData,
@@ -588,11 +586,11 @@ export default class Role extends PureComponent {
             },
             onCreate: (values) => {
                 SysRoleMgService.addRoles({...values}).then((res) => {
-                    if (res.code === 0) {
+                    if (res.data.data.code === 200) {
                         message.success('保存成功');
                         if (this.isMount) {
-                            this.setState({add: false}, () => {
-                                this.treeQuery();
+                            this.setState({add: false, loading: false}, () => {
+                                this.roleQuery();
                             });
                         }
                     } else {

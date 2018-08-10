@@ -19,7 +19,7 @@ export default class extends Component {
   };
 
   render() {
-    const {add, parentId = '',form: {getFieldDecorator}} = this.props;
+    const {add, parentId = '0',form: {getFieldDecorator}} = this.props;
     const formItemLayout = {
       labelCol: {xs: {span: 24}, sm: {span: 6}},
       wrapperCol: {xs: {span: 24}, sm: {span: 16}},

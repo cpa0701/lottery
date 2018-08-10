@@ -190,7 +190,7 @@ export default class extends Component {
         this.setState({
             domainTreeDate: [JSON.parse(a)]
         });
-        this.deptQuery();
+        // this.deptQuery();
         // this.seaUserQuery();
     }
 

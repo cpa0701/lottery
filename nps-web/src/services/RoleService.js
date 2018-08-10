@@ -2,13 +2,21 @@ import Http from '../common/Http';
 
 class SysRoleMgService {
     // 角色树查询
-    qryRoleTree = async (param) => {
-          let url = 'mock/system/rolesController/qryRolesTree';
-          return await Http.post(url, param);
+    roleTree = async (params) => {
+          // let url = 'mock/system/rolesController/qryRolesTree';
+        let url = 'roles';
+        return await Http.get(url, params);
+    };
+    // 角色树异步查询
+    roleTreeAsync = async (param) => {
+        // let url = 'mock/system/rolesController/qryRolesTree';
+        let url = 'roles/' + param;
+        return await Http.get(url);
     };
     // 平台角色新增
     addRoles = async (param) => {
-        let url = 'system/rolesController/addRoles';
+        // let url = 'system/rolesController/addRoles';
+        let url = 'roles';
         return await Http.post(url, param);
     };
     // 平台角色复制
