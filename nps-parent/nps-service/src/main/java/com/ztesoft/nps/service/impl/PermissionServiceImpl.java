@@ -83,4 +83,28 @@ public class PermissionServiceImpl implements PermissionService {
 		return permissionMapper.findByUserId(id);
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public List<Permission> findByParentId(Long id) {
+		return permissionMapper.findByParentId(id);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int delete(Permission permission) {
+		permissionMapper.delete(permission);
+
+		int cnt = permissionMapper.findChildCount(permission.getParentId());
+		if (cnt <= 0) {
+			// 将被删节点的父节点转换位叶子节点
+			Permission pPermission = permissionMapper.findById(permission
+					.getParentId());
+			pPermission.setLeaf(Boolean.TRUE);
+			pPermission.setModifiedBy(permission.getModifiedBy());
+			permissionMapper.update(pPermission);
+		}
+
+		return 1;
+	}
+
 }

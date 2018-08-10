@@ -37,7 +37,17 @@ public class RegionServiceImpl implements RegionService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int delete(Region region) {
-		return regionMapper.delete(region);
+		regionMapper.delete(region);
+
+		int cnt = regionMapper.findChildCount(region.getParentId());
+		if (cnt <= 0) {
+			// 将被删节点的父节点转换位叶子节点
+			Region pRegion = regionMapper.findById(region.getParentId());
+			pRegion.setLeaf(Boolean.TRUE);
+			pRegion.setModifiedBy(region.getModifiedBy());
+			regionMapper.update(pRegion);
+		}
+		return 1;
 	}
 
 	@Transactional(rollbackFor = Exception.class)

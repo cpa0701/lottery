@@ -163,5 +163,9 @@
     	</if>
     </where>
   </select>
+  
+  <select id="findChildCount" parameterType="Long" resultType="Integer">
+  	select count(*) from regions where parent_id = #{id}
+  </select>
 
 </mapper>

@@ -17,4 +17,10 @@ public interface PermissionMapper {
 	List<Permission> findByRoleId(Long id);
 
 	List<Permission> findByUserId(Long id);
+
+	int findChildCount(Long id);
+
+	List<Permission> findByParentId(Long id);
+
+	int delete(Permission permission);
 }
