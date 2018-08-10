@@ -2,7 +2,6 @@ package com.ztesoft.nps.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.LoginQuery;
 import com.ztesoft.nps.service.UserService;
 
 @RestController
@@ -30,16 +30,14 @@ public class LoginController {
 
 	@PostMapping("/login")
 	@ApiOperation(value = "登录", notes = "登录")
-	public Result<User> login(
-			@ApiParam(value = "帐号", required = true) @RequestParam(required = true) String account,
-			@ApiParam(value = "密码", required = true) @RequestParam(required = true) String password) {
-		User user = userService.findByAccount(account);
+	public Result<User> login(@RequestBody LoginQuery loginInfo) {
+		User user = userService.findByAccount(loginInfo.getAccount());
 		if (user == null) {
 			throw new NpsObjectNotFoundException("帐号或密码不正确");
 		}
 
 		StringBuilder passwordAndSalt = new StringBuilder(user.getSalt());
-		passwordAndSalt.append(password);
+		passwordAndSalt.append(loginInfo.getPassword());
 		String passwordMd5 = DigestUtils.md5DigestAsHex(passwordAndSalt
 				.toString().getBytes());
 		if (!user.getPassword().equals(passwordMd5)) {

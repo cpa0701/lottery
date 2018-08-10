@@ -47,7 +47,8 @@ public class LoginFilter implements Filter {
 				|| url.contains(".png") || url.contains(".gif")
 				|| url.startsWith("/webjars")
 				|| url.startsWith("/swagger-resources")
-				|| url.startsWith("/v2/api-docs")) {
+				|| url.startsWith("/v2/api-docs") || url.startsWith("/druid")
+				|| url.contains(".bmp")) {
 			chain.doFilter(req, resp);
 		} else {
 			HttpSession session = request.getSession(false);
