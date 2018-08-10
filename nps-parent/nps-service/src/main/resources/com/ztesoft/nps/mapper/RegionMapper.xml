@@ -9,6 +9,7 @@
     <result column="code" property="code" />
     <result column="sequence" property="sequence" />
     <result column="parent_id" property="parentId" />
+    <result column="is_leaf" property="leaf" />
     <result column="created_by" property="createdBy" />
     <result column="created_at" property="createdAt" />
     <result column="modified_by" property="modifiedBy" />
@@ -16,7 +17,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, area_id, name, type, code, sequence, parent_id, created_by, created_at, modified_by, modified_at
+    id, area_id, name, type, code, sequence, parent_id, is_leaf, created_by, created_at, modified_by, modified_at
   </sql>
   
   <select id="findById" resultMap="BaseResultMap" parameterType="Long" >
@@ -71,6 +72,9 @@
     	<if test="parentId != null">
     		parent_id,
     	</if>
+    	<if test="leaf != null">
+    		is_leaf,
+    	</if>
     	<if test="createdBy != null">
     		created_by,
     	</if>
@@ -95,7 +99,10 @@
     		#{sequence},
     	</if>
     	<if test="parentId != null">
-    		#{parent_id},
+    		#{parentId},
+    	</if>
+    	<if test="leaf != null">
+    		#{leaf},
     	</if>
     	<if test="createdBy != null">
     		#{createdBy},
@@ -123,6 +130,9 @@
 		</if>
 		<if test="code != null" >
 			code = #{code},
+		</if>
+		<if test="leaf != null" >
+			is_leaf = #{leaf},
 		</if>
 		<if test="modifiedBy != null" >
 			modified_by = #{modifiedBy},

@@ -19,7 +19,18 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Department add(Department dept) {
+		// 新增节点为叶子节点
+		dept.setLeaf(Boolean.TRUE);
 		departmentMapper.add(dept);
+
+		Department pDept = departmentMapper.findById(dept.getParentId());
+		if (pDept != null) {
+			// 父节点变为非叶子节点
+			pDept.setLeaf(Boolean.FALSE);
+			pDept.setModifiedBy(dept.getModifiedBy());
+			departmentMapper.update(pDept);
+		}
+
 		return departmentMapper.findById(dept.getId());
 	}
 

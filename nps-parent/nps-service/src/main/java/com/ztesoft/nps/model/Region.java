@@ -50,6 +50,12 @@ public class Region {
 	private Long parentId;
 
 	/**
+	 * 是否叶子节点
+	 */
+	@ApiModelProperty("是否叶子节点(true:叶子节点 false:非叶子节点)")
+	private Boolean leaf;
+
+	/**
 	 * 创建人
 	 */
 	@ApiModelProperty("创建人")
@@ -160,4 +166,13 @@ public class Region {
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
+
+	public Boolean getLeaf() {
+		return leaf;
+	}
+
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
+	}
+
 }
