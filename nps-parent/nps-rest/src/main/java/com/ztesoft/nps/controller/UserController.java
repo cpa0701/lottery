@@ -77,9 +77,12 @@ public class UserController {
 
 		user.setStatus(Status.VALID.getCode());
 
-		userService.add(user);
+		User u = userService.add(user);
+		// 清空密码和盐值
+		u.setPassword(null);
+		u.setSalt(null);
 
-		return Result.success(user);
+		return Result.success(u);
 	}
 
 	@GetMapping(value = "/{id}")
@@ -124,6 +127,10 @@ public class UserController {
 		oldUser.setModifiedBy(currentUser.getAccount());
 
 		User u = userService.update(oldUser);
+
+		// 清空密码和盐值
+		user.setPassword(null);
+		user.setSalt(null);
 
 		return Result.success(u);
 	}

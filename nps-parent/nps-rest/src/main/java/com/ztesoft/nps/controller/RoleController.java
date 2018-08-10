@@ -167,6 +167,13 @@ public class RoleController {
 		}
 
 		List<User> users = userService.findByRoleId(pageNum, pageSize, id);
+
+		// 清空密码和盐值
+		users.stream().forEach(s -> {
+			s.setPassword(null);
+			s.setSalt(null);
+		});
+
 		PageInfo<User> page = new PageInfo<User>(users);
 		return Result.success(page);
 	}
