@@ -24,7 +24,19 @@ public class PermissionServiceImpl implements PermissionService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Permission add(Permission permission) {
+		// 新增节点为叶子节点
+		permission.setLeaf(Boolean.TRUE);
 		permissionMapper.add(permission);
+
+		Permission pPermission = permissionMapper.findById(permission
+				.getParentId());
+		if (pPermission != null) {
+			// 父节点变为非叶子节点
+			pPermission.setLeaf(Boolean.FALSE);
+			pPermission.setModifiedBy(permission.getModifiedBy());
+			permissionMapper.update(pPermission);
+		}
+
 		return permissionMapper.findById(permission.getId());
 	}
 

@@ -32,6 +32,12 @@ public class Department {
 	private Long parentId;
 
 	/**
+	 * 是否叶子节点
+	 */
+	@ApiModelProperty("是否叶子节点(true:叶子节点 false:非叶子节点)")
+	private Boolean leaf;
+
+	/**
 	 * 状态
 	 */
 	@ApiModelProperty("状态")
@@ -163,6 +169,14 @@ public class Department {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public Boolean isLeaf() {
+		return leaf;
+	}
+
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
 	}
 
 }

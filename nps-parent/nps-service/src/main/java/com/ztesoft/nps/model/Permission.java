@@ -47,7 +47,13 @@ public class Permission {
 	 * 父权限ID
 	 */
 	@ApiModelProperty("父权限ID")
-	private Integer parentId;
+	private Long parentId;
+
+	/**
+	 * 是否叶子节点
+	 */
+	@ApiModelProperty("是否叶子节点(true:叶子节点 false:非叶子节点)")
+	private Boolean leaf;
 
 	/**
 	 * 权限描述
@@ -131,11 +137,11 @@ public class Permission {
 		this.status = status;
 	}
 
-	public Integer getParentId() {
+	public Long getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(Integer parentId) {
+	public void setParentId(Long parentId) {
 		this.parentId = parentId;
 	}
 
@@ -177,6 +183,14 @@ public class Permission {
 
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
+	}
+
+	public Boolean getLeaf() {
+		return leaf;
+	}
+
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
 	}
 
 }

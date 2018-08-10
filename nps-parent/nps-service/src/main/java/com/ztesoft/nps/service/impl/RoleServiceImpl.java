@@ -29,7 +29,18 @@ public class RoleServiceImpl implements RoleService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Role add(Role role) {
+		// 新增节点为叶子节点
+		role.setLeaf(Boolean.TRUE);
 		roleMapper.add(role);
+
+		Role pRole = roleMapper.findById(role.getParentId());
+		if (pRole != null) {
+			// 父节点变为非叶子节点
+			pRole.setLeaf(Boolean.FALSE);
+			pRole.setModifiedBy(role.getModifiedBy());
+			roleMapper.update(pRole);
+		}
+
 		return roleMapper.findById(role.getId());
 	}
 
