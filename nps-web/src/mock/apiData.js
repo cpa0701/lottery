@@ -281,8 +281,7 @@ Mock.mock('mock/dept/getAllAuthorityData', (params) => {
     }
 })
 //判断部门唯一性
-Mock.mock('mock/dept/checkDeptName', (params) => {
-    let params1 = JSON.parse(params.body);
+Mock.mock('mock/dept/checkDeptName', () => {
     return Mock.mock({
         'result': {
             'code': 0

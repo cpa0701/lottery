@@ -82,22 +82,13 @@ class Dept extends PureComponent {
     handleSubmit = (fields) => {
         const {handleModalVisible, departmentData} = this.props;
         let promise = null;
-        fields.regionId = fields.IDOMAINID;
-        fields.name = fields.SDOMAINNAME;
         fields.parentId = departmentData.parentId;
-        // let IDOMAINTYPE = fields.IDOMAINTYPE;
-        //
-        // if (IDOMAINTYPE) {
-        //     fields.IDOMAINTYPE = IDOMAINTYPE + '';
-        // } else {
-        //     fields.IDOMAINTYPE = '-1';
-        // }
         //新增
         if (this.actionType === 'A') {
             promise = DeptService.addDept(fields)
         }
         else {
-            promise = DeptService.ediDept({...fields, menuId: departmentData.menuId})
+            promise = DeptService.ediDept({...fields, id: departmentData.id})
         }
 
         promise.then(result => {
@@ -109,8 +100,7 @@ class Dept extends PureComponent {
     handleCheckName = (rule, value, callback) => {
         let code = ''
         let params = {
-            menuName: value,
-            state: "00A"
+            name: value
         }
         DeptService.checkDeptName(params)
             .then(result => {
@@ -123,7 +113,7 @@ class Dept extends PureComponent {
     }
 
     getFields(actionType) {
-        const {form, domainTreeDate} = this.props;
+        const {form, departmentData, domainTreeDate} = this.props;
         const domainSelect = domainTreeDate.map((a) =>
             <Option key={a.key} value={a.key}>{a.title}</Option>
         )
@@ -135,72 +125,68 @@ class Dept extends PureComponent {
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
-                        {form.getFieldDecorator('IDOMAINID', {
+                        {form.getFieldDecorator('regionId', {
                             rules: [
                                 {required: true, message: '所属区域不能为空'}
                             ],
-                            initialValue: (domainTreeDate.iDomainId ? domainTreeDate.iDomainId : 1),
+                            initialValue: (departmentData.regionId ? departmentData.regionId : undefined),
                         })(
-                            <Select disabled={actionType === "V"}>
+                            <Select placeholder={'请选择所属区域'} disabled={actionType === "V"}>
                                 {domainSelect}
                             </Select>
                         )}
                     </FormItem>
                 </Col>
-                {/*<Col span={12}>*/}
-                {/*<FormItem*/}
-                {/*label="部门类型"*/}
-                {/*labelCol={{span: 10}}*/}
-                {/*wrapperCol={{span: 14}}*/}
-                {/*>*/}
-                {/*{form.getFieldDecorator('SDOMAINNAME', {*/}
-                {/*rules: [*/}
-                {/*{required: true, message: '部门名称不能为空'},*/}
-                {/*{validator: this.handleCheckName},*/}
-                {/*{whitespace: true, message: '请输入非空白内容'}*/}
-                {/*],*/}
-                {/*initialValue: this.props.departmentData.SDOMAINNAME,*/}
-                {/*})(*/}
-                {/*<Select disabled={actionType === "V"}>*/}
-                {/*<Option value='1'>省</Option>*/}
-                {/*<Option value='2'>本地网</Option>*/}
-                {/*<Option value='3'>县</Option>*/}
-                {/*<Option value='4'>扇区</Option>*/}
-                {/*<Option value='5'>自定义</Option>*/}
-                {/*</Select>*/}
-                {/*)}*/}
-                {/*</FormItem>*/}
-                {/*</Col>*/}
-                {/*<Col span={12}>*/}
-                {/*<FormItem*/}
-                {/*label="部门级别"*/}
-                {/*labelCol={{span: 10}}*/}
-                {/*wrapperCol={{span: 14}}*/}
-                {/*>*/}
-                {/*{form.getFieldDecorator('IDOMAINTYPE', {*/}
-                {/*initialValue: this.props.departmentData.IDOMAINTYPE,*/}
-                {/*rules: [*/}
-                {/*{required: true, message: '请选择部门类型'},*/}
-                {/*{validator: this.handleConfirmId}*/}
-                {/*],*/}
-                {/*})(*/}
-                {/*<Select disabled={actionType === "V"}>*/}
-                {/*<Option value='1'>省</Option>*/}
-                {/*<Option value='2'>本地网</Option>*/}
-                {/*<Option value='3'>县</Option>*/}
-                {/*<Option value='4'>扇区</Option>*/}
-                {/*<Option value='5'>自定义</Option>*/}
-                {/*</Select>*/}
-                {/*)}*/}
-                {/*</FormItem>*/}
-                {/*</Col>*/}
+                <Col span={12}>
+                    <FormItem
+                        label="部门类型"
+                        labelCol={{span: 10}}
+                        wrapperCol={{span: 14}}
+                    >
+                        {form.getFieldDecorator('type', {
+                            rules: [
+                                {required: true, message: '部门类型不能为空'},
+                                // {validator: this.handleCheckName},
+                                {whitespace: true, message: '请输入非空白内容'}
+                            ],
+                            initialValue: departmentData.type ? departmentData.type.toString() : undefined,
+                        })(
+                            <Select placeholder={'请选择部门'} disabled={actionType === "V"}>
+                                <Option value='1'>常规部门</Option>
+                                <Option value='2'>代维部门</Option>
+                                <Option value='3'>团队</Option>
+                            </Select>
+                        )}
+                    </FormItem>
+                </Col>
+                <Col span={12}>
+                    <FormItem
+                        label="部门级别"
+                        labelCol={{span: 10}}
+                        wrapperCol={{span: 14}}
+                    >
+                        {form.getFieldDecorator('level', {
+                            initialValue: departmentData.level ? departmentData.level.toString() : undefined,
+                            rules: [
+                                {required: true, message: '请选择部门级别'},
+                                // {validator: this.handleConfirmId}
+                            ],
+                        })(
+                            <Select placeholder='请选择级别' disabled={actionType === "V"}>
+                                <Option value='1'>中心</Option>
+                                <Option value='2'>科室</Option>
+                                <Option value='3'>班组</Option>
+                            </Select>
+                        )}
+                    </FormItem>
+                </Col>
                 <Col span={12}>
                     <FormItem
                         label="部门名称"
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
-                        {form.getFieldDecorator('SDOMAINNAME', {
+                        {form.getFieldDecorator('name', {
                             rules: [
                                 { //type:"url",
                                     required: true, message: '请输入部门名称'
@@ -208,10 +194,10 @@ class Dept extends PureComponent {
                                 {validator: this.handleCheckName},
                                 {whitespace: true, message: '请输入非空白内容'}
                             ],
-                            initialValue: domainTreeDate.sdeptName,
+                            initialValue: departmentData.name,
                             // initialValue: { menuUrl: this.props.departmentData.menuUrl !== undefined ? this.props.departmentData.menuUrl + '' : '' },
                         })(
-                            <Input disabled={actionType === "V"}/>
+                            <Input placeholder={'请输入部门名称'} disabled={actionType === "V"}/>
                         )}
                     </FormItem>
                 </Col>
@@ -310,17 +296,19 @@ class Dept extends PureComponent {
             actionType: 'A',
             actionTypeName: '新增部门'
         }
-        if (departmentData && departmentData.idomainId) {
+        if (departmentData && departmentData.id) {
             if (thisTime === "M") {
                 action = {
                     actionType: 'M',
                     actionTypeName: '修改部门'
                 };
+                this.actionType='M'
             } else {
                 action = {
                     actionType: 'V',
                     actionTypeName: '查看部门'
                 };
+                this.actionType='V'
             }
         }
         const okHandle = () => {

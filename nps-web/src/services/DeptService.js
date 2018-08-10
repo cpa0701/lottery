@@ -19,18 +19,18 @@ class DeptService {
     }
     // 新增部门
     addDept = async (param) => {
-        var url = 'mock/dept/addDept';
+        var url = 'departments';
         return await Http.post(url, param);
     }
     //修改部门
     ediDept = async (param) => {
-        var url = 'mock/dept/ediDept';
-        return await Http.post(url, param);
+        var url = 'departments/' + param.id;
+        return await Http.put(url, param);
     }
     //删除部门
     dleDept = async (param) => {
-        var url = 'mock/dept/dleDept';
-        return await Http.post(url, param);
+        var url = 'departments/'+param.id;
+        return await Http.delete(url);
     }
     //获取员工数据
     getStaffData = async (param) => {
@@ -53,37 +53,37 @@ class DeptService {
         return await Http.post(url, param);
     }
     // 获取角色树
-    getRoleTree= async (param) => {
+    getRoleTree = async (param) => {
         var url = 'mock/dept/getRoleTree';
         return await Http.post(url, param);
     }
     // 新增角色
-    addRole= async (param) => {
+    addRole = async (param) => {
         var url = 'mock/dept/addRole';
         return await Http.post(url, param);
     }
     // 新增角色
-    editAuthority= async (param) => {
+    editAuthority = async (param) => {
         var url = 'mock/dept/editAuthority';
         return await Http.post(url, param);
     }
     // 删除角色
-    dleRole= async (param) => {
+    dleRole = async (param) => {
         var url = 'mock/dept/dleRole';
         return await Http.post(url, param);
     }
     // 获取权限树
-    getAuthorityTree= async (param) => {
+    getAuthorityTree = async (param) => {
         var url = 'mock/dept/getAuthorityTree';
         return await Http.post(url, param);
     }
     // 获取所有权限数据
-    getAllAuthorityData= async (param) => {
+    getAllAuthorityData = async (param) => {
         var url = 'mock/dept/getAllAuthorityData';
         return await Http.post(url, param);
     }
     // 更改部门
-    changeDept= async (param) => {
+    changeDept = async (param) => {
         var url = 'mock/dept/changeDept';
         return await Http.post(url, param);
     }
