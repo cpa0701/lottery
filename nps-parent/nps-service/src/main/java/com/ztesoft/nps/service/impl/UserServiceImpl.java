@@ -41,16 +41,19 @@ public class UserServiceImpl implements UserService {
 		return userMapper.findById(id);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<User> findByDeptId(Long deptId) {
 		return userMapper.findByDeptId(deptId);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public User findByAccount(String account) {
 		return userMapper.findByAccount(account);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public User findByNo(String no) {
 		return userMapper.findByNo(no);
@@ -71,6 +74,7 @@ public class UserServiceImpl implements UserService {
 		return userMapper.findById(user.getId());
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<User> findByCondition(int pageNum, int pageSize,
 			UserQuery condition) {
@@ -79,16 +83,19 @@ public class UserServiceImpl implements UserService {
 		return userMapper.findByCondition(condition);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int addRole(UserRole userRole) {
 		return userRoleMapper.addRole(userRole);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int deleteRole(UserRole userRole) {
 		return userRoleMapper.delete(userRole);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<User> findByRoleId(int pageNum, int pageSize, Long id) {
 		PageHelper.startPage(pageNum, pageSize);

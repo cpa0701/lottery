@@ -23,10 +23,12 @@ import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.Status;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.model.Permission;
 import com.ztesoft.nps.model.Role;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.UserQuery;
+import com.ztesoft.nps.service.PermissionService;
 import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.UserUtils;
@@ -40,6 +42,9 @@ public class UserController {
 
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private PermissionService permissionService;
 
 	@Autowired
 	private HttpSession session;
@@ -172,5 +177,18 @@ public class UserController {
 		userService.deleteRole(ur);
 
 		return Result.success();
+	}
+
+	@GetMapping(value = "/{id}/permissions")
+	@ApiOperation(value = "查询用户的权限", notes = "查询用户的权限")
+	public Result<List<Permission>> findUserPermission(
+			@ApiParam(value = "用户ID", required = true) @PathVariable Long id) {
+		User user = userService.findById(id);
+		if (user == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Permission> permissions = permissionService.findByUserId(id);
+		return Result.success(permissions);
 	}
 }

@@ -48,11 +48,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 		return departmentMapper.findById(dept.getId());
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int delete(Department dept) {
 		return departmentMapper.delete(dept);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Department> findByParentId(Long id) {
 		return departmentMapper.findByParentId(id);

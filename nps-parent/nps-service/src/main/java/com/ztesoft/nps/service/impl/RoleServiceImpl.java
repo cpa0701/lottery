@@ -76,16 +76,19 @@ public class RoleServiceImpl implements RoleService {
 		return roleMapper.findByPermissionId(id);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int addUser(UserRole userRole) {
 		return userRoleMapper.addUser(userRole);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int deleteUser(UserRole userRole) {
 		return userRoleMapper.delete(userRole);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Role> findByUserId(Long id) {
 		return roleMapper.findByUserId(id);

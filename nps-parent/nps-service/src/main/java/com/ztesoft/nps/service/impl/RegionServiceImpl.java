@@ -56,11 +56,13 @@ public class RegionServiceImpl implements RegionService {
 		return regionMapper.findByParentId(id);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Region findById(Long id) {
 		return regionMapper.findById(id);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Region> findByCondition(RegionQuery condition) {
 		return regionMapper.findByCondition(condition);

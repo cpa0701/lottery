@@ -47,19 +47,28 @@ public class PermissionServiceImpl implements PermissionService {
 		return permissionMapper.findByCondition(condition);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Permission> findByRoleId(Long id) {
 		return permissionMapper.findByRoleId(id);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int addRole(RolePermission rolePermission) {
 		return rolePermissionMapper.addRole(rolePermission);
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int deleteRole(RolePermission rolePermission) {
 		return rolePermissionMapper.delete(rolePermission);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Permission> findByUserId(Long id) {
+		return permissionMapper.findByUserId(id);
 	}
 
 }

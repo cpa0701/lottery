@@ -151,5 +151,13 @@
     on p.id = rp.permission_id
     where rp.role_id = #{id}
   </select>
+  
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="Long" >
+    select <include refid="Base_Column_List" /> 
+    from user_role ur 
+	inner join role_permission rp on ur.role_id = rp.role_id
+	inner join permissions p on rp.permission_id = p.id
+	where ur.user_id = #{id}
+  </select>
 
 </mapper>

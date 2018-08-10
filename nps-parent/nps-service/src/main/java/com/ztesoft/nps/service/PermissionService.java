@@ -20,4 +20,6 @@ public interface PermissionService {
 	int addRole(RolePermission rolePermission);
 
 	int deleteRole(RolePermission rolePermission);
+
+	List<Permission> findByUserId(Long id);
 }
