@@ -105,4 +105,20 @@ public class RoleServiceImpl implements RoleService {
 		return roleMapper.findByUserId(id);
 	}
 
+	@Override
+	public int delete(Role role) {
+		roleMapper.delete(role);
+
+		int cnt = roleMapper.findChildCount(role.getParentId());
+		if (cnt <= 0) {
+			// 将被删节点的父节点转换位叶子节点
+			Role pRole = roleMapper.findById(role.getParentId());
+			pRole.setLeaf(Boolean.TRUE);
+			pRole.setModifiedBy(role.getModifiedBy());
+			roleMapper.update(pRole);
+		}
+
+		return 1;
+	}
+
 }

@@ -129,5 +129,13 @@
     on r.id = ur.role_id
     where ur.user_id = #{id}
   </select>
+  
+  <select id="findChildCount" parameterType="Long" resultType="Integer">
+  	select count(*) from roles where parent_id = #{id}
+  </select>
+  
+  <delete id="delete" parameterType="Role" >
+    delete from roles where id = #{id}
+  </delete>
 
 </mapper>

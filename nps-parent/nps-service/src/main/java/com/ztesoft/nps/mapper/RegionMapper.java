@@ -23,4 +23,6 @@ public interface RegionMapper {
 	List<Region> findByParentId(Long id);
 
 	List<Region> findByCondition(RegionQuery condition);
+
+	int findChildCount(Long id);
 }

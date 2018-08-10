@@ -62,7 +62,18 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int delete(Department dept) {
-		return departmentMapper.delete(dept);
+		departmentMapper.delete(dept);
+
+		int cnt = departmentMapper.findChildCount(dept.getParentId());
+		if (cnt <= 0) {
+			// 将被删节点的父节点转换位叶子节点
+			Department pDept = departmentMapper.findById(dept.getParentId());
+			pDept.setLeaf(Boolean.TRUE);
+			pDept.setModifiedBy(dept.getModifiedBy());
+			departmentMapper.update(pDept);
+		}
+
+		return 1;
 	}
 
 	@Transactional(readOnly = true)

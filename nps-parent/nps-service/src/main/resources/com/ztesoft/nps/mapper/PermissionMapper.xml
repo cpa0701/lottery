@@ -37,6 +37,7 @@
     <include refid="Base_Column_List" />
     from permissions p
     <where>
+    	status = 1 
     	<if test="name != null and name != ''">
     		and name like concat('%', #{name}, '%')
     	</if>
@@ -169,5 +170,23 @@
 	inner join permissions p on rp.permission_id = p.id
 	where ur.user_id = #{id}
   </select>
+  
+  <select id="findChildCount" parameterType="Long" resultType="Integer">
+  	select count(*) from permissions where status = 1 and parent_id = #{id}
+  </select>
+  
+  <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from permissions
+    where status = 1 and parent_id = #{id}
+  </select>
+  
+  <update id="delete" parameterType="Permission" >
+    update permissions set 
+    	status = #{status},
+    	modified_by = #{modifiedBy}
+    where id = #{id}
+  </update>
 
 </mapper>

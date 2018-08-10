@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Permission;
 import com.ztesoft.nps.model.Role;
@@ -212,6 +214,33 @@ public class RoleController {
 		UserRole ur = new UserRole(uid, rid);
 
 		roleService.deleteUser(ur);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{id}")
+	@ApiOperation(value = "删除角色", notes = "删除角色")
+	public Result<Object> delete(
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+		Role role = roleService.findById(id);
+		if (role == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<User> users = userService.findByRoleId(1, 10, id);
+		if (CollectionUtils.isNotEmpty(users)) {
+			throw new NpsDeleteException("角色被用户使用中，不能删除");
+		}
+
+		List<Role> roles = roleService.findByParentId(id);
+		if (CollectionUtils.isNotEmpty(roles)) {
+			throw new NpsDeleteException("角色下存在子节点，不能删除");
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		role.setModifiedBy(currentUser.getAccount());
+
+		roleService.delete(role);
 
 		return Result.success();
 	}

@@ -29,4 +29,6 @@ public interface RoleService {
 	int deleteUser(UserRole userRole);
 
 	List<Role> findByUserId(Long id);
+
+	int delete(Role role);
 }
