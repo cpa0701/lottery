@@ -89,8 +89,7 @@ export class Http {
         return await this._request(
             {
                 url: api,
-                method: 'DELETE',
-                params: data,
+                method: 'DELETE'
             }, config
         );
     }
