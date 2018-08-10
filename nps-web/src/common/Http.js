@@ -2,7 +2,6 @@ import axios from 'axios';
 import {
     message,
 } from 'antd';
-import {withRouter} from 'react-router-dom';
 
 const $ = require("jquery");
 
@@ -85,25 +84,24 @@ export class Http {
 
     }
 
-    async delete(api, config = {}) {
+    async delete(api, data = {}, config = {}) {
         api = this.getUrl(api);
         return await this._request(
             {
                 url: api,
                 method: 'DELETE',
+                params: data,
             }, config
         );
     }
 
     async put(api, data = {}, config = {}) {
         api = this.getUrl(api);
-
-        const formBody = JSON.stringify(data);
         return await this._request(
             {
                 url: api,
                 method: 'PUT',
-                params: formBody,
+                data: data,
             }, config
         );
     }
@@ -114,14 +112,15 @@ export class Http {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
-            return result.data.data
-        }).catch(function (error) {
-            if (error.response.data.code === 401) {
-                this.props.history.push('/');
-            }
-            message.error(error.response.data.description);
-            return false
-        });
+                return result.data.data
+            }).catch(function (error) {
+                if (error.response.data.code === 401) {
+                    message.error('登录超时');
+                    window.location.href = '#/login'
+                } else
+                    message.error(error.response.data.description);
+                return false
+            });
     }
 
     log(msg) {
@@ -133,4 +132,4 @@ export class Http {
 
 const http = new Http();
 
-export default withRouter(http);
+export default http;

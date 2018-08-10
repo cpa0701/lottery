@@ -32,7 +32,6 @@ export default class Role extends PureComponent {
         deptData: [], // 部门表
         checkedKeys: [], //角色树勾选
         selRowKeys: [], // 用户表勾选
-        fullPaths: [], // 角色树扁平化数据
         record: {}, // 编辑角色时的obj数据
         parentId: '0',
         selectedKeys: [],
@@ -57,106 +56,67 @@ export default class Role extends PureComponent {
 
     componentDidMount() {
         // 获取角色树
-        this.roleQuery();
+        this.roleQuery({parentId: '0'});
     }
     isMount = true;
-    // 扁平树数据结构
-    spread = (dataModel) => {
-        let fullPaths = [];
-        dataModel.map((item) => {
-            if (item.children) {
-                this.spread(item.children);
-            }
-            fullPaths.push(item);
-        });
-        return fullPaths;
-    };
 
     // 获取角色树
-    roleQuery = () => {
-        const fullPaths = [];
-        const spread = dataModel => dataModel.map((item) => {
-            fullPaths.push(item);
-            if (item.children) {
-                spread(item.children);
-            }
-            return '';
-        });
-        SysRoleMgService.roleTree()
-            .then(res => {
-                let data = res.data;
-                if (data.code === 200) {
-                    data.data.map(item => {
+    roleQuery = (param) => {
+        SysRoleMgService.roleTree(param)
+            .then(data => {
+                if (data) {
+                    data.map(item => {
                         item.title = item.name;
                         item.key = item.id;
-                        item.isLeaf = !item.leaf;
+                        item.isLeaf = item.leaf;
                     });
                     this.setState({
-                        treeData: data.data,
+                        treeData: data,
                     });
-                    spread(data.data);
-                    this.setState({fullPaths});
-                } else {
-                    message.error(data.description)
                 }
             });
     };
     // 异步加载角色树节点
     loadRoleData = (treeNode) => {
-        console.log(treeNode);
-        // const fullPaths = [];
-        // const spread = dataModel => dataModel.map((item) => {
-        //     fullPaths.push(item);
-        //     if (item.children) {
-        //         spread(item.children);
-        //     }
-        //     return '';
-        // });
         return new Promise((resolve) => {
             if (treeNode.props.children) {
                 resolve();
                 return;
             }
             SysRoleMgService.roleTree({parentId: treeNode.props.dataRef.id})
-                .then(result => {
-                    let data = result.data;
-                    if (data.code === 200) {
-                        data.data.map(item => {
+                .then(data => {
+                    if (data) {
+                        data.map(item => {
                             item.title = item.name;
                             item.key = item.id;
-                            item.isLeaf = !item.leaf;
+                            item.isLeaf = item.leaf;
                         });
-                        treeNode.props.dataRef.children = [...data.data];
+                        treeNode.props.dataRef.children = [...data];
                         this.setState({
                             treeData: [...this.state.treeData]
                         });
-                        // spread(data);
-                        // this.setState({fullPaths});
-                    } else {
-                        message.error(data.description)
                     }
                     resolve();
                 })
         });
     };
-    // 点击角色树节点时
+    // 点击、勾选角色树节点时
     onSelect = (selectedKeys, info) => {
-        const [select] = [...selectedKeys];
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+        let record =  info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props.dataRef : "";
+
         this.setState({
-            parentId: select,
-            record: info.node.props.dataRef
+            parentId: selectedKeys[selectedKeys.length - 1],
+            checkedKeys: selectedKeys,
+            record
         });
-        let params = {roleId: select};
-        this.authQuery(params);
-        this.getUserData(params);
-    };
-    // 勾选角色树节点时
-    onCheck = (checkedKeys) => {
-        let params = {roleId: checkedKeys};
-        this.setState({ checkedKeys });
+        console.log('编辑数据',record,'选择key',selectedKeys[selectedKeys.length - 1],'勾选项',selectedKeys)
+
+        // let params = {roleId: select};
         // this.authQuery(params);
         // this.getUserData(params);
     };
+
     // 新增角色
     addRoleModal = (show) => {
         if (show) {
@@ -167,20 +127,14 @@ export default class Role extends PureComponent {
     };
     // 编辑角色
     editRoleModal = (show, record, checkedKeys, type) => {
-        if (Object.keys(record).length !== 0) {
+        if (Object.keys(record).length !== 0 ) {
+            if(checkedKeys.length > 1) {
+                message.info('一次只能编辑一条角色');
+                return;
+            }
             this.setState({
                 edit: true
             });
-        } else if (checkedKeys.length === 1) {
-            let record = this.state.fullPaths.filter(item => item.key === checkedKeys[0])[0];
-            if(record) {
-                this.setState({
-                    edit: true,
-                    record
-                });
-            }
-        } else if (checkedKeys.length > 1) {
-            message.info('一次只能编辑一条角色');
         } else if(type === 1) {
             this.setState({edit: false});
         } else {
@@ -191,19 +145,13 @@ export default class Role extends PureComponent {
     // 复制角色
     copyRoleModal = (show, record, checkedKeys, type) => {
         if (Object.keys(record).length !== 0) {
+            if(checkedKeys.length > 1) {
+                message.info('一次只能复制一条角色');
+                return;
+            }
             this.setState({
                 copy: true
             });
-        } else if (checkedKeys.length === 1) {
-            let record = this.state.fullPaths.filter(item => item.key === checkedKeys[0])[0];
-            if(record) {
-                this.setState({
-                    copy: true,
-                    record
-                });
-            }
-        } else if (checkedKeys.length > 1) {
-            message.info('一次只能复制一条角色');
         } else if(type === 1) {
             this.setState({copy: false});
         } else {
@@ -494,6 +442,7 @@ export default class Role extends PureComponent {
             authData,
             regionData,
             selectedKey,
+            record,
             checkedKeys,
             authCheckedKeys,
             selRowKeys,
@@ -555,12 +504,8 @@ export default class Role extends PureComponent {
             selectedKey,
             checkedKeys,
             checkable: true,
-            onCheck: (checkedKeys) => {
-                this.onCheck(checkedKeys);
-            },
-            onSelect: (selectedKeys, info) => {
-                this.onSelect(selectedKeys, info);
-            }
+            onCheck: this.onSelect,
+            onSelect: this.onSelect
         };
         const authProps = {// 树索要用到的参数
             treeData: authData, // 要一级数据.
@@ -585,8 +530,8 @@ export default class Role extends PureComponent {
                 this.addRoleModal(false);
             },
             onCreate: (values) => {
-                SysRoleMgService.addRoles({...values}).then((res) => {
-                    if (res.data.data.code === 200) {
+                SysRoleMgService.addRoles({...values}).then((data) => {
+                    if (data) {
                         message.success('保存成功');
                         if (this.isMount) {
                             this.setState({add: false, loading: false}, () => {
@@ -609,8 +554,10 @@ export default class Role extends PureComponent {
                 this.editRoleModal(false, {}, {}, 1);
                 },
             onCreate: (values) => {
+                console.log(values);
                 SysRoleMgService.editRoles({...values}).then((data) => {
-                    if (data.code === 0) {
+                    console.log(data);
+                    if (data) {
                         message.success('编辑成功!');
                         if (this.isMount) {
                             this.setState({edit: false}, () => {
@@ -772,7 +719,7 @@ export default class Role extends PureComponent {
                         <div className="btnGroup">
                             <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>新增</Button>
                             <div className="divider"></div>
-                            <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, this.state.record, this.state.checkedKeys, 0)}>修改</Button>
+                            <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>修改</Button>
                             <div className="divider"></div>
                             <Popconfirm
                                 onConfirm={() => this.delRoles()}
@@ -783,7 +730,7 @@ export default class Role extends PureComponent {
                                 <Button type="danger" icon="delete">删除</Button>
                             </Popconfirm>
                             <div className="divider"></div>
-                            <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, this.state.record, this.state.checkedKeys, 0)}>复制</Button>
+                            <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>复制</Button>
                         </div>
                         <div className="treeStyle">
                             <Tree {...roleProps} onLoadData={this.loadRoleData}/>

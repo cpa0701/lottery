@@ -7,17 +7,16 @@ class SysRoleMgService {
         let url = 'roles';
         return await Http.get(url, params);
     };
-    // 角色树异步查询
-    roleTreeAsync = async (param) => {
-        // let url = 'mock/system/rolesController/qryRolesTree';
-        let url = 'roles/' + param;
-        return await Http.get(url);
-    };
     // 平台角色新增
     addRoles = async (param) => {
         // let url = 'system/rolesController/addRoles';
         let url = 'roles';
         return await Http.post(url, param);
+    };
+    // 平台角色修改
+    editRoles = async (param) => {
+        let url = 'roles/' + param.id;
+        return await Http.put(url, param);
     };
     // 平台角色复制
     copyRoles = async (param) => {
@@ -32,11 +31,6 @@ class SysRoleMgService {
     // 平台角色批量删除
     delAllRoles = async (param) => {
         let url = 'system/rolesController/delAllRoles';
-        return await Http.post(url, param);
-    };
-    // 平台角色修改
-    editRoles = async (param) => {
-        let url = 'system/rolesController/editRoles';
         return await Http.post(url, param);
     };
 

@@ -68,6 +68,9 @@ export default class extends Component {
                             {getFieldDecorator('id', {
                                 initialValue: role.id,
                             })(<Input type="hidden"/>)}
+                            {getFieldDecorator('parentId', {
+                                initialValue: role.parentId,
+                            })(<Input type="hidden"/>)}
                         </Col>
                     </Row>
                 </Form>
