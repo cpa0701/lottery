@@ -5,6 +5,8 @@ import {observer, inject} from 'mobx-react';
 import {Link, withRouter} from 'react-router-dom';
 import "./Header.less"
 
+import LoginService from '../../../../services/LoginService'
+
 const {Header} = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -30,8 +32,10 @@ class Head extends React.Component {
             localStorage.setItem('locale', key);
             window.location.reload();
         } else {
-            this.stores.LoginModel.logout();
-            window.location.reload();
+            LoginService.logout().then(result => {
+                this.stores.LoginModel.logout();
+                window.location.reload();
+            })
         }
     };
 
