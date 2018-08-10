@@ -4,7 +4,8 @@ class LoginService {
 
   //登录方法
   login = async (param) => {
-    var url = 'mock/test';
+    var url = 'login';
+    // var url = 'mock/test';
     return await Http.post(url,param);
   }
 

@@ -4,7 +4,8 @@ class DeptService {
     // 获取部门树
     getDeptTree = async (param) => {
         var url = 'mock/dept/getDeptTree';
-        return await Http.post(url, param);
+        // var url = 'departments';
+        return await Http.get(url, param);
     }
     //校验部门名唯一性
     checkDeptName = async (param) => {

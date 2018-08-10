@@ -3,7 +3,7 @@ import { observable, action } from 'mobx'
 class LoginModel {
 
     @observable
-    usercode = '';
+    userstatus = '';
 
     @observable
     username = '';
@@ -16,18 +16,18 @@ class LoginModel {
 
     @action
     login(user){
-      this.usercode = user.usercode;
+      this.userstatus = user.status;
       this.username = user.username;
       this.token = user.token;
       this.idcard = user.idcard;
       this.uid = user.uid;
 
-      this.setSession('uc', user.usercode)
+      this.setSession('uc', user.userstatus)
     }
 
     @action
     logout(){
-      this.usercode = '';
+      this.userstatus = '';
       this.username = '';
       this.token = '';
       this.idcard = '';

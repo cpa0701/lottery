@@ -70,17 +70,16 @@ class Login extends React.Component {
         let formData = this.props.form.getFieldsValue();
 
         let params = {
-            usercode: formData.user,//用户名，必填
-            pwd: formData.password, //密码，必填
-            loginType: '0'//登录方式：0：工号密码；1:手机动态验证码；，必填
+            account: formData.user,//用户名，必填
+            password: formData.password, //密码，必填
         }
 
         //记住密码
         if (sessionStorage) {
             if (this.state.rememberUc) {
                 const content = JSON.stringify({
-                    usercode: formData.user,//用户名，必填
-                    pwd: formData.password, //密码，必填
+                    account: formData.user,//用户名，必填
+                    password: formData.password, //密码，必填
                 });
                 sessionStorage.setItem('rememberUc', content);
             } else {
@@ -93,7 +92,7 @@ class Login extends React.Component {
                 this.setState({
                     'loading': false
                 });
-
+                let data = result.data.data
                 // if (!result.head) {
                 //     return;
                 // }
@@ -109,7 +108,7 @@ class Login extends React.Component {
                     message.success('登录成功！');
 
                     //登录状态变更
-                    this.store.LoginModel.login(result);
+                    this.store.LoginModel.login(data);
                 });
                 // }
             });
@@ -117,7 +116,7 @@ class Login extends React.Component {
 
     isLogined() {
         autorun(() => {
-            if (this.store.LoginModel.usercode) {
+            if (this.store.LoginModel.userstatus) {
                 this.props.history.push('/');
             }
         })

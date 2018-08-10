@@ -57,11 +57,11 @@ export class Http {
     async post(api, data = {}, config = {}) {
         api = this.getUrl(api);
 
-        const formBody = JSON.stringify(data);
+        // const formBody = JSON.stringify(data);
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: api, data: formBody, type: "post",
+                    url: api, data: data, type: "post",
                     success: (res) => {
                         resolve(JSON.parse(res))//在异步操作成功时调用
                     },
@@ -75,7 +75,7 @@ export class Http {
                 {
                     url: api,
                     method: 'POST',
-                    params: formBody,
+                    data: data,
                 }, config
             );
     }
@@ -94,13 +94,13 @@ export class Http {
         api = this.getUrl(api);
 
         const formBody = JSON.stringify(data);
-            return await this._request(
-                {
-                    url: api,
-                    method: 'PUT',
-                    params: formBody,
-                }, config
-            );
+        return await this._request(
+            {
+                url: api,
+                method: 'PUT',
+                params: formBody,
+            }, config
+        );
     }
 
     async _request(params, config = {
