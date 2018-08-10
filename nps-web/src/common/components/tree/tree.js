@@ -23,7 +23,7 @@ const TreeComponent = ({treeData, onSelect, onCheck, checkedKeys, onLoadData, ch
             onSelect={onSelect}
             onCheck={onCheck}
             loadData={onLoadData}>{loop(treeData)}</Tree>
-        : '';
+        : '暂无数据';
 };
 
 export default TreeComponent;

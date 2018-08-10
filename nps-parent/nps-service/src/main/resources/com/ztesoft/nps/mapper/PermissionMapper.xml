@@ -9,6 +9,7 @@
     <result column="p_app_type" property="appType" />
     <result column="p_description" property="description" />
     <result column="p_parent_id" property="parentId" />
+    <result column="p_is_leaf" property="leaf" />
     <result column="p_status" property="status" />
     <result column="p_created_by" property="createdBy" />
     <result column="p_created_at" property="createdAt" />
@@ -19,7 +20,7 @@
   <sql id="Base_Column_List" >
     p.id p_id, p.name p_name, p.type p_type, p.url p_url, 
     p.app_type p_app_type, p.description p_description, 
-    p.parent_id p_parent_id, p.status p_status, 
+    p.parent_id p_parent_id, p.is_leaf p_is_leaf, p.status p_status, 
     p.created_by p_created_by, p.created_at p_created_at, 
     p.modified_by p_modified_by, p.modified_at p_modified_at
   </sql>
@@ -69,6 +70,9 @@
     	<if test="parentId != null">
     		parent_id,
     	</if>
+    	<if test="leaf != null">
+    		is_leaf,
+    	</if>
     	<if test="status != null">
     		status,
     	</if>
@@ -97,6 +101,9 @@
     	</if>
     	<if test="parentId != null">
     		#{parentId},
+    	</if>
+    	<if test="leaf != null">
+    		#{leaf},
     	</if>
     	<if test="status != null">
     		#{status},
@@ -130,6 +137,9 @@
 		</if>
 		<if test="parentId != null" >
 			parent_id = #{parentId},
+		</if>
+		<if test="leaf != null" >
+			is_leaf = #{leaf},
 		</if>
 		<if test="status != null" >
 			status = #{status},

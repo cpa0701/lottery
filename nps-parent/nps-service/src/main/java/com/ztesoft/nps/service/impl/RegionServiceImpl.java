@@ -19,7 +19,17 @@ public class RegionServiceImpl implements RegionService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public Region add(Region region) {
+		// 新增节点为叶子节点
+		region.setLeaf(Boolean.TRUE);
 		regionMapper.add(region);
+
+		Region pRegion = regionMapper.findById(region.getParentId());
+		if (pRegion != null) {
+			// 父节点变为非叶子节点
+			pRegion.setLeaf(Boolean.FALSE);
+			pRegion.setModifiedBy(region.getModifiedBy());
+			regionMapper.update(pRegion);
+		}
 
 		return regionMapper.findById(region.getId());
 	}
