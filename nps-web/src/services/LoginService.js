@@ -5,9 +5,13 @@ class LoginService {
   //登录方法
   login = async (param) => {
     var url = 'login';
-    // var url = 'mock/test';
-    return await Http.post(url,param);
+    return Http.post(url,param);
   }
+  //登出方法
+    logout = async (param) => {
+      var url = 'logout';
+      return Http.get(url,param);
+    }
 
   //获取登录信息
   getLoginInfo = async (param) => {

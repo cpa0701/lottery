@@ -93,25 +93,15 @@ class Login extends React.Component {
                     'loading': false
                 });
                 let data = result.data.data
-                // if (!result.head) {
-                //     return;
-                // }
-                // let head = result.head;
-                // let data = result.data;
-                // let success = head.resultCode;
-                // if (success !== '0') {
-                //     message.error(head.remark);
-                // }
-                // else {
-                //restrict模式下,run in action
                 runInAction(() => {
                     message.success('登录成功！');
 
                     //登录状态变更
                     this.store.LoginModel.login(data);
+                    this.store.LoginModel.setSession('userInfo', JSON.stringify(data));
                 });
                 // }
-            });
+            })
     }
 
     isLogined() {

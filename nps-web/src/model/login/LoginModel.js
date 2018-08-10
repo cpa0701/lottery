@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx'
+import {observable, action} from 'mobx'
 
 class LoginModel {
 
@@ -15,45 +15,45 @@ class LoginModel {
     idcard = '';
 
     @action
-    login(user){
-      this.userstatus = user.status;
-      this.username = user.username;
-      this.token = user.token;
-      this.idcard = user.idcard;
-      this.uid = user.uid;
+    login(user) {
+        this.userstatus = user.status;
+        this.username = user.username;
+        this.token = user.token;
+        this.idcard = user.idcard;
+        this.uid = user.uid;
 
-      this.setSession('uc', user.userstatus)
+        this.setSession('uc', user.status)
     }
 
     @action
-    logout(){
-      this.userstatus = '';
-      this.username = '';
-      this.token = '';
-      this.idcard = '';
+    logout() {
+        this.userstatus = '';
+        this.username = '';
+        this.token = '';
+        this.idcard = '';
 
-      this.removeSession('uc');
+        this.removeSession('uc');
     }
 
-    getSessionUser(){
-      if(!sessionStorage){
-        return '';
-      }
-      return sessionStorage.getItem('uc');
+    getSessionUser = () => {
+        if (!sessionStorage) {
+            return '';
+        }
+        return sessionStorage.getItem('uc');
     }
 
-    setSession(key, value){
-      if(!sessionStorage){
-        return;
-      }
-      sessionStorage.setItem(key, value);
+    setSession = (key, value) => {
+        if (!sessionStorage) {
+            return;
+        }
+        sessionStorage.setItem(key, value);
     }
 
-    removeSession(key){
-      if(!sessionStorage){
-        return;
-      }
-      sessionStorage.removeItem(key);
+    removeSession = (key) => {
+        if (!sessionStorage) {
+            return;
+        }
+        sessionStorage.removeItem(key);
     }
 }
 

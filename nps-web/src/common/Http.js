@@ -108,7 +108,21 @@ export class Http {
     }) {
         params = Object.assign(params, config);
 
-        return await axios(params);
+        return await axios(params).catch(function (error) {
+            if (error.response) {
+                // 发送请求后，服务端返回的响应码不是 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // 发送请求但是没有响应返回
+                console.log(error.request);
+            } else {
+                // 其他错误
+                console.log('Error', error.message);
+            }
+            console.log(error.config);
+        });
     }
 
     log(msg) {
