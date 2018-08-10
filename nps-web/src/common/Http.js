@@ -1,4 +1,8 @@
 import axios from 'axios';
+import {
+    message,
+} from 'antd';
+import {withRouter} from 'react-router-dom';
 
 const $ = require("jquery");
 
@@ -31,7 +35,7 @@ export class Http {
         return url;
     }
 
-    async get(api,data = {}, config = {}) {
+    async get(api, data = {}, config = {}) {
         api = this.getUrl(api);
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
@@ -108,20 +112,15 @@ export class Http {
         baseURL: '',
     }) {
         params = Object.assign(params, config);
-        return await axios(params).catch(function (error) {
-            if (error.response) {
-                // 发送请求后，服务端返回的响应码不是 2xx
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                // 发送请求但是没有响应返回
-                console.log(error.request);
-            } else {
-                // 其他错误
-                console.log('Error', error.message);
+        return await axios(params)
+            .then(result => {
+            return result.data.data
+        }).catch(function (error) {
+            if (error.response.data.code === 401) {
+                this.props.history.push('/');
             }
-            console.log(error.config);
+            message.error(error.response.data.description);
+            return false
         });
     }
 
@@ -134,4 +133,4 @@ export class Http {
 
 const http = new Http();
 
-export default http;
+export default withRouter(http);

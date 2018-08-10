@@ -1,6 +1,11 @@
 import Http from '../common/Http';
 
 class DeptService {
+    //获取区域树
+    getDomainTree = async (param) => {
+        var url = 'regions';
+        return await Http.get(url, param);
+    }
     // 获取部门树
     getDeptTree = async (param) => {
         // var url = 'mock/dept/getDeptTree';
