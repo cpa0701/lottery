@@ -183,10 +183,35 @@ export default class Dept extends PureComponent {
     onChange = (value) => {
         this.setState({value});
     }
+    //获取区域树
+    getDomainTree = () => {
+        DeptService.getDomainTree().then(result => {
+            result.treeData = result;
+            let treeData = result.treeData.map(item => {
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = !item.leaf;
+                return item;
+            })
+            this.setState({
+                deptTreeData: treeData,
+            });
+        });
+    }
+    //点击区域树节点时
+    onSelectDomainTree = (selectedKeys, info) => {
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+        this.setState({
+            departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
+            selectedKeys: selectedKeys
+        }, () => {
+            this.getStaffData(this.state.departmentEditData)
+        })
+    }
     //获取部门树
     getDeptTree = (params) => {
         DeptService.getDeptTree(params).then(result => {
-            result.treeData = result.data.data;
+            result.treeData = result;
             let treeData = result.treeData.map(item => {
                 item.title = item.name;
                 item.key = item.id
@@ -247,9 +272,13 @@ export default class Dept extends PureComponent {
                 resolve();
                 return;
             }
-            treeNode.props.dataRef.parentId = treeNode.props.dataRef.id;
-            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                result.treeData = result.data.data;
+            let params={
+                parentId:treeNode.props.dataRef.id,
+                name: treeNode.props.dataRef.name,
+                regionId: treeNode.props.dataRef.regionId,
+            }
+            DeptService.getDeptTree(params).then(result => {
+                result.treeData = result;
                 if (result.treeData.length) {
                     let treeData = result.treeData.map(item => {
                         item.title = item.name;
@@ -774,13 +803,23 @@ export default class Dept extends PureComponent {
                             label="所属区域"
                             style={{"marginBottom": 0}}
                         >
+                            {/*<TreeSelect*/}
+                                {/*value={this.state.value}*/}
+                                {/*dropdownStyle={{maxHeight: 400, overflow: 'auto'}}*/}
+                                {/*treeData={domainTreeDate}*/}
+                                {/*treeCheckable={true}*/}
+                                {/*showCheckedStrategy={SHOW_PARENT}*/}
+                                {/*searchPlaceholder={'请选择区域'}*/}
+                                {/*onChange={this.onChange}*/}
+                            {/*/>*/}
                             <TreeSelect
                                 value={this.state.value}
                                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                treeData={domainTreeDate}
+                                treeData={deptTreeData}
                                 treeCheckable={true}
                                 showCheckedStrategy={SHOW_PARENT}
                                 searchPlaceholder={'请选择区域'}
+                                onLoadData={this.onLoadDeptTreeData}
                                 onChange={this.onChange}
                             />
                         </FormItem>

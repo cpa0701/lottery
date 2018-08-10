@@ -92,15 +92,15 @@ class Login extends React.Component {
                 this.setState({
                     'loading': false
                 });
-                let data = result.data.data
-                runInAction(() => {
-                    message.success('登录成功！');
+                let data = result
+                if (data)
+                    runInAction(() => {
+                        message.success('登录成功！');
 
-                    //登录状态变更
-                    this.store.LoginModel.login(data);
-                    this.store.LoginModel.setSession('userInfo', JSON.stringify(data));
-                });
-                // }
+                        //登录状态变更
+                        this.store.LoginModel.login(data);
+                        this.store.LoginModel.setSession('userInfo', JSON.stringify(data));
+                    });
             })
     }
 
