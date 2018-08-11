@@ -80,14 +80,14 @@ class StaffModal extends PureComponent {
     // }
     //提交按钮
     handleSubmit = (fields) => {
-        const {handleModalVisible, departmentData} = this.props;
+        const {handleModalVisible, staffData} = this.props;
         let promise = null;
         //新增
         if (this.actionType === 'A') {
             promise = DeptService.addStaff(fields)
         }
         else {
-            promise = DeptService.ediStaff({...fields, menuId: departmentData.iDeptId})
+            promise = DeptService.ediStaff({...fields, id: staffData.id})
         }
         promise.then(result => {
             message.success(this.state.actionTypeName + '成功');
@@ -203,7 +203,7 @@ class StaffModal extends PureComponent {
                         wrapperCol={{span: 14}}
                     >
                         {form.getFieldDecorator('deptId', {
-                            initialValue: departmentData.iDeptId,
+                            initialValue: departmentData.deptId,
                             rules: [],
                         })(
                             <Input disabled={actionType === "V"}/>

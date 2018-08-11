@@ -34,18 +34,18 @@ class DeptService {
     }
     //获取员工数据
     getStaffData = async (param) => {
-        var url = 'mock/dept/getStaffData';
-        return await Http.post(url, param);
+        var url = 'users';
+        return await Http.get(url, param);
     }
     // 新增员工
     addStaff = async (param) => {
-        var url = 'mock/dept/addStaff';
+        var url = 'users';
         return await Http.post(url, param);
     }
     //修改员工
     ediStaff = async (param) => {
-        var url = 'mock/dept/ediStaff';
-        return await Http.post(url, param);
+        var url = 'users'+param.id;
+        return await Http.put(url, param);
     }
     //删除员工
     dleStaff = async (param) => {
@@ -54,8 +54,8 @@ class DeptService {
     }
     // 获取角色树
     getRoleTree = async (param) => {
-        var url = 'mock/dept/getRoleTree';
-        return await Http.post(url, param);
+        var url = 'roles';
+        return await Http.get(url, param);
     }
     // 新增角色
     addRole = async (param) => {
@@ -74,8 +74,8 @@ class DeptService {
     }
     // 获取权限树
     getAuthorityTree = async (param) => {
-        var url = 'mock/dept/getAuthorityTree';
-        return await Http.post(url, param);
+        var url = 'permissions';
+        return await Http.get(url, param);
     }
     // 获取所有权限数据
     getAllAuthorityData = async (param) => {

@@ -111,7 +111,7 @@ export class Http {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
-                return result.data.data
+                return result.data.data ? result.data.data : false
             }).catch(function (error) {
                 if (error.response.data.code === 401) {
                     message.error('登录超时');

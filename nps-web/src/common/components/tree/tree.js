@@ -18,8 +18,8 @@ const TreeComponent = ({treeData, onSelect, onCheck, checkedKeys, onLoadData, ch
         ? <Tree
             showLine={showLine}
             checkable={checkable}
-            defaultExpandedKeys={defaultExpandedKeys}
-            defaultSelectedKeys={defaultDeptSelectedKeys}
+            defaultExpandedKeys={[treeData[0].key.toString()]}
+            defaultSelectedKeys={[treeData[0].key.toString()]}
             onSelect={onSelect}
             onCheck={onCheck}
             loadData={onLoadData}>{loop(treeData)}</Tree>
