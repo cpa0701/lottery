@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Modal} from 'antd';
+import { Modal, message, Button } from 'antd';
 
 import Tree from '../Tree';
 import AuthorityService from '../../../../services/AuthorityService'
+import SysRoleMgService from "../../../../services/RoleService";
 
 export default class extends Component {
   state = {
@@ -20,6 +21,7 @@ export default class extends Component {
                     item.title = item.name;
                     item.key = item.id;
                     item.isLeaf = item.leaf;
+                    return item;
                 });
                 this.setState({
                     authData: data,
@@ -39,6 +41,7 @@ export default class extends Component {
                         item.title = item.name;
                         item.key = item.id;
                         item.isLeaf = item.leaf;
+                        return item;
                     });
                     treeNode.props.dataRef.children = [...data];
                     this.setState({
@@ -48,6 +51,17 @@ export default class extends Component {
                 })
         });
     };
+  // 点击、勾选权限树节点时
+  onSelect = (selectedKeys) => {
+      this.props.onCheck(selectedKeys);
+      let params = {
+          roleId: this.props.roleId,
+          permissionId: selectedKeys[selectedKeys.length - 1]
+      };
+      SysRoleMgService.editRoleAuth(params).then((data) => {
+          message.success('修改权限成功!');
+      });
+  };
 
   onSubmit = () => {
       this.props.onCreate();
@@ -59,9 +73,10 @@ export default class extends Component {
           treeData: this.state.authData, // 要一级数据.
           checkedKeys,
           checkable: true,
-          onCheck: this.props.onCheck,
-          onLoadData: this.loadAuthData
-      };
+          onCheck: this.onSelect,
+          onSelect: this.onSelect,
+          onLoadData: this.props.loadAuthData
+    };
 
     return (
       <Modal
@@ -71,6 +86,9 @@ export default class extends Component {
         visible={editAuth}
         onOk={this.onSubmit}
         onCancel={() => this.props.onClose()}
+        footer={[
+            <Button key="submit" type="primary" onClick={this.onSubmit}>关闭</Button>,
+        ]}
         className="authModal-content"
       >
        <Tree {...authProps}/>

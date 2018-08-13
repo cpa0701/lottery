@@ -51,7 +51,12 @@ class SysRoleMgService {
     // 查询用户数据
     getRoleUserDate = async (param) => {
         let url = `/roles/${param.id}/users`;
-        return await Http.get(url);
+        return await Http.get(url, param);
+    };
+    // 新增用户数据
+    addRoleUserDate = async (param) => {
+        let url = `/roles/${param.roleId}/users`;
+        return await Http.post(url, param);
     };
     // 平台用户删除
     delRoleUsers = async (param) => {
