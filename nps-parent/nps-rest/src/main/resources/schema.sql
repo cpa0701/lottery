@@ -12,7 +12,7 @@ CREATE TABLE `regions`  (
   `modified_by` varchar(64) NOT NULL DEFAULT '' COMMENT '修改人',
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`area_id`)
+  KEY (`area_id`)
 ) engine=innodb charset=utf8mb4 comment '区域';
 
 CREATE TABLE `departments`  (
@@ -51,8 +51,8 @@ CREATE TABLE `users`  (
   `modified_by` varchar(64) NOT NULL DEFAULT '' COMMENT '修改人',
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`no`),
-  UNIQUE KEY (`account`)
+  KEY (`no`),
+  KEY (`account`)
 ) engine=innodb charset=utf8mb4 comment '用户';
 
 CREATE TABLE `roles`  (
