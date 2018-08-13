@@ -29,7 +29,7 @@ class DeptService {
     }
     //删除部门
     dleDept = async (param) => {
-        var url = 'departments/'+param.id;
+        var url = 'departments/' + param.id;
         return await Http.delete(url);
     }
     //获取员工数据
@@ -44,13 +44,8 @@ class DeptService {
     }
     //修改员工
     ediStaff = async (param) => {
-        var url = 'users'+param.id;
+        var url = 'users/' + param.id;
         return await Http.put(url, param);
-    }
-    //删除员工
-    dleStaff = async (param) => {
-        var url = 'mock/dept/dleStaff';
-        return await Http.post(url, param);
     }
     // 获取角色树
     getRoleTree = async (param) => {
@@ -84,8 +79,8 @@ class DeptService {
     }
     // 更改部门
     changeDept = async (param) => {
-        var url = 'mock/dept/changeDept';
-        return await Http.post(url, param);
+        var url = 'users/' + param.id;
+        return await Http.put(url, param);
     }
 }
 

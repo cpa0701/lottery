@@ -267,11 +267,13 @@ class StaffModal extends PureComponent {
                 actionType: 'M',
                 actionTypeName: '修改人员'
             };
+            this.actionType='M'
         } else if (thisTime === "V") {
             action = {
                 actionType: 'V',
                 actionTypeName: '查看人员'
             };
+            this.actionType='V'
         }
         const okHandle = () => {
             form.validateFields((err, fieldsValue) => {

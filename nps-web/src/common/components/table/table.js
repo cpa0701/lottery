@@ -312,7 +312,7 @@ class StandardTable extends PureComponent {
                             }
                         }
                     }}
-                    scroll={{y: 300}}
+                    // scroll={{y: 300}}
                     rowClassName={this.rowClassName}
                     dataSource={list}
                     columns={columns}
