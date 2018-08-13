@@ -63,6 +63,12 @@ public class UserQuery {
 	@ApiModelProperty("部门ID")
 	private Long deptId;
 
+	/**
+	 * 部门名称
+	 */
+	@ApiModelProperty("部门名称")
+	private String deptName;
+
 	public String getNo() {
 		return no;
 	}
@@ -133,6 +139,14 @@ public class UserQuery {
 
 	public void setDeptId(Long deptId) {
 		this.deptId = deptId;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
 
 }

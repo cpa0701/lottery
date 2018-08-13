@@ -227,6 +227,9 @@
     	<if test="deptId != null">
     		and dept_id = #{deptId} 
     	</if>
+    	<if test="deptName != null and deptName != ''">
+    		and u.dept_id in (select dept.id from departments dept where dept.name like concat('%', #{deptName}, '%')) 
+    	</if>
     </where>
   </select>
   
