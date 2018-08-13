@@ -30,6 +30,7 @@ import com.ztesoft.nps.model.RolePermission;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.model.UserRole;
 import com.ztesoft.nps.query.RoleQuery;
+import com.ztesoft.nps.query.RoleUserQuery;
 import com.ztesoft.nps.service.PermissionService;
 import com.ztesoft.nps.service.RoleService;
 import com.ztesoft.nps.service.UserService;
@@ -162,13 +163,17 @@ public class RoleController {
 	public Result<PageInfo<User>> findRoleUser(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
 			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
+			RoleUserQuery condition) {
 		Role role = roleService.findById(id);
 		if (role == null) {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		List<User> users = userService.findByRoleId(pageNum, pageSize, id);
+		condition.setRoleId(id);
+
+		List<User> users = userService.findByRoleId(pageNum, pageSize,
+				condition);
 
 		// 清空密码和盐值
 		users.stream().forEach(s -> {
@@ -227,7 +232,10 @@ public class RoleController {
 			throw new NpsObjectNotFoundException(id);
 		}
 
-		List<User> users = userService.findByRoleId(1, 10, id);
+		RoleUserQuery condtion = new RoleUserQuery();
+		condtion.setRoleId(id);
+
+		List<User> users = userService.findByRoleId(1, 10, condtion);
 		if (CollectionUtils.isNotEmpty(users)) {
 			throw new NpsDeleteException("角色被用户使用中，不能删除");
 		}
