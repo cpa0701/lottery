@@ -80,9 +80,10 @@ class StaffModal extends PureComponent {
     // }
     //提交按钮
     handleSubmit = (fields) => {
-        const {handleModalVisible, staffData} = this.props;
+        const {handleModalVisible, staffData, departmentData} = this.props;
         let promise = null;
         //新增
+        fields.deptId = departmentData.id;
         if (this.actionType === 'A') {
             promise = DeptService.addStaff(fields)
         }
@@ -112,7 +113,7 @@ class StaffModal extends PureComponent {
     }
 
     getFields(actionType) {
-        const {form, departmentData,staffData} = this.props;
+        const {form, departmentData, staffData} = this.props;
         return (
             <div>
                 <Col span={12}>
@@ -157,7 +158,7 @@ class StaffModal extends PureComponent {
                             rules: [
                                 {required: true, message: '用户工号不能为空'}
                             ],
-                            initialValue:staffData.no,
+                            initialValue: staffData.no,
                         })(
                             <Input disabled={actionType === "V"}/>
                         )}
@@ -267,13 +268,13 @@ class StaffModal extends PureComponent {
                 actionType: 'M',
                 actionTypeName: '修改人员'
             };
-            this.actionType='M'
+            this.actionType = 'M'
         } else if (thisTime === "V") {
             action = {
                 actionType: 'V',
                 actionTypeName: '查看人员'
             };
-            this.actionType='V'
+            this.actionType = 'V'
         }
         const okHandle = () => {
             form.validateFields((err, fieldsValue) => {

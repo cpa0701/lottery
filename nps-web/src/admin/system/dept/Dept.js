@@ -84,14 +84,16 @@ export default class Dept extends PureComponent {
             {
                 title: '性别',
                 dataIndex: 'sex',
-                filters: [
-                    {text: 'M', value: '男'},
-                    {text: 'F', value: '女'},
-                ]
+                render: (text, record, index) => {
+                    return text === 'M' ? '男' : '女'
+                }
             },
             {
                 title: '账号状态',
-                dataIndex: 'state',
+                dataIndex: 'status',
+                render: (text, record, index) => {
+                    return text === 0 ? '失效' : '有效'
+                }
             },
             {
                 title: '手机号码',
@@ -203,7 +205,7 @@ export default class Dept extends PureComponent {
                 })
                 this.setState({
                     deptTreeData: treeData,
-                    departmentEditData: treeData,
+                    departmentEditData: treeData[0],
                     selectedDeptKey: treeData.length ? treeData[0].key : ''
                 }, () => {
                     // this.getStaffData({deptId: '1'})
@@ -246,13 +248,14 @@ export default class Dept extends PureComponent {
     // }
     //点击部门树节点时
     onSelectDeptTree = (selectedKeys, info) => {
+        selectedKeys = selectedKeys ? selectedKeys[selectedKeys.length - 1] : '';
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
         this.setState({
             departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
             selectedKeys: selectedKeys,
             selectedDeptKey: selectedKeys,
         }, () => {
-            this.getStaffData({deptId: selectedKeys.toString()})
+            this.getStaffData({deptId: selectedKeys})
         })
     }
     //异步加载部门树节点
@@ -283,101 +286,102 @@ export default class Dept extends PureComponent {
             })
         });
     }
-    //点击角色树节点时
-    onSelectRoleTree = (selectedKeys, info) => {
-        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
-        DeptService.getRoleTree(info.selectedNodes[info.selectedNodes.length - 1].props).then(result => {
-            let treeData = result.map(item => {
-                item.title = item.name;
-                item.key = item.id
-                item.isLeaf = item.leaf;
-                return item;
-            })
-            this.setState({
-                addRoleTreeDate: [...treeData],
-                selectedRoleKeys: selectedKeys,
-            });
-        })
-        // this.getAuthorityTree(info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "")
-        this.getAuthorityTree()
-    }
-    //异步加载角色树节点
-    onLoadRoleTreeData = (treeNode) => {
-        return new Promise((resolve) => {
-            if (treeNode.props.dataRef.children) {
-                resolve();
-                return;
-            }
-            let params = {
-                parentId: treeNode.props.dataRef.id
-            }
-            DeptService.getRoleTree(params).then(result => {
-                let treeData = result.map(item => {
-                    item.title = item.name;
-                    item.key = item.id
-                    item.isLeaf = item.leaf;
-                    return item;
-                })
-                treeNode.props.dataRef.children = [...treeData];
-                this.setState({
-                    roleTreeData: [...this.state.roleTreeData],
-                });
-                resolve();
-            })
-        });
-    }
-    //点击权限树节点时
-    onSelectAuthorityTree = (selectedKeys, info) => {
-        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
-        this.setState({
-            departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
-            selectedKeys: selectedKeys
-        })
-    }
-    //异步加载权限树节点
-    onLoadAuthorityTreeData = (treeNode) => {
-        return new Promise((resolve) => {
-            if (treeNode.props.dataRef.children) {
-                resolve();
-                return;
-            }
-            DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
-                let treeData = result.map(item => {
-                    item.title = item.name;
-                    item.key = item.id
-                    item.isLeaf = item.leaf;
-                    return item;
-                })
-                treeNode.props.dataRef.children = [...treeData];
-                this.setState({
-                    authorityTreeData: [...this.state.authorityTreeData],
-                });
-                resolve();
-            })
-        });
-    }
-    //异步加载全部权限树节点
-    onLoadEditAuthorityTreeData = (treeNode) => {
-        return new Promise((resolve) => {
-            if (treeNode.props.dataRef.children) {
-                resolve();
-                return;
-            }
-            DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
-                let treeData = result.treeData.map(item => {
-                    item.title = item.name;
-                    item.key = item.id
-                    item.isLeaf = item.leaf;
-                    return item;
-                })
-                treeNode.props.dataRef.children = [...treeData];
-                this.setState({
-                    authorityTreeAllData: [...this.state.authorityTreeAllData],
-                });
-                resolve();
-            })
-        });
-    }
+    // //点击角色树节点时
+    // onSelectRoleTree = (selectedKeys, info) => {
+    //     info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+    //     DeptService.getRoleTree(info.selectedNodes[info.selectedNodes.length - 1].props).then(result => {
+    //         let treeData = result.map(item => {
+    //             item.title = item.name;
+    //             item.key = item.id
+    //             item.isLeaf = item.leaf;
+    //             return item;
+    //         })
+    //         this.setState({
+    //             addRoleTreeDate: [...treeData],
+    //             selectedRoleKeys: selectedKeys,
+    //         });
+    //     })
+    //     // this.getAuthorityTree(info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "")
+    //     this.getAuthorityTree()
+    // }
+    // //异步加载角色树节点
+    // onLoadRoleTreeData = (treeNode) => {
+    //     return new Promise((resolve) => {
+    //         if (treeNode.props.dataRef.children) {
+    //             resolve();
+    //             return;
+    //         }
+    //         let params = {
+    //             parentId: treeNode.props.dataRef.id
+    //         }
+    //         DeptService.getRoleTree(params).then(result => {
+    //             let treeData = result.map(item => {
+    //                 item.title = item.name;
+    //                 item.key = item.id
+    //                 item.isLeaf = item.leaf;
+    //                 return item;
+    //             })
+    //             treeNode.props.dataRef.children = [...treeData];
+    //             this.setState({
+    //                 roleTreeData: [...this.state.roleTreeData],
+    //             });
+    //             resolve();
+    //         })
+    //     });
+    // }
+    // //点击权限树节点时
+    // onSelectAuthorityTree = (selectedKeys, info) => {
+    //     info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+    //     this.setState({
+    //         departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
+    //         selectedKeys: selectedKeys
+    //     })
+    // }
+    // //异步加载权限树节点
+    // onLoadAuthorityTreeData = (treeNode) => {
+    //     return new Promise((resolve) => {
+    //         if (treeNode.props.dataRef.children) {
+    //             resolve();
+    //             return;
+    //         }
+    //         DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
+    //             let treeData = result.map(item => {
+    //                 item.title = item.name;
+    //                 item.key = item.id
+    //                 item.isLeaf = item.leaf;
+    //                 return item;
+    //             })
+    //             treeNode.props.dataRef.children = [...treeData];
+    //             this.setState({
+    //                 authorityTreeData: [...this.state.authorityTreeData],
+    //             });
+    //             resolve();
+    //         })
+    //     });
+    // }
+    // //异步加载全部权限树节点
+    // onLoadEditAuthorityTreeData = (treeNode) => {
+    //     return new Promise((resolve) => {
+    //         if (treeNode.props.dataRef.children) {
+    //             resolve();
+    //             return;
+    //         }
+    //         DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
+    //             let treeData = result.treeData.map(item => {
+    //                 item.title = item.name;
+    //                 item.key = item.id
+    //                 item.isLeaf = item.leaf;
+    //                 return item;
+    //             })
+    //             treeNode.props.dataRef.children = [...treeData];
+    //             this.setState({
+    //                 authorityTreeAllData: [...this.state.authorityTreeAllData],
+    //             });
+    //             resolve();
+    //         })
+    //     });
+    // }
+
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
@@ -445,8 +449,9 @@ export default class Dept extends PureComponent {
     handleDeptDelete = () => {
         let row = this.state.selectedKeys;
         let params = {};
-        if (row.length !== 0) {
-            params.id = row.map(item => item + ''); //平台角色id，必填
+        if (row.length) {
+            // params.id = row.map(item => item + ''); //平台角色id，必填
+            params.id = row;
             DeptService.dleDept(params).then(result => {
                 message.success('删除成功');
                 this.handlerSearchDepartment();
@@ -553,9 +558,12 @@ export default class Dept extends PureComponent {
     handleStaffDelete = () => {
         let row = this.state.selectedStaffIds;
         if (row.length !== 0) {
-            DeptService.dleDept(row).then(result => {
-                message.success('删除成功');
-                this.getStaffData({deptId: this.state.selectedDeptKey});
+            this.state.staffData.status = 0;
+            DeptService.ediStaff(this.state.staffData).then(result => {
+                if (result) {
+                    message.success('删除成功');
+                    this.getStaffData({deptId: this.state.selectedDeptKey});
+                }
             });
         } else {
             const ref = info({
@@ -584,10 +592,10 @@ export default class Dept extends PureComponent {
     //更改部门
     handleChangeDept = () => {
         if (this.state.staffData.length !== 0) {
-                this.setState({
-                    staffEditData: this.state.staffData,
-                    modalChangeDeptVisible: true
-                });
+            this.setState({
+                staffEditData: this.state.staffData,
+                modalChangeDeptVisible: true
+            });
         } else {
             const ref = info({
                 title: '请先选择要修改的人员',

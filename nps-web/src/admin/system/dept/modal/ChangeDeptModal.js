@@ -27,7 +27,7 @@ class changeDeptModal extends PureComponent {
         this.setState({
             confirmLoading: true,
         });
-        let params={id:this.props.staffData.deptId,deptId:this.state.selectedKeys.toString()}
+        let params={id:this.props.staffData.id,deptId:this.state.selectedKeys.toString()}
         DeptService.changeDept(params).then(result => {
             this.setState({
                 confirmLoading: false,
