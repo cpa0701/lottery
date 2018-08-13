@@ -166,5 +166,9 @@
     	modified_by = #{modifiedBy}
     where id = #{id}
   </update>
+  
+  <select id="findChildCount" parameterType="Long" resultType="Integer">
+  	select count(*) from departments where status = 1 and parent_id = #{id}
+  </select>
 
 </mapper>

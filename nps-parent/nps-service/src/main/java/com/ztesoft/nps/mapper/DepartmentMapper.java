@@ -19,4 +19,6 @@ public interface DepartmentMapper {
 	int update(Department dept);
 
 	int delete(Department dept);
+
+	int findChildCount(Long id);
 }

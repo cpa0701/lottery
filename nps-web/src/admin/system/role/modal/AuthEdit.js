@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {Modal} from 'antd';
 
 import Tree from '../Tree';
-import SysRoleMgService from "../../../../services/RoleService";
-import DeptService from "../../../../services/DeptService";
+import AuthorityService from '../../../../services/AuthorityService'
 
 export default class extends Component {
   state = {
@@ -11,19 +10,19 @@ export default class extends Component {
   };
   componentDidMount() {
         // 获取权限树
-        // this.authQuery();
+        this.authQuery({parentId: '0'});
   }
   // 获取所有权限树数据
   authQuery = (params) => {
-      DeptService.getDeptTree(params)
-            .then(res => {
-                res.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId;
-                    item.isLeaf = !item.childCount;
+      AuthorityService.getAuthTree(params)
+            .then(data => {
+                data.map(item => {
+                    item.title = item.name;
+                    item.key = item.id;
+                    item.isLeaf = item.leaf;
                 });
                 this.setState({
-                    authData: res.treeData,
+                    authData: data,
                 });
             });
     };
@@ -34,14 +33,14 @@ export default class extends Component {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef)
-                .then(result => {
-                    result.treeData.map(item => {
-                        item.title = item.sdeptName;
-                        item.key = item.ideptId;
-                        item.isLeaf = !item.childCount;
+            AuthorityService.getAuthTree({parentId: treeNode.props.dataRef.id})
+                .then(data => {
+                    data.map(item => {
+                        item.title = item.name;
+                        item.key = item.id;
+                        item.isLeaf = item.leaf;
                     });
-                    treeNode.props.dataRef.children = [...result.treeData];
+                    treeNode.props.dataRef.children = [...data];
                     this.setState({
                         authData: [...this.state.authData]
                     });

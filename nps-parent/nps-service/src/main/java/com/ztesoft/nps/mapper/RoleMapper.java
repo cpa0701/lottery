@@ -19,4 +19,8 @@ public interface RoleMapper {
 	List<Role> findByPermissionId(Long id);
 
 	List<Role> findByUserId(Long id);
+
+	int findChildCount(Long id);
+
+	int delete(Role role);
 }

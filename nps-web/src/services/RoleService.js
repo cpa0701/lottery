@@ -16,39 +16,50 @@ class SysRoleMgService {
     // 平台角色修改
     editRoles = async (param) => {
         let url = 'roles/' + param.id;
-        return await Http.put(url, param);
+        return await Http.put(url);
     };
     // 平台角色复制
     copyRoles = async (param) => {
-        let url = 'system/rolesController/copyRoles';
+        let url = 'roles';
         return await Http.post(url, param);
     };
     // 平台角色删除
     delRoles = async (param) => {
-        let url = 'system/rolesController/delRoles';
-        return await Http.post(url, param);
-    };
-    // 平台角色批量删除
-    delAllRoles = async (param) => {
-        let url = 'system/rolesController/delAllRoles';
-        return await Http.post(url, param);
+        let url = 'roles/' + param.id;
+        return await Http.delete(url, param);
     };
 
-    // 权限树查询
-    qryAuthTree = async (param) => {
-        let url = 'mock/system/rolesController/qryAuthTree';
+
+    // 获取角色拥有权限树
+    getRoleAuthTree = async (param) => {
+        let url = `/roles/${param}/permissions`;
+        return await Http.get(url);
+    };
+    // 修改角色拥有权限
+    editRoleAuth = async (param) => {
+        let url = `/roles/${param.roleId}/permissions`;
         return await Http.post(url, param);
     };
-    // 修改角色权限
-    editRolePriv = async (param) => {
-        let url = 'system/rolePrivController/editRolePriv';
-        return await Http.post(url, param);
+    // 删除角色拥有权限
+    delRoleAuth = async (param) => {
+        let url = `/roles/${param}/permissions/${0}`;
+        return await Http.delete(url, param);
     };
-    // 删除角色权限
-    delRolePriv = async (param) => {
-        let url = 'system/rolePrivController/delRolePriv';
-        return await Http.post(url, param);
+
+
+
+    // 查询用户数据
+    getRoleUserDate = async (param) => {
+        let url = `/roles/${param.id}/users`;
+        return await Http.get(url);
     };
+    // 平台用户删除
+    delRoleUsers = async (param) => {
+        let url = `/roles/${param.rid}/users/${param.uid}`;
+        return await Http.delete(url);
+    };
+
+
 
     // 区域树查询
     qryRegionTree = async (param) => {
@@ -63,17 +74,6 @@ class SysRoleMgService {
     // 区域查询
     qryRegion = async (param) => {
         let url = 'mock/system/rolesController/qryRegion';
-        return await Http.post(url, param);
-    };
-
-    // 查询用户数据
-    getUserDate = async (param) => {
-        let url = 'mock/system/rolesController/getUserDate';
-        return await Http.post(url, param);
-    };
-    // 平台用户删除
-    delUsers = async (param) => {
-        let url = 'mock/system/rolesController/delUsers';
         return await Http.post(url, param);
     };
 }

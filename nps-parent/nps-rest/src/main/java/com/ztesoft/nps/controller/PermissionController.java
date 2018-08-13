@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ztesoft.nps.common.Result;
 import com.ztesoft.nps.common.Status;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.Permission;
 import com.ztesoft.nps.model.Role;
@@ -150,6 +152,33 @@ public class PermissionController {
 		RolePermission rp = new RolePermission(rid, pid);
 
 		permissionService.deleteRole(rp);
+
+		return Result.success();
+	}
+
+	@DeleteMapping(value = "/{id}")
+	@ApiOperation(value = "删除权限", notes = "删除权限")
+	public Result<Object> delete(
+			@ApiParam(value = "权限ID", required = true) @PathVariable Long id) {
+		Permission permission = permissionService.findById(id);
+		if (permission == null) {
+			throw new NpsObjectNotFoundException(id);
+		}
+
+		List<Role> roles = roleService.findByPermissionId(id);
+		if (CollectionUtils.isNotEmpty(roles)) {
+			throw new NpsDeleteException("权限被角色使用中，不能删除");
+		}
+
+		List<Permission> permissions = permissionService.findByParentId(id);
+		if (CollectionUtils.isNotEmpty(permissions)) {
+			throw new NpsDeleteException("权限下存在子节点，不能删除");
+		}
+
+		User currentUser = UserUtils.getUser(session);
+		permission.setModifiedBy(currentUser.getAccount());
+
+		permissionService.delete(permission);
 
 		return Result.success();
 	}

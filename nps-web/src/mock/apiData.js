@@ -243,46 +243,25 @@ Mock.mock('mock/dept/getDeptTree', (params) => {
 })
 //获取所有权限树
 Mock.mock('mock/dept/getAllAuthorityData', (params) => {
-    let params1 = JSON.parse(params.body);
-    if (!params1||!params1.rowId)
-        return Mock.mock({
-            'treeData|10': [{
-                'rowId|+1': 1,
-                'ideptId|+1': 12131,
-                'iDeptLevel': '2',
-                'sdeptName': '@cname',
-                'iParentId': '0',
-                'sdispName': '/常规/',
-                'spathId': '/0/412530/',
-                'idomainId|+1': 1010001,
-                'sDomainName': '@cname',
-                'iSortIndex': '1',
-                'iDeptType|+1': 1,
-                'childCount': '2'
-            }]
-        })
-    else {
-        return Mock.mock({
-            'treeData|5': [{
-                'rowId|+1': params1.rowId * 10 + 1,
-                'ideptId|+1': params1.ideptId * 10 + 1,
-                'iDeptLevel': params1.iDeptLevel + 1,
-                'sdeptName': '@cname',
-                'iParentId': params1.rowId,
-                'sdispName': '/常规/',
-                'spathId': '/0/412530/',
-                'idomainId|+1': params1.idomainId * 10 + 1,
-                'sDomainName': '@cname',
-                'iSortIndex': '1',
-                'iDeptType|+1': 1,
-                'childCount': '@integer(0,10)'
-            }]
-        })
-    }
+    return Mock.mock({
+        'treeData|10': [{
+            'rowId|+1': 1,
+            'ideptId|+1': 12131,
+            'iDeptLevel': '2',
+            'sdeptName': '@cname',
+            'iParentId': '0',
+            'sdispName': '/常规/',
+            'spathId': '/0/412530/',
+            'idomainId|+1': 1010001,
+            'sDomainName': '@cname',
+            'iSortIndex': '1',
+            'iDeptType|+1': 1,
+            'childCount': '2'
+        }]
+    })
 })
 //判断部门唯一性
-Mock.mock('mock/dept/checkDeptName', (params) => {
-    let params1 = JSON.parse(params.body);
+Mock.mock('mock/dept/checkDeptName', () => {
     return Mock.mock({
         'result': {
             'code': 0
@@ -371,7 +350,7 @@ Mock.mock('mock/dept/getStaffData', (params) => {
                 "password": "@integer(1,9999999)",
                 "remark": "@cparagraph",
                 "sex|1": ['M', 'F'],
-                "state|1":[0,1,2]
+                "state|1": [0, 1, 2]
             }
         ],
         'pageInfo': {
@@ -609,42 +588,43 @@ Mock.mock('mock/system/rolesController/getUserDate', {
     ]
 })
 //权限配置管理
-Mock.mock("mock/systemController/Authority",{
-    "authorityData":[
-        {   key:0,
-            name:'权限树',
-            url:'',
-            icon:'qwerer',
-            describe:'权限树',
-            No:1,
-            type:'菜单',
-            area:'全局',
-            activate:'是',
-            sensitive:'',
-            'children|7':[
+Mock.mock("mock/systemController/Authority", {
+    "authorityData": [
+        {
+            key: 0,
+            name: '权限树',
+            url: '',
+            icon: 'qwerer',
+            describe: '权限树',
+            No: 1,
+            type: '菜单',
+            area: '全局',
+            activate: '是',
+            sensitive: '',
+            'children|7': [
                 {
                     key: "@natural(1,10000)",
-                    name:'@cname',
-                    url:'@url',
-                    icon:'@cname',
-                    describe:'@cword(5)',
+                    name: '@cname',
+                    url: '@url',
+                    icon: '@cname',
+                    describe: '@cword(5)',
                     No: "@natural(1,10000)",
-                    'type|1':['菜单','其他'],
-                    'area|1':['全局','信管系统','重保','统计分析'],
-                    'activate|1':['是','否'],
-                    sensitive:'',
-                    'children|2':[
+                    'type|1': ['菜单', '其他'],
+                    'area|1': ['全局', '信管系统', '重保', '统计分析'],
+                    'activate|1': ['是', '否'],
+                    sensitive: '',
+                    'children|2': [
                         {
                             key: "@natural(1,10000)",
-                            name:'@cname',
-                            url:'@url',
-                            icon:'@cname',
-                            describe:'@cword(5)',
+                            name: '@cname',
+                            url: '@url',
+                            icon: '@cname',
+                            describe: '@cword(5)',
                             No: "@natural(1,10000)",
-                            'type|1':['菜单','其他'],
-                            'area|1':['全局','信管系统','重保','统计分析'],
-                            'activate|1':['是','否'],
-                            sensitive:'',
+                            'type|1': ['菜单', '其他'],
+                            'area|1': ['全局', '信管系统', '重保', '统计分析'],
+                            'activate|1': ['是', '否'],
+                            sensitive: '',
                         }
                     ]
                 }

@@ -29,6 +29,7 @@ const FormItem = Form.Item;
 const info = Modal.info;
 const {Sider, Content} = Layout;
 const TabPane = Tabs.TabPane;
+const TreeNode = TreeSelect.TreeNode;
 
 @Form.create({})
 @inject('stores')
@@ -50,6 +51,7 @@ export default class Dept extends PureComponent {
         staffEditData: [],
         selectedKeys: [],
         selectedRoleKeys: [],
+        selectedDomainKeys: [],
         selectedStaffIds: [],
         editAuthorityParams: [],
         selectedAuthorityData: [],
@@ -122,48 +124,7 @@ export default class Dept extends PureComponent {
     }
 
     componentWillMount() {
-        let a = JSON.stringify({
-            "IDOMAINID": '10000',
-            "ISEQ": 1,
-            "SDOMAINNAME": "全国",
-            "children": [
-                {
-                    "IDOMAINID": '20000',
-                    "ISEQ": 1,
-                    "SDOMAINNAME": "北京",
-                    "SDOMAINCODE": "beijing",
-                    "SPATHID": "/10000/20000",
-                    "IPARENTID": 10000,
-                    "IDOMAINTYPE": 1
-                },
-                {
-                    "IDOMAINID": '30000',
-                    "ISEQ": 1,
-                    "SDOMAINNAME": "湖南",
-                    "children": [{
-                        "IDOMAINID": '31000',
-                        "ISEQ": 1,
-                        "SDOMAINNAME": "长沙",
-                        "SDOMAINCODE": "changsha",
-                        "SPATHID": "/10000/30000/31000",
-                        "IPARENTID": 30000,
-                        "IDOMAINTYPE": 1
-                    }],
-                    "SDOMAINCODE": "hunan",
-                    "SPATHID": "/10000/30000",
-                    "IPARENTID": 10000,
-                    "IDOMAINTYPE": 1
-                }
-            ],
-            "SDOMAINCODE": "all",
-            "SPATHID": "/10000",
-            "IPARENTID": 0,
-            "IDOMAINTYPE": 0
-        })
-        a = a.replace(/SDOMAINNAME/g, "title").replace(/SDOMAINCODE/g, "value").replace(/IDOMAINID/g, "key")
-        this.setState({
-            domainTreeDate: [JSON.parse(a)]
-        });
+        this.getDomainTree();
         this.getDeptTree();
         this.getAllAuthorityData();
     }
@@ -181,56 +142,87 @@ export default class Dept extends PureComponent {
     }
     //点击区域树
     onChange = (value) => {
-        this.setState({value});
+        this.setState({value: value, selectedDomainKeys: value});
     }
     //获取区域树
     getDomainTree = () => {
         DeptService.getDomainTree().then(result => {
-            result.treeData = result;
-            let treeData = result.treeData.map(item => {
-                item.title = item.name;
-                item.key = item.id
-                item.isLeaf = !item.leaf;
-                return item;
-            })
-            this.setState({
-                deptTreeData: treeData,
-            });
+            if (result) {
+                result.treeData = result;
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.value = item.id.toString();
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
+                    return item;
+                })
+                this.setState({
+                    domainTreeDate: treeData,
+                });
+            }
         });
     }
-    //点击区域树节点时
-    onSelectDomainTree = (selectedKeys, info) => {
-        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
-        this.setState({
-            departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
-            selectedKeys: selectedKeys
-        }, () => {
-            this.getStaffData(this.state.departmentEditData)
-        })
+    //异步加载地区树
+    onLoadDomainTreeData = (treeNode) => {
+        return new Promise((resolve) => {
+            if (treeNode.props.dataRef.children) {
+                resolve();
+                return;
+            }
+            let params = {
+                parentId: treeNode.props.dataRef.id
+            }
+            DeptService.getDomainTree(params).then(result => {
+                if (result) {
+                    result.treeData = result;
+                    if (result.treeData.length) {
+                        let treeData = result.map(item => {
+                            item.title = item.name;
+                            item.key = item.id
+                            item.isLeaf = item.leaf;
+                            return item;
+                        })
+                        treeNode.props.dataRef.children = treeData;
+                        this.setState({
+                            domainTreeDate: [...this.state.domainTreeDate],
+                        });
+                    }
+                    resolve();
+                }
+            })
+        });
     }
     //获取部门树
     getDeptTree = (params) => {
-        DeptService.getDeptTree(params).then(result => {
-            result.treeData = result;
-            let treeData = result.treeData.map(item => {
-                item.title = item.name;
-                item.key = item.id
-                item.isLeaf = !item.leaf;
-                return item;
-            })
-            this.setState({
-                deptTreeData: treeData,
-            });
+        let param = params ? params : {};
+        param.status = 1
+        DeptService.getDeptTree(param).then(result => {
+            if (result) {
+                result.treeData = result;
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
+                    return item;
+                })
+                this.setState({
+                    deptTreeData: treeData,
+                    departmentEditData:treeData
+                },()=>{
+                    // this.getStaffData({deptId: '1'})
+                    this.getStaffData({deptId: treeData[0].key})
+                });
+            }
         });
     }
     //获取角色树
     getRoleTree = (params) => {
         let data = params[params.length - 1];
         DeptService.getRoleTree(data).then(result => {
-            let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId
-                item.isLeaf = !item.childCount;
+            let treeData = result.map(item => {
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = item.leaf;
                 return item;
             })
             this.setState({
@@ -242,11 +234,11 @@ export default class Dept extends PureComponent {
     getAuthorityTree = (params) => {
         let selectedAuthorityData = [];
         DeptService.getAuthorityTree(params).then(result => {
-            let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId;
+            let treeData = result.map(item => {
+                item.title = item.name;
+                item.key = item.id;
                 selectedAuthorityData.push(item.key)
-                item.isLeaf = !item.childCount;
+                item.isLeaf = item.leaf;
                 return item;
             })
             this.setState({
@@ -262,28 +254,27 @@ export default class Dept extends PureComponent {
             departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
             selectedKeys: selectedKeys
         }, () => {
-            this.getStaffData(this.state.departmentEditData)
+            this.getStaffData({deptId: selectedKeys.toString()})
         })
     }
     //异步加载部门树节点
     onLoadDeptTreeData = (treeNode) => {
         return new Promise((resolve) => {
-            if (treeNode.props.children) {
+            if (treeNode.props.dataRef.children) {
                 resolve();
                 return;
             }
-            let params={
-                parentId:treeNode.props.dataRef.id,
-                name: treeNode.props.dataRef.name,
+            let params = {
+                parentId: treeNode.props.dataRef.id,
                 regionId: treeNode.props.dataRef.regionId,
             }
             DeptService.getDeptTree(params).then(result => {
                 result.treeData = result;
                 if (result.treeData.length) {
-                    let treeData = result.treeData.map(item => {
+                    let treeData = result.map(item => {
                         item.title = item.name;
                         item.key = item.id
-                        item.isLeaf = !item.leaf;
+                        item.isLeaf = item.leaf;
                         return item;
                     })
                     treeNode.props.dataRef.children = [...treeData];
@@ -298,11 +289,11 @@ export default class Dept extends PureComponent {
     //点击角色树节点时
     onSelectRoleTree = (selectedKeys, info) => {
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
-        DeptService.getDeptTree(info.selectedNodes[info.selectedNodes.length - 1].props).then(result => {
-            let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId
-                item.isLeaf = !item.childCount;
+        DeptService.getRoleTree(info.selectedNodes[info.selectedNodes.length - 1].props).then(result => {
+            let treeData = result.map(item => {
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = item.leaf;
                 return item;
             })
             this.setState({
@@ -310,20 +301,24 @@ export default class Dept extends PureComponent {
                 selectedRoleKeys: selectedKeys,
             });
         })
-        this.getAuthorityTree(info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "")
+        // this.getAuthorityTree(info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "")
+        this.getAuthorityTree()
     }
     //异步加载角色树节点
     onLoadRoleTreeData = (treeNode) => {
         return new Promise((resolve) => {
-            if (treeNode.props.children) {
+            if (treeNode.props.dataRef.children) {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
+            let params = {
+                parentId: treeNode.props.dataRef.id
+            }
+            DeptService.getRoleTree(params).then(result => {
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
                     return item;
                 })
                 treeNode.props.dataRef.children = [...treeData];
@@ -345,15 +340,15 @@ export default class Dept extends PureComponent {
     //异步加载权限树节点
     onLoadAuthorityTreeData = (treeNode) => {
         return new Promise((resolve) => {
-            if (treeNode.props.children) {
+            if (treeNode.props.dataRef.children) {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
+            DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
                 let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
+                    item.title = item.name;
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
                     return item;
                 })
                 treeNode.props.dataRef.children = [...treeData];
@@ -367,15 +362,15 @@ export default class Dept extends PureComponent {
     //异步加载全部权限树节点
     onLoadEditAuthorityTreeData = (treeNode) => {
         return new Promise((resolve) => {
-            if (treeNode.props.children) {
+            if (treeNode.props.dataRef.children) {
                 resolve();
                 return;
             }
             DeptService.getAllAuthorityData(treeNode.props.dataRef).then(result => {
                 let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
+                    item.title = item.name;
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
                     return item;
                 })
                 treeNode.props.dataRef.children = [...treeData];
@@ -389,6 +384,7 @@ export default class Dept extends PureComponent {
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
+        params.regionId = this.state.selectedDomainKeys;
         this.setState({
             deptTreeData: [],
         });
@@ -399,18 +395,18 @@ export default class Dept extends PureComponent {
         if (this.state.departmentEditData) {
             this.setState({
                 departmentData: {
-                    sdispName: this.state.departmentEditData.sdispName,
-                    parentId: this.state.departmentEditData.ideptId,
-                    sdeptName: "",
+                    regionId: this.state.selectedDomainKeys,
+                    parentId: this.state.departmentEditData.id,
+                    name: "",
                 }
             }, () => this.handleDeptModalVisible(true));
 
         } else {
             this.setState({
                 departmentData: {
-                    sdispName: "",
+                    regionId: this.state.selectedDomainKeys,
                     parentId: 0,
-                    sdeptName: "",
+                    name: "",
                 }
             }, () => this.handleDeptModalVisible(true));
             // const ref = info({
@@ -428,7 +424,11 @@ export default class Dept extends PureComponent {
     handleDeptUpdate = () => {
         if (this.state.departmentEditData) {
             this.setState({
-                departmentData: this.state.departmentEditData,
+                departmentData: {
+                    regionId: this.state.selectedDomainKeys,
+                    parentId: this.state.departmentEditData.id,
+                    ...this.state.departmentEditData
+                },
                 thisTime: 'M',
             });
             this.handleDeptModalVisible(true);
@@ -449,7 +449,7 @@ export default class Dept extends PureComponent {
         let row = this.state.selectedKeys;
         let params = {};
         if (row.length !== 0) {
-            params.menuIds = row.map(item => item + ''); //平台角色id，必填
+            params.id = row.map(item => item + ''); //平台角色id，必填
             DeptService.dleDept(params).then(result => {
                 message.success('删除成功');
                 this.handlerSearchDepartment();
@@ -490,7 +490,7 @@ export default class Dept extends PureComponent {
         this.setState({
             formValues: params
         }, () => {
-            this.standardTable.handleSearch({pageInfo: {pageIndex: 1, pageSize: 10}, ...params})
+            this.standardTable.handleSearch({pageNumber: 1, pageSize: 10, ...params})
         });
     }
     //新增人员
@@ -584,7 +584,6 @@ export default class Dept extends PureComponent {
         // 页面关闭了要重新查询
         !visible && this.getStaffData();
     }
-
     //更改部门
     handleChangeDept = () => {
         if (this.state.staffData.length !== 0) {
@@ -614,7 +613,6 @@ export default class Dept extends PureComponent {
         // 页面关闭了要重新查询
         !visible && this.getStaffData();
     }
-
     //新增角色按钮点击事件
     handleAddRole = () => {
         if (this.state.addRoleTreeDate.length) {
@@ -643,15 +641,18 @@ export default class Dept extends PureComponent {
     //异步加载增加角色的角色树
     onLoadAddRoleTreeData = (treeNode) => {
         return new Promise((resolve) => {
-            if (treeNode.props.children) {
+            if (treeNode.props.dataRef.children) {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
+            let params = {
+                parentId: treeNode.props.dataRef.id
+            }
+            DeptService.getRoleTree(params).then(result => {
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.key = item.id
+                    item.isLeaf = item.leaf;
                     return item;
                 })
                 treeNode.props.dataRef.children = [...treeData];
@@ -721,12 +722,12 @@ export default class Dept extends PureComponent {
             selectedAuthorityData: [],
             authorityTreeAllData: [],
         }, this.getAllAuthorityData())
-        DeptService.getAuthorityTree(params).then(result => {
-            let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId;
+        DeptService.getAuthorityTree().then(result => {
+            let treeData = result.map(item => {
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = item.leaf;
                 selectedAuthorityData.push(item.key)
-                item.isLeaf = !item.childCount;
                 return item;
             })
             this.setState({
@@ -740,9 +741,9 @@ export default class Dept extends PureComponent {
     getAllAuthorityData = () => {
         DeptService.getAllAuthorityData().then(result => {
             let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId;
-                item.isLeaf = !item.childCount;
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = item.leaf;
                 return item;
             })
             this.setState({
@@ -758,10 +759,10 @@ export default class Dept extends PureComponent {
             staffIds = (data.id ? data.id : []);
         }
         DeptService.getDeptTree(data.deptId).then(result => {
-            let treeData = result.treeData.map(item => {
-                item.title = item.sdeptName;
-                item.key = item.ideptId
-                item.isLeaf = !item.childCount;
+            let treeData = result.map(item => {
+                item.title = item.name;
+                item.key = item.id
+                item.isLeaf = item.leaf;
                 return item;
             })
             this.setState({
@@ -773,11 +774,19 @@ export default class Dept extends PureComponent {
 
         this.getRoleTree(data)
     }
-
     render() {
+        const loop = data => data.map((item) => {
+            if (item.children) {
+                return (
+                    <TreeNode title={item.name} key={item.id} dataRef={item} isLeaf={item.leaf}>
+                        {loop(item.children)}
+                    </TreeNode>
+                );
+            }
+            return <TreeNode {...item} dataRef={item}/>;
+        });
         const {departmentData, authorityTreeAllData, deptTreeForChangeData, selectedAuthorityData, modalChangeAuthorityVisible, staffEditData, modalDeptVisible, modalStaffVisible, modalChangeDeptVisible, modalChangeRoleVisible, domainTreeDate, deptTreeData, roleTreeData, addRoleTreeDate, authorityTreeData, staffColumns, formValues} = this.state;
         const {getFieldDecorator} = this.props.form;
-        // const defaultDeptSelectedKeys=deptTreeData.length!==0?deptTreeData[0].ideptId.toString():'';
         return (
             <Layout className='dept'>
                 <Sider
@@ -803,25 +812,15 @@ export default class Dept extends PureComponent {
                             label="所属区域"
                             style={{"marginBottom": 0}}
                         >
-                            {/*<TreeSelect*/}
-                                {/*value={this.state.value}*/}
-                                {/*dropdownStyle={{maxHeight: 400, overflow: 'auto'}}*/}
-                                {/*treeData={domainTreeDate}*/}
-                                {/*treeCheckable={true}*/}
-                                {/*showCheckedStrategy={SHOW_PARENT}*/}
-                                {/*searchPlaceholder={'请选择区域'}*/}
-                                {/*onChange={this.onChange}*/}
-                            {/*/>*/}
                             <TreeSelect
                                 value={this.state.value}
                                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                treeData={deptTreeData}
-                                treeCheckable={true}
+                                treeCheckable={false}
                                 showCheckedStrategy={SHOW_PARENT}
                                 searchPlaceholder={'请选择区域'}
-                                onLoadData={this.onLoadDeptTreeData}
+                                loadData={this.onLoadDomainTreeData}
                                 onChange={this.onChange}
-                            />
+                            >{loop(domainTreeDate)}</TreeSelect>
                         </FormItem>
                         <FormItem
                             labelCol={{span: 6}}
@@ -829,7 +828,7 @@ export default class Dept extends PureComponent {
                             label="部门名称"
                             style={{"marginBottom": 0}}
                         >
-                            {getFieldDecorator('deptName', {
+                            {getFieldDecorator('name', {
                                 rules: [{required: false}],
                             })(
                                 <Input/>
@@ -854,7 +853,7 @@ export default class Dept extends PureComponent {
                         onLoadData={this.onLoadDeptTreeData}/>
                     <DeptModal
                         departmentData={departmentData}
-                        domainTreeDate={[{key: 0, title: '全国'}, {key: 1, title: '湖南'}, {key: 2, title: '北京'}]}
+                        domainTreeDate={domainTreeDate}
                         modalVisible={modalDeptVisible}
                         thisTime={this.state.thisTime}
                         handleModalVisible={this.handleDeptModalVisible}

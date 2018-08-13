@@ -19,33 +19,33 @@ class DeptService {
     }
     // 新增部门
     addDept = async (param) => {
-        var url = 'mock/dept/addDept';
+        var url = 'departments';
         return await Http.post(url, param);
     }
     //修改部门
     ediDept = async (param) => {
-        var url = 'mock/dept/ediDept';
-        return await Http.post(url, param);
+        var url = 'departments/' + param.id;
+        return await Http.put(url, param);
     }
     //删除部门
     dleDept = async (param) => {
-        var url = 'mock/dept/dleDept';
-        return await Http.post(url, param);
+        var url = 'departments/'+param.id;
+        return await Http.delete(url);
     }
     //获取员工数据
     getStaffData = async (param) => {
-        var url = 'mock/dept/getStaffData';
-        return await Http.post(url, param);
+        var url = 'users';
+        return await Http.get(url, param);
     }
     // 新增员工
     addStaff = async (param) => {
-        var url = 'mock/dept/addStaff';
+        var url = 'users';
         return await Http.post(url, param);
     }
     //修改员工
     ediStaff = async (param) => {
-        var url = 'mock/dept/ediStaff';
-        return await Http.post(url, param);
+        var url = 'users'+param.id;
+        return await Http.put(url, param);
     }
     //删除员工
     dleStaff = async (param) => {
@@ -53,37 +53,37 @@ class DeptService {
         return await Http.post(url, param);
     }
     // 获取角色树
-    getRoleTree= async (param) => {
-        var url = 'mock/dept/getRoleTree';
-        return await Http.post(url, param);
+    getRoleTree = async (param) => {
+        var url = 'roles';
+        return await Http.get(url, param);
     }
     // 新增角色
-    addRole= async (param) => {
+    addRole = async (param) => {
         var url = 'mock/dept/addRole';
         return await Http.post(url, param);
     }
     // 新增角色
-    editAuthority= async (param) => {
+    editAuthority = async (param) => {
         var url = 'mock/dept/editAuthority';
         return await Http.post(url, param);
     }
     // 删除角色
-    dleRole= async (param) => {
+    dleRole = async (param) => {
         var url = 'mock/dept/dleRole';
         return await Http.post(url, param);
     }
     // 获取权限树
-    getAuthorityTree= async (param) => {
-        var url = 'mock/dept/getAuthorityTree';
-        return await Http.post(url, param);
+    getAuthorityTree = async (param) => {
+        var url = 'permissions';
+        return await Http.get(url, param);
     }
     // 获取所有权限数据
-    getAllAuthorityData= async (param) => {
+    getAllAuthorityData = async (param) => {
         var url = 'mock/dept/getAllAuthorityData';
         return await Http.post(url, param);
     }
     // 更改部门
-    changeDept= async (param) => {
+    changeDept = async (param) => {
         var url = 'mock/dept/changeDept';
         return await Http.post(url, param);
     }

@@ -18,41 +18,44 @@ class AdvancedSearchForm extends Component {
         const children = [];
         const fieldList = [
             {
-            label: '部门范围',
-            key: 'a',
-            type: 'select',
-            optionList: [{key: 0, title: '部门及子部门'}, {key: 1, title: '当前部门'}, {key: 2, title: '按区域'}]
-        }, {
-            label: '人员帐号',
-            key: 'b', type: 'input'
-        }, {
-            label: '人员工号',
-            key: 'c',
-            type: 'input'
-        }, {
-            label: '人员姓名',
-            key: 'd',
-            type: 'input'
-        }, {
-            label: '账号状态',
-            type: 'select',
-            key: 'e',
-            optionList: [{key: 0, title: '全部'}, {key: 1, title: '正常'}, {key: 2, title: '已封存'}, {
-                key: 3,
-                title: '待修改密码'
-            }, {key: 4, title: '长期锁定'}, {key: 5, title: '短期锁定'}]
-        }, {
-            label: '是否有效',
-            type: 'select',
-            key: 'f',
-            optionList: [{key: 0, title: '全部'}, {key: 1, title: '有效'}, {key: 2, title: '无效'}]
-        }]
+                label: '部门范围',
+                key: 'range',
+                type: 'select',
+                optionList: [{key: 'dept', title: '部门及子部门'}, {key: 'currentDept', title: '当前部门'}, {
+                    key: 'domain',
+                    title: '按区域'
+                }]
+            }, {
+                label: '人员帐号',
+                key: 'account', type: 'input'
+            }, {
+                label: '人员工号',
+                key: 'no',
+                type: 'input'
+            }, {
+                label: '人员姓名',
+                key: 'name',
+                type: 'input'
+            }, {
+                label: '账号状态',
+                type: 'select',
+                key: 'status ',
+                optionList: [{key: '', title: '全部'}, {key: 1, title: '正常'}, {key: 2, title: '已封存'}, {
+                    key: 3,
+                    title: '待修改密码'
+                }, {key: 4, title: '长期锁定'}, {key: 5, title: '短期锁定'}]
+            }, {
+                label: '是否有效',
+                type: 'select',
+                key: 'valid',
+                optionList: [{key: '', title: '全部'}, {key: 1, title: '有效'}, {key: 0, title: '无效'}]
+            }]
         for (let i = 0; i < fieldList.length; i++) {
             children.push(
                 <Col span={8} key={i}>
                     <FormItem label={fieldList[i].label}>
                         {getFieldDecorator(fieldList[i].key, {
-                            initialValue: fieldList[i].type === 'select' ? 0 : ''
+                            initialValue: i === 0 ? 'dept' : ''
                         })(
                             fieldList[i].type === 'input' ? (<Input/>) : (
                                 <Select>
@@ -69,7 +72,7 @@ class AdvancedSearchForm extends Component {
     }
 
     render() {
-        const {handleAdd, handleEdit, handleDelete,handleChangeDept} = this.props
+        const {handleAdd, handleEdit, handleDelete, handleChangeDept} = this.props
         return (
             <Form
                 className="ant-advanced-search-form"

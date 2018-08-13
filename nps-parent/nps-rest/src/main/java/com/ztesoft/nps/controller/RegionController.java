@@ -118,6 +118,9 @@ public class RegionController {
 			throw new NpsDeleteException("区域下存在子节点，不能删除");
 		}
 
+		User currentUser = UserUtils.getUser(session);
+		region.setModifiedBy(currentUser.getAccount());
+
 		regionService.delete(region);
 
 		return Result.success();

@@ -85,6 +85,8 @@ class StandardTable extends PureComponent {
         service[method](_params)
             .then(result => {
                 // if (!result || !result.head) {
+                this.setState({
+                    loading: false})
                 if (!result) {
                     return;
                 }
@@ -102,23 +104,22 @@ class StandardTable extends PureComponent {
                 // }
                 // else {
                 let pageSizeOptions = ['5', '10', '20', '30', '40'];
-                let dataSource = data.dataList || data.page;
+                let dataSource = data.list || data.page;
                 if (this.props.onFinishLoading) {
-                    dataSource = this.props.onFinishLoading(_params.pageInfo.pageIndex, data.dataList);
+                    dataSource = this.props.onFinishLoading(_params.pageInfo.pageIndex, data.list);
                 }
                 this.setState({
-                    loading: false,
                     list: dataSource,
                     pagination: data.pageInfo ? {
-                        total: this.getInteger(data.pageInfo.totalRow),
-                        pageSize: this.getInteger(data.pageInfo.pageNum),
-                        current: this.getInteger(data.pageInfo.pageIndex),
+                        total: this.getInteger(data.total),
+                        pageSize: this.getInteger(data.pageNum),
+                        current: this.getInteger(data.pageIndex),
                         pageSizeOptions: pageSizeOptions
                     } : false,
-                    selectedRowKeys: [dataSource[0][this.props.rowKey]],
-                    clickedRowIndex: dataSource[0][this.props.rowKey],
+                    selectedRowKeys: [dataSource.length ? dataSource[0][this.props.rowKey] : []],
+                    clickedRowIndex: dataSource.length ? dataSource[0][this.props.rowKey] : [],
                 });
-                this.props.onSelectRow([dataSource[0]])
+                dataSource.length && this.props.onSelectRow([dataSource[0]])
                 // }
             });
     }
