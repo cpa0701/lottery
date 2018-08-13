@@ -18,6 +18,7 @@ import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.query.LoginQuery;
 import com.ztesoft.nps.service.UserService;
+import com.ztesoft.nps.utils.UserUtils;
 
 @RestController
 @Api(value = "登录与注销", description = "登录与注销")
@@ -49,7 +50,7 @@ public class LoginController {
 		user.setSalt(null);
 
 		HttpSession session = request.getSession(true);
-		session.setAttribute("user", user);
+		session.setAttribute(UserUtils.SESSION_KEY, user);
 
 		return Result.success(user);
 	}
@@ -59,7 +60,7 @@ public class LoginController {
 	public Result<Object> logout() {
 		HttpSession session = request.getSession(false);
 		if (session != null) {
-			session.removeAttribute("user");
+			session.removeAttribute(UserUtils.SESSION_KEY);
 		}
 
 		return Result.success();
