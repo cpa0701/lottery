@@ -6,7 +6,7 @@ import { Radio} from 'antd';
 import {PureComponent} from "react";
 import React from 'react';
 const RadioGroup = Radio.Group;
-//单选
+ //单选
 export default class Radiomodule extends PureComponent {
     constructor(props){
         super(props);
