@@ -1,4 +1,4 @@
-import Http from '../common/Http';
+import Http from '../../common/Http';
 
 class DomainService {
     // 获取区域树
