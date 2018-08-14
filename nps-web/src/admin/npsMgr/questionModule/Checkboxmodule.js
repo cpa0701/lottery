@@ -8,17 +8,16 @@ export default class Checkboxmodule extends PureComponent {
         super(props);
         this.state={
             id:props.id,
-            title:props.title,
-            num:props.num,
-            options:props.options,
+            title: props.title ? props.title : '多选题标题',
+            option: props.option ? props.option : ['选项1', '选项2','选项3', '选项4']
         }
     }
     onChange = (e) => {
     }
     render() {
         var items = [];
-        for (var i = 0; i < this.state.num; i++) {
-            items.push( <Col span={24}><Checkbox value={i}>{this.state.options[i]}</Checkbox></Col>);
+        for (var i = 0; i < this.state.option.length; i++) {
+            items.push( <Col span={24}><Checkbox value={i}>{this.state.option[i]}</Checkbox></Col>);
         }
         return (
             <div>
@@ -27,7 +26,7 @@ export default class Checkboxmodule extends PureComponent {
                     <Row>
                         {items}
                     </Row>
-                </Checkbox.Group>,
+                </Checkbox.Group>
             </div>
         );
     }

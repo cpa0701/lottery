@@ -10,9 +10,8 @@ export default class Radiomodule extends PureComponent {
         this.state={
             value:0,
             id:props.id,
-            title:props.title,
-            num:props.num,
-            options:props.options,
+            title: props.title ? props.title : '单选题标题',
+            option: props.option ? props.option : ['选项1', '选项2','选项3', '选项4']
         }
     }
     onChange = (e) => {
@@ -28,8 +27,8 @@ export default class Radiomodule extends PureComponent {
             lineHeight: '30px',
         };
         var items = [];
-        for (var i = 0; i < this.state.num; i++) {
-            items.push( <Radio style={radioStyle} value={i}>{this.state.options[i]}</Radio>);
+        for (var i = 0; i < this.state.option.length; i++) {
+            items.push( <Radio style={radioStyle} value={i}>{this.state.option[i]}</Radio>);
         }
         return (
             <div>
