@@ -1,4 +1,4 @@
-import Http from '../common/Http';
+import Http from '../../common/Http';
 
 class SysRoleMgService {
     // 角色树查询

@@ -2,10 +2,8 @@ import React from 'react';
 import {Layout, Menu, Icon, Dropdown} from 'antd';
 import MenuSer from '../../../../services/MenuSer';
 import {observer, inject} from 'mobx-react';
-import {Link, withRouter} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import "./Header.less"
-
-import LoginService from '../../../../services/LoginService'
 
 const {Header} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -32,10 +30,8 @@ class Head extends React.Component {
             localStorage.setItem('locale', key);
             window.location.reload();
         } else {
-            LoginService.logout().then(result => {
-                this.stores.LoginModel.logout();
-                window.location.reload();
-            })
+            this.stores.LoginModel.logout();
+            window.location.reload();
         }
     };
 
@@ -116,4 +112,4 @@ class Head extends React.Component {
     }
 }
 
-export default withRouter(Head);
+export default Head;

@@ -13,7 +13,7 @@ import {
 } from 'antd';
 
 import "./Dept.less"
-import DeptService from "../../../services/DeptService"
+import DeptService from "../../../services/system/DeptService"
 import DeptModal from "./modal/DeptModal"
 import StaffModal from "./modal/StaffModal"
 import ChangeDeptModal from "./modal/ChangeDeptModal"

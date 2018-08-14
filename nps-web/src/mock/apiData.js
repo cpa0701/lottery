@@ -44,32 +44,32 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         {
             menuName: '调研问卷管理',
             icon: 'form',
-            menuUrl: '/nps',
+            menuUrl: '/npsMgr',
             menuId: 2,
             children: [
                 {
                     menuName: '题目管理',
-                    menuUrl: '/nps/questionLibMgr',
+                    menuUrl: '/npsMgr/questionLibMgr',
                     menuId: 21,
                 },
                 {
                     menuName: '问卷管理',
-                    menuUrl: '/nps/questionMgr',
+                    menuUrl: '/npsMgr/questionMgr',
                     menuId: 22,
                     children: [
                         {
                             menuName: '问卷申请',
-                            menuUrl: '/nps/questionMgr',
+                            menuUrl: '/npsMgr/questionMgr/questionApplication',
                             menuId: 221,
                         },
                         {
                             menuName: '问卷审核',
-                            menuUrl: '/nps/questionMgr',
+                            menuUrl: '/npsMgr/questionMgr/questionAudit',
                             menuId: 222,
                         },
                         {
                             menuName: '问卷库',
-                            menuUrl: '/questionnaireLibrary',
+                            menuUrl: '/npsMgr/questionMgr/questionnaireLibrary',
                             menuId: 223,
                         }
                     ]
@@ -631,4 +631,13 @@ Mock.mock("mock/systemController/Authority", {
             ]
         },
     ]
+})
+
+// 获取题库
+Mock.mock('mock/questionMgr/getQuestionLIst', {
+    'result|100': [{
+        title: '@csentence',
+        'id|+1': 1,
+        'type|1': ['radio', 'checkbox', 'blank']
+    }]
 })

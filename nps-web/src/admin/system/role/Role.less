@@ -1,9 +1,12 @@
+@blueColor: #e5f0fa;
+
 // 角色管理页面
 .content-inner {
+  background: #fff;
   .divider {
     width: 1px;
     height: 24px;
-    border-left: 1px solid #e5f0fa;
+    border-left: 1px solid @blueColor;
   }
   .btnGroup {
     display: flex;
@@ -33,15 +36,29 @@
       font-size: 12px;
       color: #23496d;
       font-weight: bold;
-      background: #e5f0fa;
+      background: @blueColor;
       border-width: 0;
       border-bottom: 1px solid #23496d;
       padding: 10px 0 8px 10px;
       line-height: 15px;
+      .trigger {
+        font-size: 18px;
+        line-height: 14px;
+        padding: 0 2px;
+        cursor: pointer;
+        transition: color .3s;
+      }
+      .triggered {
+        position: absolute;
+        left: -22px;
+        top: 100px;
+      }
+      .trigger:hover {
+        color: #1890ff;
+      }
     }
-
     .treeStyle {
-      border: 1px solid #e5f0fa;
+      border: 1px solid @blueColor;
       height: 400px;
       overflow-x: hidden;
       overflow-y: auto;
@@ -83,19 +100,19 @@
       color: #000;
     }
     header:hover {
-      background: #e5f0fa;
+      background: @blueColor;
     }
     .authorityManage, .deptManage {
       height: 200px;
     }
     .authorityManage .authorityTree {
-      border: 1px solid #e5f0fa;
+      border: 1px solid @blueColor;
       height: 165px;
       overflow-x: hidden;
       overflow-y: auto;
     }
     .searchForm {
-      background: #e5f0fa;
+      background: @blueColor;
       border: 1px solid #f4f4f4;
       :global {
         .ant-input {
@@ -143,7 +160,7 @@
     }
     .ant-search-form {
       background: #fbfbfb;
-      border: 1px solid #e5f0fa;
+      border: 1px solid @blueColor;
       border-radius: 6px;
       height: 50px;
       line-height: 46px;
@@ -160,7 +177,7 @@
         font-size: 12px;
         color: #23496d;
         font-weight: bold;
-        background: #e5f0fa;
+        background: @blueColor;
         border-width: 0;
         border-bottom: 1px solid #0085d0;
         padding: 6px 0 5px 10px;
@@ -186,7 +203,7 @@
       height: 34px;
       line-height: 34px;
       padding-left: 15px;
-      background: #e5f0fa;
+      background: @blueColor;
       span {
         color: #333;
         font-weight: bold;

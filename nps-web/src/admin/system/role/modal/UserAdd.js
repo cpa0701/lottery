@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Row, Col, Input, Form, Checkbox, Tabs, Button, Table, Tree, TreeSelect, message } from 'antd';
 
 import '../Role.less';
-import DeptService from "../../../../services/DeptService";
+import DeptService from "../../../../services/system/DeptService";
 
 const [FormItem, CheckboxGroup, TabPane, SHOW_PARENT, TreeNode] =
     [Form.Item, Checkbox.Group, Tabs.TabPane, TreeSelect.SHOW_PARENT, Tree.TreeNode];

@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { Modal, message, Button } from 'antd';
 
 import Tree from '../Tree';
-import AuthorityService from '../../../../services/AuthorityService'
-import SysRoleMgService from "../../../../services/RoleService";
+import AuthorityService from '../../../../services/system/AuthorityService'
+import SysRoleMgService from "../../../../services/system/RoleService";
 
 export default class extends Component {
   state = {
@@ -17,15 +17,17 @@ export default class extends Component {
   authQuery = (params) => {
       AuthorityService.getAuthTree(params)
             .then(data => {
-                data.map(item => {
-                    item.title = item.name;
-                    item.key = item.id;
-                    item.isLeaf = item.leaf;
-                    return item;
-                });
-                this.setState({
-                    authData: data,
-                });
+                if(data) {
+                    data.map(item => {
+                        item.title = item.name;
+                        item.key = item.id;
+                        item.isLeaf = item.leaf;
+                        return item;
+                    });
+                    this.setState({
+                        authData: data,
+                    });
+                }
             });
     };
   //异步加载权限树节点
@@ -37,16 +39,18 @@ export default class extends Component {
             }
             AuthorityService.getAuthTree({parentId: treeNode.props.dataRef.id})
                 .then(data => {
-                    data.map(item => {
-                        item.title = item.name;
-                        item.key = item.id;
-                        item.isLeaf = item.leaf;
-                        return item;
-                    });
-                    treeNode.props.dataRef.children = [...data];
-                    this.setState({
-                        authData: [...this.state.authData]
-                    });
+                    if(data) {
+                        data.map(item => {
+                            item.title = item.name;
+                            item.key = item.id;
+                            item.isLeaf = item.leaf;
+                            return item;
+                        });
+                        treeNode.props.dataRef.children = [...data];
+                        this.setState({
+                            authData: [...this.state.authData]
+                        });
+                    }
                     resolve();
                 })
         });

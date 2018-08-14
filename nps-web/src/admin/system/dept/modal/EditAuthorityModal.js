@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {Modal} from 'antd';
 
 import TreeComponent from '../../../../common/components/tree/tree';
-import DeptService from "../../../../services/DeptService"
+import DeptService from "../../../../services/system/DeptService"
 
 class EditAuthorityModal extends PureComponent {
     constructor(props) {
