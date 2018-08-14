@@ -11,7 +11,7 @@ import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApp
 class RouteList extends React.PureComponent {
     render() {
         return (
-            <div>
+            <div style={{height:'100%'}}>
                 <Route path="/" exact component={Home}/>
                 <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
                 <Route path="/system/domain" component={Domain}/>

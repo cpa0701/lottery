@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout} from 'antd';
+import {Layout, Spin} from 'antd';
 import {HashRouter as Router, Switch} from 'react-router-dom';
 
 import Header from '../Header/Header'
@@ -20,6 +20,7 @@ class Main extends React.Component {
     componentWillUpdate(nextProps) {
         // console.log(nextProps)//监听路由
     }
+
     render() {
         return (
             <Router>

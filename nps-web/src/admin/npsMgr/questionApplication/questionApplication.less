@@ -1,4 +1,8 @@
 .questionApplication {
+  height: 100%;
+  .height{
+    height: calc(100% - 62px);
+  }
   .questionAppHead {
     background: #888;
     padding: 15px 0 15px;
@@ -7,6 +11,8 @@
   .questionAppContent {
     width: 100%;
     margin: 0 auto;
+    height: 100%;
+    overflow: auto;
     .questionAppContentTitle {
       border: 2px solid rgb(255, 255, 255);
       margin-top: 18px;
@@ -71,13 +77,41 @@
     }
   }
   .questionList {
+    cursor: pointer;
     overflow: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #fff;
     > span {
       float: left;
       margin-right: 10px;
     }
     > div {
       float: left;
+    }
+  }
+  .questionList:hover {
+    border: 1px solid rgb(253, 181, 83);
+  }
+  .questionLib {
+    margin: 10px;
+    background-color: #FFF;
+    padding: 10px;
+    border: 1px solid #CCC;
+    .questionLibTitle {
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #ccc;
+      > h1 {
+        text-align: center;
+        font-size: 22px;
+      }
+      .ant-select {
+        width: 100%;
+      }
+    }
+    .questionLibContent {
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
   }
 }

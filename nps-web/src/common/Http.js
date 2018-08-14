@@ -63,7 +63,7 @@ export class Http {
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: api, data: data, type: "post",
+                    url: api, data: JSON.stringify(data), type: "post",datatype: "json",
                     success: (res) => {
                         resolve(JSON.parse(res))//在异步操作成功时调用
                     },

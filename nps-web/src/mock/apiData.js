@@ -634,10 +634,19 @@ Mock.mock("mock/systemController/Authority", {
 })
 
 // 获取题库
-Mock.mock('mock/questionMgr/getQuestionLIst', {
-    'result|100': [{
-        title: '@csentence',
-        'id|+1': 1,
-        'type|1': ['radio', 'checkbox', 'blank']
-    }]
+Mock.mock('mock/questionMgr/getQuestionLIst', (params) => {
+    let param = params.body ? JSON.parse(params.body) : "";
+    console.log(params);
+    let pageNum = param ? param.pageNum : 1;
+    return Mock.mock({
+        result: {
+            'list|10': [{
+                title: '@csentence',
+                'id|+1': 1,
+                'type|1': ['radio', 'checkbox', 'blank']
+            }],
+            pageNum: pageNum,
+            total: '@integer(10,50)',
+        }
+    })
 })
