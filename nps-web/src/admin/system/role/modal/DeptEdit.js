@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Modal, Row, Col, Form, Select, Card, Tree} from 'antd';
 
-import SysRoleMgService from '../../../../services/RoleService';
-import DeptService from '../../../../services/DeptService';
+import SysRoleMgService from '../../../../services/system/RoleService';
+import DeptService from '../../../../services/system/DeptService';
 import style from '../Role.less';
 
 const {TreeNode} = Tree;

@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { Modal, message, Button } from 'antd';
 
 import Tree from '../Tree';
-import AuthorityService from '../../../../services/AuthorityService'
-import SysRoleMgService from "../../../../services/RoleService";
+import AuthorityService from '../../../../services/system/AuthorityService'
+import SysRoleMgService from "../../../../services/system/RoleService";
 
 export default class extends Component {
   state = {

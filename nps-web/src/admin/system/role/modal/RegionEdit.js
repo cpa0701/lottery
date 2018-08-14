@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Modal, Table } from 'antd';
-import SysRoleMgService from "../../../../services/RoleService";
+import SysRoleMgService from "../../../../services/system/RoleService";
 
 export default class extends Component {
   state = {

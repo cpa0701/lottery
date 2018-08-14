@@ -1,9 +1,9 @@
 import React, {PureComponent} from 'react';
 import {Layout, Icon, Button, Tabs, Radio, Table, Form, Input, Popconfirm, message} from 'antd';
 
-import SysRoleMgService from '../../../services/RoleService';
-import DeptService from '../../../services/DeptService';
-import AuthorityService from '../../../services/AuthorityService'
+import SysRoleMgService from '../../../services/system/RoleService';
+import DeptService from '../../../services/system/DeptService';
+import AuthorityService from '../../../services/system/AuthorityService'
 
 import Tree from './Tree';
 import RoleAdd from './modal/roleModal/RoleAdd';

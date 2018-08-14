@@ -3,8 +3,8 @@ import React, {PureComponent} from 'react';
 import { Button,Divider,Table,Modal,Row, Col,Input,Select,InputNumber,Form ,message} from 'antd'
 import {inject, observer} from "mobx-react/index";
 import './Domain.less'
-import Servicedomain from '../../../services/Servicedomain';
-import DeptService from "../../../services/DeptService";
+import Servicedomain from '../../../services/system/Servicedomain';
+import DeptService from "../../../services/system/DeptService";
 
 
 // rowSelection objects indicates the need for row selection
