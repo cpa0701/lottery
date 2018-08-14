@@ -1,9 +1,9 @@
 /**
  * Created by heChunXiong on 18/02/24.
  */
-import Http from '../common/Http';
+import Http from '../../common/Http';
 
-class MenuSer {
+class MenuService {
     //分页列表查询
     getMenuList = async (param)=>{
         //var url = 'protal/protalMenuController/qryMenuPage';
@@ -78,4 +78,4 @@ class MenuSer {
     }
 
 }
-export default new MenuSer();
+export default new MenuService();

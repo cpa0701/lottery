@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import { Form, Input, Modal, Row, Col, Button, message} from 'antd';
 import * as mobx from 'mobx';
 import CheckRule from '../../../common/utils/CheckRule';
-import LoginService from '../../../services/LoginService';
+import LoginService from '../../../services/login/LoginService';
 
 const {runInAction} = mobx;
 const FormItem = Form.Item;

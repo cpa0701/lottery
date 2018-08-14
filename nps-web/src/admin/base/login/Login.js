@@ -5,7 +5,7 @@ import * as mobx from 'mobx';
 import {observer, inject} from 'mobx-react';
 import {message, Form, Input, Button, Icon, Row, Col, Radio} from 'antd';
 
-import LoginService from '../../../services/LoginService';
+import LoginService from '../../../services/login/LoginService';
 import ResetPassword from './ResetPassword';
 
 const {runInAction, autorun, configure} = mobx;
