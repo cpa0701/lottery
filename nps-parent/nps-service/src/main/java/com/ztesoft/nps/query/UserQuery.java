@@ -54,7 +54,7 @@ public class UserQuery {
 	/**
 	 * 状态
 	 */
-	@ApiModelProperty("状态")
+	@ApiModelProperty("状态(0:失效 1:有效)")
 	private Integer status;
 
 	/**
