@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Row, Col, Button, Tabs, Radio, Table, Form, Input, Popconfirm, message} from 'antd';
+import {Layout, Icon, Button, Tabs, Radio, Table, Form, Input, Popconfirm, message} from 'antd';
 
 import SysRoleMgService from '../../../services/RoleService';
 import DeptService from '../../../services/DeptService';
@@ -18,6 +18,7 @@ import UserAdd from './modal/UserAdd';
 import './Role.less';
 
 const [TabPane, RadioGroup, FormItem] = [Tabs.TabPane, Radio.Group, Form.Item];
+const {Sider, Content} = Layout;
 
 @Form.create({})
 export default class Role extends PureComponent {
@@ -36,6 +37,7 @@ export default class Role extends PureComponent {
         record: {}, // 编辑角色时的obj数据
         parentId: '0',
         selectedKeys: [],
+        collapsed: false,
         loading: false,
         add: false,
         addUser: false,
@@ -59,6 +61,12 @@ export default class Role extends PureComponent {
         // 获取角色树
         this.roleQuery({parentId: '0'});
     }
+    //收起展开角色
+    toggle = () => {
+        this.setState({
+            collapsed: !this.state.collapsed,
+        });
+    };
     isMount = true;
 
     // 获取角色树
@@ -700,76 +708,92 @@ export default class Role extends PureComponent {
         };
 
         return (
-            <div className="content-inner">
-                <Row>
-                    <Col span={5} className="leftTree">
-                        <header>角色列表</header>
-                        <div className="btnGroup">
-                            <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>新增</Button>
-                            <div className="divider"></div>
-                            <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>修改</Button>
-                            <div className="divider"></div>
-                            <Popconfirm
-                                onConfirm={() => this.delRoles()}
-                                title={<span>此操作将删除所勾选的角色？</span>}
-                                okText="确认"
-                                cancelText="取消"
-                            >
-                                <Button type="danger" icon="delete">删除</Button>
-                            </Popconfirm>
-                            <div className="divider"></div>
-                            <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>复制</Button>
-                        </div>
-                        <div className="treeStyle">
-                            <Tree {...roleProps} onLoadData={this.loadRoleData}/>
-                        </div>
-                    </Col>
-                    <Col span={19} className="rightContent">
-                       <div>
-                           <Tabs type="card">
-                               <TabPane tab="权限管理" key="1">
-                                   <div className="btnGroup" style={{width: '18%', padding: '5px 0'}}>
-                                       <Button type="primary" icon="edit" style={{width: '42%'}} onClick={() => this.editAuthModal(true, this.state.checkedKeys, 0)}>修改权限</Button>
-                                       <div className="divider"></div>
-                                       <Button type="danger" icon="delete" style={{width: '42%'}} onClick={() => this.delAuths()}>批量删权</Button>
-                                       {/*<div className="divider"></div>*/}
-                                       {/*<Button type="primary" icon="edit">修改个性域</Button>*/}
-                                       {/*<div className="divider"></div>*/}
-                                       {/*<Button type="danger" icon="delete">取消个性域</Button>*/}
-                                       {/*<div className="divider"></div>*/}
-                                       {/*<RadioGroup onChange={this.onChange} value={this.state.value}>*/}
-                                           {/*<Radio value={1}>全局域</Radio>*/}
-                                           {/*<Radio value={2}>个性域</Radio>*/}
-                                       {/*</RadioGroup>*/}
-                                   </div>
-                                   <div className="authorityManage">
+            <Layout className='content-inner'>
+                <Sider
+                    trigger={null}
+                    collapsible
+                    collapsed={this.state.collapsed}
+                    collapsedWidth="0"
+                    style={{background: '#fff'}}
+                    width={300}
+                    className="leftTree"
+                >
+                    <header>
+                        角色列表
+                        <Icon
+                            className={this.state.collapsed ? 'trigger triggered' : 'trigger'}
+                            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                            onClick={this.toggle}
+                            style={{'float': 'right'}}
+                        />
+                    </header>
+                    <div className="btnGroup">
+                        <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>新增</Button>
+                        <div className="divider"></div>
+                        <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>修改</Button>
+                        <div className="divider"></div>
+                        <Popconfirm
+                            onConfirm={() => this.delRoles()}
+                            title={<span>此操作将删除所勾选的角色？</span>}
+                            okText="确认"
+                            cancelText="取消"
+                        >
+                            <Button type="danger" icon="delete">删除</Button>
+                        </Popconfirm>
+                        <div className="divider"></div>
+                        <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>复制</Button>
+                    </div>
+                    <div className="treeStyle">
+                        <Tree {...roleProps} onLoadData={this.loadRoleData}/>
+                    </div>
+                </Sider>
+                <Layout style={{overflow: 'hidden'}}>
+                    <Content style={{background: '#fff', minHeight: 280, paddingLeft: "10px"}}  className="rightContent">
+                        <div>
+                            <Tabs type="card">
+                                <TabPane tab="权限管理" key="1">
+                                    <div className="btnGroup" style={{width: '18%', padding: '5px 0'}}>
+                                        <Button type="primary" icon="edit" style={{width: '42%'}} onClick={() => this.editAuthModal(true, this.state.checkedKeys, 0)}>修改权限</Button>
+                                        <div className="divider"></div>
+                                        <Button type="danger" icon="delete" style={{width: '42%'}} onClick={() => this.delAuths()}>批量删权</Button>
+                                        {/*<div className="divider"></div>*/}
+                                        {/*<Button type="primary" icon="edit">修改个性域</Button>*/}
+                                        {/*<div className="divider"></div>*/}
+                                        {/*<Button type="danger" icon="delete">取消个性域</Button>*/}
+                                        {/*<div className="divider"></div>*/}
+                                        {/*<RadioGroup onChange={this.onChange} value={this.state.value}>*/}
+                                        {/*<Radio value={1}>全局域</Radio>*/}
+                                        {/*<Radio value={2}>个性域</Radio>*/}
+                                        {/*</RadioGroup>*/}
+                                    </div>
+                                    <div className="authorityManage">
                                         <header>权限名称</header>
                                         <div className="authorityTree">
                                             <Tree {...authProps}/>
                                         </div>
 
-                                   </div>
-                               </TabPane>
-                               {/*<TabPane tab="区域管理" key="2">*/}
-                                   {/*<div className="btnGroup btnGroupOther">*/}
-                                       {/*<Button type="primary" icon="edit" onClick={() => this.editRegionModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
-                                   {/*</div>*/}
-                                   {/*<div className="deptManage">*/}
-                                       {/*<header>区域名称(全局区域)</header>*/}
-                                       {/*<Tree {...regionProps}  onLoadData={this.loadRegData}/>*/}
-                                   {/*</div>*/}
-                               {/*</TabPane>*/}
-                               {/*<TabPane tab="部门管理" key="3">*/}
-                                   {/*<div className="btnGroup btnGroupOther">*/}
-                                       {/*<Button type="primary" icon="edit" onClick={() => this.editDeptModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
-                                   {/*</div>*/}
-                                   {/*<div className="deptManage">*/}
-                                       {/*<header>部门名称-区域</header>*/}
-                                       {/*<Tree {...deptProps}  onLoadData={this.loadDeptData}/>*/}
-                                   {/*</div>*/}
-                               {/*</TabPane>*/}
-                           </Tabs>
-                       </div>
+                                    </div>
+                                </TabPane>
+                                {/*<TabPane tab="区域管理" key="2">*/}
+                                {/*<div className="btnGroup btnGroupOther">*/}
+                                {/*<Button type="primary" icon="edit" onClick={() => this.editRegionModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
+                                {/*</div>*/}
+                                {/*<div className="deptManage">*/}
+                                {/*<header>区域名称(全局区域)</header>*/}
+                                {/*<Tree {...regionProps}  onLoadData={this.loadRegData}/>*/}
+                                {/*</div>*/}
+                                {/*</TabPane>*/}
+                                {/*<TabPane tab="部门管理" key="3">*/}
+                                {/*<div className="btnGroup btnGroupOther">*/}
+                                {/*<Button type="primary" icon="edit" onClick={() => this.editDeptModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
+                                {/*</div>*/}
+                                {/*<div className="deptManage">*/}
+                                {/*<header>部门名称-区域</header>*/}
+                                {/*<Tree {...deptProps}  onLoadData={this.loadDeptData}/>*/}
+                                {/*</div>*/}
+                                {/*</TabPane>*/}
+                            </Tabs>
+                        </div>
                         <div>
                             <Tabs type="card">
                                 <TabPane tab="人员" key="1">
@@ -825,22 +849,22 @@ export default class Role extends PureComponent {
                                     />
                                 </TabPane>
                                 {/*<TabPane tab="部门" key="2">*/}
-                                    {/*<div className="btnGroup btnGroupOther">*/}
-                                        {/*<Button type="primary" icon="edit" onClick={() => this.editDeptModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
-                                    {/*</div>*/}
-                                    {/*<Table*/}
-                                        {/*columns={deptColumns}*/}
-                                        {/*rowKey={record => `${record.id}`}*/}
-                                        {/*dataSource={deptData}*/}
-                                        {/*loading={loading}*/}
-                                        {/*scroll={{ y: 240 }}*/}
-                                        {/*size="small"*/}
-                                    {/*/>*/}
+                                {/*<div className="btnGroup btnGroupOther">*/}
+                                {/*<Button type="primary" icon="edit" onClick={() => this.editDeptModal(true, this.state.checkedKeys, 0)}>修改</Button>*/}
+                                {/*</div>*/}
+                                {/*<Table*/}
+                                {/*columns={deptColumns}*/}
+                                {/*rowKey={record => `${record.id}`}*/}
+                                {/*dataSource={deptData}*/}
+                                {/*loading={loading}*/}
+                                {/*scroll={{ y: 240 }}*/}
+                                {/*size="small"*/}
+                                {/*/>*/}
                                 {/*</TabPane>*/}
                             </Tabs>
                         </div>
-                    </Col>
-                </Row>
+                    </Content>
+                </Layout>
                 <RoleAdd {...addModalProps}/>
                 <RoleEdit {...editModalProps}/>
                 <RoleCopy {...copyModalProps}/>
@@ -849,7 +873,7 @@ export default class Role extends PureComponent {
                 {/*<RegEdit {...editRegModalProps}/>*/}
                 {/*<DeptEdit {...editDeptModalProps}/>*/}
                 <UserAdd {...addUserModalProps}/>
-            </div>
+            </Layout>
         )
     }
 }
