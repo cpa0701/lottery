@@ -11,12 +11,19 @@ export default class Radiomodule extends PureComponent {
     constructor(props){
         super(props);
         this.state={
+            value:1,
             id:props.id,
             title:props.title,
             optionA:props.optionA,
             optionB:props.optionB
         }
     }
+    onChange = (e) => {
+        this.setState({
+            value: e.target.value,
+        });
+    }
+
     render() {
         const radioStyle = {
             display: 'block',
@@ -26,7 +33,7 @@ export default class Radiomodule extends PureComponent {
         return (
             <div>
                 <h3>{this.state.id}.{this.state.title}</h3>
-            <RadioGroup value={this.state.value}>
+            <RadioGroup value={this.state.value} onChange={this.onChange}>
                 <Radio style={radioStyle} value={1}>{this.state.optionA}</Radio>
                 <Radio style={radioStyle} value={2}>{this.state.optionB}</Radio>
             </RadioGroup>
