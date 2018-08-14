@@ -18,7 +18,7 @@ export default class Checkboxmodule extends PureComponent {
     render() {
         var items = [];
         for (var i = 0; i < this.state.num; i++) {
-            items.push( <Col span={24}><Checkbox value="i">{this.state.options[i]}</Checkbox></Col>);
+            items.push( <Col span={24}><Checkbox value={i}>{this.state.options[i]}</Checkbox></Col>);
         }
         return (
             <div>
