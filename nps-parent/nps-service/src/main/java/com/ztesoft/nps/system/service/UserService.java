@@ -1,0 +1,30 @@
+package com.ztesoft.nps.system.service;
+
+import java.util.List;
+
+import com.ztesoft.nps.system.model.User;
+import com.ztesoft.nps.system.model.UserRole;
+import com.ztesoft.nps.system.query.RoleUserQuery;
+import com.ztesoft.nps.system.query.UserQuery;
+
+public interface UserService {
+	User add(User user);
+
+	User findById(Long id);
+
+	List<User> findByDeptId(Long deptId);
+
+	List<User> findByCondition(int pageNum, int pageSize, UserQuery condition);
+
+	User findByAccount(String account);
+
+	User findByNo(String no);
+
+	User update(User user);
+
+	int addRole(UserRole userRole);
+
+	int deleteRole(UserRole userRole);
+
+	List<User> findByRoleId(int pageNum, int pageSize, RoleUserQuery condition);
+}

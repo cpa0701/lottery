@@ -16,7 +16,7 @@
 		scope="prototype">
 		<property name="patterns">
 			<list>
-				<value>com.ztesoft.nps.mapper.*</value>
+				<value>com.ztesoft.nps.*.mapper.*</value>
 			</list>
 		</property>
 	</bean>

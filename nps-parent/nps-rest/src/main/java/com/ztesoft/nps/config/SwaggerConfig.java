@@ -24,8 +24,7 @@ public class SwaggerConfig {
 				.apiInfo(apiInfo())
 				.groupName("NPS")
 				.select()
-				.apis(RequestHandlerSelectors
-						.basePackage("com.ztesoft.nps.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.ztesoft.nps"))
 				.apis(RequestHandlerSelectors
 						.withMethodAnnotation(ApiOperation.class))
 				.paths(PathSelectors.any()).build();
