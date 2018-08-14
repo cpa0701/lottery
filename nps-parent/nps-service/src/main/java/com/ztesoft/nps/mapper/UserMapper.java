@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.query.RoleUserQuery;
 import com.ztesoft.nps.query.UserQuery;
 
 public interface UserMapper {
@@ -22,5 +23,5 @@ public interface UserMapper {
 
 	List<User> findByCondition(UserQuery condition);
 
-	List<User> findByRoleId(Long id);
+	List<User> findByRoleId(RoleUserQuery condition);
 }

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Row, Col, Input, Form, Checkbox, Tabs, Button, Table, Tree, TreeSelect } from 'antd';
+import { Modal, Row, Col, Input, Form, Checkbox, Tabs, Button, Table, Tree, TreeSelect, message } from 'antd';
 
 import '../Role.less';
 import DeptService from "../../../../services/DeptService";
-import SysRoleMgService from "../../../../services/RoleService";
 
-const {TextArea} = Input;
 const [FormItem, CheckboxGroup, TabPane, SHOW_PARENT, TreeNode] =
     [Form.Item, Checkbox.Group, Tabs.TabPane, TreeSelect.SHOW_PARENT, Tree.TreeNode];
 
@@ -23,122 +21,8 @@ export default class extends Component {
         tableList: [],
         tableList1: [],
         tableList2: [],
-        userData1: [
-            {
-                ID: 111,
-                name: 'lll',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 112,
-                name: 'nnn',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 113,
-                name: 'mmm',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 114,
-                name: 'ooo',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-        ],
-        userData: [
-            {
-                ID: 111,
-                name: 'lll',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 1,
-                name: 'aaa',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 2,
-                name: 'bbb',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 3,
-                name: 'ccc',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 4,
-                name: 'ddd',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 5,
-                name: 'eee',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 6,
-                name: 'fff',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 7,
-                name: 'ggg',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 8,
-                name: 'hhh',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 9,
-                name: 'iii',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 10,
-                name: 'jjj',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-            {
-                ID: 11,
-                name: 'kkk',
-                deptName: 'eee',
-                synch: '1',
-                phone: 12113
-            },
-        ],
+        userData1: [],
+        userData: [],
         treeData: [],
         domainTreeDate: [],
         selectedRowKeys: [],
@@ -147,55 +31,34 @@ export default class extends Component {
         checkAll: true,
         loading: false,
     };
-    componentWillMount() {
-        let a = JSON.stringify({
-            "IDOMAINID": 10000,
-            "ISEQ": 1,
-            "SDOMAINNAME": "全国",
-            "children": [
-                {
-                    "IDOMAINID": 20000,
-                    "ISEQ": 1,
-                    "SDOMAINNAME": "北京",
-                    "SDOMAINCODE": "beijing",
-                    "SPATHID": "/10000/20000",
-                    "IPARENTID": 10000,
-                    "IDOMAINTYPE": 1
-                },
-                {
-                    "IDOMAINID": 30000,
-                    "ISEQ": 1,
-                    "SDOMAINNAME": "湖南",
-                    "children": [{
-                        "IDOMAINID": 31000,
-                        "ISEQ": 1,
-                        "SDOMAINNAME": "长沙",
-                        "SDOMAINCODE": "changsha",
-                        "SPATHID": "/10000/30000/31000",
-                        "IPARENTID": 30000,
-                        "IDOMAINTYPE": 1
-                    }],
-                    "SDOMAINCODE": "hunan",
-                    "SPATHID": "/10000/30000",
-                    "IPARENTID": 10000,
-                    "IDOMAINTYPE": 1
-                }
-            ],
-            "SDOMAINCODE": "all",
-            "SPATHID": "/10000",
-            "IPARENTID": 0,
-            "IDOMAINTYPE": 0
-        });
-        a = a.replace(/SDOMAINNAME/g, "title").replace(/SDOMAINCODE/g, "value").replace(/IDOMAINID/g, "key");
-        this.setState({
-            domainTreeDate: [JSON.parse(a)]
-        });
-        // this.deptQuery();
-        // this.seaUserQuery();
+    componentDidMount() {
+        this.deptQuery();
+        this.getDomainTree();
+    }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.userData.length !== 0){
+            let checkedId = [], checkedList = [], selectedRowKeys = [], selRowName = [];
+            nextProps.userData.map(item => {
+                checkedId.push(String(item.id));
+                checkedList.push(item.name);
+                selRowName.push(item.name);
+                selectedRowKeys.push(String(item.id));
+               return '';
+            });
+            this.setState({
+                checkedId,
+                checkedList,
+                selRowName,
+                selectedRowKeys,
+                userData1: nextProps.userData,
+                userData: nextProps.userData
+            });
+        }
     }
 
     onSubmit = () => {
-        this.props.onCreate({userId: this.state.checkedId});
+        console.log(this.state.checkedId);
+        this.props.onCreate({userId: String(this.state.checkedId[0])});
     };
     afterClose = () => {
       this.props.form.resetFields();
@@ -217,36 +80,43 @@ export default class extends Component {
 
     // 选择区域树
     onSelChange = (value) => {
-        let deptName = this.props.form.getFieldValue('deptName');
+        console.log(value);
+        this.setState({value});
+        let name = this.props.form.getFieldValue('deptName');
         this.setState({value});
         let params = {
-            deptName,
-            region: value
+            name,
+            regionId: value
         };
         this.deptQuery(params);
     };
     // 输入部门搜索时
     deptNameChange = (e) => {
         let params = {
-            deptName: e.target.value,
-            region: this.state.value
+            name: e.target.value,
+            regionId: this.state.value
         };
         this.deptQuery(params);
     };
 
     // 获取部门树
     deptQuery = (params) => {
-        DeptService.getDeptTree(params)
-            .then(res => {
-                res.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId;
-                    item.isLeaf = !item.childCount;
+        let param = params ? params : {};
+        param.status = 1;
+        DeptService.getDeptTree(param).then(result => {
+            if (result) {
+                result.treeData = result;
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.key = item.id;
+                    item.isLeaf = item.leaf;
+                    return item;
                 });
                 this.setState({
-                    treeData: res.treeData,
+                    treeData
                 });
-            });
+            }
+        });
     };
     // 异步加载树节点
     onLoadData = (treeNode) => {
@@ -255,32 +125,97 @@ export default class extends Component {
                 resolve();
                 return;
             }
-            DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                treeNode.props.dataRef.children = [...result.treeData];
-                this.setState({
-                    treeData: [...this.state.treeData],
-                });
+            let params = {
+                parentId: treeNode.props.dataRef.id,
+                regionId: treeNode.props.dataRef.regionId,
+            };
+            DeptService.getDeptTree(params).then(result => {
+                result.treeData = result;
+                if (result.treeData.length) {
+                    let treeData = result.map(item => {
+                        item.title = item.name;
+                        item.key = item.id;
+                        item.isLeaf = item.leaf;
+                        return item;
+                    });
+                    treeNode.props.dataRef.children = [...treeData];
+                    this.setState({
+                        treeData: [...this.state.treeData],
+                    });
+                }
                 resolve();
             })
         });
     };
     // 点击部门树节点时
     onSelect = (selectedKeys, info) => {
+        if (selectedKeys.length > 1) {
+            message.info('每次只能选择一个部门');
+            return;
+        }
         this.setState({
-            selectedKeys: selectedKeys
+            selectedKeys: selectedKeys[selectedKeys.length - 1],
         });
         let params = {
-            deptId: selectedKeys
+            deptId: selectedKeys[selectedKeys.length - 1]
         };
-        this.selUserQuery(params);
+        if (selectedKeys.length  === 1) {
+            this.userInfoQuery(params, 1);
+        }
+    };
+
+    //获取区域树
+    getDomainTree = () => {
+        DeptService.getDomainTree().then(result => {
+            if (result) {
+                result.treeData = result;
+                let treeData = result.map(item => {
+                    item.title = item.name;
+                    item.value = item.id.toString();
+                    item.key = item.id;
+                    item.isLeaf = item.leaf;
+                    return item;
+                });
+                this.setState({
+                    domainTreeDate: treeData,
+                });
+            }
+        });
+    };
+    //异步加载地区树
+    onLoadDomainTreeData = (treeNode) => {
+        return new Promise((resolve) => {
+            if (treeNode.props.dataRef.children) {
+                resolve();
+                return;
+            }
+            let params = {
+                parentId: treeNode.props.dataRef.id
+            };
+            DeptService.getDomainTree(params).then(result => {
+                if (result) {
+                    result.treeData = result;
+                    if (result.treeData.length) {
+                        let treeData = result.map(item => {
+                            item.title = item.name;
+                            item.key = item.id;
+                            item.isLeaf = item.leaf;
+                            return item;
+                        });
+                        treeNode.props.dataRef.children = treeData;
+                        this.setState({
+                            domainTreeDate: [...this.state.domainTreeDate],
+                        });
+                    }
+                    resolve();
+                }
+            })
+        });
     };
 
     // 渲染树节点
     renderTreeNodes = (data) => {
         return data.map((item) => {
-            item.title = item.sdeptName;
-            item.key = item.ideptId;
-            item.isLeaf = !item.childCount;
             if (item.children) {
                 return (
                     <TreeNode title={item.title} key={item.key} dataRef={item} isLeaf={item.isLeaf}>
@@ -295,7 +230,7 @@ export default class extends Component {
     // 右侧勾选单个框
     onChange = (checkedList) => {
         var checkedId = checkedList.map((item) => {
-           return this.state.tableList.find(k => k.name === item).ID;
+           return this.state.tableList.find(k => k.name === item).id;
         });
         this.setState({
             checkedId,
@@ -314,34 +249,53 @@ export default class extends Component {
         });
     };
 
-    // 获取选择页人员表格信息
-    selUserQuery = (params) => {
-        SysRoleMgService.getUserDate(params)
-            .then(res => {
-                this.setState({
-                    userData1: res.userData1,
-                });
-            });
-    };
-    // 获取搜索页人员表格信息
-    seaUserQuery = (params) => {
-        SysRoleMgService.getUserDate(params)
-            .then(res => {
-                this.setState({
-                    userData: res.userData,
-                });
+    // 获取人员表格信息
+    userInfoQuery = (params, type) => {
+        DeptService.getStaffData(params)
+            .then(data => {
+                if(data) {
+                    if(type === 1) {
+                        this.setState({
+                            userData1: data.list,
+                        });
+                    } else {
+                        this.setState({
+                            userData: data.list,
+                        });
+                    }
+                }
             });
     };
 
     // 获取选择页勾选人员表格id
     onSelectChange = (selectedRowKeys, selectedRowsValue) => {
+        console.log(selectedRowKeys);
+        if (selectedRowKeys.length > 1) {
+            message.info('每次只能选择一个角色');
+            return;
+        } else if ( selectedRowKeys.length === 0 ) {
+            this.setState({
+                selRowName: [],
+                selRowName1: [],
+                selRowName2: [],
+                selRowKeys: [],
+                selRowKeys1: [],
+                selRowKeys2: [],
+                checkedId: [],
+                checkedList: [],
+                tableList: [],
+                tableList1: [],
+                tableList2: [],
+            });
+        }
         if(selectedRowsValue) {
             let selRowName = [], selRowKeys = [];
             selectedRowsValue.map(item => {
                 // if(!this.state.selRowName.includes(item.name)){
                 selRowName.push(item.name);
-                selRowKeys.push(item.ID);
+                selRowKeys.push(item.id);
                 // }
+                return '';
             });
             this.setState({
                 selRowName1: selRowName,
@@ -358,11 +312,30 @@ export default class extends Component {
     };
     // 获取搜索页勾选人员表格id
     onSearchChange = (selectedRowKeys, selectedRowsValue) => {
+        if (selectedRowKeys.length > 1) {
+            message.info('每次只能选择一个角色');
+            return;
+        } else if ( selectedRowKeys.length === 0 ) {
+            this.setState({
+                    selRowName: [],
+                    selRowName1: [],
+                    selRowName2: [],
+                    selRowKeys: [],
+                    selRowKeys1: [],
+                    selRowKeys2: [],
+                    checkedId: [],
+                    checkedList: [],
+                    tableList: [],
+                    tableList1: [],
+                    tableList2: [],
+                });
+        }
         if(selectedRowsValue) {
             let selRowName = [], selRowKeys = [];
             selectedRowsValue.map(item => {
                 selRowName.push(item.name);
-                selRowKeys.push(item.ID);
+                selRowKeys.push(item.id);
+                return '';
             });
             this.setState({
                 selRowName2: selRowName,
@@ -384,7 +357,7 @@ export default class extends Component {
             if (errors) {
                 return;
             }
-            this.seaUserQuery(values);
+            this.userInfoQuery(values, 0);
         });
     };
 
@@ -394,12 +367,12 @@ export default class extends Component {
           userData1,
           userData,
           loading,
-          indeterminate,
-          checkAll,
+          // indeterminate,
+          // checkAll,
           selRowName,
-          selRowKeys,
+          // selRowKeys,
           checkedList,
-          selectedRowKeys1,
+          // selectedRowKeys1,
           selectedRowKeys,
           domainTreeDate
       } = this.state;
@@ -409,11 +382,22 @@ export default class extends Component {
         wrapperCol: {span: 14},
       };
 
+      const loop = data => data.map((item) => {
+          if (item.children) {
+              return (
+                  <TreeNode title={item.name} key={item.id} dataRef={item} isLeaf={item.leaf}>
+                      {loop(item.children)}
+                  </TreeNode>
+              );
+          }
+          return <TreeNode {...item} dataRef={item}/>;
+       });
+
       // 表格列
       const userColumns = [
           {
               title: '人员账号',
-              dataIndex: 'ID'
+              dataIndex: 'account'
           },
           {
               title: '人员姓名',
@@ -421,15 +405,15 @@ export default class extends Component {
           },
           {
               title: '部门名称',
-              dataIndex: 'deptName'
+              dataIndex: 'deptId'
           },
           {
               title: '是否同步',
-              dataIndex: 'synch'
+              dataIndex: 'status'
           },
           {
               title: '手机号码',
-              dataIndex: 'phone'
+              dataIndex: 'cellphone'
           }
       ];
       const userColumnsel = [
@@ -439,11 +423,11 @@ export default class extends Component {
           },
           {
               title: '人员账号',
-              dataIndex: 'ID'
+              dataIndex: 'account'
           },
           {
               title: '是否同步',
-              dataIndex: 'synch'
+              dataIndex: 'status'
           }
         ];
       const rowSelection1 = {
@@ -476,12 +460,12 @@ export default class extends Component {
                                           <TreeSelect
                                               value={this.state.value}
                                               dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                                              treeData={domainTreeDate}
-                                              treeCheckable={true}
+                                              treeCheckable={false}
                                               showCheckedStrategy={SHOW_PARENT}
                                               searchPlaceholder={'请选择区域'}
+                                              loadData={this.onLoadDomainTreeData}
                                               onChange={this.onSelChange}
-                                          />
+                                          >{loop(domainTreeDate)}</TreeSelect>
                                   </FormItem>
                                   <FormItem labelCol={{span: 8}} wrapperCol={{span: 14}} label="部门名称">
                                       {getFieldDecorator('deptName', {
@@ -510,7 +494,7 @@ export default class extends Component {
                               <Table
                                   columns={userColumnsel}
                                   rowSelection={rowSelection1}
-                                  rowKey={record => `${record.ID}`}
+                                  rowKey={record => `${record.id}`}
                                   dataSource={userData1}
                                   loading={loading}
                                   scroll={{ y: 253 }}
@@ -522,7 +506,7 @@ export default class extends Component {
                           <Form layout="inline" className="ant-search-form">
                               <Col span={7}>
                                   <FormItem {...formItemLayout} label="人员账号">
-                                      {getFieldDecorator('ID', {
+                                      {getFieldDecorator('account', {
                                           rules: [
                                               {required: false, message: '请输入人员账号'},
                                           ],
@@ -554,7 +538,7 @@ export default class extends Component {
                           <Table
                               columns={userColumns}
                               rowSelection={rowSelection}
-                              rowKey={record => `${record.ID}`}
+                              rowKey={record => `${record.id}`}
                               dataSource={userData}
                               loading={loading}
                               scroll={{ y: 193 }}
@@ -565,13 +549,14 @@ export default class extends Component {
               </Col>
               <Col span={4} className="right-content">
                 <div className="rightHeader">
-                    <Checkbox
-                        indeterminate={indeterminate}
-                        onChange={this.onCheckAllChange}
-                        checked={checkAll}
-                    >
-                       人员名称
-                    </Checkbox>
+                    {/*<Checkbox*/}
+                        {/*indeterminate={indeterminate}*/}
+                        {/*onChange={this.onCheckAllChange}*/}
+                        {/*checked={checkAll}*/}
+                    {/*>*/}
+                       {/*人员名称*/}
+                    {/*</Checkbox>*/}
+                    人员名称
                 </div>
                 <div className="rightContent">
                     <CheckboxGroup options={selRowName} value={checkedList} onChange={this.onChange} />

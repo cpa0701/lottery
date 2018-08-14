@@ -11,8 +11,8 @@ import RoleEdit from './modal/roleModal/RoleEdit';
 import RoleCopy from './modal/roleModal/RoleCopy';
 
 import AuthEdit from './modal/AuthEdit';
-import RegEdit from './modal/RegionEdit';
-import DeptEdit from './modal/DeptEdit';
+// import RegEdit from './modal/RegionEdit';
+// import DeptEdit from './modal/DeptEdit';
 import UserAdd from './modal/UserAdd';
 
 import './Role.less';
@@ -70,6 +70,7 @@ export default class Role extends PureComponent {
                         item.title = item.name;
                         item.key = item.id;
                         item.isLeaf = item.leaf;
+                        return item;
                     });
                     this.setState({
                         treeData: data,
@@ -91,6 +92,7 @@ export default class Role extends PureComponent {
                             item.title = item.name;
                             item.key = item.id;
                             item.isLeaf = item.leaf;
+                            return item;
                         });
                         treeNode.props.dataRef.children = [...data];
                         this.setState({
@@ -103,7 +105,6 @@ export default class Role extends PureComponent {
     };
     // 点击、勾选角色树节点时
     onSelect = (selectedKeys, info) => {
-        console.log(selectedKeys)
         if (selectedKeys.length > 1) {
             message.info('每次只能选择一个角色');
             return;
@@ -116,12 +117,9 @@ export default class Role extends PureComponent {
             checkedKeys: selectedKeys,
             record
         });
-        console.log('编辑数据',record,'选择key',selectedKeys[selectedKeys.length - 1],'勾选项',selectedKeys)
-
-        // let params = {roleId: select};
         if (selectedKeys.length  === 1) {
             this.authQuery(selectedKeys);
-            this.getUserData({id: selectedKeys});
+            this.getUserData({id: selectedKeys[0]});
         }
     };
 
@@ -196,6 +194,7 @@ export default class Role extends PureComponent {
                     item.key = item.id;
                     authCheckedKeys.push(item.key);
                     item.isLeaf = item.leaf;
+                    return item;
                 });
                 this.setState({
                     authCheckedKeys,
@@ -211,13 +210,14 @@ export default class Role extends PureComponent {
                 return;
             }
             let authCheckedKeys = [];
-            SysRoleMgService.getAuthTree({parentId: treeNode.props.dataRef.id})
+            AuthorityService.getAuthTree({parentId: treeNode.props.dataRef.id})
                 .then(data => {
                     data.map(item => {
                         item.title = item.name;
                         item.key = item.id;
                         authCheckedKeys.push(item.key);
                         item.isLeaf = item.leaf;
+                        return item;
                     });
                     treeNode.props.dataRef.children = [...data];
                     this.setState({
@@ -273,6 +273,7 @@ export default class Role extends PureComponent {
                     item.title = item.sdeptName;
                     item.key = item.ideptId;
                     item.isLeaf = !item.childCount;
+                    return item;
                 });
                 this.setState({
                     regionData: res.treeData,
@@ -317,12 +318,15 @@ export default class Role extends PureComponent {
 
     // 获取部门树
     deptQuery = (params) => {
+        let param = params ? params : {};
+        param.status = 1;
         DeptService.getDeptTree(params)
             .then(res => {
                 res.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId;
-                    item.isLeaf = !item.childCount;
+                    item.title = item.name;
+                    item.key = item.id;
+                    item.isLeaf = item.leaf;
+                    return item;
                 });
                 this.setState({
                     deptTreeData: res.treeData,
@@ -339,9 +343,10 @@ export default class Role extends PureComponent {
             DeptService.getDeptTree(treeNode.props.dataRef)
                 .then(result => {
                     result.treeData.map(item => {
-                        item.title = item.sdeptName;
-                        item.key = item.ideptId;
-                        item.isLeaf = !item.childCount;
+                        item.title = item.name;
+                        item.key = item.id;
+                        item.isLeaf = item.leaf;
+                        return item;
                     });
                     treeNode.props.dataRef.children = [...result.treeData];
                     this.setState({
@@ -381,7 +386,7 @@ export default class Role extends PureComponent {
             }
             let params = {
                 ...values,
-                roleId: this.state.checkedKeys
+                id: this.state.checkedKeys[0]
             };
             this.getUserData(params);
         });
@@ -431,13 +436,13 @@ export default class Role extends PureComponent {
             // deptData,
             treeData,
             authData,
-            regionData,
+            // regionData,
             selectedKey,
             record,
             checkedKeys,
             authCheckedKeys,
             selRowKeys,
-            regSelectKeys
+            // regSelectKeys
         } = this.state;
         // 表格列
         const userColumns = [
@@ -457,27 +462,27 @@ export default class Role extends PureComponent {
                 width: '20%'
             }
         ];
-        const deptColumns = [
-            {
-                title: '部门名称',
-                dataIndex: 'name',
-                width: '20%'
-            },
-            {
-                title: '部门路径',
-                dataIndex: 'chName',
-                width: '30%'
-            },
-            {
-                title: '所属区域',
-                dataIndex: 'modelDir',
-                width: '30%'
-            },
-            {
-                title: '所属区域标识  ',
-                dataIndex: 'modelDes'
-            }
-        ];
+        // const deptColumns = [
+        //     {
+        //         title: '部门名称',
+        //         dataIndex: 'name',
+        //         width: '20%'
+        //     },
+        //     {
+        //         title: '部门路径',
+        //         dataIndex: 'chName',
+        //         width: '30%'
+        //     },
+        //     {
+        //         title: '所属区域',
+        //         dataIndex: 'modelDir',
+        //         width: '30%'
+        //     },
+        //     {
+        //         title: '所属区域标识  ',
+        //         dataIndex: 'modelDes'
+        //     }
+        // ];
         const rowSelection = {
             selectedRowKeys: selRowKeys,
             onChange: this.onSelectChange,
@@ -502,16 +507,17 @@ export default class Role extends PureComponent {
             treeData: authData, // 要一级数据.
             selectedKey,
             checkable: false,
+            onLoadData: this.loadAuthData
         };
-        const regionProps = {// 表所要用到的参数
-            treeData: regionData,
-            selectedKey,
-            checkable: false,
-        };
-        const deptProps = {// 表所要用到的参数
-            treeData,
-            checkable: false,
-        };
+        // const regionProps = {// 表所要用到的参数
+        //     treeData: regionData,
+        //     selectedKey,
+        //     checkable: false,
+        // };
+        // const deptProps = {// 表所要用到的参数
+        //     treeData,
+        //     checkable: false,
+        // };
 
         // 角色新增、编辑、复制传参
         const addModalProps = {
@@ -584,23 +590,16 @@ export default class Role extends PureComponent {
         const editAuthModalProps = {
             editAuth: this.state.editAuth,
             checkedKeys: authCheckedKeys,
+            roleId: checkedKeys[0],
+            loadAuthData: this.loadAuthData,
             onClose: () => {
                 this.editAuthModal(false, [], 1);
             },
             onCreate: () => {
-                let params = {
-                    userId: checkedKeys[0],
-                    rolePermission: authCheckedKeys
-                };
-                console.log(params);
-
-                SysRoleMgService.editRoleAuth({...params}).then((data) => {
-                    message.success('修改权限成功!');
-                    this.setState({editAuth: false}, () => {
-                        if (checkedKeys.length  === 1) {
-                            this.authQuery(checkedKeys);
-                        }
-                    });
+                this.setState({editAuth: false}, () => {
+                    if (checkedKeys.length  === 1) {
+                        this.authQuery(checkedKeys);
+                    }
                 });
             },
             onCheck: (checkedKeys) => {
@@ -608,82 +607,95 @@ export default class Role extends PureComponent {
             },
         };
         // 区域编辑
-        const editRegModalProps = {
-            editReg: this.state.editReg,
-            regSelectKeys,
-            onClose: () => {
-                this.editRegionModal(false, [], 1);
-            },
-            onCreate: () => {
-                let params = {
-                    userIds: checkedKeys,
-                    regionIds: regSelectKeys
-                };
-                SysRoleMgService.editRegion({...params}).then((data) => {
-                    if (data.code === 0) {
-                        message.success('修改区域成功!');
-                        if (this.isMount) {
-                            this.setState({editAuth: false}, () => {
-                                // this.treeQuery(); 编辑完后进行的动作
-                            });
-                        }
-                    } else {
-                        message.error('修改区域失败');
-                        if (this.isMount) {
-                            this.setState({loading: false});
-                        }
-                    }
-                });
-            },
-            onSelectChange: (selectedRowKeys, selectedRows) => { // 载入数据.
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                this.setState({ regSelectKeys: selectedRowKeys });
-            },
-        };
+        // const editRegModalProps = {
+        //     editReg: this.state.editReg,
+        //     regSelectKeys,
+        //     onClose: () => {
+        //         this.editRegionModal(false, [], 1);
+        //     },
+        //     onCreate: () => {
+        //         let params = {
+        //             userIds: checkedKeys,
+        //             regionIds: regSelectKeys
+        //         };
+        //         SysRoleMgService.editRegion({...params}).then((data) => {
+        //             if (data.code === 0) {
+        //                 message.success('修改区域成功!');
+        //                 if (this.isMount) {
+        //                     this.setState({editAuth: false}, () => {
+        //                         // this.treeQuery(); 编辑完后进行的动作
+        //                     });
+        //                 }
+        //             } else {
+        //                 message.error('修改区域失败');
+        //                 if (this.isMount) {
+        //                     this.setState({loading: false});
+        //                 }
+        //             }
+        //         });
+        //     },
+        //     onSelectChange: (selectedRowKeys, selectedRows) => { // 载入数据.
+        //         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        //         this.setState({ regSelectKeys: selectedRowKeys });
+        //     },
+        // };
         // 部门编辑
-        const editDeptModalProps = {
-            edit: this.state.editDept,
-            checkedKeys: this.state.deptCheckedKeys,
-            onClose: () => {
-                this.editDeptModal(false, [], 1);
-            },
-            onCreate: (values) => {
-                let params = new Object();
-                params.userIds = checkedKeys;
-                params.deptIds = values;
-
-                DeptService.ediDept({...params}).then((data) => {
-                    if (data.code === 0) {
-                        message.success('修改部门成功!');
-                        if (this.isMount) {
-                            this.setState({editDept: false}, () => {
-                                // this.treeQuery(); 编辑完后进行的动作
-                            });
-                        }
-                    } else {
-                        message.error('修改部门失败');
-                        if (this.isMount) {
-                            this.setState({loading: false});
-                        }
-                    }
-                });
-            },
-            onCheck: (checkedKeys) => {
-                this.setState({ deptCheckedKeys: checkedKeys });
-            },
-            onCheckSelect: (checkedKeys) => {
-                this.setState({ deptCheckedKeys: checkedKeys });
-            },
-        };
+        // const editDeptModalProps = {
+        //     edit: this.state.editDept,
+        //     checkedKeys: this.state.deptCheckedKeys,
+        //     onClose: () => {
+        //         this.editDeptModal(false, [], 1);
+        //     },
+        //     onCreate: (values) => {
+        //         let params = new Object();
+        //         params.userIds = checkedKeys;
+        //         params.deptIds = values;
+        //
+        //         DeptService.ediDept({...params}).then((data) => {
+        //             if (data.code === 0) {
+        //                 message.success('修改部门成功!');
+        //                 if (this.isMount) {
+        //                     this.setState({editDept: false}, () => {
+        //                         // this.treeQuery(); 编辑完后进行的动作
+        //                     });
+        //                 }
+        //             } else {
+        //                 message.error('修改部门失败');
+        //                 if (this.isMount) {
+        //                     this.setState({loading: false});
+        //                 }
+        //             }
+        //         });
+        //     },
+        //     onCheck: (checkedKeys) => {
+        //         this.setState({ deptCheckedKeys: checkedKeys });
+        //     },
+        //     onCheckSelect: (checkedKeys) => {
+        //         this.setState({ deptCheckedKeys: checkedKeys });
+        //     },
+        // };
         // 人员新增
         const addUserModalProps = {
             add: this.state.addUser,
             checkedKeys: this.state.deptCheckedKeys,
+            userData: userData,
             onClose: () => {
                 this.addUsers([], 1);
             },
             onCreate: (values) => {
-
+                let params = {
+                    ...values,
+                    roleId: checkedKeys[0]
+                };
+                SysRoleMgService.addRoleUserDate(params).then((data) => {
+                    debugger;
+                        this.setState({addUser: false}, () => {
+                            message.success('新增人员成功!');
+                            if (checkedKeys.length  === 1) {
+                                this.getUserData({id: checkedKeys[0]});
+                            }
+                        });
+                });
             }
         };
 
@@ -733,7 +745,7 @@ export default class Role extends PureComponent {
                                    <div className="authorityManage">
                                         <header>权限名称</header>
                                         <div className="authorityTree">
-                                            <Tree {...authProps}  onLoadData={this.loadAuthData}/>
+                                            <Tree {...authProps}/>
                                         </div>
 
                                    </div>

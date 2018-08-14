@@ -11,6 +11,7 @@ import com.ztesoft.nps.mapper.UserMapper;
 import com.ztesoft.nps.mapper.UserRoleMapper;
 import com.ztesoft.nps.model.User;
 import com.ztesoft.nps.model.UserRole;
+import com.ztesoft.nps.query.RoleUserQuery;
 import com.ztesoft.nps.query.UserQuery;
 import com.ztesoft.nps.service.UserService;
 import com.ztesoft.nps.utils.PasswordUtils;
@@ -97,10 +98,11 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<User> findByRoleId(int pageNum, int pageSize, Long id) {
+	public List<User> findByRoleId(int pageNum, int pageSize,
+			RoleUserQuery condition) {
 		PageHelper.startPage(pageNum, pageSize);
 
-		return userMapper.findByRoleId(id);
+		return userMapper.findByRoleId(condition);
 	}
 
 }

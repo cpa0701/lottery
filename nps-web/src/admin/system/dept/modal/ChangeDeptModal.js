@@ -27,7 +27,8 @@ class changeDeptModal extends PureComponent {
         this.setState({
             confirmLoading: true,
         });
-        DeptService.changeDept(this.state.selectedKeys).then(result => {
+        let params={id:this.props.staffData.id,deptId:this.state.selectedKeys.toString()}
+        DeptService.changeDept(params).then(result => {
             this.setState({
                 confirmLoading: false,
             }, () => this.props.changeDeptVisible(false));
@@ -37,7 +38,7 @@ class changeDeptModal extends PureComponent {
     //获取部门树
     getDeptTree = (params) => {
         DeptService.getDeptTree(params ? params : this.props.staffData.deptId).then(result => {
-            let deptTreeData = result.treeData.map(item => {
+            let deptTreeData = result.map(item => {
                 item.title = item.sdeptName;
                 item.key = item.ideptId
                 item.isLeaf = !item.childCount;
@@ -54,16 +55,19 @@ class changeDeptModal extends PureComponent {
                 return;
             }
             DeptService.getDeptTree(treeNode.props.dataRef).then(result => {
-                let treeData = result.treeData.map(item => {
-                    item.title = item.sdeptName;
-                    item.key = item.ideptId
-                    item.isLeaf = !item.childCount;
-                    return item;
-                })
-                treeNode.props.dataRef.children = [...treeData];
-                this.setState({
-                    deptTreeData: [...this.state.deptTreeData ? this.state.deptTreeData : this.props.deptTreeForChangeData],
-                });
+                if (result) {
+                    let treeData = result.map(item => {
+                        item.title = item.sdeptName;
+                        item.key = item.ideptId
+                        item.isLeaf = !item.childCount;
+                        return item;
+                    })
+                    treeNode.props.dataRef.children = [...treeData];
+                    let deptData = this.state.deptTreeData ? this.state.deptTreeData : this.props.deptTreeForChangeData;
+                    this.setState({
+                        deptTreeData: [...deptData],
+                    });
+                }
                 resolve();
             })
         });
@@ -93,15 +97,15 @@ class changeDeptModal extends PureComponent {
                 <Row>
                     <Col span={8}>所属区域</Col>
                     <Col span={16}>
-                        <TreeSelect
-                            value={selectDomain}
-                            dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
-                            treeData={domainTreeDate}
-                            showCheckedStrategy={SHOW_PARENT}
-                            searchPlaceholder={'请选择区域'}
-                            onChange={this.onChange}
-                            style={{'width': '100%'}}
-                        />
+                        {/*<TreeSelect*/}
+                        {/*value={selectDomain}*/}
+                        {/*dropdownStyle={{maxHeight: 400, overflow: 'auto'}}*/}
+                        {/*treeData={domainTreeDate}*/}
+                        {/*showCheckedStrategy={SHOW_PARENT}*/}
+                        {/*searchPlaceholder={'请选择区域'}*/}
+                        {/*onChange={this.onChange}*/}
+                        {/*style={{'width': '100%'}}*/}
+                        {/*/>*/}
                     </Col>
                     <Col span={24}>
                         <TreeComponent
@@ -109,6 +113,7 @@ class changeDeptModal extends PureComponent {
                             checkable={false}
                             onSelect={this.onSelectDeptTree}
                             onCheck={this.onSelectDeptTree}
+                            defaultSelectedKeys={[(staffData.deptId ? staffData.deptId.toString() : "")]}
                             treeData={deptTree}
                             onLoadData={this.onLoadDeptTreeData}/>
                     </Col>

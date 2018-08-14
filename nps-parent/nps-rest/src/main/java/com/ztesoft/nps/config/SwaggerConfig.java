@@ -19,7 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Component
 public class SwaggerConfig {
 	@Bean
-	public Docket safeApi() {
+	public Docket npsApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.apiInfo(apiInfo())
 				.groupName("NPS")

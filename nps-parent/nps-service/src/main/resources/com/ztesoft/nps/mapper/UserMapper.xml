@@ -227,15 +227,28 @@
     	<if test="deptId != null">
     		and dept_id = #{deptId} 
     	</if>
+    	<if test="deptName != null and deptName != ''">
+    		and u.dept_id in (select dept.id from departments dept where dept.name like concat('%', #{deptName}, '%')) 
+    	</if>
     </where>
   </select>
   
-  <select id="findByRoleId" resultMap="BaseResultMap" parameterType="Long" >
+  <select id="findByRoleId" resultMap="BaseResultMap" parameterType="RoleUserQuery" >
     select 
     <include refid="Base_Column_List" />
     from users u inner join user_role ur 
     on u.id = ur.user_id
-    where ur.role_id = #{id}
+    <where>
+    	<if test="roleId != null">
+    		ur.role_id = #{roleId} 
+    	</if>
+    	<if test="username != null and username != ''">
+    		and u.name like concat('%', #{username}, '%')
+    	</if>
+    	<if test="deptName != null and deptName != ''">
+    		and u.dept_id in (select dept.id from departments dept where dept.name like concat('%', #{deptName}, '%')) 
+    	</if>
+    </where>
   </select>
 
 </mapper>

@@ -5,12 +5,14 @@ import javax.servlet.http.HttpSession;
 import com.ztesoft.nps.model.User;
 
 public final class UserUtils {
+	public static final String SESSION_KEY = "user";
+
 	private UserUtils() {
 
 	}
 
 	public static User getUser(HttpSession session) {
-		User user = (User) session.getAttribute("user");
+		User user = (User) session.getAttribute(SESSION_KEY);
 		return user;
 	}
 }

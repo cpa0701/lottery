@@ -46,33 +46,15 @@ export default class extends Component {
 
   // 获取所有部门树数据
   deptQuery = () => {
-      const fullPaths = [];
-      const spread = dataModel => dataModel.map((item) => {
-          fullPaths.push(item);
-          if (item.children) {
-              spread(item.children);
-          }
-          return '';
-      });
       DeptService.getDeptTree()
             .then(res => {
                 this.setState({
                     deptTreeData: res.treeData,
                 });
-                spread(res.treeData);
-                this.setState({fullPaths});
             });
   };
   //异步加载部门树节点
   loadDeptData = (treeNode) => {
-      const fullPaths = [];
-      const spread = dataModel => dataModel.map((item) => {
-          fullPaths.push(item);
-          if (item.children) {
-              spread(item.children);
-          }
-          return '';
-      });
         return new Promise((resolve) => {
             if (treeNode.props.children) {
                 resolve();
@@ -84,8 +66,6 @@ export default class extends Component {
                     this.setState({
                         deptTreeData: [...this.state.deptTreeData]
                     });
-                    spread(result.treeData);
-                    this.setState({fullPaths});
                     resolve();
                 })
         });
@@ -117,7 +97,7 @@ export default class extends Component {
             checkedKeys: [],
             expandedKeys: [],
         });
-    }
+    };
   onExpand = (expandedKeys) => {
         this.setState({
             expandedKeys,
@@ -140,7 +120,7 @@ export default class extends Component {
   };
 
   render() {
-    const {edit, checkedKeys = [], form: {getFieldDecorator}, role={}} = this.props;
+    const {edit, checkedKeys = [], form: {getFieldDecorator}} = this.props;
     const {regionSelect, deptTreeData, deptArrSelect, expandedKeys} = this.state;
 
     const loop = (items, selected = false) => items.map((item) => {
