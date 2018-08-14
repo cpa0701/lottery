@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Col,Row,Select,Button,Divider,Table,Input,Form, Modal } from 'antd';
+import {Col, Row, Select, Button, Divider, Table, Input, Form, Modal} from 'antd';
 import './Authority.less'
 import {inject, observer} from "mobx-react/index";
 import AuthorityService from "../../../services/system/AuthorityService";
@@ -55,20 +55,15 @@ export default class Authority extends PureComponent {
     }
     //删除方法
     handleDelete = () => {
-        console.log(9999)
         if (this.state.authorityDeleteData) {
             this.setState({
                 authorityData: this.state.authorityData,
             });
-            const ref = info({
-                title: '已删除',
-                content: '',
-                okText: '确定',
-                cancelText: '取消',
-                onOk: () => {
-                    ref.destroy();
-                }
-            });
+            AuthorityService.deleteAuthority(this.state.authorityData).then((data) => {
+                this.freshTable();
+                this.handleOk();
+            })
+
         } else {
             const ref = info({
                 title: '请先选择删除项',
@@ -101,53 +96,90 @@ export default class Authority extends PureComponent {
             });
         }
     }
+    //获取权限树
+    AuthorityQuery = (param) => {
+        AuthorityService.getAuthTree({status:1}).then(result => {
+            if (result) {
+                result.map(item => {
+                    if (!item.leaf) {
+                        item.children = [];
+                    }
+                    if (item.parentId !== 0) {
+                        result.map((e) => {
+                            if (e.id === item.parentId) {
+                                e.children.push(item)
+                            }
+                        })
+                    }
+                });
+            }
+            let data = [];
+            result.map(item => {
+                if (item.parentId === 0) {
+                    data.push(item);
+                }
+                return '';
+            });
+            this.setState({
+                data: data,
+            });
+        });
+    };
+
     componentDidMount() {
-        AuthorityService.getAuthorityList().then(result=>{
-            this.setState({
-                data: result.authorityData,
-                authorityEditData:false,
-                authorityAddData:false,
-                authorityUserData:false,
-                authorityDeleteData:false,
+        this.AuthorityQuery();
+        this.setState({
+            authorityEditData: false,
+            authorityAddData: false,
+            authorityUserData: false,
+            authorityDeleteData: false,
 
-            });
         });
 
     }
-    freshTable(){
-        AuthorityService.getAuthorityList().then(result=>{
-            this.setState({
-                data: result.authorityData
-            });
-        });
+
+    freshTable() {
+        this.AuthorityQuery();
     }
+
     handleOk = () => {
         this.setState({
             addVisible: false,
-            userVisible:false,
-            editVisible:false,
+            userVisible: false,
+            editVisible: false,
         });
     }
     handleCancel = () => {
         this.setState({
             addVisible: false,
-            userVisible:false,
-            editVisible:false,
+            userVisible: false,
+            editVisible: false,
         });
     }
-    handleSubmit = (e) => {
+    handleAddSubmit = (e) => {
+        this.props.form.validateFields((err, values) => {
+            let value = {
+                ...values,
+                parentId: this.state.authorityData.id,
+            }
+            AuthorityService.addAuthority(value).then((data) => {
+                console.log(data)
+                this.freshTable();
+                this.handleOk();
+            })
+
+        });
+    }
+    handleUpdateSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
+            AuthorityService.updateAuthority(values).then((data) => {
+                console.log(data)
+                this.freshTable();
+                this.handleOk();
+            })
+
         });
-        this.freshTable();
-        this.handleOk();
-    }
-    handleChange=(value)=> {
-        console.log(`selected ${value}`);
-        this.freshTable();
     }
 
     constructor(props) {
@@ -155,36 +187,35 @@ export default class Authority extends PureComponent {
         this.store = this.props.stores;
         this.state = {
             //树形数据展示
-            bordered:true,
-            pagination:false,
-            data:[],
-            authorityEditData:[],
-            authorityAddData:[],
-            authorityUserData:[],
-            authorityDeleteData:[],
-            authorityData:[],
+            bordered: true,
+            pagination: false,
+            data: [],
+            authorityEditData: [],
+            authorityAddData: [],
+            authorityUserData: [],
+            authorityDeleteData: [],
+            authorityData: [],
             //模态框
             addVisible: false,
-            userVisible:false,
-            editVisible:false,
+            userVisible: false,
+            editVisible: false,
             confirmLoading: false,
         }
     }
 
 
-
     render() {
         const {authority} = this.props.stores.I18nModel.outputLocale
-        const { getFieldDecorator } = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const state = this.state;
         const rowSelection = {
-            onSelect:(record, selected, selectedRows) => {
+            onSelect: (record, selected, selectedRows) => {
                 this.setState({
-                    authorityAddData:selected,
+                    authorityAddData: selected,
                     authorityEditData: selected,
-                    authorityUserData:selected,
-                    authorityDeleteData:selected,
-                    authorityData:record
+                    authorityUserData: selected,
+                    authorityDeleteData: selected,
+                    authorityData: record
                 })
 
 
@@ -194,97 +225,98 @@ export default class Authority extends PureComponent {
             title: authority.authorityName,
             dataIndex: 'name',
             key: 'name',
-            width: '24%',
+            width: '30%',
         }, {
             title: authority.authorityUrl,
             dataIndex: 'url',
             key: 'url',
-            width: '12%',
+            width: '25%',
             render: (text) => <span className="tableText">{text}</span>,
 
         }, {
-            title: authority.authorityIcon,
-            dataIndex: 'icon',
-            key: 'icon',
-            width: '12%',
-
-        }, {
-                title: authority.authorityDescribe,
-                dataIndex: 'describe',
-                key: 'describe',
-                width: '12%',
+            title: authority.authorityDescribe,
+            dataIndex: 'description',
+            key: 'description',
+            width: '15%',
             render: (text) => <span className="tableText">{text}</span>,
-            }, {
-            title: authority.authorityNo,
-            dataIndex: 'No',
-            key: 'No',
-            width: '8%',
-
         }, {
             title: authority.authorityType,
             dataIndex: 'type',
             key: 'type',
-            width: '8%',
+            width: '15%',
+            render: (text, record, index) => {
+                switch (text) {
+                    case 1:
+                        return '菜单'
+                    case 2:
+                        return '功能按钮'
+                    case 3:
+                        return 'C/S权限'
+                    case 4:
+                        return '其他'
+                    case 5:
+                        return 'tab页'
+                    case 6:
+                        return '多数据源权限'
+                }
+
+            }
 
         }, {
             title: authority.authorityArea,
-            dataIndex: 'area',
-            key: 'area',
-            width: '8%',
+            dataIndex: 'appType',
+            key: 'appType',
+            width: '15%',
+            render: (text, record, index) => {
+                switch (text) {
+                    case 1:
+                        return '全局'
+                    case 2:
+                        return '网管系统'
+                    case 3:
+                        return '大客户系统'
+                    case 4:
+                        return '江苏有线-移动端'
+                    case 5:
+                        return '报表分析'
+                    case 6:
+                        return '自定义报表'
+                    case 7:
+                        return '统计分析'
+                    case 8:
+                        return '重保'
+                    case 9:
+                        return '广西门户'
+                    case 10:
+                        return '广东资源树'
+                }
 
-        }, {
-            title: authority.authorityActivation,
-            dataIndex: 'activate',
-            key: 'activate',
-            width: '8%',
-
-        }, {
-            title: authority.authoritySensitive,
-            dataIndex: 'sensitive',
-            key: 'sensitive',
-            width: '8%',
+            }
 
         }];
         return (
             <div>
-                <Row type="flex" align="middle">
-                    <Col className='filterlabel' span={4}>应用系统</Col>
-                    <Col span={6}>
-                        <Select defaultValue="0" mode="multiple" onChange={this.handleChange}>
-                            <Option value="0">全部</Option>
-                            <Option value="1">是</Option>
-                            <Option value="2">否</Option>
-                        </Select>
-                    </Col>
-                    <Col className='filterlabel' span={4} >是否激活</Col>
-                    <Col span={3}>
-                        <Select defaultValue="0" onChange={this.handleChange}>
-                            <Option value="0">全部</Option>
-                            <Option value="1">是</Option>
-                            <Option value="2">否</Option>
-                        </Select>
-                    </Col>
-                </Row>
-                <Divider />
                 <div className="headerAuthority">
                     <Button type="primary" icon="plus-circle-o" onClick={this.handleAdd}>{authority.insert}</Button>
                     <Button type="primary" icon="edit" onClick={this.handleUpdate}>{authority.modify}</Button>
                     <Button type="danger" icon="delete" onClick={this.handleDelete}>{authority.delete}</Button>
-                    <Button type="primary"  icon="user" onClick={this.handleDetail}>{authority.detail}</Button>
+                    <Button type="primary" icon="user" onClick={this.handleDetail}>{authority.detail}</Button>
                 </div>
-                <Divider />
+                <Divider/>
                 <div>
-                    <Table {...this.state} columns={columns} defaultExpandedRowKeys={[0]} rowSelection={rowSelection} size="small" dataSource={this.state.data} onRow={(record) => {
+                    <Table {...this.state} columns={columns} rowKey={record => `${record.id}`}
+                           defaultExpandedRowKeys={[0]} rowSelection={rowSelection} size="small"
+                           dataSource={this.state.data} onRow={(record) => {
                         return {
                             onClick: (e) => {
                                 e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click()
                             },       // 点击行
                             onDoubleClick: (e) => {
-                                 this.setState({
-                                         authorityUserData:true
-                                     },()=>{
-                                         this.handleDetail()
-                                    });
+                                this.setState({
+                                    authorityUserData: true
+                                }, () => {
+                                    this.handleDetail()
+                                });
 
 
                             },
@@ -300,52 +332,38 @@ export default class Authority extends PureComponent {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleSubmit}>保存</Button>,
-                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                            <Button key="submit" type="primary" icon="check-circle-o"
+                                    onClick={this.handleAddSubmit}>保存</Button>,
+                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
                         ]}
                     >
                         <Form>
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限标识"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {getFieldDecorator('authoritySign', {
-                                            rules: [{ required: true,}],
-                                            initialValue:" ",
-                                        })(
-
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span={12}>
-                                    <FormItem
                                         label="权限名称"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityName', {
-                                            rules: [{ required: true,}],
-                                            initialValue:" ",
+                                        {getFieldDecorator('name', {
+                                            rules: [{required: true,}],
+                                            initialValue: " ",
                                         })(
-                                            <Input  />
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
+
+
                                 <Col span={12}>
                                     <FormItem
                                         label="权限类型"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityType', {
-                                            rules: [{ required: true,}],
-                                            initialValue:"请选择",
+                                        {getFieldDecorator('type', {
+                                            rules: [{required: true,}],
+                                            initialValue: "6",
                                         })(
                                             <Select>
                                                 <Option value="1">菜单</Option>
@@ -353,7 +371,7 @@ export default class Authority extends PureComponent {
                                                 <Option value="3">C/S按钮</Option>
                                                 <Option value="4">其它</Option>
                                                 <Option value="5">tab页</Option>
-                                                <Option value="6" >多数据源权限</Option>
+                                                <Option value="6">多数据源权限</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -364,121 +382,53 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityURL', {
-                                            rules: [{ }],
-                                            initialValue:" ",
+                                        {getFieldDecorator('url', {
+                                            rules: [{}],
+                                            initialValue: " ",
                                         })(
-
-                                            <Input />
-
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                <FormItem
-                                    label="图标名称"
-                                    labelCol={{span: 10}}
-                                    wrapperCol={{span: 14}}
-                                >
-                                    {getFieldDecorator('authorityIcon', {
-                                        rules: [{}],
-                                        initialValue:" ",
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem>
-                            </Col>
                                 <Col span={12}>
                                     <FormItem
                                         label="权限描述"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityDescribe', {
+                                        {getFieldDecorator('description', {
                                             rules: [{}],
-                                            initialValue:" ",
+                                            initialValue: " ",
                                         })(
-                                            <Input />
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
+
                                 <Col span={12}>
-                                <FormItem
-                                    label="是否激活"
-                                    labelCol={{span: 10}}
-                                    wrapperCol={{span: 14}}
-                                >
-                                    {getFieldDecorator('authorityActivate', {
-                                        rules: [{ required: true,}],
-                                        initialValue:" ",
-                                    })(
-                                        <Select>
-                                            <Option value="7">是</Option>
-                                            <Option value="8">否</Option>
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                                <Col span={12}>
-                                <FormItem
-                                    label="应用类型"
-                                    labelCol={{span: 10}}
-                                    wrapperCol={{span: 14}}
-                                >
-                                    {getFieldDecorator('authorityArea', {
-                                        rules: [{ required: true,}],
-                                        initialValue:" ",
-                                    })(
-                                        <Select>
-                                            <Option value="11">全局</Option>
-                                            <Option value="12">网管系统</Option>
-                                            <Option value="13">大客户系统</Option>
-                                            <Option value="14">江苏有线-移动端</Option>
-                                            <Option value="15">报表分析</Option>
-                                            <Option value="16" >自定义报表</Option>
-                                            <Option value="17">统计分析</Option>
-                                            <Option value="18">重保</Option>
-                                            <Option value="19" >广西门户</Option>
-                                            <Option value="20" >广东资源数</Option>
-                                        </Select>
-                                    )}
-                                </FormItem>
-                            </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                <FormItem
-                                label="同级序号"
-                                labelCol={{span: 10}}
-                                wrapperCol={{span: 14}}
-                                >
-                                {getFieldDecorator('authorityNo', {
-                                    rules: [{ required: true,}],
-                                    initialValue:" ",
-                                })(
-                                    <Input  />
-                                )}
-                                </FormItem>
-                            </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                <FormItem
-                                    label="扩展信息"
-                                    labelCol={{span: 10}}
-                                    wrapperCol={{span: 14}}
-                                >
-                                    {getFieldDecorator('authorityMsg', {
-                                        rules: [{ required: true,}],
-                                        initialValue:" ",
-                                    })(
-                                        <Input  />
-                                    )}
-                                </FormItem>
+                                    <FormItem
+                                        label="应用类型"
+                                        labelCol={{span: 10}}
+                                        wrapperCol={{span: 14}}
+                                    >
+                                        {getFieldDecorator('appType', {
+                                            rules: [{required: true,}],
+                                            initialValue: "1",
+                                        })(
+                                            <Select>
+                                                <Option value="1">全局</Option>
+                                                <Option value="2">网管系统</Option>
+                                                <Option value="3">大客户系统</Option>
+                                                <Option value="4">江苏有线-移动端</Option>
+                                                <Option value="5">报表分析</Option>
+                                                <Option value="6">自定义报表</Option>
+                                                <Option value="7">统计分析</Option>
+                                                <Option value="8">重保</Option>
+                                                <Option value="9">广西门户</Option>
+                                                <Option value="10">广东资源树</Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
                                 </Col>
                             </Row>
                         </Form>
@@ -491,8 +441,9 @@ export default class Authority extends PureComponent {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleSubmit}>保存</Button>,
-                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                            <Button key="submit" type="primary" icon="check-circle-o"
+                                    onClick={this.handleUpdateSubmit}>保存</Button>,
+                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
                         ]}
                     >
                         <Form>
@@ -503,11 +454,10 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authoritySign', {
-                                            rules: [{ required: true,}],
-                                            initialValue:this.state.authorityData.key,
+                                        {getFieldDecorator('id', {
+                                            rules: [{required: true,}],
+                                            initialValue: this.state.authorityData.id,
                                         })(
-
                                             <Input/>
                                         )}
                                     </FormItem>
@@ -518,25 +468,24 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityName', {
-                                            rules: [{ required: true,}],
-                                            initialValue:this.state.authorityData.name,
+                                        {getFieldDecorator('name', {
+                                            rules: [{required: true,}],
+                                            initialValue: this.state.authorityData.name,
                                         })(
-                                            <Input  />
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
+
                                 <Col span={12}>
                                     <FormItem
                                         label="权限类型"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityType', {
-                                            rules: [{ required: true,}],
-                                            initialValue:"请选择",
+                                        {getFieldDecorator('type', {
+                                            rules: [{required: true,}],
+                                            initialValue: String(this.state.authorityData.status),
                                         })(
                                             <Select>
                                                 <Option value="1">菜单</Option>
@@ -544,7 +493,7 @@ export default class Authority extends PureComponent {
                                                 <Option value="3">C/S按钮</Option>
                                                 <Option value="4">其它</Option>
                                                 <Option value="5">tab页</Option>
-                                                <Option value="6" >多数据源权限</Option>
+                                                <Option value="6">多数据源权限</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -555,62 +504,26 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityURL', {
-                                            rules: [{ }],
-                                            initialValue:this.state.authorityData.URL,
-                                        })(
-
-                                            <Input />
-
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="图标名称"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {getFieldDecorator('authorityIcon', {
+                                        {getFieldDecorator('url', {
                                             rules: [{}],
-                                            initialValue:this.state.authorityData.icon,
+                                            initialValue: this.state.authorityData.url,
                                         })(
-                                            <Input />
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
+
                                 <Col span={12}>
                                     <FormItem
                                         label="权限描述"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityDescribe', {
+                                        {getFieldDecorator('description', {
                                             rules: [{}],
-                                            initialValue:this.state.authorityData.describe,
+                                            initialValue: this.state.authorityData.description,
                                         })(
-                                            <Input />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="是否激活"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {getFieldDecorator('authorityActivate', {
-                                            rules: [{ required: true,}],
-                                            initialValue:this.state.authorityData.activate,
-                                        })(
-                                            <Select>
-                                                <Option value="7">是</Option>
-                                                <Option value="8">否</Option>
-                                            </Select>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -620,58 +533,27 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('authorityArea', {
-                                            rules: [{ required: true,}],
-                                            initialValue:this.state.authorityData.area,
+                                        {getFieldDecorator('appType', {
+                                            rules: [{required: true,}],
+                                            initialValue: String(this.state.authorityData.appType),
                                         })(
                                             <Select>
-                                                <Option value="11">全局</Option>
-                                                <Option value="12">网管系统</Option>
-                                                <Option value="13">大客户系统</Option>
-                                                <Option value="14">江苏有线-移动端</Option>
-                                                <Option value="15">报表分析</Option>
-                                                <Option value="16" >自定义报表</Option>
-                                                <Option value="17">统计分析</Option>
-                                                <Option value="18">重保</Option>
-                                                <Option value="19" >广西门户</Option>
-                                                <Option value="20" >广东资源数</Option>
+                                                <Option value="1">全局</Option>
+                                                <Option value="2">网管系统</Option>
+                                                <Option value="3">大客户系统</Option>
+                                                <Option value="4">江苏有线-移动端</Option>
+                                                <Option value="5">报表分析</Option>
+                                                <Option value="6">自定义报表</Option>
+                                                <Option value="7">统计分析</Option>
+                                                <Option value="8">重保</Option>
+                                                <Option value="9">广西门户</Option>
+                                                <Option value="10">广东资源数</Option>
                                             </Select>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="同级序号"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {getFieldDecorator('authorityNo', {
-                                            rules: [{ required: true,}],
-                                            initialValue:this.state.authorityData.No,
-                                        })(
-                                            <Input  />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="扩展信息"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {getFieldDecorator('authorityMsg', {
-                                            rules: [{ required: true,}],
-                                            initialValue:" ",
-                                        })(
-                                            <Input  />
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
+
                         </Form>
                     </Modal>
                     <Modal
@@ -685,13 +567,14 @@ export default class Authority extends PureComponent {
                     >
                         <Form>
                             <Row>
+
                                 <Col span={12}>
                                     <FormItem
                                         label="权限标识"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.authorityData.key}
+                                        {this.state.authorityData.id}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
@@ -703,15 +586,20 @@ export default class Authority extends PureComponent {
                                         {this.state.authorityData.name}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
                                 <Col span={12}>
                                     <FormItem
                                         label="权限类型"
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.authorityData.type}
+                                        <Select value={String(this.state.authorityData.type)}disabled>
+                                            <Option value="1">菜单</Option>
+                                            <Option value="2">功能按钮</Option>
+                                            <Option value="3">C/S按钮</Option>
+                                            <Option value="4">其它</Option>
+                                            <Option value="5">tab页</Option>
+                                            <Option value="6">多数据源权限</Option>
+                                        </Select>
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
@@ -720,18 +608,7 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.authorityData.URL}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="图标名称"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {this.state.authorityData.icon}
+                                        {this.state.authorityData.url}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
@@ -740,18 +617,7 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.authorityData.describe}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="是否激活"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {this.state.authorityData.activate}
+                                        {this.state.authorityData.description}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
@@ -760,29 +626,18 @@ export default class Authority extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.authorityData.area}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="同级序号"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {this.state.authorityData.No}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        label="扩展信息"
-                                        labelCol={{span: 10}}
-                                        wrapperCol={{span: 14}}
-                                    >
-                                        {}
+                                        <Select value={String(this.state.authorityData.appType)} disabled>
+                                            <Option value="1">全局</Option>
+                                            <Option value="2">网管系统</Option>
+                                            <Option value="3">大客户系统</Option>
+                                            <Option value="4">江苏有线-移动端</Option>
+                                            <Option value="5">报表分析</Option>
+                                            <Option value="6">自定义报表</Option>
+                                            <Option value="7">统计分析</Option>
+                                            <Option value="8">重保</Option>
+                                            <Option value="9">广西门户</Option>
+                                            <Option value="10">广东资源数</Option>
+                                        </Select>
                                     </FormItem>
                                 </Col>
                             </Row>

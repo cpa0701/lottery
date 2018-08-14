@@ -3,7 +3,8 @@ import Http from '../../common/Http';
 class AuthorityService {
     // 获取权限树
     getAuthTree = async (param) => {
-        let url = 'permissions';
+         let url = 'permissions';
+        //let url = 'mock/systemController/Authority';
         return await Http.get(url,param);
     };
     //新增权限
