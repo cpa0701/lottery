@@ -9,28 +9,23 @@ export default class Checkboxmodule extends PureComponent {
         this.state={
             id:props.id,
             title:props.title,
-            optionA:props.optionA,
-            optionB:props.optionB,
-            optionC:props.optionC,
-            optionD:props.optionD,
-            optionE:props.optionE,
-            optionF:props.optionF
+            num:props.num,
+            options:props.options,
         }
     }
     onChange = (e) => {
     }
     render() {
+        var items = [];
+        for (var i = 0; i < this.state.num; i++) {
+            items.push( <Col span={24}><Checkbox value="i">{this.state.options[i]}</Checkbox></Col>);
+        }
         return (
             <div>
-                <h3>{this.state.id}.{this.state.title}</h3>
+                <h3>{this.state.id}.{this.state.title}[多选题]</h3>
                 <Checkbox.Group onChange={this.onChange}>
                     <Row>
-                        <Col span={24}><Checkbox value="1">{this.state.optionA}</Checkbox></Col>
-                        <Col span={24}><Checkbox value="2">{this.state.optionB}</Checkbox></Col>
-                        <Col span={24}><Checkbox value="3">{this.state.optionC}</Checkbox></Col>
-                        <Col span={24}><Checkbox value="4">{this.state.optionD}</Checkbox></Col>
-                        <Col span={24}><Checkbox value="5">{this.state.optionE}</Checkbox></Col>
-                        <Col span={24}><Checkbox value="6">{this.state.optionF}</Checkbox></Col>
+                        {items}
                     </Row>
                 </Checkbox.Group>,
             </div>
