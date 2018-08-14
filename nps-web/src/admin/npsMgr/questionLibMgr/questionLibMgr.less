@@ -1,0 +1,40 @@
+@blueColor: #e5f0fa;
+.questionLibMgr {
+  .leftSelectType {
+    :global {
+      .ant-card-head {
+        background: @blueColor;
+      }
+      .ant-card-head-title {
+        padding: 11px 0;
+      }
+      .ant-card-body {
+        height: 463px;
+      }
+      .ant-menu {
+        border-right: none;
+      }
+      .ant-menu-item-selected {
+        background: #fff;
+        color: rgba(0, 0, 0, 0.65);
+      }
+      .ant-menu-item-selected:hover {
+        color: #1890ff;
+      }
+    }
+  }
+  .questionContent {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    margin-left: 16px;
+    @diff : 30px;
+    min-height : calc(~"75vh - @{diff}");
+    .list {
+      margin: 10px 20px;
+      border: 1px solid #fff;
+    }
+    .list:hover {
+      border-color: rgb(253, 181, 83);
+    }
+  }
+}
