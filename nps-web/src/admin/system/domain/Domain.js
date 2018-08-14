@@ -3,15 +3,8 @@ import React, {PureComponent} from 'react';
 import { Button,Divider,Table,Modal,Row, Col,Input,Select,InputNumber,Form ,message} from 'antd'
 import {inject, observer} from "mobx-react/index";
 import './Domain.less'
-import Servicedomain from '../../../services/Servicedomain';
-import DeptService from "../../../services/DeptService";
-
-
-// rowSelection objects indicates the need for row selection
-
-//选择框
+import DomainService from '../../../services/DomainService';
 const Option = Select.Option;
-//表单
 const FormItem = Form.Item;
 const info = Modal.info;
 @inject('stores')
@@ -58,20 +51,25 @@ export default class Domain extends PureComponent {
     }
     //删除方法
     handleDelete = () => {
-        console.log(9999)
         if (this.state.domainDeleteData) {
             this.setState({
                 domainData: this.state.domainData,
             });
-            const ref = info({
-                title: '已删除',
-                content: '',
-                okText: '确定',
-                cancelText: '取消',
-                onOk: () => {
-                    ref.destroy();
-                }
-            });
+            DomainService.deleteDomain(this.state.domainData).then((data) => {
+                const ref = info({
+                    title: '已删除',
+                    content: '',
+                    okText: '确定',
+                    cancelText: '取消',
+                    onOk: () => {
+                        ref.destroy();
+                    }
+                });
+                console.log(data)
+                this.freshTable();
+                this.handleOk();
+            })
+
         } else {
             const ref = info({
                 title: '请先选择删除项',
@@ -124,27 +122,49 @@ export default class Domain extends PureComponent {
             confirmLoading: false,
         }
     }
-
-
-    componentDidMount() {
-        Servicedomain.getDomainList().then(result=>{
+    //获取区域树
+    domainQuery = (param) => {
+        DomainService.domainTree(param)
+            .then(result => {
+                if (result) {
+                    result.map(item => {
+                        if(!item.leaf){
+                            item.children=[];
+                        }
+                        if(item.parentId!==0){
+                            result.map((e)=>{
+                                if(e.id==item.parentId){
+                                    e.children.push(item)
+                                }
+                            })
+                        }
+                    });
+                }
+                let data=[];
+                    result.map(item=>{
+                        if(item.parentId===0){
+                            data.push(item);
+                        }
+                        return '';
+                    });
+                this.setState({
+                    data: data,
+                });
+            });
+    };
+    componentDidMount(){
+            this.domainQuery();
             this.setState({
-                data: result.domainData,
                 domainAddData:false,
                 domainEditData: false,
                 domainUserData:false,
                 domainDeleteData:false
 
             });
-        });
 
     }
     freshTable(){
-        Servicedomain.getDomainList().then(result=>{
-            this.setState({
-                data: result.domainData
-            });
-        });
+        this.domainQuery();
     }
     handleOk = () => {
         this.setState({
@@ -160,15 +180,33 @@ export default class Domain extends PureComponent {
             editVisible:false,
         });
     }
-    handleSubmit = (e) => {
+    handleAddSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
+            let value={
+                ...values,
+                parentId:this.state.domainData.id,
             }
+            DomainService.addDomain(value).then((data) => {
+                console.log(data)
+                this.freshTable();
+                this.handleOk();
+            })
+
         });
-        this.freshTable();
-        this.handleOk();
+
+    }
+    handleUpdateSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            DomainService.updateDomain(values).then((data) => {
+                console.log(data)
+                this.freshTable();
+                this.handleOk();
+            })
+
+        });
+
     }
     render() {
         const {domain} = this.props.stores.I18nModel.outputLocale
@@ -182,10 +220,20 @@ export default class Domain extends PureComponent {
             dataIndex: 'type',
             key: 'type',
             width: '32%',
+            render: (text, record, index) => {
+                    switch(text){
+                        case 1: return '省'
+                        case 2: return '本地网'
+                        case 3: return '县市'
+                        case 4: return '扇区'
+                        case 5: return '自定义'
+                    }
+
+            }
         }, {
             title: domain.domainID,
-            dataIndex: 'id',
-            key: 'id',
+            dataIndex: 'code',
+            key: 'code',
             width: '32%',
 
         }];
@@ -214,7 +262,7 @@ export default class Domain extends PureComponent {
                     <Button type="primary" icon="user" onClick={this.handleDetail}>{domain.detail}</Button>
                 </div>
                 <div className="gridTree">
-                    <Table {...this.state} columns={columns} rowSelection={rowSelection} dataSource={this.state.data} onRow={(record) => {
+                    <Table {...this.state}  rowKey={record => `${record.id}`} columns={columns} rowSelection={rowSelection} dataSource={this.state.data} onRow={(record) => {
                         return {
                             onClick: (e) => {
                                 e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click()
@@ -239,7 +287,7 @@ export default class Domain extends PureComponent {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                          footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleSubmit}>保存</Button>,
+                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleAddSubmit}>保存</Button>,
                             <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
                          ]}
                     >
@@ -251,7 +299,7 @@ export default class Domain extends PureComponent {
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
-                                    {getFieldDecorator('domainsign', {
+                                    {getFieldDecorator('areaId', {
                                         rules: [{ required: true,}],
                                         initialValue:"1010582",
                                     })(
@@ -266,7 +314,7 @@ export default class Domain extends PureComponent {
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
-                                    {getFieldDecorator('domainName', {
+                                    {getFieldDecorator('name', {
                                         rules: [{ required: true,}],
                                         initialValue:" ",
                                     })(
@@ -282,17 +330,17 @@ export default class Domain extends PureComponent {
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
-                                    {getFieldDecorator('domainType', {
+                                    {getFieldDecorator('type', {
                                         rules: [{ required: true,}],
-                                        initialValue:"请选择",
+                                        initialValue:"6",
                                     })(
                                         <Select>
-                                            <Option value="省">省</Option>
-                                            <Option value="本地网">本地网 </Option>
-                                            <Option value="县市">县市</Option>
-                                            <Option value="扇区">扇区</Option>
-                                            <Option value="自定义">自定义</Option>
-                                            <Option value="请选择" disabled>请选择</Option>
+                                            <Option value="1">省</Option>
+                                            <Option value="2">本地网 </Option>
+                                            <Option value="3">县市</Option>
+                                            <Option value="4">扇区</Option>
+                                            <Option value="5">自定义</Option>
+                                            <Option value="6" disabled>请选择</Option>
                                         </Select>
                                     )}
                                 </FormItem>
@@ -303,7 +351,7 @@ export default class Domain extends PureComponent {
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
-                                    {getFieldDecorator('domainID', {
+                                    {getFieldDecorator('code', {
                                         rules: [{ required: true,}],
                                         initialValue:" ",
                                     })(
@@ -321,11 +369,13 @@ export default class Domain extends PureComponent {
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
-                                    {getFieldDecorator('domainNo', {
-                                        rules: [{ type:'number',}],
+                                    {getFieldDecorator('sequence', {
+                                        rules: [],
                                         initialValue:" ",
                                     })(
+
                                         <InputNumber min={1} max={10000}  />
+
                                     )}
                                 </FormItem>
                             </Col>
@@ -340,7 +390,7 @@ export default class Domain extends PureComponent {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleSubmit}>保存</Button>,
+                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleUpdateSubmit}>保存</Button>,
                             <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
                         ]}
                     >
@@ -352,9 +402,9 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('domainsign', {
+                                        {getFieldDecorator('areaId', {
                                             rules: [{ required: true,}],
-                                            initialValue:this.state.domainData.key,
+                                            initialValue:this.state.domainData.areaId,
                                         })(
                                             <Input placeholder="1010582"/>
                                         )}
@@ -366,7 +416,7 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('domainName', {
+                                        {getFieldDecorator('name', {
                                             rules: [{ required: true,}],
                                             initialValue:this.state.domainData.name,
                                         })(
@@ -382,17 +432,17 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('domainType', {
+                                        {getFieldDecorator('type', {
                                             rules: [{ required: true,}],
-                                            initialValue:this.state.domainData.type,
+                                            initialValue:String(this.state.domainData.type),
                                         })(
                                             <Select >
-                                                <Option value="省">省</Option>
-                                                <Option value="本地网">本地网 </Option>
-                                                <Option value="县市">县市</Option>
-                                                <Option value="扇区">扇区</Option>
-                                                <Option value="自定义">自定义</Option>
-                                                <Option value="请选择" disabled>请选择</Option>
+                                                <Option value="1">省</Option>
+                                                <Option value="2">本地网 </Option>
+                                                <Option value="3">县市</Option>
+                                                <Option value="4">扇区</Option>
+                                                <Option value="5">自定义</Option>
+                                                <Option value="6" disabled>请选择</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -403,9 +453,9 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('domainID', {
+                                        {getFieldDecorator('code', {
                                             rules: [{ required: true,}],
-                                            initialValue:this.state.domainData.id,
+                                            initialValue:this.state.domainData.code,
                                         })(
                                             <Input />
                                         )}
@@ -419,15 +469,21 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {getFieldDecorator('domainNo', {
+                                        {getFieldDecorator('sequence', {
                                             rules: [{ }],
-                                            initialValue:this.state.domainData.No,
+                                            initialValue:this.state.domainData.sequence,
                                         })(
                                             <InputNumber min={1} max={10000}/>
                                         )}
                                     </FormItem>
                                 </Col>
                             </Row>
+                            {getFieldDecorator('id', {
+                                initialValue: this.state.domainData.id,
+                            })(<Input type="hidden"/>)}
+                            {getFieldDecorator('parentId', {
+                                initialValue: this.state.domainData.parentId,
+                            })(<Input type="hidden"/>)}
                         </Form>
                     </Modal>
                     <Modal
@@ -448,7 +504,7 @@ export default class Domain extends PureComponent {
                                         wrapperCol={{span: 14}}
                                     >
 
-                                        {this.state.domainData.key}
+                                        {this.state.domainData.areaId}
 
                                     </FormItem>
                                 </Col>
@@ -469,7 +525,14 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.domainData.type}
+                                        <Select value={String(this.state.domainData.type)} disabled>
+                                            <Option value="1">省</Option>
+                                            <Option value="2">本地网 </Option>
+                                            <Option value="3">县市</Option>
+                                            <Option value="4">扇区</Option>
+                                            <Option value="5">自定义</Option>
+                                            <Option value="6" disabled>请选择</Option>
+                                        </Select>
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
@@ -478,7 +541,7 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.domainData.id}
+                                        {this.state.domainData.code}
                                     </FormItem>
                                 </Col>
                             </Row>
@@ -489,7 +552,7 @@ export default class Domain extends PureComponent {
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        {this.state.domainData.No}
+                                        {this.state.domainData.sequence}
                                     </FormItem>
                                 </Col>
                             </Row>
