@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react';
 import { Button,Divider,Table,Modal,Row, Col,Input,Select,InputNumber,Form ,message} from 'antd'
 import {inject, observer} from "mobx-react/index";
 import './Domain.less'
-import DomainService from '../../../services/DomainService';
+import DomainService from '../../../services/system/DomainService';
 const Option = Select.Option;
 const FormItem = Form.Item;
 const info = Modal.info;
