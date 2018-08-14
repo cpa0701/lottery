@@ -12,22 +12,9 @@ const info = Modal.info;
 export default class Domain extends PureComponent {
     //新增方法
     handleAdd = () => {
-        if (this.state.domainAddData) {
-            this.setState({
-                domainData: this.state.domainData,
-                addVisible: true,
-            });
-        } else {
-            const ref = info({
-                title: '请先选择区域项',
-                content: '',
-                okText: '确定',
-                cancelText: '取消',
-                onOk: () => {
-                    ref.destroy();
-                }
-            });
-        }
+        this.setState({
+            addVisible: true,
+        });
     }
     //修改方法
     handleUpdate = () => {
@@ -182,9 +169,18 @@ export default class Domain extends PureComponent {
     handleAddSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            let value={
-                ...values,
-                parentId:this.state.domainData.id,
+            let value;
+            if (this.state.domainAddData) {
+                value = {
+                    ...values,
+                    parentId: this.state.domainData.id,
+                }
+            }
+            else{
+                value = {
+                    ...values,
+                    parentId:0,
+                }
             }
             DomainService.addDomain(value).then((data) => {
                 console.log(data)

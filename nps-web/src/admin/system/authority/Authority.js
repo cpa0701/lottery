@@ -17,22 +17,9 @@ const info = Modal.info;
 export default class Authority extends PureComponent {
     //新增方法
     handleAdd = () => {
-        if (this.state.authorityAddData) {
-            this.setState({
-                authorityData: this.state.authorityData,
-                addVisible: true,
-            });
-        } else {
-            const ref = info({
-                title: '请先选择',
-                content: '',
-                okText: '确定',
-                cancelText: '取消',
-                onOk: () => {
-                    ref.destroy();
-                }
-            });
-        }
+        this.setState({
+            addVisible: true,
+        });
     }
     //修改方法
     handleUpdate = () => {
@@ -158,12 +145,20 @@ export default class Authority extends PureComponent {
     }
     handleAddSubmit = (e) => {
         this.props.form.validateFields((err, values) => {
-            let value = {
-                ...values,
-                parentId: this.state.authorityData.id,
+            let value;
+            if (this.state.authorityAddData) {
+                value = {
+                    ...values,
+                    parentId:this.state.authorityData.id,
+                }
+            }
+            else{
+                value = {
+                    ...values,
+                    parentId:0,
+                }
             }
             AuthorityService.addAuthority(value).then((data) => {
-                console.log(data)
                 this.freshTable();
                 this.handleOk();
             })

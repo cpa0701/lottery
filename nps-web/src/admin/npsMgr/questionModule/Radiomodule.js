@@ -1,21 +1,17 @@
-/* eslint-disable react/react-in-jsx-scope */
-/**
- * Create by chenpengan on 2018/8/14
- */
-import { Radio} from 'antd';
+import {Radio} from 'antd';
 import {PureComponent} from "react";
 import React from 'react';
 const RadioGroup = Radio.Group;
- //单选
+
+//单选
 export default class Radiomodule extends PureComponent {
     constructor(props){
         super(props);
         this.state={
-            value:1,
+            value:0,
             id:props.id,
-            title:props.title,
-            optionA:props.optionA,
-            optionB:props.optionB
+            title: props.title ? props.title : '单选题标题',
+            option: props.option ? props.option : ['选项1', '选项2','选项3', '选项4']
         }
     }
     onChange = (e) => {
@@ -30,20 +26,17 @@ export default class Radiomodule extends PureComponent {
             height: '30px',
             lineHeight: '30px',
         };
+        var items = [];
+        for (var i = 0; i < this.state.option.length; i++) {
+            items.push( <Radio style={radioStyle} value={i}>{this.state.option[i]}</Radio>);
+        }
         return (
             <div>
                 <h3>{this.state.id}.{this.state.title}</h3>
-            <RadioGroup value={this.state.value} onChange={this.onChange}>
-                <Radio style={radioStyle} value={1}>{this.state.optionA}</Radio>
-                <Radio style={radioStyle} value={2}>{this.state.optionB}</Radio>
-            </RadioGroup>
+                <RadioGroup value={this.state.value} onChange={this.onChange}>
+                    {items}
+                </RadioGroup>
             </div>
         );
     }
 }
-
-//多选
-
-//单项填空
-
-//多项填空

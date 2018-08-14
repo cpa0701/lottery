@@ -2,7 +2,7 @@ package com.ztesoft.nps.utils;
 
 import javax.servlet.http.HttpSession;
 
-import com.ztesoft.nps.model.User;
+import com.ztesoft.nps.system.model.User;
 
 public final class UserUtils {
 	public static final String SESSION_KEY = "user";
