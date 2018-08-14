@@ -177,6 +177,7 @@ public class PermissionController {
 
 		User currentUser = UserUtils.getUser(session);
 		permission.setModifiedBy(currentUser.getAccount());
+		permission.setStatus(Status.INVALID.getCode());
 
 		permissionService.delete(permission);
 

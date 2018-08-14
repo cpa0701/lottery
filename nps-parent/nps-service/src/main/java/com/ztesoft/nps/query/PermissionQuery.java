@@ -33,6 +33,12 @@ public class PermissionQuery {
 	@ApiModelProperty("父权限ID")
 	private Integer parentId;
 
+	/**
+	 * 状态
+	 */
+	@ApiModelProperty("状态")
+	private Integer status;
+
 	public String getName() {
 		return name;
 	}
@@ -63,6 +69,14 @@ public class PermissionQuery {
 
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }
