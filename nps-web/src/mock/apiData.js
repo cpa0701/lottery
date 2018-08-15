@@ -668,7 +668,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             })
         },
         repeat: (questionId) => {
-            let count = Math.floor(Math.random() * 5);
+            let count = Math.floor(Math.random() * 6 + 1);
             let list = [];
             for (let i = 0; i < count; i++) {
                 list.push(Mock.mock('@constellation(' + questionId + ')'))
