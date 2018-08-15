@@ -20,7 +20,7 @@ class RouteList extends React.PureComponent {
                 <Switch>
                     <Route path="/" exact component={Home}/>
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
-                    <Route path="/npsMgr/questionMgr/table-list" component={Test}/>
+                    <Route path="/npsMgr/table-list" component={Test}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
                     <Route path="/npsMgr/questionPreview/QuestionPreview" component={QuestionPreview}/>
                     <Route path="/system/domain" component={Domain}/>
