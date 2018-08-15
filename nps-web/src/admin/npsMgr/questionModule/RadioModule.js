@@ -14,7 +14,7 @@ export default class RadioModule extends PureComponent {
 
         return (
             <div style={{padding: '5px'}}>
-                <h3>{index}.{title}</h3>
+                <h3>{index}、{title}</h3>
                 <RadioGroup value={value} onChange={this.props.onChange}>
                     {items}
                 </RadioGroup>

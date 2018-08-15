@@ -25,13 +25,13 @@
   }
   .questionContent {
     position: relative;
-    border: 1px solid #ddd;
+    //border: 1px solid #ddd;
     border-radius: 2px;
     margin-left: 16px;
     @diff : 30px;
     min-height : calc(~"75vh - @{diff}");
     .list {
-      margin: 5px 20px 0;
+      margin: 0 20px 5px;
       border: 1px solid #ddd;
       border-radius: 2px;
       .divider {
@@ -48,7 +48,7 @@
         }
       }
       .addOption {
-        padding: 5px 25px;
+        padding-left: 25px;
         visibility: hidden;
         i {
           font-size: 18px;
@@ -66,8 +66,7 @@
       visibility: visible;
     }
     .addBtn {
-      position: absolute;
-      bottom: 10px;
+      margin: 10px;
       width: 100%;
       text-align: center;
     }
@@ -76,5 +75,34 @@
       text-align: center;
       margin-top: 100px;
     }
+  }
+}
+// 弹框样式
+.optionsAdd {
+  .ant-form-item {
+    margin-bottom: 5px;
+  }
+  .ant-card-head {
+    min-height: 26px;
+    padding: 0 12px;
+  }
+  .ant-card-head-title {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+  .ant-card-body {
+    padding: 8px 24px;
+  }
+  .leftBtn {
+    .ant-btn {
+      width: 70px;
+      padding: 0 14px;
+      font-size: 12px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+  }
+  span {
+    margin-left: 4px;
   }
 }

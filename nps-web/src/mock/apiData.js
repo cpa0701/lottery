@@ -667,17 +667,19 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
                 'skiptoQuestionId|1': [skiptoQuestionId, '']
             })
         },
-        reapeat: (questionId) => {
-            return [[Mock.mock('@constellation(' + questionId + ')')], [Mock.mock('@constellation(' + questionId + ')'), Mock.mock('@constellation(' + questionId + ')'), Mock.mock('@constellation(' + questionId + ')')]]
+        repeat: (questionId) => {
+            let count = Math.floor(Math.random() * 6 + 1);
+            let list = [];
+            for (let i = 0; i < count; i++) {
+                list.push(Mock.mock('@constellation(' + questionId + ')'))
+            }
+            return list
         },
         isSetup: (options) => {
             let result = false;
             result = options.some(item => {
-                return item.some(k => {
-                    if (k.setupQuestionId)
-                        return true
-                })
-
+                if (item.setupQuestionId)
+                    return true
             })
             return result
         }
@@ -689,7 +691,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
                 'questionName': '@csentence',
                 'questionId|+1': 1,
                 'questionType|1': ['radio', 'checkbox', 'blank'],
-                'options|1': '@reapeat(@questionId)',
+                'options': '@repeat(@questionId)',
                 'isSetup': '@isSetup(@options)'
                 // , '@constellation(@questionId)'], ['@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)'], ['@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)']]
             }]
