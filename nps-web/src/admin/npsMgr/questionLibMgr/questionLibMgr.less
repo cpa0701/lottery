@@ -24,17 +24,57 @@
     }
   }
   .questionContent {
+    position: relative;
     border: 1px solid #ddd;
     border-radius: 2px;
     margin-left: 16px;
     @diff : 30px;
     min-height : calc(~"75vh - @{diff}");
     .list {
-      margin: 10px 20px;
-      border: 1px solid #fff;
+      margin: 5px 20px 0;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      .divider {
+        border-bottom: 1px solid #ddd;
+        margin: 0 20px;
+      }
+      .editDelBtn {
+        padding: 5px 20px;
+        visibility: hidden;
+        text-align: right;
+        .ant-btn {
+          height: 26px;
+          padding: 0 8px;
+        }
+      }
+      .addOption {
+        padding: 5px 25px;
+        visibility: hidden;
+        i {
+          font-size: 18px;
+          margin-right:5px;
+        }
+        i:hover {
+          color: #1890ff;
+        }
+      }
     }
     .list:hover {
       border-color: rgb(253, 181, 83);
+    }
+    .list:hover .editDelBtn, .list:hover .addOption {
+      visibility: visible;
+    }
+    .addBtn {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+    }
+    .emptyContent {
+      font-size: 14px ;
+      text-align: center;
+      margin-top: 100px;
     }
   }
 }
