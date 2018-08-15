@@ -54,7 +54,7 @@ class App extends Component {
                             <Route exact path="/login" component={Login}/>
                             <AuthorizedRoute path="/" component={Main}/>
                             <Route path="/404" component={NotFound}/>
-                            <Redirect from='/*' to='/404'/>
+                            {/*<Redirect from='*' to='/404'/>*/}
                         </Switch>
                     </Router>
                 </Provider>

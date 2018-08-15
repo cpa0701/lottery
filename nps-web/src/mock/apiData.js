@@ -1,5 +1,7 @@
 import Mock from 'mockjs'
 
+const Random = Mock.Random;
+
 
 let serialize = (str1) => {
     if (str1 === '') {
@@ -647,6 +649,50 @@ Mock.mock('mock/questionMgr/getQuestionLIst', (params) => {
             }],
             pageNum: pageNum,
             total: '@integer(10,50)',
+        }
+    })
+})
+
+// 获取问卷内容
+Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
+    Random.extend({
+        constellation: (questionId) => {
+            let setupQuestionId = Math.floor(questionId - questionId * Math.random());
+            let skiptoQuestionId = Math.floor(questionId + (100 - questionId) * Math.random());
+            setupQuestionId = setupQuestionId ? setupQuestionId : '';
+            skiptoQuestionId = skiptoQuestionId === questionId ? '' : skiptoQuestionId;
+            return Mock.mock({
+                'optionName': '@cname',
+                'setupQuestionId|1': [setupQuestionId, ''],
+                'skiptoQuestionId|1': [skiptoQuestionId, '']
+            })
+        },
+        reapeat: (questionId) => {
+            return [[Mock.mock('@constellation(' + questionId + ')')], [Mock.mock('@constellation(' + questionId + ')'), Mock.mock('@constellation(' + questionId + ')'), Mock.mock('@constellation(' + questionId + ')')]]
+        },
+        isSetup: (options) => {
+            let result = false;
+            result = options.some(item => {
+                return item.some(k => {
+                    if (k.setupQuestionId)
+                        return true
+                })
+
+            })
+            return result
+        }
+
+    })
+    return Mock.mock({
+        result: {
+            'list|100': [{
+                'questionName': '@csentence',
+                'questionId|+1': 1,
+                'questionType|1': ['radio', 'checkbox', 'blank'],
+                'options|1': '@reapeat(@questionId)',
+                'isSetup': '@isSetup(@options)'
+                // , '@constellation(@questionId)'], ['@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)'], ['@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)', '@constellation(@questionId)']]
+            }]
         }
     })
 })
