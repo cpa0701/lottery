@@ -1,7 +1,6 @@
-package com.ztesoft.nps.handler;
+package com.ztesoft.nps.common.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,18 +20,15 @@ import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
  */
 @ControllerAdvice
 public class NpsExceptionHandler {
-	private static final Logger logger = LoggerFactory.getLogger(NpsExceptionHandler.class);
+	private static final Logger logger = Logger.getLogger(NpsExceptionHandler.class);
 
 	@ExceptionHandler(NpsObjectNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
 	public Result<Object> objectNotFound(NpsObjectNotFoundException e) {
 		logger.error("发生异常", e);
-		if (e.getId() == null) {
-			return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
-		} else {
-			return Result.failed(ResultCodeEnum.NOT_FOUND);
-		}
+		// return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
+		return Result.failed(ResultCodeEnum.NOT_FOUND);
 	}
 
 	@ExceptionHandler(NpsDeleteException.class)

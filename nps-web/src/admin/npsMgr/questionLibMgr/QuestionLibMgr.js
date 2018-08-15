@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox } from "antd";
 
+import RadioModule from '../questionModule/RadioModule';
 import RadioModule from '../questionModule/Radiomodule';
 import CheckboxModule from '../questionModule/Checkboxmodule';
 import './questionLibMgr.less';

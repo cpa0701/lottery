@@ -1,9 +1,9 @@
-import {Checkbox, Row, Col} from 'antd';
+import { Checkbox } from 'antd';
 import {PureComponent} from "react";
 import React from 'react';
 
 //多选
-export default class Checkboxmodule extends PureComponent {
+export default class CheckboxModule extends PureComponent {
 
     render() {
         const { index, title, option } = this.props;

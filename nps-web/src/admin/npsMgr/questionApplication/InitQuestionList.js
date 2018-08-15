@@ -5,8 +5,8 @@ import React from 'react';
 import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
+import {RadioModule} from "../questionModule/QuestionModules"
 
-const RadioGroup = Radio.Group;
 
 class InitQuestionList extends React.PureComponent {
     constructor(props) {
@@ -18,20 +18,15 @@ class InitQuestionList extends React.PureComponent {
         // 阻止合成事件间的冒泡
         e.stopPropagation();
         if (this.props.getDom)
-            this.props.getDom(this.props.type)
+            this.props.getDom(this.props)
     }
 
     render() {
-        const {type, index} = this.props
+        const {type, index, title, isLib} = this.props
         let dom = '';
         switch (type) {
             case 'radio':
-                dom = <RadioGroup>
-                    <Radio value={1}>A</Radio>
-                    <Radio value={2}>B</Radio>
-                    <Radio value={3}>C</Radio>
-                    <Radio value={4}>D</Radio>
-                </RadioGroup>;
+                dom = <RadioModule title={title} index={index} option={['测试1', "测试2"]}/>
                 break;
             case 'checkbox':
                 dom = <Checkbox.Group
@@ -50,10 +45,10 @@ class InitQuestionList extends React.PureComponent {
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
-            <span>{index + 1}</span>
-            <div>
+            {isLib ? <span>{index + 1}.{title}</span> : ''}
+            {isLib ? '' : (<div>
                 {dom}
-            </div>
+            </div>)}
         </div>);
     }
 }
