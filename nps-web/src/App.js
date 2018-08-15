@@ -4,7 +4,6 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import {HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
-import NotFound from './admin/base/error/NotFound';
 import Login from './admin/base/login/Login';
 import Main from './admin/base/frame/Layout/Main';
 import AuthorizedRoute from './admin/base/login/AuthorizedRoute';
@@ -17,6 +16,7 @@ import stores from './model/Stores';
 
 import './less/index.less'
 import './mock/apiData'
+import NotFound from "./admin/base/error/NotFound"
 
 const {autorun} = mobx;
 
@@ -53,8 +53,8 @@ class App extends Component {
                         <Switch>
                             <Route exact path="/login" component={Login}/>
                             <AuthorizedRoute path="/" component={Main}/>
-                            <Route path='/404' component={NotFound}/>
-                            <Redirect from='*' to='/404'/>
+                            <Route path="/404" component={NotFound}/>
+                            <Redirect from='/*' to='/404'/>
                         </Switch>
                     </Router>
                 </Provider>

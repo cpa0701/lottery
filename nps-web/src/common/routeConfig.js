@@ -9,11 +9,12 @@ import QuestionLibMgr from "../admin/npsMgr/questionLibMgr/QuestionLibMgr"
 import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
+import NotFound from '../admin/base/error/NotFound';
 
 class RouteList extends React.PureComponent {
     render() {
         return (
-            <div style={{height:'100%'}}>
+            <div style={{height: '100%'}}>
                 <Route path="/" exact component={Home}/>
                 <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
                 <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
@@ -22,6 +23,7 @@ class RouteList extends React.PureComponent {
                 <Route path="/system/dept" component={Dept}/>
                 <Route path="/system/role" component={Role}/>
                 <Route path="/system/authority" component={Authority}/>
+                <Route component={NotFound}/>
             </div>
         )
     }
