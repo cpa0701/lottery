@@ -18,8 +18,8 @@ class QuestionApplication extends React.PureComponent {
         this.getDom = this.getDom.bind(this)
     }
 
-    getDom = (type) => {
-        this.state.questionDisplayList1.push(type);
+    getDom = (data) => {
+        this.state.questionDisplayList1.push(data);
         this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
     }
 
@@ -34,7 +34,7 @@ class QuestionApplication extends React.PureComponent {
                     </Col>
                 </Row>
                 <Row className={'height'}>
-                    <Col style={{height: "500px", overflow: "auto"}} span={8}>
+                    <Col style={{height: "100%", overflow: "auto"}} span={8}>
                         <QuestionLib getDom={this.getDom}/>
                     </Col>
                     <Col span={15} offset={1} style={{height:'100%'}}>
@@ -50,7 +50,7 @@ class QuestionApplication extends React.PureComponent {
                                 </div>
                             </div>
                             {this.state.questionDisplayList.map((item, i) => {
-                                return <InitQuestionList type={item} key={i} index={i}/>
+                                return <InitQuestionList type={item.type} key={i} index={i} title={item.title}/>
                             })}
                         </div>
                     </Col>
