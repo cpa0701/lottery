@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Modal, Row, Col, Input, Form} from 'antd';
 
-const {TextArea} = Input;
 const FormItem = Form.Item;
 
 @Form.create()

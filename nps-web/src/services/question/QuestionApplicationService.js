@@ -4,7 +4,7 @@ class QuestionApplicationService {
     //获取题库
     getQuestionList = async (param) => {
         var url = 'mock/questionMgr/getQuestionLIst';
-        return await Http.get(url, param);
+        return await Http.post(url, param);
     }
 }
 

@@ -28,8 +28,11 @@ public class NpsExceptionHandler {
 	@ResponseBody
 	public Result<Object> objectNotFound(NpsObjectNotFoundException e) {
 		logger.error("发生异常", e);
-		// return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
-		return Result.failed(ResultCodeEnum.NOT_FOUND);
+		if (e.getId() == null) {
+			return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
+		} else {
+			return Result.failed(ResultCodeEnum.NOT_FOUND);
+		}
 	}
 
 	@ExceptionHandler(NpsDeleteException.class)

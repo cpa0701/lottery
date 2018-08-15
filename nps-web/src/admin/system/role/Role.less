@@ -1,4 +1,9 @@
 @blueColor: #e5f0fa;
+.overFlow(@height) {
+  height: @height;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 
 // 角色管理页面
 .content-inner {
@@ -59,9 +64,7 @@
     }
     .treeStyle {
       border: 1px solid @blueColor;
-      height: 400px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      .overFlow(400px);
     }
   }
   .rightContent {
@@ -107,9 +110,7 @@
     }
     .authorityManage .authorityTree {
       border: 1px solid @blueColor;
-      height: 165px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      .overFlow(165px);
     }
     .searchForm {
       background: @blueColor;
@@ -186,10 +187,8 @@
       }
       :global {
         .ant-tree {
-          height: 222px;
           border: 1px solid #ddd;
-          overflow-x: hidden;
-          overflow-y: auto;
+          .overFlow(222px);
         }
       }
     }
@@ -212,10 +211,8 @@
     .rightContent {
       border: 1px solid #ddd;
       background: #f8f8f8;
-      height: 350px;
       padding: 10px 15px;
-      overflow-x: hidden;
-      overflow-y: auto;
+      .overFlow(350px);
       .ant-checkbox-group-item {
         width: 100%;
       }
@@ -224,8 +221,6 @@
 }
 .authModal-content {
   .ant-modal-body {
-    height: 400px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    .overFlow(400px);
   }
 }

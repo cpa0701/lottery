@@ -1,0 +1,2 @@
+--默认密码为123456
+INSERT INTO `users`(`no`, `account`, `name`, `sex`, `cellphone`, `email`, `identity_card`, `status`, `password`, `salt`, `dept_id`, `remark`) VALUES ('10000', 'admin', '管理员', 'F', '189432435', 'admin@ztesoft.com', '5434324326432', 1, 'd5ba2f763ef411812252a1d093d597c4', '32', 0, '系统管理员');
