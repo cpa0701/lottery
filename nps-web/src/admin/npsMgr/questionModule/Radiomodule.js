@@ -5,11 +5,6 @@ const RadioGroup = Radio.Group;
 
 //单选
 export default class RadioModule extends PureComponent {
-    onChange = (e) => {
-        this.setState({
-            value: e.target.value,
-        });
-    };
     render() {
         const {index, title, option, value} = this.props;
 
@@ -20,7 +15,7 @@ export default class RadioModule extends PureComponent {
         return (
             <div style={{padding: '5px'}}>
                 <h3>{index}.{title}</h3>
-                <RadioGroup value={value} onChange={this.onChange}>
+                <RadioGroup value={value} onChange={this.props.onChange}>
                     {items}
                 </RadioGroup>
             </div>
