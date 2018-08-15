@@ -5,9 +5,8 @@ import React from 'react';
 import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
-import QuestionModules from "../questionModule/QuestionModules"
+import {RadioModule} from "../questionModule/QuestionModules"
 
-const Radiomodule = QuestionModules.Radiomodule;
 
 class InitQuestionList extends React.PureComponent {
     constructor(props) {
@@ -27,7 +26,7 @@ class InitQuestionList extends React.PureComponent {
         let dom = '';
         switch (type) {
             case 'radio':
-                dom = <Radiomodule title={title} index={index} option={['测试1', "测试2"]}/>
+                dom = <RadioModule title={title} index={index} option={['测试1', "测试2"]}/>
                 break;
             case 'checkbox':
                 dom = <Checkbox.Group

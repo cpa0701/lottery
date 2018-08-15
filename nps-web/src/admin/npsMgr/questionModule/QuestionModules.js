@@ -1,10 +1,3 @@
-import Checkboxmodule from './Checkboxmodule'
-import Radiomodule from './Radiomodule'
-import Singlemodule from './Singlemodule'
-
-
-export default {
-    Checkboxmodule,
-    Radiomodule,
-    Singlemodule
-}
+export {default as RadioModule} from './RadioModule';
+export {default as SingleModule} from './SingleModule';
+export {default as CheckboxModule} from './CheckboxModule';

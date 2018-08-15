@@ -3,7 +3,7 @@ import {PureComponent} from "react";
 import React from 'react';
 const { TextArea } = Input;
 //单项填空
-export default class Singlemodule extends PureComponent {
+export default class SingleModule extends PureComponent {
     constructor(props){
         super(props);
         this.state={

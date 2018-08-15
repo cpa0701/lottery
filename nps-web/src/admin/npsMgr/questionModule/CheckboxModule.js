@@ -3,7 +3,7 @@ import {PureComponent} from "react";
 import React from 'react';
 
 //多选
-export default class Checkboxmodule extends PureComponent {
+export default class CheckboxModule extends PureComponent {
     constructor(props){
         super(props);
         this.state={

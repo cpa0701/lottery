@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Card, Icon, Menu } from "antd";
 
-import RadioModule from '../questionModule/Radiomodule';
+import RadioModule from '../questionModule/RadioModule';
 import './questionLibMgr.less';
 
 
