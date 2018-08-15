@@ -26,14 +26,12 @@ class QuestionApplication extends React.PureComponent {
     }
     // 进入预览
     preview = () => {
-        var id = Math.floor(Math.random() * 100);
-        // data = JSON.stringify(data);
-        var path = `/npsMgr/questionPreview/QuestionPreview/${id}`;
-        // var path = {
-        //     pathname:'/npsMgr/questionPreview/QuestionPreview',
-        //     query:data,
-        // }
-        this.props.history.push(path);
+        let id = Math.floor(Math.random() * 100);
+        let path = {
+            pathname: '/npsMgr/questionPreview/QuestionPreview',
+            query: {id: id},
+        }
+        this.props.history.push('/npsMgr/questionPreview/QuestionPreview');
     }
 
     render() {

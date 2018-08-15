@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route} from 'react-router-dom';
+import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 
 import Home from "../admin/base/frame/Home/Home"
 import Domain from "../admin/system/domain/Domain"
@@ -14,17 +14,19 @@ import NotFound from '../admin/base/error/NotFound';
 class RouteList extends React.PureComponent {
     render() {
         return (
-            <div style={{height: '100%'}}>
-                <Route path="/" exact component={Home}/>
-                <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
-                <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
-                <Route path="/npsMgr/questionPreview/QuestionPreview/:id" component={QuestionPreview}/>
-                <Route path="/system/domain" component={Domain}/>
-                <Route path="/system/dept" component={Dept}/>
-                <Route path="/system/role" component={Role}/>
-                <Route path="/system/authority" component={Authority}/>
-                {/*<Route component={NotFound}/>*/}
-            </div>
+            <Router>
+                <Switch>
+                    <Route path="/" exact component={Home}/>
+                    <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
+                    <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
+                    <Route path="/npsMgr/questionPreview/QuestionPreview" component={QuestionPreview}/>
+                    <Route path="/system/domain" component={Domain}/>
+                    <Route path="/system/dept" component={Dept}/>
+                    <Route path="/system/role" component={Role}/>
+                    <Route path="/system/authority" component={Authority}/>
+                    <Route component={NotFound}/>
+                </Switch>
+            </Router>
         )
     }
 }

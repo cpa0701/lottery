@@ -7,8 +7,8 @@ import QuestionPreviewService from '../../../services/question/QuestionPreviewSe
 class QuestionPreview extends React.PureComponent {
     constructor(props) {
         super(props);
-        let id = JSON.parse(props.match.params.id);
-        console.log(id);
+        // let id = props.location.query.id;
+        // console.log(id);
         this.state = {}
     }
 
