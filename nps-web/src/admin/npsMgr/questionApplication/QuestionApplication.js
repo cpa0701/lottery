@@ -15,12 +15,25 @@ class QuestionApplication extends React.PureComponent {
             questionDisplayList1: [],
             value: ''
         }
-        this.getDom = this.getDom.bind(this)
+        this.getDom = this.getDom.bind(this);
+        this.preview = this.preview.bind(this);
     }
 
+    //获取题库具体题目
     getDom = (data) => {
         this.state.questionDisplayList1.push(data);
         this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+    }
+    // 进入预览
+    preview = () => {
+        var id = Math.floor(Math.random() * 100);
+        // data = JSON.stringify(data);
+        var path = `/npsMgr/questionPreview/QuestionPreview/${id}`;
+        // var path = {
+        //     pathname:'/npsMgr/questionPreview/QuestionPreview',
+        //     query:data,
+        // }
+        this.props.history.push(path);
     }
 
     render() {
@@ -29,7 +42,7 @@ class QuestionApplication extends React.PureComponent {
                 <Row className={'questionAppHead'}>
                     <Col span={12} offset={8}>
                         <Button type="primary">完成编辑</Button>
-                        <Button ghost icon="eye-o">预览</Button>
+                        <Button ghost icon="eye-o" onClick={this.preview}>预览</Button>
                         <Button style={{float: 'right'}}>分页</Button>
                     </Col>
                 </Row>
@@ -37,7 +50,7 @@ class QuestionApplication extends React.PureComponent {
                     <Col style={{height: "100%", overflow: "auto"}} span={8}>
                         <QuestionLib getDom={this.getDom}/>
                     </Col>
-                    <Col span={15} offset={1} style={{height:'100%'}}>
+                    <Col span={15} offset={1} style={{height: '100%'}}>
                         <div className={'questionAppContent'}>
                             <div className={'questionAppContentTitle'}>
                                 <h1>标题</h1>
