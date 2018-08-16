@@ -25,6 +25,17 @@ class QuestionPreview extends React.PureComponent {
             loading: true
         }, () => {
             QuestionPreviewService.getQuestionList().then(result => {
+                // let logicList = result.logic;
+                // let questionLIst = result.question;
+                // questionLIst.map(item => {
+                //     return logicList.map(k => {
+                //         if(k.logicType==='00'){
+                //             if (item.questionOrder === k.skiptoQuestionOrder) {
+                //                 return item.isSetup = true;
+                //             }
+                //         }
+                //     })
+                // })
                 this.setState({
                     loading: false,
                     questionList: result.list,
@@ -50,13 +61,14 @@ class QuestionPreview extends React.PureComponent {
 
     render() {
         const questionnaire = this.state.questionList.map((item, i) => {
-            return <InitQuestionList type={item.questionType} key={item.questionId} index={i}
+            return <InitQuestionList type={item.type} key={item.id} index={i}
                                      questionName={item.questionName}
                                      optionList={item.optionList} isSetup={item.isSetup}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
                                      onBlankChange={this.onBlankChange}
-                                     questionNameBlur={this.questionNameBlur} optionNameBlur={this.optionNameBlur}/>
+                                     questionNameBlur={this.questionNameBlur}
+                                     optionNameBlur={this.optionNameBlur}/>
         })
         return (
             <Spin spinning={this.state.loading}>
