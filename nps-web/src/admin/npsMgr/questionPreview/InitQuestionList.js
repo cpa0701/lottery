@@ -6,6 +6,8 @@ import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 import {RadioModule} from "../questionModule/QuestionModules"
+import {CheckboxModule} from "../questionModule/QuestionModules"
+import {BlankModule} from "../questionModule/QuestionModules"
 
 
 class InitQuestionList extends React.PureComponent {
@@ -14,7 +16,10 @@ class InitQuestionList extends React.PureComponent {
     }
 
     render() {
-        const {type, index, questionName, optionList, isSetup, questionNameBlur, optionNameBlur,onRadioChange} = this.props;
+        const {
+            type, index, questionName, optionList, isSetup,
+            questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange
+        } = this.props;
         let dom = '';
         switch (type) {
             case 'radio':
@@ -24,22 +29,17 @@ class InitQuestionList extends React.PureComponent {
                                    isView={true}/>
                 break;
             case 'checkbox':
-                dom = <Checkbox.Group
-                    style={{width: '100%'}}>
-                    <Row>
-                        <Col span={8}><Checkbox value="A">A</Checkbox></Col>
-                        <Col span={8}><Checkbox value="B">B</Checkbox></Col>
-                        <Col span={8}><Checkbox value="C">C</Checkbox></Col>
-                        <Col span={8}><Checkbox value="D">D</Checkbox></Col>
-                        <Col span={8}><Checkbox value="E">E</Checkbox></Col>
-                    </Row>
-                </Checkbox.Group>
+                dom = <CheckboxModule questionName={questionName} index={index}
+                                      optionList={optionList} onChange={onCheckBoxChange}
+                                      questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}
+                                      isView={true}/>
                 break;
             case 'blank':
-                dom = <Input placeholder="Basic usage"/>
+                dom = <BlankModule questionName={questionName} optionList={optionList} index={index}
+                                   onChange={onBlankChange} isView={true}/>
                 break;
         }
-        return (<div style={{display: isSetup ? 'block' : 'none'}} className={'questionList'}>
+        return (<div style={{display: isSetup ? 'none' : 'block'}} className={'questionList'}>
             {dom}
         </div>);
     }

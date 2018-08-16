@@ -670,7 +670,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             })
         },
         repeat: (questionId) => {
-            let count = Math.floor(Math.random() * 6 + 1);
+            let count = Math.floor(Math.random() * 6 + 2);
             let list = [];
             for (let i = 0; i < count; i++) {
                 let optionId = questionId * 10 + i;
@@ -693,8 +693,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
         'list|100': [{
             'questionName': '@csentence',
             'questionId|+1': 1,
-            // 'questionType|1': ['radio', 'checkbox','blank'],
-            'questionType|1': ['radio'],
+            'questionType|1': ['radio', 'checkbox','blank'],
             'optionList': '@repeat(@questionId)',
             'isSetup': '@isSetup(@optionList)'
         }]
