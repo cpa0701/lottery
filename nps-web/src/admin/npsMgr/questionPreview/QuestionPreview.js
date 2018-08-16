@@ -35,6 +35,9 @@ class QuestionPreview extends React.PureComponent {
         })
     }
 
+    onRadioChange = (e) => {
+        debugger;
+    }
     questionNameBlur = (e) => {
         debugger;
     }
@@ -47,6 +50,7 @@ class QuestionPreview extends React.PureComponent {
             return <InitQuestionList type={item.questionType} key={item.questionId} index={i}
                                      questionName={item.questionName}
                                      optionList={item.optionList} isSetup={item.isSetup}
+                                     onRadioChange={this.onRadioChange}
                                      questionNameBlur={this.questionNameBlur} optionNameBlur={this.optionNameBlur}/>
         })
         return (
