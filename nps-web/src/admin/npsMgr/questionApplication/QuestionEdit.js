@@ -7,7 +7,7 @@ import QuestionLib from './QuestionLib'
 import './questionApplication.less'
 
 
-class QuestionApplication extends React.PureComponent {
+class QuestionEdit extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,10 +28,10 @@ class QuestionApplication extends React.PureComponent {
     preview = () => {
         let id = Math.floor(Math.random() * 100);
         let path = {
-            pathname: '/npsMgr/questionMgr/QuestionPreview',
+            pathname: '/npsMgr/questionPreview/QuestionPreview',
             query: {id: id},
         }
-        this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
+        this.props.history.push('/npsMgr/questionPreview/QuestionPreview');
     }
 
     render() {
@@ -71,4 +71,4 @@ class QuestionApplication extends React.PureComponent {
     }
 }
 
-export default QuestionApplication;
+export default QuestionEdit;
