@@ -1207,3 +1207,22 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
         }]
     })
 })
+
+//获取问卷列表
+Mock.mock('mock/questionMgr/getQuestionnaireList', (params) => {
+    let param = params.body ? JSON.parse(params.body) : "";
+    let pageNum = param ? param.pageNum : 1;
+    return Mock.mock({
+        'list|10': [{
+            qstnaireTitle: '@csentence',
+            catalogId: '@integer(1,6)',
+            channelId: '@integer(1,6)',
+            'qstnaireId|+1': 1,
+            'status|1': ['草稿', '审核', '发布'],
+            createTime: '@datetime',
+            createUid: '@cname',
+        }],
+        pageNum: pageNum,
+        total: '@integer(10,50)'
+    })
+})
