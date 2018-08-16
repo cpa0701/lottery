@@ -5,7 +5,7 @@ import React from 'react';
 import {Row, Col, Spin} from "antd"
 
 import QuestionPreviewService from '../../../services/question/QuestionPreviewService'
-import InitQuestionList from '../questionModule/InitQuestionList'
+import InitQuestionList from './InitQuestionList'
 
 import './questionPreview.less'
 
@@ -35,13 +35,16 @@ class QuestionPreview extends React.PureComponent {
         })
     }
 
+    //单选框值改变
     onRadioChange = (e) => {
         debugger;
     }
-    questionNameBlur = (e) => {
+    //复选框值改变
+    onCheckBoxChange = (e) => {
         debugger;
     }
-    optionNameBlur = (e) => {
+    //填空题改变
+    onBlankChange = (e) => {
         debugger;
     }
 
@@ -51,6 +54,8 @@ class QuestionPreview extends React.PureComponent {
                                      questionName={item.questionName}
                                      optionList={item.optionList} isSetup={item.isSetup}
                                      onRadioChange={this.onRadioChange}
+                                     onCheckBoxChange={this.onCheckBoxChange}
+                                     onBlankChange={this.onBlankChange}
                                      questionNameBlur={this.questionNameBlur} optionNameBlur={this.optionNameBlur}/>
         })
         return (

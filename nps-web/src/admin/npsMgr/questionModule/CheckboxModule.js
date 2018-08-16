@@ -1,22 +1,33 @@
-import { Checkbox } from 'antd';
-import {PureComponent} from "react";
-import React from 'react';
+import React,{PureComponent} from 'react';
+import { Checkbox, Input, Icon } from 'antd';
 
 //多选
 export default class CheckboxModule extends PureComponent {
 
     render() {
-        const { index, title, option } = this.props;
+        const {index, questionName, optionList, isView, onChange} = this.props;
 
-        const items = option.map((item, key) => {
-            return <Checkbox style={{display: 'block',height: '30px',lineHeight: '30px', marginLeft: '20px'}} value={key} key={key}>{item}</Checkbox>;
+        const optionLIst = optionList.map((item, key) => {
+            return <Checkbox  className="optionInput" style={optionList.length > 3 ? {
+                display: 'block',
+                height: '34px',
+                lineHeight: '34px',
+                marginLeft: '20px'
+            } : {marginLeft: '20px'}}
+                             value={item.optionId} key={item.optionOrder}>{isView ? item.optionName :
+                            <span>
+                                <Input defaultValue={item.optionName} onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
+                                <Icon type="delete" title="删除" onClick={(e) => this.props.optionDelete(item.optionOrder)}/>
+                            </span>
+                             }</Checkbox>;
         });
 
         return (
-            <div style={{padding: '5px'}}>
-                <h3>{index}、{title}[多选题]</h3>
-                <Checkbox.Group onChange={this.props.onChange}>
-                    {items}
+            <div style={{padding: '5px'}}  className={'radio-module'}>
+                <h3>{index}、[多选题]{isView ? questionName :
+                    <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
+                <Checkbox.Group onChange={onChange}>
+                    {optionLIst}
                 </Checkbox.Group>
             </div>
         );

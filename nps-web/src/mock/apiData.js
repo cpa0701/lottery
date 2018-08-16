@@ -635,6 +635,16 @@ Mock.mock("mock/systemController/Authority", {
     ]
 })
 
+// 新增题目
+Mock.mock('mock/questionMgr/addQuestion', (params) => {
+    let param = JSON.parse(params.body);
+    console.log('新增题目测试',param);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+});
 // 获取题库
 Mock.mock('mock/questionMgr/getQuestionLIst', (params) => {
     let param = params.body ? JSON.parse(params.body) : "";
@@ -670,7 +680,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             })
         },
         repeat: (questionId) => {
-            let count = Math.floor(Math.random() * 6 + 1);
+            let count = Math.floor(Math.random() * 6 + 2);
             let list = [];
             for (let i = 0; i < count; i++) {
                 let optionId = questionId * 10 + i;
@@ -693,8 +703,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
         'list|100': [{
             'questionName': '@csentence',
             'questionId|+1': 1,
-            // 'questionType|1': ['radio', 'checkbox','blank'],
-            'questionType|1': ['radio'],
+            'questionType|1': ['radio', 'checkbox','blank'],
             'optionList': '@repeat(@questionId)',
             'isSetup': '@isSetup(@optionList)'
         }]

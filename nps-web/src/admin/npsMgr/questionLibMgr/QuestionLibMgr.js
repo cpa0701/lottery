@@ -1,23 +1,25 @@
 import React, { PureComponent } from 'react';
-import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect } from "antd";
+import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect, message } from "antd";
 
 import { RadioModule, CheckboxModule } from '../questionModule/QuestionModules'
-import './questionLibMgr.less';
 import OptionsAdd from './OptionsAdd';
+import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
+
+import './questionLibMgr.less';
 
 const [ FormItem ] = [ Form.Item ];
 
 const treeData = [{
     title: '网络',
-    value: '0-0',
+    value: '网络',
     key: '0-0',
     children: [{
         title: '4G',
-        value: '0-0-1',
+        value: '4G',
         key: '0-0-1',
     }, {
         title: '5G',
-        value: '0-0-2',
+        value: '5G',
         key: '0-0-2',
     }],
 }, {
@@ -33,34 +35,55 @@ export default class QuestionLibMgr extends PureComponent {
         this.state = {
             questionList: [
                 {
-                    title: '你今天吃饭了吗?',
-                    type: 'radio',
-                    value: 0,
-                    option: ['是', '否']
-                },
-                {
-                    title: '你的兴趣、爱好是?',
-                    type: 'checkbox',
-                    value: [0, 1],
-                    option: ['篮球', '足球', '排球', '游泳']
+                    // questionId: 1,
+                    questionName: '你今天吃饭了吗?',
+                    questionName2: '日常问候语', // 题目提示描述
+                    questionType: 'radio',
+                    questionCategory: '4G', // 题目分类
+                    status: 1, // 默认1
+                    optionList: [
+                        {
+                            optionOrder: 1, // 选项序号
+                            // optionId: 1,
+                            optionName: '是',
+                            isOther: 0  // 默认0
+                        },
+                        {
+                            optionOrder: 2, // 选项序号
+                            // optionId: 1,
+                            optionName: '否',
+                            isOther: 0  // 默认0
+                        }
+                    ],
+                    optionLayout: 0, // 默认0
+                    lenthCheck: 0, // 默认0
+                    isNps: 0, // 默认0 nps
+                    isSatisfied: 0, // 默认0 满意度
+                    contentCheck: 0 // 默认0 内容限制
                 }
             ],
-            value: undefined,
+            treeData: [],
             index: undefined,
             addOption: false
         }
     }
 
     componentDidMount() {
-
+        // 获取题目分类树数据
+        // QuestionLibMgrService.getQuestionCategory().then(data => {
+        //     if(data) {
+        //         this.setState({treeData: data})
+        //     }
+        // });
     };
 
     // 点击左边新增题目
     selectQuestionType = (e) => {
         let param = {
-            type: e.key
+            questionType: e.key
         };
-        this.QuestionType(param, String(this.state.questionList.length + 1), 1);
+        this.props.form.resetFields();
+        this.QuestionType(param, 1, 1);
     };
 
     // 单选、复选批量新增选项弹框
@@ -75,37 +98,87 @@ export default class QuestionLibMgr extends PureComponent {
     addOption = (index) => {
         let questionList = this.state.questionList.map((item, key) => {
             if(key === Number(index) - 1) {
-                item.option = [
-                    ...item.option,
-                    '请输入选项'
+                item.optionList = [
+                    ...item.optionList,
+                    {
+                        optionOrder: item.optionList.length + 1, // 选项序号
+                        optionName: '请输入选项',
+                        isOther: 0  // 默认0
+                    },
                 ];
             }
             return item;
         });
         this.setState({questionList});
     };
-    // 单选、复选批量新增选项
-    addOptions = (index) => {
 
-    };
     // 根据题目类型生成对应的DOM
     QuestionType = (item, index, type, editHtml) => {
         let items = {
             ...item,
-            index
+            index,
+            questionNameBlur: (e, index) => { // 标题输入框值失去焦点时变化
+                let questionObj = {
+                    ...this.state.questionList[0],
+                    questionName: e.target.value
+                };
+                this.setState({questionList: [questionObj]})
+            },
+            optionNameBlur: (e, num) => { // 选项输入框值失去焦点时变化
+                let option = this.state.questionList[0].optionList;
+                option.map(item => {
+                    if (item.optionOrder === num) {
+                        item.optionName = e.target.value;
+                    }
+                    return '';
+                });
+                let questionObj = {
+                    ...this.state.questionList[0],
+                    optionList: option
+                };
+                this.setState({questionList: [questionObj]})
+            },
+            optionDelete: (value) => {
+                let option = this.state.questionList[0].optionList.filter(item => item.optionOrder !== value);
+                let questionObj = {
+                    ...this.state.questionList[0],
+                    optionList: option
+                };
+                this.setState({questionList: [questionObj]})
+            }
         };
-        switch (items.type) {
+        switch (items.questionType) {
             case 'radio':
             {
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
-                        ...this.state.questionList,
+                        // ...this.state.questionList,
                         {
-                            type: 'radio',
-                            title: '单选题标题',
-                            option: ['选项1', '选项2']
+                            questionName: '单选题标题',
+                            questionName2: '', // 题目提示描述
+                            questionType: 'radio',
+                            questionCategory: '', // 题目分类
+                            status: 1, // 默认1
+                            optionList: [
+                                {
+                                    optionOrder: 1, // 选项序号
+                                    optionName: '选项1',
+                                    isOther: 0  // 默认0
+                                },
+                                {
+                                    optionOrder: 2, // 选项序号
+                                    optionName: '选项1',
+                                    isOther: 0  // 默认0
+                                },
+                            ],
+                            optionLayout: 0, // 默认0
+                            lenthCheck: 0, // 默认0
+                            isNps: 0, // 默认0 nps
+                            isSatisfied: 0, // 默认0 满意度
+                            contentCheck: 0 // 默认0 内容限制
                         }
+
                     ];
                     this.setState({questionList});
                 }
@@ -123,11 +196,40 @@ export default class QuestionLibMgr extends PureComponent {
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
-                        ...this.state.questionList,
+                        // ...this.state.questionList,
                         {
-                            type: 'checkbox',
-                            title: '多选题标题',
-                            option: ['选项1', '选项2', '选项3', '选项4']
+                            questionName: '多选题标题',
+                            questionName2: '多选题', // 题目提示描述
+                            questionType: 'checkbox',
+                            questionCategory: '', // 题目分类
+                            status: 1, // 默认1
+                            optionList: [
+                                {
+                                    optionOrder: 1, // 选项序号
+                                    optionName: '选项1',
+                                    isOther: 0  // 默认0
+                                },
+                                {
+                                    optionOrder: 2, // 选项序号
+                                    optionName: '选项2',
+                                    isOther: 0  // 默认0
+                                },
+                                {
+                                    optionOrder: 3, // 选项序号
+                                    optionName: '选项3',
+                                    isOther: 0  // 默认0
+                                },
+                                {
+                                    optionOrder: 4, // 选项序号
+                                    optionName: '选项4',
+                                    isOther: 0  // 默认0
+                                }
+                            ],
+                            optionLayout: 0, // 默认0
+                            lenthCheck: 0, // 默认0
+                            isNps: 0, // 默认0 nps
+                            isSatisfied: 0, // 默认0 满意度
+                            contentCheck: 0 // 默认0 内容限制
                         }
                     ];
                     this.setState({questionList});
@@ -146,11 +248,24 @@ export default class QuestionLibMgr extends PureComponent {
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
-                        ...this.state.questionList,
+                        // ...this.state.questionList,
+                        // {
+                        //     type: 'input',
+                        //     title: '单行填空题',
+                        //     option: ['选项1', '选项2']
+                        // },
                         {
-                            type: 'input',
-                            title: '单行填空题',
-                            option: ['选项1', '选项2']
+                            questionName: '单行填空题',
+                            questionName2: '', // 题目提示描述
+                            questionType: 'input',
+                            questionCategory: '', // 题目分类
+                            status: 1, // 默认1
+                            optionList: [],
+                            optionLayout: 0, // 默认0
+                            lenthCheck: 0, // 默认0
+                            isNps: 0, // 默认0 nps
+                            isSatisfied: 0, // 默认0 满意度
+                            contentCheck: 0 // 默认0 内容限制
                         }
                     ];
                     this.setState({questionList});
@@ -165,11 +280,24 @@ export default class QuestionLibMgr extends PureComponent {
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
-                        ...this.state.questionList,
+                        // ...this.state.questionList,
+                        // {
+                        //     type: 'textArea',
+                        //     title: '多行填空题',
+                        //     option: ['选项1', '选项2']
+                        // },
                         {
-                            type: 'textArea',
-                            title: '多行填空题',
-                            option: ['选项1', '选项2']
+                            questionName: '多行填空题',
+                            questionName2: '', // 题目提示描述
+                            questionType: 'textArea',
+                            questionCategory: '', // 题目分类
+                            status: 1, // 默认1
+                            optionList: [],
+                            optionLayout: 0, // 默认0
+                            lenthCheck: 0, // 默认0
+                            isNps: 0, // 默认0 nps
+                            isSatisfied: 0, // 默认0 满意度
+                            contentCheck: 0 // 默认0 内容限制
                         }
                     ];
                     this.setState({questionList});
@@ -187,44 +315,78 @@ export default class QuestionLibMgr extends PureComponent {
         }
     };
 
+    // 保存新增题目
+    saveQuestion = () => {
+        this.props.form.validateFieldsAndScroll((errors, values) => {
+            if (errors) {
+                return;
+            }
+            if (values.isNps) {
+                values.isNps = 1;
+            } else {
+                values.isNps = 0;
+            }
+            if (values.isSatisfied) {
+                values.isSatisfied = 1;
+            } else {
+                values.isSatisfied = 0;
+            }
+            let value = {
+                ...this.state.questionList[0],
+                ...values
+            };
+            console.log(value);
+            // QuestionLibMgrService.addQuestion(value).then(data => {
+            //     if(data) {
+            //         message.success('新增成功');
+            //         this.setState({questionList: []})
+            //     }
+            // });
+        });
+    };
+    // 取消保存
+    cancelSave = () => {
+        this.setState({questionList: []});
+    };
+
     render() {
         const { questionList, addOption, index } = this.state;
         const { getFieldDecorator } = this.props.form;
 
         const editHtml = <div>
+                            <div className="divider"/>
                             <div className="editFunc">
-                                <Form layout='inline' style={{ textAlign: 'right'}}>
+                                <Form layout='inline' style={{ marginLeft: '20px'}}>
                                     <FormItem label="题目分类">
-                                        <TreeSelect
-                                            style={{ width: 150 }}
-                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                            treeData={treeData}
-                                            treeDefaultExpandAll
-                                            onChange={this.onChange}
-                                        />
+                                        {getFieldDecorator('questionCategory', {
+                                            initialValue: '',
+                                        })(
+                                            <TreeSelect
+                                                style={{ width: 150 }}
+                                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                                treeData={treeData}
+                                                treeDefaultExpandAll
+                                                onChange={this.onChange}
+                                            />
+                                        )}
                                     </FormItem>
                                     <FormItem>
-                                        {getFieldDecorator('npScore', {
+                                        {getFieldDecorator('isNps', {
                                             valuePropName: 'checked',
-                                            initialValue: true,
+                                            initialValue: false,
                                         })(
                                             <Checkbox>NPS评分题</Checkbox>
                                         )}
                                     </FormItem>
                                     <FormItem>
-                                        {getFieldDecorator('SatScore', {
+                                        {getFieldDecorator('isSatisfied', {
                                             valuePropName: 'checked',
-                                            initialValue: true,
+                                            initialValue: false,
                                         })(
                                             <Checkbox>满意度评分题</Checkbox>
                                         )}
                                     </FormItem>
                                 </Form>
-                            </div>
-                            <div className="divider"/>
-                            <div className="editDelBtn">
-                                <Button type="primary" icon="plus-circle-o" >确定</Button>
-                                <Button type="danger" icon="delete">删除</Button>
                             </div>
                         </div>;
 
@@ -245,22 +407,29 @@ export default class QuestionLibMgr extends PureComponent {
                 this.setState({addOption: false});
                 let questionList = this.state.questionList.map((item, key) => {
                     if(key === Number(index) - 1) {
-                        item.option = [
-                            ...item.option,
-                            ...value
+                        let optionArr = value.map((x, k) => {
+                            return {
+                                optionOrder: item.optionList.length + k + 1, // 选项序号
+                                optionName: x,
+                                isOther: 0  // 默认0
+                            };
+                        });
+                        item.optionList = [
+                            ...item.optionList,
+                            ...optionArr
                         ];
                     }
                     return item;
                 });
                 this.setState({questionList});
-            },
+            }
         };
 
         return (
             <div className="questionLibMgr">
                 <Row>
                     <Col span={5}>
-                        <Card title="添加新题" className="leftSelectType">
+                        <Card title="新增题目" className="leftSelectType">
                             <Menu onClick={this.selectQuestionType} mode="vertical">
                                 <Menu.Item key="radio"><Icon type='check-circle-o' /><span>单选题</span></Menu.Item>
                                 <Menu.Item key="checkbox"><Icon type='check-square-o' /><span>多选题</span></Menu.Item>
@@ -272,14 +441,15 @@ export default class QuestionLibMgr extends PureComponent {
                     <Col span={19}>
                         <div className="questionContent">
                             {questionListDom}
-                            {questionList.length ? <div className="addBtn">
-                                <Button type="primary" icon="plus-circle-o" >保存</Button>
-                                <Popconfirm title="你确定清除所有新建题目？">
-                                    <Button type="danger" icon="delete">取消</Button>
-                                </Popconfirm>,
-                            </div>
+                            {questionList.length ?
+                                <div className="addBtn">
+                                    <Button type="primary" icon="plus-circle-o" onClick={() => this.saveQuestion()}>保存</Button>
+                                    <Popconfirm title="你确定清除新建题目？"  onConfirm={() => this.cancelSave()}>
+                                        <Button type="danger" icon="delete">取消</Button>
+                                    </Popconfirm>,
+                                </div>
                                 :
-                            <div className="emptyContent">暂未新增题目</div>}
+                                <div className="emptyContent">请在左侧选择需要添加的题型</div>}
                         </div>
                     </Col>
                 </Row>

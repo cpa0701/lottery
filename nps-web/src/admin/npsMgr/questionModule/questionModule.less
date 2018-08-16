@@ -1,6 +1,25 @@
 .radio-module {
+  .titleInput {
+    width: 500px;
+  }
   input{
     width: auto;
     border: 0;
+  }
+  .optionInput {
+    position: relative;
+    i {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: -10px;
+      font-size: 16px;
+    }
+    i:hover {
+      color: #e4393c;
+    }
+  }
+  .optionInput:hover i {
+    display: block;
   }
 }
