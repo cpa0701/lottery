@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
-import {Radio} from 'antd';
+import {Radio, Input} from 'antd';
 
 const RadioGroup = Radio.Group;
 
 //单选
 export default class RadioModule extends PureComponent {
     render() {
-        const {index, questionName, optionList} = this.props;
+        const {index, questionName, optionList, isView} = this.props;
 
         const optionLIst = optionList.map((item) => {
             return <Radio style={optionList.length > 3 ? {
@@ -16,12 +16,13 @@ export default class RadioModule extends PureComponent {
                 marginLeft: '20px'
             } : {marginLeft: '20px'}} value={item.optionId} key={item.optionOrder}
                           setupQuestionId={item.setupQuestionId}
-                          skiptoQuestionId={item.skiptoQuestionId}>{item.optionName}</Radio>;
+                          skiptoQuestionId={item.skiptoQuestionId}>{isView ? item.optionName :
+                <Input defaultValue={item.optionName}/>}</Radio>;
         });
 
         return (
-            <div style={{padding: '5px'}}>
-                <h3>{index}、{questionName}</h3>
+            <div style={{padding: '5px'}} className={'radio-module'}>
+                <h3>{index}、{isView ? questionName : <Input defaultValue={questionName}/>}</h3>
                 <RadioGroup onChange={this.props.onChange}>
                     {optionLIst}
                 </RadioGroup>
