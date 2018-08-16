@@ -23,7 +23,7 @@ export default class CheckboxModule extends PureComponent {
         });
 
         return (
-            <div style={{padding: '5px'}}  className={'radio-module'}>
+            <div style={{padding: '12px'}}  className={'radio-module'}>
                 <h3>{index}、[多选题]{isView ? questionName :
                     <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
                 <Checkbox.Group onChange={onChange}>

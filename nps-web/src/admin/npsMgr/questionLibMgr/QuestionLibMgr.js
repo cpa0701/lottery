@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect, message } from "antd";
+import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect, message, Select } from "antd";
 
-import { RadioModule, CheckboxModule } from '../questionModule/QuestionModules'
+import { RadioModule, CheckboxModule, BlankModule } from '../questionModule/QuestionModules'
 import OptionsAdd from './OptionsAdd';
 import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
 
 import './questionLibMgr.less';
 
-const [ FormItem ] = [ Form.Item ];
+const [ FormItem, Option ] = [ Form.Item, Select.Option ];
 
 const treeData = [{
     title: '网络',
@@ -64,6 +64,7 @@ export default class QuestionLibMgr extends PureComponent {
             ],
             treeData: [],
             index: undefined,
+            isTextArea: false,
             addOption: false
         }
     }
@@ -245,22 +246,25 @@ export default class QuestionLibMgr extends PureComponent {
                     </div>
                 );
             case 'input':
+                this.setState({isTextArea: true});
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
                         // ...this.state.questionList,
-                        // {
-                        //     type: 'input',
-                        //     title: '单行填空题',
-                        //     option: ['选项1', '选项2']
-                        // },
                         {
                             questionName: '单行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: 'input',
                             questionCategory: '', // 题目分类
                             status: 1, // 默认1
-                            optionList: [],
+                            optionList: [
+                                {
+                                    optionOrder: 1, // 选项序号
+                                    // optionId: 1,
+                                    optionName: '默认答案',
+                                    isOther: 0  // 默认0
+                                },
+                            ],
                             optionLayout: 0, // 默认0
                             lenthCheck: 0, // 默认0
                             isNps: 0, // 默认0 nps
@@ -272,27 +276,31 @@ export default class QuestionLibMgr extends PureComponent {
                 }
                 return (
                     <div className="list">
-                        <RadioModule {...items}/>
+                        <BlankModule {...items}/>
+                        <span className="span">注：字数控制在100字以内</span>
                         { editHtml }
                     </div>
                 );
             case 'textArea':
+                this.setState({isTextArea: true});
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
                         // ...this.state.questionList,
-                        // {
-                        //     type: 'textArea',
-                        //     title: '多行填空题',
-                        //     option: ['选项1', '选项2']
-                        // },
                         {
                             questionName: '多行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: 'textArea',
                             questionCategory: '', // 题目分类
                             status: 1, // 默认1
-                            optionList: [],
+                            optionList: [
+                                {
+                                    optionOrder: 1, // 选项序号
+                                    // optionId: 1,
+                                    optionName: '默认答案',
+                                    isOther: 0  // 默认0
+                                },
+                            ],
                             optionLayout: 0, // 默认0
                             lenthCheck: 0, // 默认0
                             isNps: 0, // 默认0 nps
@@ -304,7 +312,8 @@ export default class QuestionLibMgr extends PureComponent {
                 }
                 return (
                     <div className="list">
-                        <RadioModule {...items}/>
+                        <BlankModule {...items}/>
+                        <span className="span">注：字数控制在200字以内</span>
                         { editHtml }
                     </div>
                 );
@@ -350,8 +359,9 @@ export default class QuestionLibMgr extends PureComponent {
     };
 
     render() {
-        const { questionList, addOption, index } = this.state;
+        const { questionList, addOption, index, isTextArea } = this.state;
         const { getFieldDecorator } = this.props.form;
+        const options = [{name: '不限', value: 0},{name: '数字', value: 1},{name: '字符', value: 2},{name: '中文', value: 3},{name: 'EMAIL', value: 4},{name: '手机号码', value: 5}];
 
         const editHtml = <div>
                             <div className="divider"/>
@@ -386,6 +396,17 @@ export default class QuestionLibMgr extends PureComponent {
                                             <Checkbox>满意度评分题</Checkbox>
                                         )}
                                     </FormItem>
+                                    {isTextArea ?
+                                        <FormItem  className="selectOption" label="内容限制">
+                                            {getFieldDecorator('contentCheck', {
+                                                initialValue: 0,
+                                            })(
+                                                <Select>
+                                                    {options.map((item, k) => { return <Option key={k} value={item.value}>{item.name}</Option>;})}
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                        : <div/>}
                                 </Form>
                             </div>
                         </div>;

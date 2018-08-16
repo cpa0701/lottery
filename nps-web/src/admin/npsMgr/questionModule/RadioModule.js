@@ -25,7 +25,7 @@ export default class RadioModule extends PureComponent {
         });
 
         return (
-            <div style={{padding: '5px'}} className={'radio-module'}>
+            <div style={{padding: '12px'}} className={'radio-module'}>
                 <h3>{index}、{isView ? questionName : <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
                 <RadioGroup onChange={onChange}>
                     {optionLIst}
