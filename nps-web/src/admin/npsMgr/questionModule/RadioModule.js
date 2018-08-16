@@ -6,7 +6,7 @@ const RadioGroup = Radio.Group;
 //单选
 export default class RadioModule extends PureComponent {
     render() {
-        const {index, questionName, optionList, isView} = this.props;
+        const {index, questionName, optionList, isView,questionNameBlur,optionNameBlur} = this.props;
 
         const optionLIst = optionList.map((item) => {
             return <Radio style={optionList.length > 3 ? {
@@ -17,12 +17,12 @@ export default class RadioModule extends PureComponent {
             } : {marginLeft: '20px'}} value={item.optionId} key={item.optionOrder}
                           setupQuestionId={item.setupQuestionId}
                           skiptoQuestionId={item.skiptoQuestionId}>{isView ? item.optionName :
-                <Input defaultValue={item.optionName}/>}</Radio>;
+                <Input defaultValue={item.optionName} onBlur={optionNameBlur}/>}</Radio>;
         });
 
         return (
             <div style={{padding: '5px'}} className={'radio-module'}>
-                <h3>{index}、{isView ? questionName : <Input defaultValue={questionName}/>}</h3>
+                <h3>{index}、{isView ? questionName : <Input defaultValue={questionName} onBlur={questionNameBlur}/>}</h3>
                 <RadioGroup onChange={this.props.onChange}>
                     {optionLIst}
                 </RadioGroup>

@@ -35,10 +35,19 @@ class QuestionPreview extends React.PureComponent {
         })
     }
 
+    questionNameBlur = (e) => {
+        debugger;
+    }
+    optionNameBlur = (e) => {
+        debugger;
+    }
+
     render() {
         const questionnaire = this.state.questionList.map((item, i) => {
-            return <InitQuestionList type={item.questionType} key={item.questionId} index={i} questionName={item.questionName}
-                                     optionList={item.optionList} isSetup={item.isSetup}/>
+            return <InitQuestionList type={item.questionType} key={item.questionId} index={i}
+                                     questionName={item.questionName}
+                                     optionList={item.optionList} isSetup={item.isSetup}
+                                     questionNameBlur={this.questionNameBlur} optionNameBlur={this.optionNameBlur}/>
         })
         return (
             <Spin spinning={this.state.loading}>
