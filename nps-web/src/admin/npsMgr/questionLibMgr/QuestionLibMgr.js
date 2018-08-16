@@ -150,7 +150,7 @@ export default class QuestionLibMgr extends PureComponent {
         };
         switch (items.questionType) {
             case 'radio':
-            {
+                this.setState({isTextArea: false});
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
@@ -192,8 +192,9 @@ export default class QuestionLibMgr extends PureComponent {
                         </div>
                         { editHtml }
                     </div>
-                )}
+                );
             case 'checkbox':
+                this.setState({isTextArea: false});
                 if(type === 1) {
                     let questionList = [];
                     questionList = [
