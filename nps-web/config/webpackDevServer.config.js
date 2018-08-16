@@ -89,7 +89,7 @@ module.exports = function(proxy, allowedHost) {
               '!/iconfont/**',//排除
               '!/tpl/**',//排除
           ],
-          target: 'http://172.19.102.212:8080/',
+          target: 'http://10.45.50.199:18088/',
           //target: 'http://172.16.64.167:22122/acsmanager/',
           //target: 'http://localhost:8090', // 本地
           changeOrigin: false,

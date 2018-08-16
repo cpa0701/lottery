@@ -1,6 +1,6 @@
 import React from 'react';
 import {Layout, Menu, Icon, Dropdown} from 'antd';
-import MenuSer from '../../../../services/menu/MenuService';
+import MenuService from '../../../../services/menu/MenuService';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'react-router-dom';
 import "./Header.less"
@@ -36,7 +36,7 @@ class Head extends React.Component {
     };
 
     componentWillMount() {
-        MenuSer.getMenuList().then(res => {
+        MenuService.getMenuList().then(res => {
             this.setState({menuData: res.menuData})
             //菜单数据
             this.stores.MenuModel.setMenuInfos(res.menuData);

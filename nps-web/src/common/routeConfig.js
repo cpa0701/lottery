@@ -8,6 +8,7 @@ import Role from "../admin/system/role/Role"
 import QuestionLibMgr from "../admin/npsMgr/questionLibMgr/QuestionLibMgr"
 import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
+import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
 import NotFound from '../admin/base/error/NotFound';
 
@@ -22,7 +23,8 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
                     <Route path="/npsMgr/table-list" component={Test}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
-                    <Route path="/npsMgr/questionPreview/QuestionPreview" component={QuestionPreview}/>
+                    <Route path="/npsMgr/questionMgr/questionEdit" component={QuestionEdit}/>
+                    <Route path="/npsMgr/questionMgr/QuestionPreview" component={QuestionPreview}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>

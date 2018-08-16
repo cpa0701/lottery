@@ -63,7 +63,7 @@ export class Http {
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: api, data: JSON.stringify(data), type: "post",datatype: "json",
+                    url: api, data: JSON.stringify(data), type: "post", datatype: "json",
                     success: (res) => {
                         resolve(JSON.parse(res))//在异步操作成功时调用
                     },
@@ -116,7 +116,9 @@ export class Http {
                 if (error.response.data.code === 401) {
                     message.error('登录超时');
                     window.location.href = '#/login'
-                } else
+                } else if (error.response.data.code === 500)
+                    message.error('请求超时');
+                else
                     message.error(error.response.data.description);
                 return false
             });

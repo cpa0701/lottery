@@ -18,7 +18,9 @@ class Bread extends React.Component {
 
     render() {
         const {stores, location} = this.props;
-        const menuMaps = stores.MenuModel.menuMaps;
+        let menuMaps = stores.MenuModel.menuMaps;
+        let otherPage = {'/npsMgr/questionMgr/QuestionPreview': '问卷预览', '/npsMgr/questionMgr/questionEdit': '问卷编辑'}
+        menuMaps = Object.assign(otherPage, menuMaps);
         const pathSnippets = location.pathname.split('/').filter(i => i);
 
         const extraBreadcrumbItems = pathSnippets.map((_, index) => {
