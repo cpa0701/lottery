@@ -635,6 +635,16 @@ Mock.mock("mock/systemController/Authority", {
     ]
 })
 
+// 新增题目
+Mock.mock('mock/questionMgr/addQuestion', (params) => {
+    let param = JSON.parse(params.body);
+    console.log('新增题目测试',param);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+});
 // 获取题库
 Mock.mock('mock/questionMgr/getQuestionLIst', (params) => {
     let param = params.body ? JSON.parse(params.body) : "";
