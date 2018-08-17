@@ -38,6 +38,7 @@ class QuestionEdit extends React.PureComponent {
         }
         this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
     }
+    //关联弹窗
     connModal = (show, props) => {
         if (show) {
             this.setState({
@@ -49,6 +50,7 @@ class QuestionEdit extends React.PureComponent {
             this.setState({conn: false});
         }
     };
+    //跳转弹窗
     jumpModal = (show, props) => {
         if (show) {
             this.setState({
@@ -60,8 +62,42 @@ class QuestionEdit extends React.PureComponent {
             this.setState({jump: false});
         }
     };
+    //上移
+    jumpUp=(i,props)=>{
+            if (i === 0) {
+                alert("当前位置不可上移")
+            }
+            else {
+                let questionDisplayList2=this.state.questionDisplayList
+                questionDisplayList2.splice(i-1, 0, props)
+                questionDisplayList2.splice(i + 1, 1);
+                console.log(questionDisplayList2)
+                this.setState({
+                    questionDisplayList: [...questionDisplayList2]
+                })
+            }
 
+    }
+    //下移
+    jumpDown=(i,props)=>{
+        console.log(i)
+        let questionDisplayList2=this.state.questionDisplayList;
+        let num=questionDisplayList2.length;
+        console.log(num)
+        if (i === num-1) {
+            alert("当前位置不可下移")
+        }
+        else {
+            questionDisplayList2.splice(i+2, 0, props)
+            questionDisplayList2.splice(i, 1);
+            console.log(questionDisplayList2)
+            this.setState({
+                questionDisplayList: [...questionDisplayList2]
+            })
+        }
+    }
     render() {
+        console.log(9999999)
         //关联弹窗
         const connModalProps = {
             conn: this.state.conn,
@@ -116,8 +152,10 @@ class QuestionEdit extends React.PureComponent {
                                                onClick={() => this.connModal(true, item)}>关联逻辑</a>
                                             <a href="javascript:void(0);"
                                                onClick={() => this.jumpModal(true, item)}>跳转逻辑</a>
-                                            <a href="javascript:void(0);">上移</a>
-                                            <a href="javascript:void(0);">下移</a>
+                                            <a href="javascript:void(0);"
+                                               onClick={() => this.jumpUp(i,item)}>上移</a>
+                                            <a href="javascript:void(0);"
+                                               onClick={() => this.jumpDown(i,item)}>下移</a>
                                         </div>
                                     </div>
                                 )
