@@ -1,11 +1,13 @@
 import React from 'react';
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
-import {Row, Col, Button} from "antd"
+import {Row, Col, Button, Input, Modal} from "antd"
 
 import InitQuestionList from './InitQuestionList'
 import QuestionLib from './QuestionLib'
 import './questionApplication.less'
-
+import ConnModal from './ConnModal';
+import JumpModal from './JumpModal';
+const { TextArea } = Input;
 
 class QuestionEdit extends React.PureComponent {
     constructor(props) {
@@ -13,7 +15,10 @@ class QuestionEdit extends React.PureComponent {
         this.state = {
             questionDisplayList: [],
             questionDisplayList1: [],
-            value: ''
+            value: '',
+            conn: false,
+            jump: false,
+            record: [],
         }
         this.getDom = this.getDom.bind(this);
         this.preview = this.preview.bind(this);
@@ -33,8 +38,46 @@ class QuestionEdit extends React.PureComponent {
         }
         this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
     }
+    connModal = (show, props) => {
+        if (show) {
+            this.setState({
+                conn: true,
+                record: props
+            });
+        }
+        else {
+            this.setState({conn: false});
+        }
+    };
+    jumpModal = (show, props) => {
+        if (show) {
+            this.setState({
+                jump: true,
+                record: props
+            });
+        }
+        else {
+            this.setState({jump: false});
+        }
+    };
 
     render() {
+        //关联弹窗
+        const connModalProps = {
+            conn: this.state.conn,
+            data: this.state.record,
+            onClose: () => {
+                this.connModal(false);
+            },
+        };
+        //跳转弹窗
+        const jumpModalProps = {
+            jump: this.state.jump,
+            data: this.state.record,
+            onClose: () => {
+                this.jumpModal(false);
+            },
+        };
         return (
             <div className={'questionApplication'}>
                 <Row className={'questionAppHead'}>
@@ -51,8 +94,8 @@ class QuestionEdit extends React.PureComponent {
                     <Col span={15} offset={1} style={{height: '100%'}}>
                         <div className={'questionAppContent'}>
                             <div className={'questionAppContentTitle'}>
-                                <h1>标题</h1>
-                                <div className={"surveyDescription"}>添加问卷说明</div>
+                                <Input className={'questionInput'} placeholder="标题"/>
+                                <TextArea className={"surveyDescription"} placeholder="添加问卷说明" autosize={{ minRows: 1}}/>
                             </div>
                             <div className={"question"}>
                                 <div className={"div_preview"}>
@@ -60,10 +103,27 @@ class QuestionEdit extends React.PureComponent {
                                     <span className={"line_as_hr"}/>
                                 </div>
                             </div>
+                            <ConnModal {...connModalProps}/>
+                            <JumpModal {...jumpModalProps}/>
                             {this.state.questionDisplayList.map((item, i) => {
-                                return <InitQuestionList type={item.type} key={i} index={i} title={item.title}/>
+                                console.log(item)
+                                return (
+                                    <div key={i}>
+                                        <InitQuestionList type={item.type} key={item.id}
+                                                          index={i} questionName={item.questionName}/>
+                                        <div className="link-group">
+                                            <a href="javascript:void(0);"
+                                               onClick={() => this.connModal(true, item)}>关联逻辑</a>
+                                            <a href="javascript:void(0);"
+                                               onClick={() => this.jumpModal(true, item)}>跳转逻辑</a>
+                                            <a href="javascript:void(0);">上移</a>
+                                            <a href="javascript:void(0);">下移</a>
+                                        </div>
+                                    </div>
+                                )
                             })}
                         </div>
+
                     </Col>
                 </Row>
             </div>
