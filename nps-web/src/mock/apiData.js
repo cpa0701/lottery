@@ -1211,7 +1211,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
 //获取问卷列表
 Mock.mock('mock/questionMgr/getQuestionnaireList', (params) => {
     let param = params.body ? JSON.parse(params.body) : "";
-    let pageNum = param ? param.pageNum : 1;
+    let pageNum = param.pageNum ? param.pageNum : 1;
     return Mock.mock({
         'list|10': [{
             qstnaireTitle: '@csentence',

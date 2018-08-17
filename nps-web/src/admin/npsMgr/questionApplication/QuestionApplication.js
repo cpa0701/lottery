@@ -13,7 +13,8 @@ class QuestionApplication extends React.PureComponent {
         this.state = {
             loading: false,
             questionnaireList: [],
-            pageNum: 0,
+            questionnaireName: '',
+            pageNum: 1,
             total: 0
         }
         this.createQuestion = this.createQuestion.bind(this);
@@ -24,7 +25,13 @@ class QuestionApplication extends React.PureComponent {
     }
 
     // 获取问卷列表
-    getQuestionnaireList = (params) => {
+    getQuestionnaireList = (param) => {
+        let params = {
+            questionnaireName: this.state.questionnaireName,
+            questionType: this.state.questionType,
+            questionBusiness: this.state.questionBusiness,
+            ...param
+        }
         this.setState({
             loading: true
         }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
@@ -50,11 +57,21 @@ class QuestionApplication extends React.PureComponent {
             questionnaireList: []
         }, () => this.getQuestionnaireList({catalogId: key}))
     }
+    //输入框输入
+    onSearch = (value) => {
+        this.setState({
+            questionnaireName: value
+        }, () => this.getQuestionnaireList())
+    }
+    //列表分页
+    refreshList = (page) => {
+        this.getQuestionnaireList({pageNum: page,});
+    }
 
     render() {
         const operations = <Search
             placeholder="在结果中查询"
-            onSearch={value => console.log(value)}
+            onSearch={value => this.onSearch(value)}
             enterButton
         />;
         const menu = (
@@ -99,7 +116,8 @@ class QuestionApplication extends React.PureComponent {
                     )
                 })}
             </Spin>
-            <Pagination current={this.state.pageNum} onChange={this.refreshLib} total={50}/>
+            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
+                        showQuickJumper/>
         </div>
         return (
             <div className={'questionnaire'}>
