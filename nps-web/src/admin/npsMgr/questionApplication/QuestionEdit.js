@@ -19,6 +19,7 @@ class QuestionEdit extends React.PureComponent {
             conn: false,
             jump: false,
             record: [],
+            connList:[],
         }
         this.getDom = this.getDom.bind(this);
         this.preview = this.preview.bind(this);
@@ -39,11 +40,15 @@ class QuestionEdit extends React.PureComponent {
         this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
     }
     //关联弹窗
-    connModal = (show, props) => {
+    connModal = (show, props,i) => {
         if (show) {
+            let connList=this.state.questionDisplayList;
+            connList.length=i;
             this.setState({
                 conn: true,
-                record: props
+                record: props,
+                connList,
+
             });
         }
         else {
@@ -97,6 +102,7 @@ class QuestionEdit extends React.PureComponent {
         const connModalProps = {
             conn: this.state.conn,
             data: this.state.record,
+            connList:this.state.connList,
             onClose: () => {
                 this.connModal(false);
             },
@@ -139,11 +145,11 @@ class QuestionEdit extends React.PureComponent {
                             {this.state.questionDisplayList.map((item, i) => {
                                 return (
                                     <div key={i}>
-                                        <InitQuestionList questionType={item.questionType}
+                                        <InitQuestionList questionType={item.questionType} questionId={item.questionId}
                                                           index={i+1} questionName={item.questionName} optionList={item.optionList}/>
                                         <div className="link-group">
                                             <a href="javascript:void(0);"
-                                               onClick={() => this.connModal(true, item)}>关联逻辑</a>
+                                               onClick={() => this.connModal(true, item,i)}>关联逻辑</a>
                                             <a href="javascript:void(0);"
                                                onClick={() => this.jumpModal(true, item)}>跳转逻辑</a>
                                             <a href="javascript:void(0);"
