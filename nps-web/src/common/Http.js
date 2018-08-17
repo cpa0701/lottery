@@ -60,35 +60,27 @@ export class Http {
 
     async post(api, data = {}, config = {}) {
         api = this.getUrl(api);
-        // if (api.includes('mock')) {
-        //     return await new Promise(function (resolve, reject) {
-        //         $.ajax({
-        //             url: api, data: JSON.stringify(data), type: "post", datatype: "json",
-        //             success: (res) => {
-        //                 resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
-        //             },
-        //             error: (error) => {
-        //                 reject(error);
-        //             }
-        //         });
-        //     })
-        // } else {
-        //     return await this._request(
-        //         {
-        //             url: api,
-        //             method: 'POST',
-        //             data: data,
-        //         }, config
-        //     );
-        // }
-        return await this._request(
-            {
-                url: api,
-                method: 'POST',
-                data: data,
-            }, config
-        );
-
+        if (api.includes('mock')) {
+            return await new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: api, data: JSON.stringify(data), type: "post", datatype: "json",
+                    success: (res) => {
+                        resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
+                    },
+                    error: (error) => {
+                        reject(error);
+                    }
+                });
+            })
+        } else {
+            return await this._request(
+                {
+                    url: api,
+                    method: 'POST',
+                    data: data,
+                }, config
+            );
+        }
     }
 
     async delete(api, data = {}, config = {}) {
