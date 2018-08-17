@@ -61,7 +61,7 @@ class QuestionPreview extends React.PureComponent {
 
     render() {
         const questionnaire = this.state.questionList.map((item, i) => {
-            return <InitQuestionList type={item.type} key={item.id} index={i}
+            return <InitQuestionList type={item.type} key={item.id} index={i+1}
                                      questionName={item.questionName}
                                      optionList={item.optionList} isSetup={item.isSetup}
                                      onRadioChange={this.onRadioChange}
