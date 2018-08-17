@@ -71,7 +71,6 @@ class QuestionEdit extends React.PureComponent {
                 let questionDisplayList2=this.state.questionDisplayList
                 questionDisplayList2.splice(i-1, 0, props)
                 questionDisplayList2.splice(i + 1, 1);
-                console.log(questionDisplayList2)
                 this.setState({
                     questionDisplayList: [...questionDisplayList2]
                 })
@@ -80,24 +79,20 @@ class QuestionEdit extends React.PureComponent {
     }
     //下移
     jumpDown=(i,props)=>{
-        console.log(i)
         let questionDisplayList2=this.state.questionDisplayList;
         let num=questionDisplayList2.length;
-        console.log(num)
         if (i === num-1) {
             alert("当前位置不可下移")
         }
         else {
             questionDisplayList2.splice(i+2, 0, props)
             questionDisplayList2.splice(i, 1);
-            console.log(questionDisplayList2)
             this.setState({
                 questionDisplayList: [...questionDisplayList2]
             })
         }
     }
     render() {
-        console.log(9999999)
         //关联弹窗
         const connModalProps = {
             conn: this.state.conn,
@@ -142,11 +137,10 @@ class QuestionEdit extends React.PureComponent {
                             <ConnModal {...connModalProps}/>
                             <JumpModal {...jumpModalProps}/>
                             {this.state.questionDisplayList.map((item, i) => {
-                                console.log(item)
                                 return (
                                     <div key={i}>
-                                        <InitQuestionList type={item.type} key={item.id}
-                                                          index={i+1} questionName={item.questionName}/>
+                                        <InitQuestionList questionType={item.questionType}
+                                                          index={i+1} questionName={item.questionName} optionList={item.optionList}/>
                                         <div className="link-group">
                                             <a href="javascript:void(0);"
                                                onClick={() => this.connModal(true, item)}>关联逻辑</a>

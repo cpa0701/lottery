@@ -15,7 +15,6 @@ export default class extends Component {
     afterClose = () => this.props.form.resetFields();
     render() {
         const {conn,data, form: {getFieldDecorator}} = this.props;
-        console.log(data)
         return(
             <Modal
                 width={400}

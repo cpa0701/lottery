@@ -17,7 +17,9 @@ class QuestionLib extends React.PureComponent {
             questionType: undefined,
             questionBusiness: undefined,
             pageNum: 1,
-            loading: false
+            loading: false,
+            isNps:undefined,
+            isSatisfied:undefined
         }
     }
 
@@ -41,7 +43,8 @@ class QuestionLib extends React.PureComponent {
         let params = {
             questionName: this.state.questionName,
             questionType: this.state.questionType,
-            questionBusiness: this.state.questionBusiness,
+            isNps:this.state.isNps,
+            isSatisfied:this.state.isSatisfied,
             pageNum: page,
         }
         this.setState({
@@ -50,8 +53,8 @@ class QuestionLib extends React.PureComponent {
             QuestionApplicationService.getQuestionList(params).then(result => {
                 if (result) {
                     this.setState({
-                        questionList: result.result.list,
-                        pageNum: this.getInteger(result.result.pageNum)
+                        questionList: result.list,
+                        pageNum: this.getInteger(result.pageNum)
                     })
                 }
                 this.setState({
@@ -88,7 +91,7 @@ class QuestionLib extends React.PureComponent {
                             <Col span={12}>
                                 <Select placeholder={'请选择业务类型'}
                                         onChange={(e) => {
-                                            this.setState({questionBusiness: e}, () => this.refreshLib(1))
+                                          this.setState({isNps:e?0:1,isSatisfied:e?1:0}, () => this.refreshLib(1))
                                         }}>
                                     <Option value={0}>nps</Option>
                                     <Option value={1}>满意度</Option>
@@ -98,9 +101,8 @@ class QuestionLib extends React.PureComponent {
                     </div>
                     <div className={'questionLibContent'}>
                         {this.state.questionList.map((question, i) => {
-                            console.log(question)
-                            return <InitQuestionList getDom={this.props.getDom} type={question.type} key={question.id}
-                                                     index={i} questionName={question.title} isLib={true}/>
+                            return <InitQuestionList getDom={this.props.getDom} questionType={question.questionType} key={question.questionId}
+                                                     index={i} questionName={question.questionName} isLib={true} optionList={question.optionList}/>
                         })}
                     </div>
                     <Pagination current={this.state.pageNum} onChange={this.refreshLib} total={50}/>

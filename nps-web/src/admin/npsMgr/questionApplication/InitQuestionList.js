@@ -25,94 +25,21 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            type, index, questionName, optionList,isLib,
+            questionType, index, questionName, optionList,isLib,
         } = this.props;
         let dom = '';
-        switch (type) {
-            case 'radio':
+        switch (questionType) {
+            case '01':
                 dom = <RadioModule questionName={questionName} index={index}
-                                   optionList={[
-                                           {
-                                               optionOrder: 1, // 选项序号
-                                               optionId: 1,
-                                               optionName: '选项 1',
-                                           },
-                                           {
-                                               optionOrder: 2, // 选项序号
-                                               optionId: 2,
-                                               optionName: '选项2',
-                                           }
-                                       ]} isView={true}/>
+                                   optionList={optionList} isView={true}/>
                 break;
-            case 'checkbox':
+            case '02':
                 dom = <CheckboxModule questionName={questionName} index={index}
-                                      optionList={[
-                                          {
-                                              optionOrder: 1, // 选项序号
-                                              optionId: 1,
-                                              optionName: '选项 1',
-                                          },
-                                          {
-                                              optionOrder: 2, // 选项序号
-                                              optionId: 2,
-                                              optionName: '选项2',
-                                          },
-                                          {
-                                              optionOrder: 3, // 选项序号
-                                              optionId: 3,
-                                              optionName: '选项3',
-                                          },
-                                          {
-                                              optionOrder: 4, // 选项序号
-                                              optionId: 4,
-                                              optionName: '选项4',
-                                          },
-                                          {
-                                              optionOrder: 5, // 选项序号
-                                              optionId: 5,
-                                              optionName: '选项5',
-                                          },
-                                          {
-                                              optionOrder: 6, // 选项序号
-                                              optionId: 6,
-                                              optionName: '选项6',
-                                          }
-                                      ]}isView={true}/>
+                                      optionList={optionList}isView={true}/>
                 break;
-            case 'blank':
+            case '03':
                 dom = <BlankModule questionName={questionName} index={index}
-                                   optionList={[
-                                       {
-                                           optionOrder: 1, // 选项序号
-                                           optionId: 1,
-                                           optionName: '选项 1',
-                                       },
-                                       {
-                                           optionOrder: 2, // 选项序号
-                                           optionId: 2,
-                                           optionName: '选项2',
-                                       },
-                                       {
-                                           optionOrder: 3, // 选项序号
-                                           optionId: 3,
-                                           optionName: '选项3',
-                                       },
-                                       {
-                                           optionOrder: 4, // 选项序号
-                                           optionId: 4,
-                                           optionName: '选项4',
-                                       },
-                                       {
-                                           optionOrder: 5, // 选项序号
-                                           optionId: 5,
-                                           optionName: '选项5',
-                                       },
-                                       {
-                                           optionOrder: 6, // 选项序号
-                                           optionId: 6,
-                                           optionName: '选项6',
-                                       }
-                                   ]}isView={true}/>
+                                   optionList={optionList}isView={true}/>
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
