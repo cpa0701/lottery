@@ -146,7 +146,7 @@ class QuestionEdit extends React.PureComponent {
                                 return (
                                     <div key={i}>
                                         <InitQuestionList type={item.type} key={item.id}
-                                                          index={i} questionName={item.questionName}/>
+                                                          index={i+1} questionName={item.questionName}/>
                                         <div className="link-group">
                                             <a href="javascript:void(0);"
                                                onClick={() => this.connModal(true, item)}>关联逻辑</a>
