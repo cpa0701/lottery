@@ -1,10 +1,19 @@
 import React, {Component} from 'react';
-import {Form, Row, Col, Input, Button, Select, Popconfirm} from 'antd';
+import {Form, Row, Col, Input, Button, Select, Popconfirm, Icon} from 'antd';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 class AdvancedSearchForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            expand: true
+        }
+        this.toggle = this.toggle.bind(this);
+    }
+
+    //查询
     handleSearch = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -12,8 +21,15 @@ class AdvancedSearchForm extends Component {
         });
     }
 
+    //收起
+    toggle = () => {
+        const {expand} = this.state;
+        this.setState({expand: !expand});
+    }
+
     // To generate mock Form.Item
     getFields() {
+        const count = this.state.expand ? 10 : 0;
         const {getFieldDecorator} = this.props.form;
         const children = [];
         const fieldList = [
@@ -52,7 +68,7 @@ class AdvancedSearchForm extends Component {
             }]
         for (let i = 0; i < fieldList.length; i++) {
             children.push(
-                <Col span={8} key={i}>
+                <Col span={8} key={i} style={{display: i < count ? 'block' : 'none'}}>
                     <FormItem label={fieldList[i].label}>
                         {getFieldDecorator(fieldList[i].key, {
                             initialValue: i === 0 ? 'dept' : ''
@@ -90,6 +106,9 @@ class AdvancedSearchForm extends Component {
                         <Popconfirm title="确定更改吗?" okText="确定" cancelText="取消" onConfirm={handleChangeDept}>
                             <Button>更改部门</Button>
                         </Popconfirm>
+                        <a style={{marginLeft: 8, fontSize: 12}} onClick={this.toggle}>
+                            收起 <Icon type={this.state.expand ? 'up' : 'down'}/>
+                        </a>
                     </Col>
                 </Row>
             </Form>
