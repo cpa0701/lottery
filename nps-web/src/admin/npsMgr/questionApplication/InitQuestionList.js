@@ -6,6 +6,8 @@ import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 import {RadioModule} from "../questionModule/QuestionModules"
+import {CheckboxModule} from "../questionModule/QuestionModules"
+import {BlankModule} from "../questionModule/QuestionModules"
 
 
 class InitQuestionList extends React.PureComponent {
@@ -22,30 +24,99 @@ class InitQuestionList extends React.PureComponent {
     }
 
     render() {
-        const {type, index, title, isLib} = this.props
+        const {
+            type, index, questionName, optionList,isLib,
+        } = this.props;
         let dom = '';
         switch (type) {
             case 'radio':
-                dom = <RadioModule title={title} index={index} option={['测试1', "测试2"]}/>
+                dom = <RadioModule questionName={questionName} index={index}
+                                   optionList={[
+                                           {
+                                               optionOrder: 1, // 选项序号
+                                               optionId: 1,
+                                               optionName: '选项 1',
+                                           },
+                                           {
+                                               optionOrder: 2, // 选项序号
+                                               optionId: 2,
+                                               optionName: '选项2',
+                                           }
+                                       ]} isView={true}/>
                 break;
             case 'checkbox':
-                dom = <Checkbox.Group
-                    style={{width: '100%'}}>
-                    <Row>
-                        <Col span={8}><Checkbox value="A">A</Checkbox></Col>
-                        <Col span={8}><Checkbox value="B">B</Checkbox></Col>
-                        <Col span={8}><Checkbox value="C">C</Checkbox></Col>
-                        <Col span={8}><Checkbox value="D">D</Checkbox></Col>
-                        <Col span={8}><Checkbox value="E">E</Checkbox></Col>
-                    </Row>
-                </Checkbox.Group>
+                dom = <CheckboxModule questionName={questionName} index={index}
+                                      optionList={[
+                                          {
+                                              optionOrder: 1, // 选项序号
+                                              optionId: 1,
+                                              optionName: '选项 1',
+                                          },
+                                          {
+                                              optionOrder: 2, // 选项序号
+                                              optionId: 2,
+                                              optionName: '选项2',
+                                          },
+                                          {
+                                              optionOrder: 3, // 选项序号
+                                              optionId: 3,
+                                              optionName: '选项3',
+                                          },
+                                          {
+                                              optionOrder: 4, // 选项序号
+                                              optionId: 4,
+                                              optionName: '选项4',
+                                          },
+                                          {
+                                              optionOrder: 5, // 选项序号
+                                              optionId: 5,
+                                              optionName: '选项5',
+                                          },
+                                          {
+                                              optionOrder: 6, // 选项序号
+                                              optionId: 6,
+                                              optionName: '选项6',
+                                          }
+                                      ]}isView={true}/>
                 break;
             case 'blank':
-                dom = <Input placeholder="Basic usage"/>
+                dom = <BlankModule questionName={questionName} index={index}
+                                   optionList={[
+                                       {
+                                           optionOrder: 1, // 选项序号
+                                           optionId: 1,
+                                           optionName: '选项 1',
+                                       },
+                                       {
+                                           optionOrder: 2, // 选项序号
+                                           optionId: 2,
+                                           optionName: '选项2',
+                                       },
+                                       {
+                                           optionOrder: 3, // 选项序号
+                                           optionId: 3,
+                                           optionName: '选项3',
+                                       },
+                                       {
+                                           optionOrder: 4, // 选项序号
+                                           optionId: 4,
+                                           optionName: '选项4',
+                                       },
+                                       {
+                                           optionOrder: 5, // 选项序号
+                                           optionId: 5,
+                                           optionName: '选项5',
+                                       },
+                                       {
+                                           optionOrder: 6, // 选项序号
+                                           optionId: 6,
+                                           optionName: '选项6',
+                                       }
+                                   ]}isView={true}/>
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
-            {isLib ? <span>{index + 1}.{title}</span> : ''}
+            {isLib ? <span>{index + 1}.{questionName}</span> : ''}
             {isLib ? '' : (<div>
                 {dom}
             </div>)}

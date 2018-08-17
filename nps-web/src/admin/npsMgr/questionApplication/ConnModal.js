@@ -26,7 +26,7 @@ export default class extends Component {
                 afterClose={this.afterClose}
             >
                 <form>
-                    <h2>当前题目：{data.title}</h2>
+                    <h2>当前题目：{data.questionName}</h2>
                     <h2>关联题目：
                         <Select defaultValue="lucy" style={{ width: 220 }} >
                         <Option value="jack">Jack</Option>
