@@ -41,7 +41,7 @@ export class Http {
                 $.ajax({
                     url: api, type: "get",
                     success: (res) => {
-                        resolve(JSON.parse(res))//在异步操作成功时调用
+                        resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
                     },
                     error: (error) => {
                         reject(error);
@@ -65,7 +65,7 @@ export class Http {
                 $.ajax({
                     url: api, data: JSON.stringify(data), type: "post", datatype: "json",
                     success: (res) => {
-                        resolve(JSON.parse(res))//在异步操作成功时调用
+                        resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
                     },
                     error: (error) => {
                         reject(error);
