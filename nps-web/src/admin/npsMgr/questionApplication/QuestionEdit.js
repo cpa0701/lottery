@@ -28,10 +28,10 @@ class QuestionEdit extends React.PureComponent {
     preview = () => {
         let id = Math.floor(Math.random() * 100);
         let path = {
-            pathname: '/npsMgr/questionPreview/QuestionPreview',
+            pathname: '/npsMgr/questionMgr/QuestionPreview',
             query: {id: id},
         }
-        this.props.history.push('/npsMgr/questionPreview/QuestionPreview');
+        this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
     }
 
     render() {
