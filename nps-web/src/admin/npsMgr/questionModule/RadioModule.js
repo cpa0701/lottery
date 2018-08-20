@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Radio, Input, Icon } from 'antd';
+import {Radio, Input, Icon} from 'antd';
 
 const RadioGroup = Radio.Group;
 
@@ -15,18 +15,20 @@ export default class RadioModule extends PureComponent {
                 lineHeight: '34px',
                 marginLeft: '20px'
             } : {marginLeft: '20px'}} value={item.optionOrder} key={item.optionOrder}
-                          setupQuestionId={item.setupQuestionId}
-                          skiptoQuestionId={item.skiptoQuestionId}>{isView ? item.optionName :
-                            <span>
-                                <Input defaultValue={item.optionName} onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
-                                <Icon type="delete" title="删除" onClick={(e) => this.props.optionDelete(item.optionOrder)}/>
+                          logic={item.logic}>{isView ? item.optionName :
+                <span>
+                                <Input defaultValue={item.optionName}
+                                       onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
+                                <Icon type="delete" title="删除"
+                                      onClick={(e) => this.props.optionDelete(item.optionOrder)}/>
                             </span>
             }</Radio>;
         });
 
         return (
             <div style={{padding: '12px'}} className={'radio-module'}>
-                <h3>{index}、{isView ? questionName : <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
+                <h3>{index}、{isView ? questionName : <Input className="titleInput" defaultValue={questionName}
+                                                            onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
                 <RadioGroup onChange={onChange}>
                     {optionLIst}
                 </RadioGroup>

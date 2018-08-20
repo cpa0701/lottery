@@ -17,11 +17,11 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            type, index, questionName, optionList, isSetup,
+            questionType, index, questionName, optionList, isSetup,
             questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange
         } = this.props;
         let dom = '';
-        switch (type) {
+        switch (questionType) {
             case '01':
                 dom = <RadioModule questionName={questionName} index={index}
                                    optionList={optionList} onChange={onRadioChange}
