@@ -36,19 +36,18 @@
       border-radius: 2px;
       .divider {
         border-bottom: 1px solid #ddd;
-        margin: 0 20px;
+        margin: 5px 20px;
       }
-      .editDelBtn {
-        padding: 5px 20px;
-        visibility: hidden;
-        text-align: right;
-        .ant-btn {
-          height: 26px;
-          padding: 0 8px;
+      .editFunc {
+        padding: 5px;
+        .selectOption {
+          .ant-form-item-control-wrapper {
+            width: 100px;
+          }
         }
       }
       .addOption {
-        padding-left: 25px;
+        padding-left: 32px;
         visibility: hidden;
         i {
           font-size: 18px;
@@ -58,11 +57,17 @@
           color: #1890ff;
         }
       }
+      .span {
+        position: relative;
+        top: -12px;
+        color: #e4393c;
+        margin-left: 40px
+      }
     }
     .list:hover {
       border-color: rgb(253, 181, 83);
     }
-    .list:hover .editDelBtn, .list:hover .addOption {
+    .list:hover .addOption {
       visibility: visible;
     }
     .addBtn {
@@ -105,4 +110,11 @@
   span {
     margin-left: 4px;
   }
+}
+
+// 题目管理页
+.listStyle {
+ .titleStyle {
+   padding: 10px 0;
+ }
 }

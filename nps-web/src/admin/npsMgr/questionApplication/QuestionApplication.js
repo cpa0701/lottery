@@ -1,71 +1,136 @@
 import React from 'react';
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
-import {Row, Col, Button} from "antd"
+import {Row, Col, Tabs, Button, Input, Menu, Dropdown, Icon, Pagination, Spin} from "antd"
 
-import InitQuestionList from './InitQuestionList'
-import QuestionLib from './QuestionLib'
 import './questionApplication.less'
 
+const Search = Input.Search;
+const TabPane = Tabs.TabPane;
 
 class QuestionApplication extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            questionDisplayList: [],
-            questionDisplayList1: [],
-            value: ''
+            loading: false,
+            questionnaireList: [],
+            questionnaireName: '',
+            pageNum: 1,
+            total: 0
         }
-        this.getDom = this.getDom.bind(this);
-        this.preview = this.preview.bind(this);
+        this.createQuestion = this.createQuestion.bind(this);
     }
 
-    //获取题库具体题目
-    getDom = (data) => {
-        this.state.questionDisplayList1.push(data);
-        this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+    componentWillMount() {
+        this.getQuestionnaireList()
     }
-    // 进入预览
-    preview = () => {
-        let id = Math.floor(Math.random() * 100);
-        let path = {
-            pathname: '/npsMgr/questionMgr/QuestionPreview',
-            query: {id: id},
+
+    // 获取问卷列表
+    getQuestionnaireList = (param) => {
+        let params = {
+            questionnaireName: this.state.questionnaireName,
+            questionType: this.state.questionType,
+            questionBusiness: this.state.questionBusiness,
+            ...param
         }
-        this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
+        this.setState({
+            loading: true
+        }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
+            this.setState({
+                questionnaireList: result.list,
+                pageNum: result.pageNum,
+                total: result.total,
+                loading: false
+            })
+        }))
+    }
+    //创建问卷
+    createQuestion = () => {
+        this.props.history.push('/npsMgr/questionMgr/questionEdit');
+    }
+    // 点击审核日志
+    handleMenuClick = (key, a, b) => {
+        console.log(key, a, b)
+    }
+    //tab标签被点击
+    onTabClick = (key) => {
+        this.setState({
+            questionnaireList: []
+        }, () => this.getQuestionnaireList({catalogId: key}))
+    }
+    //输入框输入
+    onSearch = (value) => {
+        this.setState({
+            questionnaireName: value
+        }, () => this.getQuestionnaireList())
+    }
+    //列表分页
+    refreshList = (page) => {
+        this.getQuestionnaireList({pageNum: page,});
     }
 
     render() {
-        return (
-            <div className={'questionApplication'}>
-                <Row className={'questionAppHead'}>
-                    <Col span={12} offset={8}>
-                        <Button type="primary">完成编辑</Button>
-                        <Button ghost icon="eye-o" onClick={this.preview}>预览</Button>
-                        <Button style={{float: 'right'}}>分页</Button>
-                    </Col>
-                </Row>
-                <Row className={'height'}>
-                    <Col style={{height: "100%", overflow: "auto"}} span={8}>
-                        <QuestionLib getDom={this.getDom}/>
-                    </Col>
-                    <Col span={15} offset={1} style={{height: '100%'}}>
-                        <div className={'questionAppContent'}>
-                            <div className={'questionAppContentTitle'}>
-                                <h1>标题</h1>
-                                <div className={"surveyDescription"}>添加问卷说明</div>
-                            </div>
-                            <div className={"question"}>
-                                <div className={"div_preview"}>
-                                    <span className={"div_topic_page_question paging-bg"}>]<span>第1页/共2页</span>[</span>
-                                    <span className={"line_as_hr"}/>
-                                </div>
-                            </div>
-                            {this.state.questionDisplayList.map((item, i) => {
-                                return <InitQuestionList type={item.type} key={i} index={i} title={item.title}/>
-                            })}
+        const operations = <Search
+            placeholder="在结果中查询"
+            onSearch={value => this.onSearch(value)}
+            enterButton
+        />;
+        const menu = (
+            <Menu onClick={this.handleMenuClick}>
+                <Menu.Item key="1">1st item</Menu.Item>
+                <Menu.Item key="2">2nd item</Menu.Item>
+                <Menu.Item key="3">3rd item</Menu.Item>
+            </Menu>
+        );
+        const {questionnaireList} = this.state;
+        const questionLIst = <div>
+            <Spin spinning={this.state.loading}>
+                {questionnaireList.map(item => {
+                    return (<div key={item.qstnaireId} className={'sub-li'}>
+                            <Row type="flex" justify="space-between">
+                                <Col span={16} className={'subject-name'}>{item.qstnaireTitle}</Col>
+                                <Col span={8}>
+                                    <Button type="primary">查看</Button>
+                                    <Button type="primary">编辑</Button>
+                                    <Button type="primary">删除</Button>
+                                    <Button type="primary">提交</Button>
+                                    <Dropdown overlay={menu}>
+                                        <Button>
+                                            审核日志 <Icon type="down"/>
+                                        </Button>
+                                    </Dropdown>
+                                </Col>
+                            </Row>
+                            <Row type="flex" justify="start">
+                                <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogId}
+                                </Col>
+                                <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
+                                </Col>
+                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
+                                <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelId}
+                                </Col>
+                                <Col span={6}><Icon type="clock-circle"
+                                                    style={{marginRight: '5px'}}/>编辑时间： {item.createTime}
+                                </Col>
+                            </Row>
                         </div>
-                    </Col>
-                </Row>
+                    )
+                })}
+            </Spin>
+            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
+                        showQuickJumper/>
+        </div>
+        return (
+            <div className={'questionnaire'}>
+                <Button type="primary" icon="plus" onClick={this.createQuestion}>
+                    创建问卷
+                </Button>
+                <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
+                    <TabPane tab="我的全部问卷( 共24条 )" key="1">{questionLIst}</TabPane>
+                    <TabPane tab="已启用( 5 )" key="2">{questionLIst}</TabPane>
+                    <TabPane tab="待审核( 1 )" key="3">{questionLIst}</TabPane>
+                    <TabPane tab="审核否决( 0 )" key="4">{questionLIst}</TabPane>
+                    <TabPane tab="草稿( 18 )" key="5">{questionLIst}</TabPane>
+                </Tabs>
             </div>
         )
     }

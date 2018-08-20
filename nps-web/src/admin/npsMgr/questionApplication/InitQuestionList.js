@@ -6,6 +6,8 @@ import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 import {RadioModule} from "../questionModule/QuestionModules"
+import {CheckboxModule} from "../questionModule/QuestionModules"
+import {BlankModule} from "../questionModule/QuestionModules"
 
 
 class InitQuestionList extends React.PureComponent {
@@ -22,30 +24,26 @@ class InitQuestionList extends React.PureComponent {
     }
 
     render() {
-        const {type, index, title, isLib} = this.props
+        const {
+            questionType, index, questionName, optionList,isLib,
+        } = this.props;
         let dom = '';
-        switch (type) {
-            case 'radio':
-                dom = <RadioModule title={title} index={index} option={['测试1', "测试2"]}/>
+        switch (questionType) {
+            case '01':
+                dom = <RadioModule questionName={questionName} index={index}
+                                   optionList={optionList} isView={true}/>
                 break;
-            case 'checkbox':
-                dom = <Checkbox.Group
-                    style={{width: '100%'}}>
-                    <Row>
-                        <Col span={8}><Checkbox value="A">A</Checkbox></Col>
-                        <Col span={8}><Checkbox value="B">B</Checkbox></Col>
-                        <Col span={8}><Checkbox value="C">C</Checkbox></Col>
-                        <Col span={8}><Checkbox value="D">D</Checkbox></Col>
-                        <Col span={8}><Checkbox value="E">E</Checkbox></Col>
-                    </Row>
-                </Checkbox.Group>
+            case '02':
+                dom = <CheckboxModule questionName={questionName} index={index}
+                                      optionList={optionList}isView={true}/>
                 break;
-            case 'blank':
-                dom = <Input placeholder="Basic usage"/>
+            case '03':
+                dom = <BlankModule questionName={questionName} index={index}
+                                   optionList={optionList}isView={true}/>
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
-            {isLib ? <span>{index + 1}.{title}</span> : ''}
+            {isLib ? <span>{index + 1}.{questionName}</span> : ''}
             {isLib ? '' : (<div>
                 {dom}
             </div>)}

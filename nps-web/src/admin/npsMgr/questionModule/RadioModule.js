@@ -1,22 +1,34 @@
-import React, { PureComponent } from 'react';
-import { Radio } from 'antd';
+import React, {PureComponent} from 'react';
+import { Radio, Input, Icon } from 'antd';
 
 const RadioGroup = Radio.Group;
 
 //单选
 export default class RadioModule extends PureComponent {
     render() {
-        const {index, title, option, value} = this.props;
+        const {index, questionName, optionList, isView, onChange} = this.props;
 
-        const items = option.map((item, key) => {
-            return <Radio style={{display: 'block',height: '30px',lineHeight: '30px', marginLeft: '20px'}} value={key} key={key}>{item}</Radio>;
+        const optionLIst = optionList.map((item) => {
+            return <Radio className="optionInput" style={optionList.length > 3 ? {
+                display: 'block',
+                height: '34px',
+                lineHeight: '34px',
+                marginLeft: '20px'
+            } : {marginLeft: '20px'}} value={item.optionId} key={item.optionOrder}
+                          setupQuestionId={item.setupQuestionId}
+                          skiptoQuestionId={item.skiptoQuestionId}>{isView ? item.optionName :
+                            <span>
+                                <Input defaultValue={item.optionName} onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
+                                <Icon type="delete" title="删除" onClick={(e) => this.props.optionDelete(item.optionOrder)}/>
+                            </span>
+            }</Radio>;
         });
 
         return (
-            <div style={{padding: '5px'}}>
-                <h3>{index}、{title}</h3>
-                <RadioGroup value={value} onChange={this.props.onChange}>
-                    {items}
+            <div style={{padding: '12px'}} className={'radio-module'}>
+                <h3>{index}、{isView ? questionName : <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
+                <RadioGroup onChange={onChange}>
+                    {optionLIst}
                 </RadioGroup>
             </div>
         );

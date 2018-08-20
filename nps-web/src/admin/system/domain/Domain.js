@@ -249,7 +249,7 @@ export default class Domain extends PureComponent {
         };
 
         return (
-            <div>
+            <div className={'domain'}>
                 <div className="headerDomain">
                     <Button type="primary" icon="plus-circle-o" onClick={this.handleAdd}>{domain.insert}</Button>
                     <Button type="primary" icon="edit" onClick={this.handleUpdate}>{domain.modify}</Button>

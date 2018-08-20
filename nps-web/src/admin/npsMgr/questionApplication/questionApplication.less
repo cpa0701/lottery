@@ -1,6 +1,6 @@
 .questionApplication {
   height: 100%;
-  .height{
+  .height {
     height: calc(100% - 62px);
   }
   .questionAppHead {
@@ -21,16 +21,24 @@
       text-align: center;
       width: 100%;
       padding: 10px 2%;
-      h1 {
+      .questionInput{
         font-size: 24px !important;
         font-weight: bold;
         color: #f53d05;
         vertical-align: middle;
+        text-align: center;
         margin: 0;
         padding: 15px 0;
         line-height: 24px;
+        border:0;
+        vertical-align: middle;
+        cursor:pointer;
+        overflow: visible;
+
       }
+
       .surveyDescription {
+        border:0;
         color: #555555;
         line-height: 24px;
         text-align: left;
@@ -40,6 +48,7 @@
         margin-left: 0;
         margin-top: 20px;
         cursor: pointer;
+        vertical-align: middle;
       }
     }
     .questionAppContentTitle:hover {
@@ -73,6 +82,14 @@
           background: #cccccc;
           top: 7px;
         }
+      }
+    }
+    .link-group{
+      width:60%;
+      margin:0 auto;
+      text-align: center;
+      a{
+        margin:5px;
       }
     }
   }
@@ -109,5 +126,40 @@
       margin-top: 10px;
       margin-bottom: 10px;
     }
+  }
+}
+
+.questionnaire {
+  padding-bottom: 24px;
+  .subject-name {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 30px;
+  }
+  .sub-li {
+    text-align: left;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ccc;
+    .ant-btn {
+      margin: 0 5px;
+    }
+  }
+  .ant-pagination{
+    margin-top: 20px;
+  }
+}
+
+.jumpModal {
+  .jumpHeader {
+    margin-top: 40px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    .ant-radio-wrapper {
+      margin-right: 50px;
+    }
+  }
+  .jumpContent {
+    padding: 10px 5px;
+    min-height: 300px;
   }
 }

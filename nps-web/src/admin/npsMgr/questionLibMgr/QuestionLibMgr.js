@@ -1,290 +1,146 @@
-import React, { PureComponent } from 'react';
-import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect } from "antd";
+import React from 'react';
+import {Row, Col, Tabs, Button, Input, Icon, Pagination, Spin, message, Popconfirm } from "antd"
 
-import { RadioModule, CheckboxModule } from '../questionModule/QuestionModules'
+import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
+
+import QuestionShow from './QuestionShow';
+import '../questionApplication/questionApplication.less';
 import './questionLibMgr.less';
-import OptionsAdd from './OptionsAdd';
 
-const [ FormItem ] = [ Form.Item ];
+const Search = Input.Search;
+const TabPane = Tabs.TabPane;
 
-const treeData = [{
-    title: '网络',
-    value: '0-0',
-    key: '0-0',
-    children: [{
-        title: '4G',
-        value: '0-0-1',
-        key: '0-0-1',
-    }, {
-        title: '5G',
-        value: '0-0-2',
-        key: '0-0-2',
-    }],
-}, {
-    title: '业务',
-    value: '0-1',
-    key: '0-1',
-}];
-
-@Form.create()
-export default class QuestionLibMgr extends PureComponent {
+class QuestionLibMgr extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            questionList: [
-                {
-                    title: '你今天吃饭了吗?',
-                    type: 'radio',
-                    value: 0,
-                    option: ['是', '否']
-                },
-                {
-                    title: '你的兴趣、爱好是?',
-                    type: 'checkbox',
-                    value: [0, 1],
-                    option: ['篮球', '足球', '排球', '游泳']
-                }
-            ],
-            value: undefined,
-            index: undefined,
-            addOption: false
-        }
+            loading: false,
+            questionList: [],
+            record: {},
+            show: false,
+            pageNum: 1,
+            total: 1
+        };
+        this.createQuestion = this.createQuestion.bind(this);
+        this.editQuestion = this.editQuestion.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        this.getQuestionList()
+    }
 
+    // 获取题目列表
+    getQuestionList = (params) => {
+        this.setState({
+            loading: true
+        }, () => QuestionLibMgrService.getQuestionList(params).then(result => {
+            this.setState({
+                questionList: result.list,
+                pageNum: result.pageNum,
+                total: result.total,
+                loading: false
+            })
+        }))
+    };
+    // 创建题目
+    createQuestion = () => {
+        this.props.history.push('/npsMgr/questionAddMgr');
     };
 
-    // 点击左边新增题目
-    selectQuestionType = (e) => {
-        let param = {
-            type: e.key
-        };
-        this.QuestionType(param, String(this.state.questionList.length + 1), 1);
-    };
-
-    // 单选、复选批量新增选项弹框
-    addOptionsModal = (show, index) => {
+    // 查看题目
+    showQuestion = (show, record) => {
         if (show) {
-            this.setState({addOption: true, index});
+            this.setState({show: true, record});
         } else {
-            this.setState({addOption: false});
+            this.setState({show: false});
         }
     };
-    // 单选、复选新增选项
-    addOption = (index) => {
-        let questionList = this.state.questionList.map((item, key) => {
-            if(key === Number(index) - 1) {
-                item.option = [
-                    ...item.option,
-                    '请输入选项'
-                ];
-            }
-            return item;
-        });
-        this.setState({questionList});
+    // 编辑题目
+    editQuestion = (record) => {
+        // this.props.history.push('/npsMgr/questionAddMgr', record);
+        this.props.history.push({ pathname:'/npsMgr/questionAddMgr', state:{ record } })
     };
-    // 单选、复选批量新增选项
-    addOptions = (index) => {
-
-    };
-    // 根据题目类型生成对应的DOM
-    QuestionType = (item, index, type, editHtml) => {
-        let items = {
-            ...item,
-            index
-        };
-        switch (items.type) {
-            case 'radio':
-            {
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        ...this.state.questionList,
-                        {
-                            type: 'radio',
-                            title: '单选题标题',
-                            option: ['选项1', '选项2']
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <RadioModule {...items}/>
-                        <div className="addOption">
-                            <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
-                            <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
-                        </div>
-                        { editHtml }
-                    </div>
-                )}
-            case 'checkbox':
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        ...this.state.questionList,
-                        {
-                            type: 'checkbox',
-                            title: '多选题标题',
-                            option: ['选项1', '选项2', '选项3', '选项4']
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <CheckboxModule {...items}/>
-                        <div className="addOption">
-                            <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
-                            <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
-                        </div>
-                        { editHtml }
-                    </div>
-                );
-            case 'input':
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        ...this.state.questionList,
-                        {
-                            type: 'input',
-                            title: '单行填空题',
-                            option: ['选项1', '选项2']
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <RadioModule {...items}/>
-                        { editHtml }
-                    </div>
-                );
-            case 'textArea':
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        ...this.state.questionList,
-                        {
-                            type: 'textArea',
-                            title: '多行填空题',
-                            option: ['选项1', '选项2']
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <RadioModule {...items}/>
-                        { editHtml }
-                    </div>
-                );
-            default :
-                return (
-                    <div/>
-                )
-        }
+    // 删除题目
+    delQuestion = (id) => {
+        this.setState({
+            loading: true
+        }, () => QuestionLibMgrService.delQuestion({questionId: id}).then(result => {
+            message.success('删除成功');
+            this.setState({ loading: false });
+            this.getQuestionList();
+        }))
     };
 
     render() {
-        const { questionList, addOption, index } = this.state;
-        const { getFieldDecorator } = this.props.form;
+        const { questionList, total, pageNum, show, record } = this.state;
 
-        const editHtml = <div>
-                            <div className="editFunc">
-                                <Form layout='inline' style={{ textAlign: 'right'}}>
-                                    <FormItem label="题目分类">
-                                        <TreeSelect
-                                            style={{ width: 150 }}
-                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                            treeData={treeData}
-                                            treeDefaultExpandAll
-                                            onChange={this.onChange}
-                                        />
-                                    </FormItem>
-                                    <FormItem>
-                                        {getFieldDecorator('npScore', {
-                                            valuePropName: 'checked',
-                                            initialValue: true,
-                                        })(
-                                            <Checkbox>NPS评分题</Checkbox>
-                                        )}
-                                    </FormItem>
-                                    <FormItem>
-                                        {getFieldDecorator('SatScore', {
-                                            valuePropName: 'checked',
-                                            initialValue: true,
-                                        })(
-                                            <Checkbox>满意度评分题</Checkbox>
-                                        )}
-                                    </FormItem>
-                                </Form>
-                            </div>
-                            <div className="divider"/>
-                            <div className="editDelBtn">
-                                <Button type="primary" icon="plus-circle-o" >确定</Button>
-                                <Button type="danger" icon="delete">删除</Button>
-                            </div>
-                        </div>;
-
-        const QuestionType = ({type, index, data}) => {
-            return this.QuestionType(type, String(index + 1), data, editHtml)
-        };
-        const questionListDom = questionList.map((item, k) => {
-            return <QuestionType type={item} key={k} index={k} data='0' html={editHtml}/>;
-        });
-
-        // 单选、复选新增选项弹框
-        const addModalProps = {
-            add: addOption,
+        let tabTitle = "全部题目( 共" + questionList.length + "条 )";
+        const showQuestionProps = {
+            show,
+            questionList: [record],
             onClose: () => {
-                this.addOptionsModal(false, undefined);
-            },
-            onCreate: (value) => {
-                this.setState({addOption: false});
-                let questionList = this.state.questionList.map((item, key) => {
-                    if(key === Number(index) - 1) {
-                        item.option = [
-                            ...item.option,
-                            ...value
-                        ];
-                    }
-                    return item;
-                });
-                this.setState({questionList});
-            },
+                this.showQuestion(false);
+            }
         };
+
+        const questionLIst = <div className="listStyle">
+                                <Spin spinning={this.state.loading}>
+                                    {questionList.map((item, k) => {
+                                        return (<div key={item.questionId} className={'sub-li'}>
+                                                <Row type="flex" justify="space-between" className='titleStyle'>
+                                                    <Col span={19} className={'subject-name'}>{k + 1}、{item.questionName}</Col>
+                                                    <Col span={5}>
+                                                        <Button type="primary" onClick={() => this.showQuestion(true, item)} icon="eye-o">查看</Button>
+                                                        <Button type="primary" onClick={() => this.editQuestion(item)} icon="edit">编辑</Button>
+                                                        <Popconfirm title="你确定删除该题目?" onConfirm={() => this.delQuestion(item.questionId)}>
+                                                            <Button type="danger" icon="delete">删除</Button>
+                                                        </Popconfirm>
+                                                    </Col>
+                                                </Row>
+                                                <Row type="flex" justify="start">
+                                                    <Col span={3}><Icon type="info-circle-o" style={{marginRight: '5px'}}/>
+                                                        题型：{item.questionType === '01' ? '单选题' :
+                                                              item.questionType === '02' ? '多选题' :
+                                                              item.questionType === '03' ? '单项填空' :
+                                                              item.questionType === '04' ? '多项填空' : '其他类型'}
+                                                    </Col>
+                                                    <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.questionCategory}</Col>
+                                                    <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
+                                                        NPS评分题：{item.isNps === 0 ? '否' : item.isNps === 1 ? '是' : ''}
+                                                    </Col>
+                                                    <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
+                                                        满意度评分题：{item.isSatisfied === 0 ? '否' : item.isSatisfied === 0 ? '是' : ''}
+                                                    </Col>
+                                                    <Col span={5}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
+                                                    <Col span={5}><Icon type="clock-circle" style={{marginRight: '5px'}}/>创建时间： {item.createTime}
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        )
+                                    })}
+                                </Spin>
+                                <Pagination current={ pageNum } onChange={this.refreshLib} total={ total }/>
+                            </div>;
+        const operations = <Search
+            placeholder="在结果中查询"
+            onSearch={value => console.log(value)}
+            enterButton
+        />;
 
         return (
-            <div className="questionLibMgr">
-                <Row>
-                    <Col span={5}>
-                        <Card title="添加新题" className="leftSelectType">
-                            <Menu onClick={this.selectQuestionType} mode="vertical">
-                                <Menu.Item key="radio"><Icon type='check-circle-o' /><span>单选题</span></Menu.Item>
-                                <Menu.Item key="checkbox"><Icon type='check-square-o' /><span>多选题</span></Menu.Item>
-                                <Menu.Item key="input"><Icon type='wallet' /><span>单项填空</span></Menu.Item>
-                                <Menu.Item key="textArea"><Icon type='profile' /><span>多项填空</span></Menu.Item>
-                            </Menu>
-                        </Card>
-                    </Col>
-                    <Col span={19}>
-                        <div className="questionContent">
-                            {questionListDom}
-                            {questionList.length ? <div className="addBtn">
-                                <Button type="primary" icon="plus-circle-o" >保存</Button>
-                                <Popconfirm title="你确定清除所有新建题目？">
-                                    <Button type="danger" icon="delete">取消</Button>
-                                </Popconfirm>,
-                            </div>
-                                :
-                            <div className="emptyContent">暂未新增题目</div>}
-                        </div>
-                    </Col>
-                </Row>
-                <OptionsAdd {...addModalProps}/>
+            <div className={'questionnaire'}>
+                <Button type="primary" icon="plus" onClick={this.createQuestion}>
+                    创建题目
+                </Button>
+                <Tabs tabBarExtraContent={operations}>
+                    <TabPane tab={tabTitle} key="1">
+                        {questionLIst}
+                    </TabPane>
+                </Tabs>
+                <QuestionShow {...showQuestionProps}/>
             </div>
         )
     }
 }
+
+export default QuestionLibMgr;
