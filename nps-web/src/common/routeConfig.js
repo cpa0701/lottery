@@ -10,6 +10,7 @@ import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
 import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
+import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import NotFound from '../admin/base/error/NotFound';
 
 import Test from "../admin/npsMgr/questionModule/Test"
@@ -25,6 +26,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
                     <Route path="/npsMgr/questionMgr/questionEdit" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/QuestionPreview" component={QuestionPreview}/>
+                    <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>
