@@ -8,7 +8,7 @@ export default class extends Component {
     state = {
         value:0,
         question:[],
-    }
+    };
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
@@ -25,12 +25,12 @@ export default class extends Component {
             value: 1,
             question,
         });
-    }
+    };
     render() {
-        const {conn,data,connList, form: {getFieldDecorator}} = this.props;
+        const {conn,record,connList, form: {getFieldDecorator}} = this.props;
         const optionList = connList.map((item) => {
             return  <Option key={item.questionId} value={item.questionId}>{item.questionName}</Option>
-        })
+        });
 
         return(
             <Modal
@@ -45,7 +45,7 @@ export default class extends Component {
                 ]}
             >
                 <form>
-                    <h2>当前题目：{data.questionName}</h2>
+                    <h2>当前题目：{record.questionName}</h2>
                     <h2>关联题目1：
                         <Select defaultValue="请选择关联的题目" style={{ width: 220 }} onChange={this.handleChange} >
                             {optionList}

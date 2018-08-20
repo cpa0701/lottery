@@ -1,12 +1,16 @@
 import React from 'react';
-import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
-import {Row, Col, Button, Input, Modal} from "antd"
+import { Row, Col, Button, Input, message } from "antd"
 
 import InitQuestionList from './InitQuestionList'
 import QuestionLib from './QuestionLib'
-import './questionApplication.less'
 import ConnModal from './ConnModal';
 import JumpModal from './JumpModal';
+
+import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
+
+import './questionApplication.less'
+
+
 const { TextArea } = Input;
 
 class QuestionEdit extends React.PureComponent {
@@ -15,36 +19,83 @@ class QuestionEdit extends React.PureComponent {
         this.state = {
             questionDisplayList: [],
             questionDisplayList1: [],
+            logic: [
+                {
+                    "actType": 0,
+                    "andOr": 0,
+                    "isMain": 0,
+                    "logicType": "01",
+                    "optionOrder": "2",
+                    "setupQuestionOrder": 2,
+                    "skiptoQuestionOrder": 4
+                },
+                {
+                    "actType": 0,
+                    "andOr": 0,
+                    "isMain": 0,
+                    "logicType": "01",
+                    "optionOrder": "3",
+                    "setupQuestionOrder": 2,
+                    "skiptoQuestionOrder": 6
+                },
+                {
+                    "actType": 0,
+                    "andOr": 0,
+                    "isMain": 1,
+                    "logicType": "00",
+                    "optionOrder": "1,2",
+                    "setupQuestionOrder": 2,
+                    "skiptoQuestionOrder": 5
+                },
+            ],
+            otherQuestion: [
+                {
+                    questionOrder: '0',
+                    questionName: "不跳转，按顺序填写下一题",
+                },
+                {
+                    questionOrder: '-1',
+                    questionName: "跳到问卷末尾结束作答",
+                },
+                {
+                    questionOrder: '-2',
+                    questionName: "直接提交为无效答卷",
+                },
+            ],
+            record: {},
+            connList: [],
+            jumpList: [],
             value: '',
+            radioValue: 0,
             conn: false,
-            jump: false,
-            record: [],
-            connList:[],
-        }
+            jump: false
+        };
         this.getDom = this.getDom.bind(this);
         this.preview = this.preview.bind(this);
     }
 
-    //获取题库具体题目
+    // 获取题库具体题目
     getDom = (data) => {
         this.state.questionDisplayList1.push(data);
         this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
-    }
+    };
+
     // 进入预览
     preview = () => {
         let id = Math.floor(Math.random() * 100);
         let path = {
             pathname: '/npsMgr/questionMgr/questionPreview',
             query: {id: id},
-        }
+        };
         this.props.history.push('/npsMgr/questionMgr/questionPreview');
-    }
-    //关联弹窗
-    connModal = (show, props,i) => {
+    };
+
+    // 关联逻辑弹窗
+    connModal = (show, props, i) => {
         if (show) {
             let _obj=JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj);
-            connList.length=i;
+            connList.length = i;
             this.setState({
                 conn: true,
                 record: props,
@@ -56,74 +107,117 @@ class QuestionEdit extends React.PureComponent {
             this.setState({conn: false});
         }
     };
-    //跳转弹窗
-    jumpModal = (show, props) => {
+
+    // 跳转逻辑弹窗
+    jumpModal = (show, props, i) => {
         if (show) {
-            this.setState({
-                jump: true,
-                record: props
-            });
-        }
-        else {
-            this.setState({jump: false});
-        }
-    };
-    //上移
-    jumpUp=(i,props)=>{
-            if (i === 0) {
-                alert("当前位置不可上移")
-            }
-            else {
-                let questionDisplayList2=this.state.questionDisplayList
-                questionDisplayList2.splice(i-1, 0, props)
-                questionDisplayList2.splice(i + 1, 1);
-                this.setState({
-                    questionDisplayList: [...questionDisplayList2]
-                })
+            // 打开弹框前获取已存在的跳转逻辑关系并存入optionList
+            let logicProp = this.state.logic.filter(item => item.setupQuestionOrder === props.questionOrder && item.logicType === '01');
+            if(logicProp) {
+                logicProp.map(item => {
+                    let optionOrderArr = item.optionOrder.split(',');
+                    props.optionList.map(k => {
+                        optionOrderArr.map(x => {
+                            if (String(k.optionOrder) === x) {
+                                k.questionOrder = item.skiptoQuestionOrder
+                            }
+                            return '';
+                        });
+                        return '';
+                    });
+                    if(optionOrderArr.length === props.optionList.length) {
+                        this.setState({radioValue: 1});
+                    }
+                    return '';
+                });
             }
 
-    }
-    //下移
-    jumpDown=(i,props)=>{
-        let questionDisplayList2=this.state.questionDisplayList;
-        let num=questionDisplayList2.length;
-        if (i === num-1) {
-            alert("当前位置不可下移")
+            // 获取本题后面所有的题目
+            let _obj=JSON.stringify(this.state.questionDisplayList);
+            let jumpList = JSON.parse(_obj).splice(i + 1).map((item, k) => {
+                item.questionName = i + k + 2 + '、' + item.questionName;
+                return item;
+            });
+            jumpList = [
+                ...this.state.otherQuestion,
+                ...jumpList
+            ];
+
+            if (props.questionType === '03' || props.questionType === '04') {
+                this.setState({radioValue: 1});
+            }
+
+            this.setState({
+                jump: true,
+                record: props,
+                jumpList
+            });
+        } else {
+            this.setState({ jump: false, radioValue: 0 });
         }
-        else {
-            questionDisplayList2.splice(i+2, 0, props)
+    };
+
+    // 题目上移动作
+    jumpUp = (i, props) => {
+        if (i === 0) {
+            message.info("当前位置不可上移");
+            return '';
+        } else {
+            let questionDisplayList2 = this.state.questionDisplayList;
+            questionDisplayList2.splice(i - 1, 0, props);
+            questionDisplayList2.splice(i + 1, 1);
+            this.setState({
+                questionDisplayList: [...questionDisplayList2]
+            })
+        }
+
+    };
+    // 题目下移动作
+    jumpDown = (i, props) => {
+        let questionDisplayList2 = this.state.questionDisplayList;
+        if (i === questionDisplayList2.length - 1) {
+            message.info("当前位置不可下移")
+        } else {
+            questionDisplayList2.splice(i + 2, 0, props);
             questionDisplayList2.splice(i, 1);
             this.setState({
                 questionDisplayList: [...questionDisplayList2]
             })
         }
-    }
+    };
+
     render() {
-        console.log(9999)
-        console.log(this.state.questionDisplayList)
-        //关联弹窗
+        const { questionDisplayList, conn, jump, record, connList, jumpList, radioValue } = this.state;
+
+        // 关联弹窗
         const connModalProps = {
-            conn: this.state.conn,
-            data: this.state.record,
-            connList:this.state.connList,
+            conn,
+            record,
+            connList,
             onClose: () => {
                 this.connModal(false);
             },
         };
-        //跳转弹窗
+        // 跳转弹窗
         const jumpModalProps = {
-            jump: this.state.jump,
-            data: this.state.record,
+            jump,
+            record,
+            jumpList,
+            radioValue,
             onClose: () => {
                 this.jumpModal(false);
             },
+            onChange: (e) => {
+                this.setState({radioValue: e.target.value});
+            }
         };
+
         return (
             <div className={'questionApplication'}>
                 <Row className={'questionAppHead'}>
                     <Col span={12} offset={8}>
                         <Button type="primary">完成编辑</Button>
-                        <Button ghost icon="eye-o" onClick={this.preview}>预览</Button>
+                        <Button type="primary" icon="eye-o" onClick={this.preview} style={{marginLeft: '16px'}}>预览</Button>
                         <Button style={{float: 'right'}}>分页</Button>
                     </Col>
                 </Row>
@@ -131,7 +225,7 @@ class QuestionEdit extends React.PureComponent {
                     <Col style={{height: "100%", overflow: "auto"}} span={8}>
                         <QuestionLib getDom={this.getDom}/>
                     </Col>
-                    <Col span={15} offset={1} style={{height: '100%'}}>
+                    <Col span={15} offset={1} style={{ height: '100%' }}>
                         <div className={'questionAppContent'}>
                             <div className={'questionAppContentTitle'}>
                                 <Input className={'questionInput'} placeholder="标题"/>
@@ -143,22 +237,20 @@ class QuestionEdit extends React.PureComponent {
                                     <span className={"line_as_hr"}/>
                                 </div>
                             </div>
-                            <ConnModal {...connModalProps}/>
-                            <JumpModal {...jumpModalProps}/>
-                            {this.state.questionDisplayList.map((item, i) => {
+                            {questionDisplayList.map((item, i) => {
                                 return (
                                     <div key={i}>
-                                        <InitQuestionList questionType={item.questionType} questionId={item.questionId}
-                                                          index={i+1} questionName={item.questionName} optionList={item.optionList}/>
+                                        <InitQuestionList questionType={item.questionType} questionOrder={item.questionOrder}
+                                                          index={i + 1} questionName={item.questionName} optionList={item.optionList}/>
                                         <div className="link-group">
                                             <a href="javascript:void(0);"
-                                               onClick={() => this.connModal(true, item,i)}>关联逻辑</a>
+                                               onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
                                             <a href="javascript:void(0);"
-                                               onClick={() => this.jumpModal(true, item)}>跳转逻辑</a>
+                                               onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
                                             <a href="javascript:void(0);"
-                                               onClick={() => this.jumpUp(i,item)}>上移</a>
+                                               onClick={() => this.jumpUp(i, item)}>上移</a>
                                             <a href="javascript:void(0);"
-                                               onClick={() => this.jumpDown(i,item)}>下移</a>
+                                               onClick={() => this.jumpDown(i, item)}>下移</a>
                                         </div>
                                     </div>
                                 )
@@ -167,6 +259,8 @@ class QuestionEdit extends React.PureComponent {
 
                     </Col>
                 </Row>
+                <ConnModal {...connModalProps}/>
+                <JumpModal {...jumpModalProps}/>
             </div>
         )
     }
