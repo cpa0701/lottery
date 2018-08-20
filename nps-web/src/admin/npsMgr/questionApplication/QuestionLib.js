@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {Row, Col, Input, Pagination, Select, Spin} from "antd"
-import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
+import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService"
 import InitQuestionList from './InitQuestionList'
 
 const {Option} = Select;
@@ -37,7 +37,7 @@ class QuestionLib extends React.PureComponent {
         else {
             return 0;
         }
-    }
+    };
     //刷新题库
     refreshLib = (page) => {
         let params = {
@@ -46,11 +46,11 @@ class QuestionLib extends React.PureComponent {
             isNps:this.state.isNps,
             isSatisfied:this.state.isSatisfied,
             pageNum: page,
-        }
+        };
         this.setState({
             loading: true
         }, () => {
-            QuestionApplicationService.getQuestionList(params).then(result => {
+            QuestionLibMgrService.getQuestionList(params).then(result => {
                 if (result) {
                     this.setState({
                         questionList: result.list,
@@ -62,9 +62,10 @@ class QuestionLib extends React.PureComponent {
                 })
             });
         })
-    }
+    };
 
     render() {
+        console.log('www',this.state.questionList)
         return (
             <Spin spinning={this.state.loading}>
                 <div className={'questionLib'}>
@@ -102,7 +103,7 @@ class QuestionLib extends React.PureComponent {
                     <div className={'questionLibContent'}>
                         {this.state.questionList.map((question, i) => {
                             return <InitQuestionList getDom={this.props.getDom} questionType={question.questionType} key={question.questionId} questionId={question.questionId}
-                                                     index={i} questionName={question.questionName} isLib={true} optionList={question.optionList}/>
+                                                     index={i} questionName={question.questionName} questionOrder={question.questionOrder} isLib={true} optionList={question.optionList}/>
                         })}
                     </div>
                     <Pagination current={this.state.pageNum} onChange={this.refreshLib} total={50}/>
