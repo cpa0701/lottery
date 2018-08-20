@@ -42,7 +42,8 @@ class QuestionEdit extends React.PureComponent {
     //关联弹窗
     connModal = (show, props,i) => {
         if (show) {
-            let connList=this.state.questionDisplayList;
+            let _obj=JSON.stringify(this.state.questionDisplayList);
+            let connList = JSON.parse(_obj);
             connList.length=i;
             this.setState({
                 conn: true,
@@ -98,6 +99,8 @@ class QuestionEdit extends React.PureComponent {
         }
     }
     render() {
+        console.log(9999)
+        console.log(this.state.questionDisplayList)
         //关联弹窗
         const connModalProps = {
             conn: this.state.conn,

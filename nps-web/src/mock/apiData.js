@@ -80,18 +80,13 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         },
         {
             menuName: '调研任务管理',
-            icon: 'table',
+            icon: '/missionMgr',
             menuUrl: 'list',
             menuId: 3,
             children: [
                 {
-                    menuName: '触发式调研任务申请',
-                    menuUrl: 'table-list',
-                    menuId: 31,
-                },
-                {
                     menuName: '调研任务申请',
-                    menuUrl: 'basic-list',
+                    menuUrl: '/missionMgr/missionApplication',
                     menuId: 32,
                 },
                 {
