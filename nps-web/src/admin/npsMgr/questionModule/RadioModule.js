@@ -14,7 +14,7 @@ export default class RadioModule extends PureComponent {
                 height: '34px',
                 lineHeight: '34px',
                 marginLeft: '20px'
-            } : {marginLeft: '20px'}} questionIndex={index} value={item.optionOrder} key={item.optionOrder}
+            } : {marginLeft: '20px'}} value={item.optionOrder} key={item.optionOrder}
                           logic={item.logic}>{isView ? item.optionName :
                 <span>
                                 <Input defaultValue={item.optionName}
