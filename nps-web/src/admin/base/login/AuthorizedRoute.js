@@ -28,7 +28,7 @@ class AuthorizedRoute extends React.Component {
 
         return (
             <Route render={props => {
-                return this.hasLogined()
+                return !this.hasLogined()
                     ? <Component {...props} />
                     : <Redirect to="/login"/>
             }}/>

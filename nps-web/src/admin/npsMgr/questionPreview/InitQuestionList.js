@@ -17,7 +17,7 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            questionType, index, questionName, optionList, isSetup,
+            questionType, index, questionName, optionList, isSetup,isShow,
             questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange
         } = this.props;
         let dom = '';
@@ -39,7 +39,7 @@ class InitQuestionList extends React.PureComponent {
                                    onChange={onBlankChange} isView={true}/>
                 break;
         }
-        return (<div style={{display: isSetup ? 'none' : 'block'}} className={'questionList'}>
+        return (<div style={{display: isShow?'block':(isSetup ? 'none' : 'block')}} className={'questionList'}>
             {dom}
         </div>);
     }

@@ -28,6 +28,7 @@ class QuestionPreview extends React.PureComponent {
                 let logicList = result.logic;
                 let questionList = result.question;
                 questionList.map(item => {
+                    item.isShow = false;
                     logicList.map(k => {
                         if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
                             if (item.questionOrder === k.skiptoQuestionOrder) {
@@ -43,7 +44,6 @@ class QuestionPreview extends React.PureComponent {
                         }
                     })
                 });
-                console.log(questionList)
                 this.setState({
                     loading: false,
                     questionList: questionList,
@@ -55,7 +55,37 @@ class QuestionPreview extends React.PureComponent {
 
     //单选框值改变
     onRadioChange = (e) => {
-        debugger;
+        let logic = e.target.logic;
+        if (logic) {
+            let questionList = this.state.questionList;
+            questionList[logic.setupQuestionOrder - 1].optionList[logic.optionOrder - 1].checked = e.target.checked;
+            this.setState({questionList: [...questionList]}, () => {
+                if (logic.logicType === '00') {
+                    if (logic.andOr === 0) {
+                        let skiptoQuestionOrder = logic.skiptoQuestionOrder;
+                        let result = questionList.every(item => {
+                            if (item.optionList.length)
+                                return item.optionList.every(k => {
+                                    if (k.logic && (k.logic.andOr === 0 && k.logic.skiptoQuestionOrder === skiptoQuestionOrder)) {
+                                        return k.checked
+                                    } else return true
+                                })
+                            else return true
+                        });
+                        if (result) {//且条件全满足则显示，否则隐藏
+                            questionList[skiptoQuestionOrder - 1].isShow = true;
+                        } else {
+                            questionList[skiptoQuestionOrder - 1].isShow = false;
+                        }
+                        this.setState({questionList: [...questionList]},()=>{
+                            console.log(this.state.questionList)
+                        })
+                    }
+                } else if (logic.logicType === '01') {
+
+                }
+            })
+        }
     }
     //复选框值改变
     onCheckBoxChange = (e) => {
@@ -73,6 +103,7 @@ class QuestionPreview extends React.PureComponent {
                                      questionName={item.questionName}
                                      optionList={item.optionList}
                                      isSetup={item.isSetup}
+                                     isShow={item.isShow}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
                                      onBlankChange={this.onBlankChange}
