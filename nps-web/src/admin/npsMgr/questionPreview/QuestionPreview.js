@@ -25,23 +25,31 @@ class QuestionPreview extends React.PureComponent {
             loading: true
         }, () => {
             QuestionPreviewService.getPreviewLIst().then(result => {
-                // let logicList = result.logic;
-                // let questionLIst = result.question;
-                // questionLIst.map(item => {
-                //     return logicList.map(k => {
-                //         if(k.logicType==='00'){
-                //             if (item.questionOrder === k.skiptoQuestionOrder) {
-                //                 return item.isSetup = true;
-                //             }
-                //         }
-                //     })
-                // })
+                let logicList = result.logic;
+                let questionLIst = result.question;
+                questionLIst.map(item => {
+                    item.logic = [];
+                    logicList.map(k => {
+                        if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
+                            if (item.questionOrder === k.setupQuestionOrder) {
+                                item.logic.push(k);
+                            }
+                            if (item.questionOrder === k.skiptoQuestionOrder) {
+                                item.isSetup = true;//被关联题隐藏
+                            }
+                        } else if (k.logicType === '01') {//跳转逻辑，给选项题添加logic
+                            if (item.questionOrder === k.setupQuestionOrder) {
+                                item.logic.push(k);
+                            }
+                        }
+                    })
+                });
+                console.log(questionLIst)
                 this.setState({
                     loading: false,
-                    questionList: result.question,
+                    questionList: questionLIst,
                     qstnaireTitle: result.qstnaireTitle
                 });
-                console.log(result)
             })
         })
     }

@@ -34,10 +34,10 @@ class QuestionEdit extends React.PureComponent {
     preview = () => {
         let id = Math.floor(Math.random() * 100);
         let path = {
-            pathname: '/npsMgr/questionMgr/QuestionPreview',
+            pathname: '/npsMgr/questionMgr/questionPreview',
             query: {id: id},
         }
-        this.props.history.push('/npsMgr/questionMgr/QuestionPreview');
+        this.props.history.push('/npsMgr/questionMgr/questionPreview');
     }
     //关联弹窗
     connModal = (show, props,i) => {
