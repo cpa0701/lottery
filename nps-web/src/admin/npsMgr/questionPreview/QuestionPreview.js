@@ -24,7 +24,7 @@ class QuestionPreview extends React.PureComponent {
         this.setState({
             loading: true
         }, () => {
-            QuestionPreviewService.getQuestionList().then(result => {
+            QuestionPreviewService.getPreviewLIst().then(result => {
                 // let logicList = result.logic;
                 // let questionLIst = result.question;
                 // questionLIst.map(item => {
@@ -38,7 +38,7 @@ class QuestionPreview extends React.PureComponent {
                 // })
                 this.setState({
                     loading: false,
-                    questionList: result.list,
+                    questionList: result.question,
                     qstnaireTitle: result.qstnaireTitle
                 });
                 console.log(result)
@@ -61,9 +61,9 @@ class QuestionPreview extends React.PureComponent {
 
     render() {
         const questionnaire = this.state.questionList.map((item, i) => {
-            return <InitQuestionList type={item.type} key={item.id} index={i+1}
+            return <InitQuestionList type={item.questionType} key={item.questionOrder} index={item.questionOrder}
                                      questionName={item.questionName}
-                                     optionList={item.optionList} isSetup={item.isSetup}
+                                     optionList={item.optionList}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
                                      onBlankChange={this.onBlankChange}

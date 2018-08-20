@@ -8,7 +8,7 @@ class QuestionApplicationService {
     }
     //获取问卷列表
     getQuestionnaireList = async (param) => {
-        var url = 'mock/questionMgr/getQuestionnaireList';
+        var url = 'http://rapapi.org/mockjsdata/36231/questionMgr/questionBank';
         return await Http.post(url, param);
     }
 }

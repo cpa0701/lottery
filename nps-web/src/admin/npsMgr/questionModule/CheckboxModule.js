@@ -14,7 +14,7 @@ export default class CheckboxModule extends PureComponent {
                 lineHeight: '34px',
                 marginLeft: '20px'
             } : {marginLeft: '20px'}}
-                             value={item.optionId} key={item.optionOrder}>{isView ? item.optionName :
+                             value={item.optionOrder} key={item.optionOrder}>{isView ? item.optionName :
                             <span>
                                 <Input defaultValue={item.optionName} onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
                                 <Icon type="delete" title="删除" onClick={(e) => this.props.optionDelete(item.optionOrder)}/>
