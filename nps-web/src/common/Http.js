@@ -41,7 +41,7 @@ export class Http {
                 $.ajax({
                     url: api, type: "get",
                     success: (res) => {
-                        resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
+                        resolve(res.data ? res.data : JSON.parse(res))//在异步操作成功时调用
                     },
                     error: (error) => {
                         reject(error);
@@ -65,7 +65,7 @@ export class Http {
                 $.ajax({
                     url: api, data: JSON.stringify(data), type: "post", datatype: "json",
                     success: (res) => {
-                        resolve(res.data?res.data:JSON.parse(res))//在异步操作成功时调用
+                        resolve(res.data ? res.data : JSON.parse(res))//在异步操作成功时调用
                     },
                     error: (error) => {
                         reject(error);
@@ -110,7 +110,9 @@ export class Http {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
-                return result.data.data ? result.data.data : false
+                if (result.data.code === 200)
+                    return result.data.data ? result.data.data : false
+                else return true;
             }).catch(function (error) {
                 if (error.response.data.code === 401) {
                     message.error('登录超时');
