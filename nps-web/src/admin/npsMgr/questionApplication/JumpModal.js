@@ -9,6 +9,15 @@ const [FormItem, RadioGroup, Option] = [Form.Item, Radio.Group, Select.Option];
 export default class extends Component {
     state = {
         value: undefined,
+        aaa: {
+            "actType": 0,
+            "andOr": 0,
+            "isMain": 0,
+            "logicType": "01",
+            "optionOrder": "2",
+            "setupQuestionOrder": 2,
+            "skiptoQuestionOrder": 4
+        }
     };
 
     onSubmit = () => {
@@ -16,8 +25,33 @@ export default class extends Component {
             if (errors) {
                 return '';
             }
-            console.log('ddd', values);
+            let record = this.props.record, logicArr = [], _Obj = {}, arr = [];
 
+            if (values.radio === 1) {
+                if(record.optionList) {
+                    arr = record.optionList.map((item, k) => {
+                        return item.optionOrder;
+                    });
+                }
+                _Obj = {
+                    "actType": 0,
+                    "andOr": 0,
+                    "isMain": 0,
+                    "logicType": "01",
+                    "optionOrder": arr.join(','),
+                    "setupQuestionOrder":  record.questionOrder,
+                    "skiptoQuestionOrder": Number(values.unconditional)
+                };
+                logicArr.push(_Obj);
+            } else {
+                let valueArr = Object.values(values).splice(1);
+                if(valueArr) {
+
+                }
+                console.log('valueArr',valueArr)
+
+            }
+            console.log('ddd', logicArr);
         });
     };
 
@@ -33,17 +67,24 @@ export default class extends Component {
        console.log(value);
     };
 
+    componentWillUnmount () {
+        //重写组件的setState方法，直接返回空
+        this.setState = (state, callback) => {
+            return '';
+        };
+    }
+
     afterClose = () => this.props.form.resetFields();
 
     render() {
         const { jump, jumpList = [], radioValue = 0, record = {}, form: { getFieldDecorator } } = this.props;
-        console.log(radioValue)
+
         const optionHtml = jumpList.map((item, k) => { return <Option key={k} value={item.questionOrder}>{item.questionName}</Option>;});
         const tableHtml = record.optionList ? record.optionList.map((item, k) => {
             return <Row key={k}>
                         <Col span={11} className="optionShow">
                             <FormItem>
-                                {getFieldDecorator(`${item.optionOrder}`, {
+                                {getFieldDecorator(`option${item.optionOrder}`, {
                                     initialValue: item.optionOrder,
                                     rules: [
                                         {required: true},
@@ -57,7 +98,7 @@ export default class extends Component {
                         </Col>
                         <Col span={11} offset={2}>
                             <FormItem labelCol = {{span: 0}} wrapperCol = {{span: 10}}>
-                                {getFieldDecorator(`${item.optionOrder} + 1`, {
+                                {getFieldDecorator(`question${item.optionOrder}`, {
                                     initialValue: item.questionOrder ? item.questionOrder : '0',
                                     rules: [
                                         {required: false},
@@ -83,17 +124,25 @@ export default class extends Component {
             >
                 <Row className="jumpModal">
                     <Col span={24} className="jumpHeader">
-                        {record.questionType === '01' || record.questionType === '02' ?
-                            <RadioGroup defaultValue={radioValue ? radioValue : 0} onChange={this.props.onChange}>
-                                <Radio value={0}>按选项跳题</Radio>
-                                <Radio value={1}>无条件跳题</Radio>
-                            </RadioGroup>
-                            :
-                            <RadioGroup defaultValue={radioValue}>
-                                <Radio value={1}>无条件跳题</Radio>
-                            </RadioGroup>
-                        }
+                        <Form>
+                            {getFieldDecorator('radio', {
+                                initialValue: radioValue,
+                                rules: [
+                                    {required: false},
+                                ],
+                            })(
+                                record.questionType === '01' || record.questionType === '02' ?
+                                    <RadioGroup onChange={this.props.onChange}>
+                                        <Radio value={0}>按选项跳题</Radio>
+                                        <Radio value={1}>无条件跳题</Radio>
+                                    </RadioGroup>
+                                    :
+                                    <RadioGroup>
+                                        <Radio value={1}>无条件跳题</Radio>
+                                    </RadioGroup>
 
+                            )}
+                        </Form>
                     </Col>
                     <Col span={24} className="jumpContent">
                         <h3>1、{record.questionName}</h3>
@@ -111,7 +160,7 @@ export default class extends Component {
                             <div>
                                 <Form>
                                     <FormItem label="填写此题后跳转到" labelCol = {{span: 7}} wrapperCol = {{span: 14}}>
-                                        {getFieldDecorator('option', {
+                                        {getFieldDecorator('unconditional', {
                                             initialValue: '0',
                                             rules: [
                                                 {required: false},
