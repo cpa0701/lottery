@@ -26,6 +26,7 @@ class QuestionPreview extends React.PureComponent {
         }, () => {
             QuestionPreviewService.getPreviewLIst().then(result => {
                 let logicList = result.logic;
+                this.state.logicList = result.logic;
                 let questionList = result.question;
                 questionList.map(item => {
                     item.isShow = false;
@@ -55,37 +56,81 @@ class QuestionPreview extends React.PureComponent {
 
     //单选框值改变
     onRadioChange = (e) => {
-        let logic = e.target.logic;
-        if (logic) {
-            let questionList = this.state.questionList;
-            questionList[logic.setupQuestionOrder - 1].optionList[logic.optionOrder - 1].checked = e.target.checked;
-            this.setState({questionList: [...questionList]}, () => {
-                if (logic.logicType === '00') {
-                    if (logic.andOr === 0) {
-                        let skiptoQuestionOrder = logic.skiptoQuestionOrder;
-                        let result = questionList.every(item => {
-                            if (item.optionList.length)
-                                return item.optionList.every(k => {
-                                    if (k.logic && (k.logic.andOr === 0 && k.logic.skiptoQuestionOrder === skiptoQuestionOrder)) {
-                                        return k.checked
-                                    } else return true
-                                })
-                            else return true
-                        });
-                        if (result) {//且条件全满足则显示，否则隐藏
-                            questionList[skiptoQuestionOrder - 1].isShow = true;
-                        } else {
-                            questionList[skiptoQuestionOrder - 1].isShow = false;
-                        }
-                        this.setState({questionList: [...questionList]},()=>{
-                            console.log(this.state.questionList)
-                        })
-                    }
-                } else if (logic.logicType === '01') {
-
-                }
+        let questionList = this.state.questionList;
+        this.state.logicList.map(item => {
+            if (item.logicType === '00' && item.setupQuestionOrder === e.target.questionIndex) {
+                questionList[item.skiptoQuestionOrder - 1].isShow = false;
+            }
+        })
+        this.setState({questionList: [...questionList]}, () => {
+            let logic = e.target.logic;
+            questionList[e.target.questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false
+                item.checked = false;
             })
-        }
+            if (logic && logic.logicType === '00') {
+                questionList[logic.setupQuestionOrder - 1].optionList[logic.optionOrder - 1].checked = e.target.checked;
+                this.setState({questionList: [...questionList]}, () => {
+                    if (logic.logicType === '00') {//关联的情况
+                        let skiptoQuestionOrder = logic.skiptoQuestionOrder;
+                        if (logic.andOr === 0) {//关联的且的选项
+                            let result = questionList.every(item => {
+                                if (item.optionList.length)
+                                    return item.optionList.every(k => {
+                                        if (k.logic && (k.logic.andOr === 0 && k.logic.skiptoQuestionOrder === skiptoQuestionOrder)) {
+                                            return k.checked
+                                        } else return true
+                                    })
+                                else return true
+                            });
+                            if (result) {//且条件全满足则显示，否则隐藏
+                                questionList[skiptoQuestionOrder - 1].isShow = true;
+                            } else {
+                                questionList[skiptoQuestionOrder - 1].isShow = false;
+                            }
+                        }
+                        else {//关联的或的选项
+                            let result = questionList.some(item => {
+                                if (item.optionList.length)
+                                    return item.optionList.some(k => {
+                                        if (k.logic && (k.logic.andOr === 1 && k.logic.skiptoQuestionOrder === skiptoQuestionOrder)) {
+                                            return k.checked
+                                        } else return false
+                                    })
+                                else return false
+                            });
+                            if (result) {//且条件全满足则显示，否则隐藏
+                                questionList[skiptoQuestionOrder - 1].isShow = true;
+                            } else {
+                                questionList[skiptoQuestionOrder - 1].isShow = false;
+                            }
+                        }
+                        this.setState({questionList: [...questionList]})
+                    } else if (logic.logicType === '01') {//跳转的情况
+
+                    }
+                })
+            }
+            else {//没逻辑选项判断或关联
+                let skiptoQuestionOrder = '';
+                let orList = this.state.logicList.filter(item => {//过滤出被此选项所关联的或关系的题目的所有关联逻辑
+                    if (item.logicType === '00' && item.andOr === 1 && item.setupQuestionOrder === e.target.questionIndex) {
+                        skiptoQuestionOrder = item.skiptoQuestionOrder;
+                    }
+                    return item.skiptoQuestionOrder === skiptoQuestionOrder;
+                });
+                let result = orList.some(item => {
+                    return questionList[item.setupQuestionOrder - 1].optionList[item.optionOrder - 1].checked
+                });
+                if (orList.length) {
+                    if (result) {//或条件全满足则显示，否则隐藏
+                        questionList[skiptoQuestionOrder - 1].isShow = true;
+                    } else {
+                        questionList[skiptoQuestionOrder - 1].isShow = false;
+                    }
+                    this.setState({questionList: [...questionList]})
+                }
+            }
+        })
     }
     //复选框值改变
     onCheckBoxChange = (e) => {

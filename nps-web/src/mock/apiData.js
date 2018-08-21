@@ -712,7 +712,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
         "logic": [
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 0,
                 "logicType": "01",
                 "optionOrder": "2",
@@ -721,7 +721,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 0,
                 "logicType": "01",
                 "optionOrder": "3",
@@ -730,16 +730,16 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 1,
                 "logicType": "00",
-                "optionOrder": "1,2",
+                "optionOrder": "1",
                 "setupQuestionOrder": 3,
                 "skiptoQuestionOrder": 5
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 0,
                 "logicType": "00",
                 "optionOrder": "1",
@@ -840,7 +840,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionName": "测试题目a，3个选项",
                 "questionName2": "复选测试",
                 "questionOrder": 3,
-                "questionType": "02",
+                "questionType": "01",
                 "status": 1
             },
             {
