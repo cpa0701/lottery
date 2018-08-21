@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect, message, Select } from "antd";
+import { Form, Row, Col, Card, Icon, Menu, Button, Checkbox, Popconfirm, TreeSelect, message, Select,Tooltip } from "antd";
 
 import { RadioModule, CheckboxModule, BlankModule } from '../questionModule/QuestionModules'
 import OptionsAdd from './OptionsAdd';
@@ -78,7 +78,13 @@ export default class QuestionAddMgr extends PureComponent {
         //     }
         // });
     };
+    //插入输入线
+    insertText=()=>{
+        let questionList=this.state.questionList;
+        questionList[0].questionName=questionList[0].questionName+"_______";
+        this.setState({questionList:[...questionList]});
 
+    }
     // 点击左边新增题目
     selectQuestionType = (e) => {
         let param = {
@@ -279,7 +285,10 @@ export default class QuestionAddMgr extends PureComponent {
                 return (
                     <div className="list">
                         <BlankModule {...items}/>
-                        <span className="span">注：字数控制在100字以内</span>
+                        <h3 className="span">注：字数控制在100字以内</h3>
+                        <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
+                            <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
+                        </Tooltip>
                         { editHtml }
                     </div>
                 );
@@ -315,7 +324,10 @@ export default class QuestionAddMgr extends PureComponent {
                 return (
                     <div className="list">
                         <BlankModule {...items}/>
-                        <span className="span">注：字数控制在200字以内</span>
+                        <h3 className="span">注：字数控制在200字以内</h3>
+                        <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
+                            <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
+                        </Tooltip>
                         { editHtml }
                     </div>
                 );
@@ -370,7 +382,6 @@ export default class QuestionAddMgr extends PureComponent {
         const { questionList, addOption, index, isTextArea } = this.state;
         const { getFieldDecorator } = this.props.form;
         const options = [{name: '不限', value: 0},{name: '数字', value: 1},{name: '字符', value: 2},{name: '中文', value: 3},{name: 'EMAIL', value: 4},{name: '手机号码', value: 5}];
-
         const editHtml = <div>
                             <div className="divider"/>
                             <div className="editFunc">
