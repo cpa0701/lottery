@@ -96,14 +96,16 @@ class QuestionEdit extends React.PureComponent {
             let _obj=JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj);
             connList.length = i;
+            // 过滤出非填空题
+            connList = connList.filter(item => item.questionType === '01' || item.questionType === '02');
+
             this.setState({
                 conn: true,
                 record: props,
                 connList,
 
             });
-        }
-        else {
+        } else {
             this.setState({conn: false});
         }
     };
@@ -125,6 +127,7 @@ class QuestionEdit extends React.PureComponent {
                         });
                         return '';
                     });
+                    // 判断是否是无条件跳转
                     if(optionOrderArr.length === props.optionList.length) {
                         this.setState({radioValue: 1});
                     }
@@ -142,7 +145,7 @@ class QuestionEdit extends React.PureComponent {
                 ...this.state.otherQuestion,
                 ...jumpList
             ];
-
+            // 判断是否是无条件跳转 单行，多行填空
             if (props.questionType === '03' || props.questionType === '04') {
                 this.setState({radioValue: 1});
             }
@@ -206,6 +209,19 @@ class QuestionEdit extends React.PureComponent {
             radioValue,
             onClose: () => {
                 this.jumpModal(false);
+            },
+            onCreate: (value) => {
+                let logic = [
+                    ...this.state.logic,
+                    ...value
+                ];
+                console.log('qqq', logic);
+                this.setState({
+                    logic
+                }, () => {
+                    message.success('编辑成功');
+                    this.jumpModal(false);
+                });
             },
             onChange: (e) => {
                 this.setState({radioValue: e.target.value});
