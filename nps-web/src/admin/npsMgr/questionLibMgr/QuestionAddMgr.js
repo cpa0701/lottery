@@ -8,7 +8,7 @@ import QuestionLibMgrService from "../../../services/question/QuestionLibMgrServ
 import './questionLibMgr.less';
 
 const [ FormItem, Option ] = [ Form.Item, Select.Option ];
-
+const SubMenu = Menu.SubMenu;
 const treeData = [{
     title: '网络',
     value: '网络',
@@ -27,41 +27,130 @@ const treeData = [{
     value: '业务',
     key: '0-1',
 }];
-
+const questionData = [
+        {
+            key:'05',
+            questionName: '您的姓名',
+            questionName2: '', // 题目提示描述
+            questionType: '03',
+            questionCategory: '', // 题目分类
+            status: 1, // 默认1
+            optionList: [
+                {
+                    optionOrder: 1, // 选项序号
+                    // optionId: 1,
+                    optionName: ' ',
+                    isOther: 0  // 默认0
+                },
+                ],
+            optionLayout: 0, // 默认0
+            lenthCheck: 0, // 默认0
+            isNps: 0, // 默认0 nps
+            isSatisfied: 0, // 默认0 满意度
+            contentCheck: 0 // 默认0 内容限制
+        },
+        {
+            key:'06',
+            questionName: '您的性别',
+            questionName2: '', // 题目提示描述
+            questionType: '01',
+            questionCategory: '', // 题目分类
+            status: 1, // 默认1
+            optionList: [
+                {
+                    optionOrder: 1, // 选项序号
+                    optionName: '男',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 2, // 选项序号
+                    optionName: '女',
+                    isOther: 0  // 默认0
+                },
+                ],
+            optionLayout: 0, // 默认0
+            lenthCheck: 0, // 默认0
+            isNps: 0, // 默认0 nps
+            isSatisfied: 0, // 默认0 满意度
+            contentCheck: 0 // 默认0 内容限制
+        },
+        {
+            key:'07',
+            questionName: '您的年龄段',
+            questionName2: '', // 题目提示描述
+            questionType: '01',
+            questionCategory: '', // 题目分类
+            status: 1, // 默认1
+            optionList: [
+                {
+                    optionOrder: 1, // 选项序号
+                    optionName: '18岁以下',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 2, // 选项序号
+                    optionName: '18~25',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 3, // 选项序号
+                    optionName: '26~30',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 4, // 选项序号
+                    optionName: '31~40',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 5, // 选项序号
+                    optionName: '41~50',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 6, // 选项序号
+                    optionName: '51~60',
+                    isOther: 0  // 默认0
+                },
+                {
+                    optionOrder: 7, // 选项序号
+                    optionName: '60以上',
+                    isOther: 0  // 默认0
+                },
+                ],
+            optionLayout: 0, // 默认0
+            lenthCheck: 0, // 默认0
+            isNps: 0, // 默认0 nps
+            isSatisfied: 0, // 默认0 满意度
+            contentCheck: 0 // 默认0 内容限制
+        },
+        {
+            key:'08',
+            questionName: '您的手机',
+            questionName2: '', // 题目提示描述
+            questionType: '03',
+            questionCategory: '', // 题目分类
+            status: 1, // 默认1
+            optionList: [
+                {
+                    optionOrder: 1, // 选项序号
+                    // optionId: 1,
+                    optionName: ' ',
+                    isOther: 0  // 默认0
+                },
+                ],
+            optionLayout: 0, // 默认0
+            lenthCheck: 0, // 默认0
+            isNps: 0, // 默认0 nps
+            isSatisfied: 0, // 默认0 满意度
+            contentCheck: 0 // 默认0 内容限制
+        },
+        ];
 @Form.create()
 export default class QuestionAddMgr extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            // questionList: [
-            //     {
-            //         // questionId: 1,
-            //         questionName: '你今天吃饭了吗?',
-            //         questionName2: '日常问候语', // 题目提示描述
-            //         questionType: '01',
-            //         questionCategory: '4G', // 题目分类
-            //         status: 1, // 默认1
-            //         optionList: [
-            //             {
-            //                 optionOrder: 1, // 选项序号
-            //                 // optionId: 1,
-            //                 optionName: '是',
-            //                 isOther: 0  // 默认0
-            //             },
-            //             {
-            //                 optionOrder: 2, // 选项序号
-            //                 // optionId: 1,
-            //                 optionName: '否',
-            //                 isOther: 0  // 默认0
-            //             }
-            //         ],
-            //         optionLayout: 0, // 默认0
-            //         lenthCheck: 0, // 默认0
-            //         isNps: 0, // 默认0 nps
-            //         isSatisfied: 0, // 默认0 满意度
-            //         contentCheck: 0 // 默认0 内容限制
-            //     }
-            // ],
             questionList: this.props.location.state ? [ this.props.location.state.record ] : [],
             treeData: [],
             index: undefined,
@@ -87,11 +176,17 @@ export default class QuestionAddMgr extends PureComponent {
     }
     // 点击左边新增题目
     selectQuestionType = (e) => {
+        console.log(e)
         let param = {
             questionType: e.key
         };
         this.props.form.resetFields();
-        this.QuestionType(param, 1, 1);
+        if(e.key<5) {
+            this.QuestionType(param, 1, 1);
+        }
+        else{
+            console.log(9999)
+            this.QuestionType(param, 1, 2)}
     };
 
     // 单选、复选批量新增选项弹框
@@ -155,186 +250,234 @@ export default class QuestionAddMgr extends PureComponent {
                 this.setState({questionList: [questionObj]})
             }
         };
-        switch (items.questionType) {
-            case '01':
-                this.setState({isTextArea: false});
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        {
-                            ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '单选题标题',
-                            questionName2: '', // 题目提示描述
-                            questionType: '01',
-                            questionCategory: '', // 题目分类
-                            status: 1, // 默认1
-                            optionList: [
-                                {
-                                    optionOrder: 1, // 选项序号
-                                    optionName: '选项1',
-                                    isOther: 0  // 默认0
-                                },
-                                {
-                                    optionOrder: 2, // 选项序号
-                                    optionName: '选项1',
-                                    isOther: 0  // 默认0
-                                },
-                            ],
-                            optionLayout: 0, // 默认0
-                            lenthCheck: 0, // 默认0
-                            isNps: 0, // 默认0 nps
-                            isSatisfied: 0, // 默认0 满意度
-                            contentCheck: 0 // 默认0 内容限制
-                        }
+        if(type===2){
+            console.log(999999)
+            console.log(items)
+            questionData.map((item,k)=>{
+                console.log(item)
+               if(item.key===items.questionType) {
+                   let questionList = [];
+                   questionList = [item];
+                   this.setState({questionList});
+                   switch (item.questionType) {
+                       case '01': {
+                           return (
+                               <div className="list">
+                                   <RadioModule {...item}/>
+                                   {editHtml}
+                               </div>
+                           );
+                       }
+                       case '02': {
+                           return (
+                               <div className="list">
+                                   <CheckboxModule {...item}/>
+                                   {editHtml}
+                               </div>
+                           );
+                       }
+                       case '03': {
+                           return (
+                               <div className="list">
+                                   <BlankModule {...item}/>
+                                   {editHtml}
+                               </div>
+                           );
+                       }
+                       case '04': {
+                           return (
+                               <div className="list">
+                                   <BlankModule {...item}/>
+                                   {editHtml}
+                               </div>
+                           );
+                       }
+                   }
+               }
+            })
+        }
+        else {
+            switch (items.questionType) {
+                case '01':
+                    this.setState({isTextArea: false});
+                    if (type === 1) {
+                        let questionList = [];
+                        questionList = [
+                            {
+                                ...this.state.questionList[0],
+                                questionName: this.props.location.state ? this.props.location.state.record.questionName : '单选题标题',
+                                questionName2: '', // 题目提示描述
+                                questionType: '01',
+                                questionCategory: '', // 题目分类
+                                status: 1, // 默认1
+                                optionList: [
+                                    {
+                                        optionOrder: 1, // 选项序号
+                                        optionName: '选项1',
+                                        isOther: 0  // 默认0
+                                    },
+                                    {
+                                        optionOrder: 2, // 选项序号
+                                        optionName: '选项1',
+                                        isOther: 0  // 默认0
+                                    },
+                                ],
+                                optionLayout: 0, // 默认0
+                                lenthCheck: 0, // 默认0
+                                isNps: 0, // 默认0 nps
+                                isSatisfied: 0, // 默认0 满意度
+                                contentCheck: 0 // 默认0 内容限制
+                            }
 
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <RadioModule {...items}/>
-                        <div className="addOption">
-                            <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
-                            <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
+                        ];
+                        this.setState({questionList});
+                    }
+                    return (
+                        <div className="list">
+                            <RadioModule {...items}/>
+                            <div className="addOption">
+                                <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
+                                <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
+                            </div>
+                            {editHtml}
                         </div>
-                        { editHtml }
-                    </div>
-                );
-            case '02':
-                this.setState({isTextArea: false});
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        {
-                            ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '多选题标题',
-                            questionName2: '多选题', // 题目提示描述
-                            questionType: '02',
-                            questionCategory: '', // 题目分类
-                            status: 1, // 默认1
-                            optionList: [
-                                {
-                                    optionOrder: 1, // 选项序号
-                                    optionName: '选项1',
-                                    isOther: 0  // 默认0
-                                },
-                                {
-                                    optionOrder: 2, // 选项序号
-                                    optionName: '选项2',
-                                    isOther: 0  // 默认0
-                                },
-                                {
-                                    optionOrder: 3, // 选项序号
-                                    optionName: '选项3',
-                                    isOther: 0  // 默认0
-                                },
-                                {
-                                    optionOrder: 4, // 选项序号
-                                    optionName: '选项4',
-                                    isOther: 0  // 默认0
-                                }
-                            ],
-                            optionLayout: 0, // 默认0
-                            lenthCheck: 0, // 默认0
-                            isNps: 0, // 默认0 nps
-                            isSatisfied: 0, // 默认0 满意度
-                            contentCheck: 0 // 默认0 内容限制
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <CheckboxModule {...items}/>
-                        <div className="addOption">
-                            <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
-                            <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
+                    );
+                case '02':
+                    this.setState({isTextArea: false});
+                    if (type === 1) {
+                        let questionList = [];
+                        questionList = [
+                            {
+                                ...this.state.questionList[0],
+                                questionName: this.props.location.state ? this.props.location.state.record.questionName : '多选题标题',
+                                questionName2: '多选题', // 题目提示描述
+                                questionType: '02',
+                                questionCategory: '', // 题目分类
+                                status: 1, // 默认1
+                                optionList: [
+                                    {
+                                        optionOrder: 1, // 选项序号
+                                        optionName: '选项1',
+                                        isOther: 0  // 默认0
+                                    },
+                                    {
+                                        optionOrder: 2, // 选项序号
+                                        optionName: '选项2',
+                                        isOther: 0  // 默认0
+                                    },
+                                    {
+                                        optionOrder: 3, // 选项序号
+                                        optionName: '选项3',
+                                        isOther: 0  // 默认0
+                                    },
+                                    {
+                                        optionOrder: 4, // 选项序号
+                                        optionName: '选项4',
+                                        isOther: 0  // 默认0
+                                    }
+                                ],
+                                optionLayout: 0, // 默认0
+                                lenthCheck: 0, // 默认0
+                                isNps: 0, // 默认0 nps
+                                isSatisfied: 0, // 默认0 满意度
+                                contentCheck: 0 // 默认0 内容限制
+                            }
+                        ];
+                        this.setState({questionList});
+                    }
+                    return (
+                        <div className="list">
+                            <CheckboxModule {...items}/>
+                            <div className="addOption">
+                                <Icon type="plus-circle-o" title="添加选项" onClick={() => this.addOption(index)}/>
+                                <Icon type="copy" title="批量添加" onClick={() => this.addOptionsModal(true, index)}/>
+                            </div>
+                            {editHtml}
                         </div>
-                        { editHtml }
-                    </div>
-                );
-            case '03':
-                this.setState({isTextArea: true});
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        {
-                            ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '单行填空题',
-                            questionName2: '', // 题目提示描述
-                            questionType: '03',
-                            questionCategory: '', // 题目分类
-                            status: 1, // 默认1
-                            optionList: [
-                                {
-                                    optionOrder: 1, // 选项序号
-                                    // optionId: 1,
-                                    optionName: '默认答案',
-                                    isOther: 0  // 默认0
-                                },
-                            ],
-                            optionLayout: 0, // 默认0
-                            lenthCheck: 0, // 默认0
-                            isNps: 0, // 默认0 nps
-                            isSatisfied: 0, // 默认0 满意度
-                            contentCheck: 0 // 默认0 内容限制
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <BlankModule {...items}/>
-                        <h3 className="span">注：字数控制在100字以内</h3>
-                        <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
-                            <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
-                        </Tooltip>
-                        { editHtml }
-                    </div>
-                );
-            case '04':
-                this.setState({isTextArea: true});
-                if(type === 1) {
-                    let questionList = [];
-                    questionList = [
-                        {
-                            ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '多行填空题',
-                            questionName2: '', // 题目提示描述
-                            questionType: '04',
-                            questionCategory: '', // 题目分类
-                            status: 1, // 默认1
-                            optionList: [
-                                {
-                                    optionOrder: 1, // 选项序号
-                                    // optionId: 1,
-                                    optionName: '默认答案',
-                                    isOther: 0  // 默认0
-                                },
-                            ],
-                            optionLayout: 0, // 默认0
-                            lenthCheck: 0, // 默认0
-                            isNps: 0, // 默认0 nps
-                            isSatisfied: 0, // 默认0 满意度
-                            contentCheck: 0 // 默认0 内容限制
-                        }
-                    ];
-                    this.setState({questionList});
-                }
-                return (
-                    <div className="list">
-                        <BlankModule {...items}/>
-                        <h3 className="span">注：字数控制在200字以内</h3>
-                        <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
-                            <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
-                        </Tooltip>
-                        { editHtml }
-                    </div>
-                );
-            default :
-                return (
-                    <div/>
-                )
+                    );
+                case '03':
+                    this.setState({isTextArea: true});
+                    if (type === 1) {
+                        let questionList = [];
+                        questionList = [
+                            {
+                                ...this.state.questionList[0],
+                                questionName: this.props.location.state ? this.props.location.state.record.questionName : '单行填空题',
+                                questionName2: '', // 题目提示描述
+                                questionType: '03',
+                                questionCategory: '', // 题目分类
+                                status: 1, // 默认1
+                                optionList: [
+                                    {
+                                        optionOrder: 1, // 选项序号
+                                        // optionId: 1,
+                                        optionName: '默认答案',
+                                        isOther: 0  // 默认0
+                                    },
+                                ],
+                                optionLayout: 0, // 默认0
+                                lenthCheck: 0, // 默认0
+                                isNps: 0, // 默认0 nps
+                                isSatisfied: 0, // 默认0 满意度
+                                contentCheck: 0 // 默认0 内容限制
+                            }
+                        ];
+                        this.setState({questionList});
+                    }
+                    return (
+                        <div className="list">
+                            <BlankModule {...items}/>
+                            <h3 className="span">注：字数控制在100字以内</h3>
+                            <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
+                                <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
+                            </Tooltip>
+                            {editHtml}
+                        </div>
+                    );
+                case '04':
+                    this.setState({isTextArea: true});
+                    if (type === 1) {
+                        let questionList = [];
+                        questionList = [
+                            {
+                                ...this.state.questionList[0],
+                                questionName: this.props.location.state ? this.props.location.state.record.questionName : '多行填空题',
+                                questionName2: '', // 题目提示描述
+                                questionType: '04',
+                                questionCategory: '', // 题目分类
+                                status: 1, // 默认1
+                                optionList: [
+                                    {
+                                        optionOrder: 1, // 选项序号
+                                        // optionId: 1,
+                                        optionName: '默认答案',
+                                        isOther: 0  // 默认0
+                                    },
+                                ],
+                                optionLayout: 0, // 默认0
+                                lenthCheck: 0, // 默认0
+                                isNps: 0, // 默认0 nps
+                                isSatisfied: 0, // 默认0 满意度
+                                contentCheck: 0 // 默认0 内容限制
+                            }
+                        ];
+                        this.setState({questionList});
+                    }
+                    return (
+                        <div className="list">
+                            <BlankModule {...items}/>
+                            <h3 className="span">注：字数控制在200字以内</h3>
+                            <Tooltip title="填空符用连续6个下划线表示，填空长度跟下划线的个数相关。点击按钮可在光标处插入填空符。">
+                                <Button className="blank-btn" type="primary" onClick={this.insertText}>插入填空符</Button>
+                            </Tooltip>
+                            {editHtml}
+                        </div>
+                    );
+                default :
+                    return (
+                        <div/>
+                    )
+            }
         }
     };
 
@@ -475,6 +618,12 @@ export default class QuestionAddMgr extends PureComponent {
                                 <Menu.Item key="02"><Icon type='check-square-o' /><span>多选题</span></Menu.Item>
                                 <Menu.Item key="03"><Icon type='wallet' /><span>单项填空</span></Menu.Item>
                                 <Menu.Item key="04"><Icon type='profile' /><span>多项填空</span></Menu.Item>
+                                <SubMenu  title={<span><Icon type="user" /><span>个人信息</span></span>}>
+                                    <Menu.Item key="05" ><Icon type='check-circle-o' /><span>姓名</span></Menu.Item>
+                                    <Menu.Item key="06"><Icon type='check-square-o' /><span>性别</span></Menu.Item>
+                                    <Menu.Item key="07"><Icon type='wallet' /><span>年龄</span></Menu.Item>
+                                    <Menu.Item key="08"><Icon type='profile' /><span>手机</span></Menu.Item>
+                                </SubMenu>
                             </Menu>
                         </Card>
                     </Col>
