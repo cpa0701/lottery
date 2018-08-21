@@ -12,7 +12,7 @@ export default class BlankModule extends PureComponent {
                 <h3>{index}、{isView ? questionName :
                     <Input className="titleInput" defaultValue={questionName} onBlur={(e) => this.props.questionNameBlur(e, index)}/>}
                 </h3>
-                <TextArea className="textAreaInput" onBlur={onChange} defaultValue={optionList[0].optionName} autosize={{ minRows: 3, maxRows: 6 }}/>
+                <TextArea className="textAreaInput" onBlur={onChange} defaultValue={optionList} autosize={{ minRows: 3, maxRows: 6 }}/>
             </div>
         );
     }

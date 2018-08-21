@@ -712,16 +712,16 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
         "logic": [
             {
                 "actType": 0,
-                "andOr": 1,
+                "andOr": 0,
                 "isMain": 0,
-                "logicType": "01",
+                "logicType": "00",
                 "optionOrder": "2",
                 "setupQuestionOrder": 2,
                 "skiptoQuestionOrder": 4
             },
             {
                 "actType": 0,
-                "andOr": 1,
+                "andOr": 0,
                 "isMain": 0,
                 "logicType": "01",
                 "optionOrder": "3",
@@ -730,16 +730,16 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
             },
             {
                 "actType": 0,
-                "andOr": 1,
+                "andOr": 0,
                 "isMain": 1,
                 "logicType": "00",
-                "optionOrder": "1",
+                "optionOrder": "1,2",
                 "setupQuestionOrder": 3,
                 "skiptoQuestionOrder": 5
             },
             {
                 "actType": 0,
-                "andOr": 1,
+                "andOr": 0,
                 "isMain": 0,
                 "logicType": "00",
                 "optionOrder": "1",
@@ -840,7 +840,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionName": "测试题目a，3个选项",
                 "questionName2": "复选测试",
                 "questionOrder": 3,
-                "questionType": "01",
+                "questionType": "02",
                 "status": 1
             },
             {
@@ -886,7 +886,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionCategory": 0,
                 "questionName": "测试题目d，2个选项",
                 "questionName2": "单选测试题目",
-                "questionOrder": 5,
+                "questionOrder": 4,
                 "questionType": "01",
                 "status": 1
             },
@@ -901,16 +901,11 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "isSatisfied": 0,
                 "lenthCheck": 0,
                 "optionLayout": 0,
-                "optionList":  [
-                    {
-                        "optionName": "测试选项a",
-                        "optionOrder": 1
-                    }
-                ],
+                "optionList": "",
                 "questionCategory": 0,
                 "questionName": "测试题目a，填空题",
                 "questionName2": "",
-                "questionOrder": 6,
+                "questionOrder": 5,
                 "questionType": "03",
                 "status": 1
             },
@@ -938,7 +933,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionCategory": 0,
                 "questionName": "测试题目e，2个选项",
                 "questionName2": "",
-                "questionOrder": 7,
+                "questionOrder": 6,
                 "questionType": "01",
                 "status": 1
             }

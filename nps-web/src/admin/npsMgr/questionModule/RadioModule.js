@@ -15,7 +15,7 @@ export default class RadioModule extends PureComponent {
                 lineHeight: '34px',
                 marginLeft: '20px'
             } : {marginLeft: '20px'}} questionIndex={index} value={item.optionOrder} key={item.optionOrder}
-                          logic={item.logic}>{isView ? item.optionName :
+                          logicList={item.logicList}>{isView ? item.optionName :
                 <span>
                                 <Input defaultValue={item.optionName}
                                        onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>

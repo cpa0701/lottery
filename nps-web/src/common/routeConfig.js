@@ -14,8 +14,6 @@ import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
 import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import NotFound from '../admin/base/error/NotFound';
 
-import Test from "../admin/npsMgr/questionModule/Test"
-
 class RouteList extends React.PureComponent {
     render() {
         return (
@@ -24,7 +22,6 @@ class RouteList extends React.PureComponent {
                     <Route path="/" exact component={Home}/>
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
                     <Route path="/npsMgr/QuestionAddMgr" component={QuestionAddMgr}/>
-                    <Route path="/npsMgr/table-list" component={Test}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
                     <Route path="/npsMgr/questionMgr/questionEdit" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/questionPreview" component={QuestionPreview}/>
