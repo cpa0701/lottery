@@ -65,6 +65,7 @@ class QuestionEdit extends React.PureComponent {
             record: {},
             connList: [],
             jumpList: [],
+            index: undefined,
             value: '',
             radioValue: 0,
             conn: false,
@@ -92,18 +93,26 @@ class QuestionEdit extends React.PureComponent {
 
     // 关联逻辑弹窗
     connModal = (show, props, i) => {
+        if(i === 0) {
+            message.info('第一题不能关联逻辑');
+            return '';
+        }
         if (show) {
             let _obj=JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj);
             connList.length = i;
             // 过滤出非填空题
             connList = connList.filter(item => item.questionType === '01' || item.questionType === '02');
+            if(connList.length === 0) {
+                message.info('没有满足可设置关联逻辑的题');
+                return '';
+            }
 
             this.setState({
                 conn: true,
                 record: props,
                 connList,
-
+                index: i + 1
             });
         } else {
             this.setState({conn: false});
@@ -190,11 +199,12 @@ class QuestionEdit extends React.PureComponent {
     };
 
     render() {
-        const { questionDisplayList, conn, jump, record, connList, jumpList, radioValue } = this.state;
+        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue } = this.state;
 
         // 关联弹窗
         const connModalProps = {
             conn,
+            index,
             record,
             connList,
             onClose: () => {

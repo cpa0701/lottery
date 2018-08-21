@@ -161,11 +161,21 @@
   .jumpContent {
     padding: 10px 5px;
     min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
     .optionShow .ant-select-arrow {
       display: none;
     }
-    .ant-form-item-control-wrapper {
-      width: 100%;
+    .jumpFormItem {
+      .ant-form-item-control-wrapper {
+        width: 100%;
+      }
+    }
+    .connContent {
+      .ant-form-item {
+        margin-bottom: 4px;
+      }
     }
   }
 }

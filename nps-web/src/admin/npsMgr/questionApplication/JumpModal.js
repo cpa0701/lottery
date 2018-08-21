@@ -145,34 +145,36 @@ export default class extends Component {
                         </Form>
                     </Col>
                     <Col span={24} className="jumpContent">
-                        <h3>1、{record.questionName}</h3>
-                        { radioValue === 0 ?
-                            <div style={{textAlign: 'center'}}>
-                                <Row>
-                                    <Col span={11}>题目选项</Col>
-                                    <Col span={11} offset={2}>跳转到</Col>
-                                </Row>
-                                <Form>
-                                    {tableHtml}
-                                </Form>
-                            </div>
-                        :
-                            <div>
-                                <Form>
-                                    <FormItem label="填写此题后跳转到" labelCol = {{span: 7}} wrapperCol = {{span: 14}}>
-                                        {getFieldDecorator('unconditional', {
-                                            initialValue: '0',
-                                            rules: [
-                                                {required: false},
-                                            ],
-                                        })(
-                                            <Select>
-                                                {optionHtml}
-                                            </Select>
-                                        )}
-                                    </FormItem>
-                                </Form>
-                            </div>}
+                        <div  className="jumpFormItem">
+                            <h3>1、{record.questionName}</h3>
+                            { radioValue === 0 ?
+                                <div style={{textAlign: 'center'}}>
+                                    <Row>
+                                        <Col span={11}>题目选项</Col>
+                                        <Col span={11} offset={2}>跳转到</Col>
+                                    </Row>
+                                    <Form>
+                                        {tableHtml}
+                                    </Form>
+                                </div>
+                                :
+                                <div>
+                                    <Form>
+                                        <FormItem label="填写此题后跳转到" labelCol = {{span: 7}} wrapperCol = {{span: 14}}>
+                                            {getFieldDecorator('unconditional', {
+                                                initialValue: '0',
+                                                rules: [
+                                                    {required: false},
+                                                ],
+                                            })(
+                                                <Select>
+                                                    {optionHtml}
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Form>
+                                </div>}
+                        </div>
                     </Col>
                 </Row>
             </Modal>
