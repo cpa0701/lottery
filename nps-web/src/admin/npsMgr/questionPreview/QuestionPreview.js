@@ -88,7 +88,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 })
-                let arr000 = [], arr001 = [], arr010 = [], arr011 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [];//定义关联且，关联或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.map(option => {
@@ -97,30 +97,18 @@ class QuestionPreview extends React.PureComponent {
                                     arr000.push(option);
                                 } else if (logic.logicType === '00' && logic.andOr === 1) {//关联的或逻辑
                                     arr001.push(option)
-                                } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
-                                    arr010.push(option)
-                                } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
-                                    arr011.push(option)
                                 }
                             })
                         })
                     })
                 });
-                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001, arr010, arr011].some((arr, i) => {
+                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {
                     if (arr.length) {
                         if (i === 0) {//关联且逻辑
                             return arr.every(option => {
                                 return option.checked;
                             })
                         } else if (i === 1) {//关联或逻辑
-                            return arr.some(option => {
-                                return option.checked;
-                            })
-                        } else if (i === 2) {//跳转且逻辑
-                            return arr.every(option => {
-                                return option.checked;
-                            })
-                        } else if (i === 3) {//跳转或逻辑
                             return arr.some(option => {
                                 return option.checked;
                             })
