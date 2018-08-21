@@ -102,7 +102,7 @@ class QuestionPreview extends React.PureComponent {
                         })
                     })
                 });
-                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {
+                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//关联逻辑中有一个满足即可显示
                     if (arr.length) {
                         if (i === 0) {//关联且逻辑
                             return arr.every(option => {
