@@ -18,8 +18,8 @@ class QuestionLib extends React.PureComponent {
             questionBusiness: undefined,
             pageNum: 1,
             loading: false,
-            isNps:undefined,
-            isSatisfied:undefined
+            isNps: undefined,
+            isSatisfied: undefined
         }
     }
 
@@ -65,7 +65,6 @@ class QuestionLib extends React.PureComponent {
     };
 
     render() {
-        console.log('www',this.state.questionList)
         return (
             <Spin spinning={this.state.loading}>
                 <div className={'questionLib'}>
