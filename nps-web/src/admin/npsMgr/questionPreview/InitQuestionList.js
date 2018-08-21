@@ -23,7 +23,7 @@ class InitQuestionList extends React.PureComponent {
         let dom = '';
         switch (questionType) {
             case '00':
-                dom = <div className={'paging'}>第{isPaging}页</div>
+                dom = `第${isPaging}页`;
                 break;
             case '01':
                 dom = <RadioModule questionName={questionName} index={index}
@@ -43,7 +43,7 @@ class InitQuestionList extends React.PureComponent {
                 break;
         }
         return (<div style={{display: isPaging === '1' ? 'block' : (isShow ? 'block' : (isSetup ? 'none' : 'block'))}}
-                     className={isPaging === '1' ? '' : 'questionList'}>
+                     className={isPaging === '1' ? 'paging' : 'questionList'}>
             {dom}
         </div>);
     }
