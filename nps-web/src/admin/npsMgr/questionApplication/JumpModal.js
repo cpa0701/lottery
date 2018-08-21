@@ -46,7 +46,18 @@ export default class extends Component {
             } else {
                 let valueArr = Object.values(values).splice(1);
                 if(valueArr) {
-
+                    for(let i=0;i<valueArr.length-1;i+=2){
+                        _Obj = {
+                            "actType": 0,
+                            "andOr": 0,
+                            "isMain": 0,
+                            "logicType": "01",
+                            "optionOrder":String(valueArr[i]),
+                            "setupQuestionOrder":  record.questionOrder,
+                            "skiptoQuestionOrder": Number(valueArr[i+1])
+                        };
+                        logicArr.push(_Obj);
+                    }
                 }
                 console.log('valueArr',valueArr)
 
