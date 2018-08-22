@@ -1,4 +1,4 @@
-package com.ztesoft.nps.common;
+package com.ztesoft.nps.common.views;
 
 public enum Status {
 	VALID(1, "有效的"), INVALID(0, "失效的");

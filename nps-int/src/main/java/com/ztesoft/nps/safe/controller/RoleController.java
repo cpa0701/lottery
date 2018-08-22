@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
-import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.safe.model.Permission;
