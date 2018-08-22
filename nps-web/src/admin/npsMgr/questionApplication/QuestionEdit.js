@@ -19,35 +19,7 @@ class QuestionEdit extends React.PureComponent {
         this.state = {
             questionDisplayList: [],
             questionDisplayList1: [],
-            logic: [
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 0,
-                    "logicType": "01",
-                    "optionOrder": "2",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 4
-                },
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 0,
-                    "logicType": "01",
-                    "optionOrder": "3",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 6
-                },
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 1,
-                    "logicType": "00",
-                    "optionOrder": "1,2",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 5
-                },
-            ],
+            logic: [],
             otherQuestion: [
                 {
                     questionOrder: '0',
@@ -162,7 +134,8 @@ class QuestionEdit extends React.PureComponent {
             this.setState({
                 jump: true,
                 record: props,
-                jumpList
+                jumpList,
+
             });
         } else {
             this.setState({ jump: false, radioValue: 0 });
@@ -199,7 +172,7 @@ class QuestionEdit extends React.PureComponent {
     };
 
     render() {
-        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue } = this.state;
+        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue,logic } = this.state;
 
         // 关联弹窗
         const connModalProps = {
@@ -217,6 +190,7 @@ class QuestionEdit extends React.PureComponent {
             record,
             jumpList,
             radioValue,
+            logic,
             onClose: () => {
                 this.jumpModal(false);
             },
