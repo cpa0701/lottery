@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.query.LoginQuery;

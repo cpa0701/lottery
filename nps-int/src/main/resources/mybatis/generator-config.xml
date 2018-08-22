@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!-- 配置Run As Maven build : Goals 参数 : mybatis-generator:generate -Dmybatis.generator.overwrite=true -->
+<!-- 配置 tableName,使用 Run As Maven build 生成 dao model 层 -->
+<generatorConfiguration>
+	<!-- 配置文件路径 -->
+	<!--<properties url="${mybatis.generator.generatorConfig.properties}"/>-->
+
+	<!--数据库驱动包路径-->
+	<!--<classPathEntry location="C:\Users\64671\.m2\repository\oracle\ojdbc14\10.2.0.3.0\ojdbc14-10.2.0.3.0.jar" />-->
+	<classPathEntry location="‪C:\Users\64671\.m2\repository\mysql\mysql-connector-java\5.1.30\mysql-connector-java-5.1.30.jar"/>
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<!--关闭注释 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true"/>
+		</commentGenerator>
+		<!--数据库连接信息 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://10.45.50.199:3306/nps?useUnicode=true&amp;characterEncoding=utf-8"
+						userId="root" password="123456">
+		</jdbcConnection>
+
+         <!--<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"-->
+                           <!--connectionURL="jdbc:oracle:thin:@10.45.50.199:1521:cc"-->
+                           <!--userId="SAFEMGR" password="SAFEMGR">-->
+		 <!--</jdbcConnection>-->
+
+
+		<!--生成的model 包路径 -->
+		<javaModelGenerator targetPackage="com.ztesoft.safe.data.mapper.bo" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true"/>
+			<property name="trimStrings" value="true"/>
+		</javaModelGenerator>
+
+		<!--生成xml mapper文件 路径 -->
+		<sqlMapGenerator targetPackage="com.ztesoft.safe.data.mapper.xml" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true"/>
+		</sqlMapGenerator>
+
+		<!-- 生成的Dao接口 的包路径 -->
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.ztesoft.safe.data.mapper"  targetProject="src/main/java">
+			<property name="enableSubPackages" value="true"/>
+		</javaClientGenerator>
+
+		<!--对应数据库表名 domainObjectName="Module"-->
+		<table tableName="T_REDIS_JOB" enableCountByExample="true"  domainObjectName="RedisJob"
+			   enableUpdateByExample="true" enableDeleteByExample="true"
+			   enableSelectByExample="true" selectByExampleQueryId="true" >
+		</table>
+
+	</context>
+</generatorConfiguration>

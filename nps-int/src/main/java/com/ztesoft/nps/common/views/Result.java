@@ -1,4 +1,4 @@
-package com.ztesoft.nps.common;
+package com.ztesoft.nps.common.views;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -86,7 +86,7 @@ public class Result<T> implements Serializable {
 	}
 
 	public static <T> Result<T> success() {
-		return new Result<T>(ResultCodeEnum.SUCCESS);
+		return new Result<T>(ResultCodeEnum.SUCCESS_NODATA);
 	}
 
 	public static Result<Object> failed(ResultCodeEnum result) {

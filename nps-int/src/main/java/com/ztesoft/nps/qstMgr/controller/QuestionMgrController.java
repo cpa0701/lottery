@@ -1,7 +1,6 @@
 package com.ztesoft.nps.qstMgr.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.ztesoft.nps.common.Result;
+import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
 import com.ztesoft.utils.sys.util.MapUtil;

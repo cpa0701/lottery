@@ -1,9 +1,12 @@
-package com.ztesoft.nps.common;
+package com.ztesoft.nps.common.views;
 
 public enum ResultCodeEnum {
-	SUCCESS(200, "成功"), UNAUTHORIZED(401, "用户未登录"), FORBIDDEN(403, "存在子节点"), NOT_FOUND(
-			404, "对象不存在"), INNER_ERROR(
-			500, "服务器内部错误");
+	SUCCESS(200, "成功"),
+	SUCCESS_NODATA(204,"成功"),
+	UNAUTHORIZED(401, "用户未登录"),
+	FORBIDDEN(403, "存在子节点"),
+	NOT_FOUND(404, "对象不存在"),
+	INNER_ERROR(500, "服务器内部错误");
 	
 	private int code;
 	

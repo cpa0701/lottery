@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.ztesoft.nps.common.Result;
-import com.ztesoft.nps.common.ResultCodeEnum;
+import com.ztesoft.nps.common.views.Result;
+import com.ztesoft.nps.common.views.ResultCodeEnum;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 
