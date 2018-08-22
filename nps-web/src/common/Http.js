@@ -6,32 +6,29 @@ import {
 const $ = require("jquery");
 
 export class Http {
-    mode = 'local';
+    mode = 'remote';
 
     getUrl(url) {
-        // let prefix = '';
-        // let suffix = '';
-        // switch (this.mode) {
-        //     case 'local': {
-        //         prefix = 'mock/';
-        //         suffix = '';
-        //         break;
-        //     }
-        //     case 'remote': {
-        //         prefix = '';
-        //         break;
-        //     }
-        //     case 'product': {
-        //         prefix = '';
-        //         break;
-        //     }
-        //     default: {
-        //         prefix = '';
-        //         break;
-        //     }
-        // }
-        // let _url = prefix + url + suffix;
-        return url;
+        let prefix = '';
+        switch (this.mode) {
+            case 'local': {
+                prefix = 'mock/';
+                break;
+            }
+            case 'remote': {
+                prefix = '';
+                break;
+            }
+            case 'product': {
+                prefix = 'http://10.45.50.199:18088/';
+                break;
+            }
+            default: {
+                prefix = '';
+                break;
+            }
+        }
+        return prefix + url;
     }
 
     async get(api, data = {}, config = {}) {
