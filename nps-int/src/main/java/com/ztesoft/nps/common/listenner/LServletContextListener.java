@@ -1,6 +1,7 @@
 package com.ztesoft.nps.common.listenner;
 
 import com.ztesoft.utils.sys.util.ThreadUtil;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -14,7 +15,7 @@ public class LServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("=================服务初始化========================");
+        System.out.println("=================初始化服务========================");
     }
 
     @Override

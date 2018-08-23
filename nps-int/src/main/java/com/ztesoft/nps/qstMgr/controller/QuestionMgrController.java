@@ -3,6 +3,7 @@ package com.ztesoft.nps.qstMgr.controller;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
+import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +27,7 @@ public class QuestionMgrController {
 
     @PostMapping("/deleteQuestion")
     public Result<Object> deleteQuestion(@RequestBody Map<String,Object> params){
+        System.out.println("method deleteQst");
         String questionId = MapUtil.getString(params,"questionId");
         if(StringUtil.isNull(questionId) || questionMgrService.deleteQuestion(questionId)==0){
             throw new NpsObjectNotFoundException(questionId);
@@ -34,6 +37,7 @@ public class QuestionMgrController {
 
     @PostMapping("/addQuestion")
     public Result<Object> addQuestion(@RequestBody Map<String,Object> params){
+        System.out.println("method addQuestion");
         questionMgrService.addQuestion(params);
         return Result.success();
     }

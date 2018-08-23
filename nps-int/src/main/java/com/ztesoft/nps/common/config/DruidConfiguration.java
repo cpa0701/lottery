@@ -1,6 +1,12 @@
 package com.ztesoft.nps.common.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.ztesoft.utils.plugin.jdbc.dialect.MysqlDialect;
+import com.ztesoft.utils.plugin.jdbc.dialect.OracleDialect;
+import com.ztesoft.utils.plugin.jdbc.source.DatabaseConfig;
+import com.ztesoft.utils.sys.util.ClassUtil;
+import com.ztesoft.utils.sys.util.ReflectUtil;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -100,6 +106,26 @@ public class DruidConfiguration {
 			System.err.println("druid configuration initialization filter: " + e);
 		}
 		datasource.setConnectionProperties(connectionProperties);
+
+		myJdbcDataSourcejInit();//初始化jdbc数据源
+
 		return datasource;
+	}
+
+	private void myJdbcDataSourcejInit(){
+		BasicDataSource dataSource = new BasicDataSource();
+		dataSource.setDriverClassName(driverClassName);
+		dataSource.setUrl(dbUrl);
+		dataSource.setUsername(username);
+		dataSource.setPassword(password);
+
+		DatabaseConfig.addDatabaseSource("nps", dataSource);
+		DatabaseConfig.addDatabaseConfig("default.domain", "nps");
+		if(driverClassName.indexOf("mysql")!=-1){
+			DatabaseConfig.addDatabaseConfig("nps.dialect", MysqlDialect.class.getName());
+		}else if(driverClassName.indexOf("oracle")!=-1){
+			DatabaseConfig.addDatabaseConfig("nps.dialect", OracleDialect.class.getName());
+		}
+
 	}
 }
