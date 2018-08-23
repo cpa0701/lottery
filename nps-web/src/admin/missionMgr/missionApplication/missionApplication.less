@@ -1,0 +1,178 @@
+.missionApplication {
+  height: 100%;
+  .height {
+    height: calc(100% - 62px);
+  }
+  .questionAppHead {
+    background: #888;
+    padding: 15px 0 15px;
+    width: 100%;
+  }
+  .questionAppContent {
+    width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    overflow: auto;
+    .questionAppContentTitle {
+      border: 2px solid rgb(255, 255, 255);
+      margin-top: 18px;
+      cursor: pointer;
+      line-height: 20px;
+      text-align: center;
+      width: 100%;
+      padding: 10px 2%;
+      .questionInput{
+        font-size: 24px !important;
+        font-weight: bold;
+        color: #f53096;
+        vertical-align: middle;
+        text-align: center;
+        margin: 0;
+        padding: 15px 0;
+        line-height: 24px;
+        border:0;
+        vertical-align: middle;
+        cursor:pointer;
+        overflow: visible;
+
+      }
+
+      .surveyDescription {
+        border:0;
+        color: #555555;
+        line-height: 24px;
+        text-align: left;
+        font-size: 16px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #ccc;
+        margin-left: 0;
+        margin-top: 20px;
+        cursor: pointer;
+        vertical-align: middle;
+      }
+    }
+    .questionAppContentTitle:hover {
+      border-color: rgb(253, 181, 83);
+    }
+    .question {
+      .div_preview {
+        position: relative;
+        height: 20px;
+        margin-bottom: 50px;
+        .paging-bg {
+          height: 15px;
+          line-height: 15px;
+          position: absolute;
+          left: 50%;
+          background: #fff;
+          display: inline-block;
+          width: 200px;
+          z-index: 100;
+          text-align: center;
+          margin-left: -100px;
+          span {
+            margin: 0 20px;
+          }
+        }
+        .line_as_hr {
+          position: absolute;
+          z-index: 10;
+          width: 100%;
+          height: 1px;
+          background: #cccccc;
+          top: 7px;
+        }
+      }
+    }
+    .link-group{
+      width:60%;
+      margin:0 auto;
+      text-align: center;
+      a{
+        margin:5px;
+      }
+    }
+  }
+  .questionList {
+    cursor: pointer;
+    overflow: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #fff;
+    > span {
+      margin-right: 10px;
+    }
+  }
+  .questionList:hover {
+    border: 1px solid rgb(253, 181, 83);
+  }
+  .questionLib {
+    margin: 10px;
+    background-color: #FFF;
+    padding: 10px;
+    border: 1px solid #CCC;
+    .questionLibTitle {
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #ccc;
+      > h1 {
+        text-align: center;
+        font-size: 22px;
+      }
+      .ant-select {
+        width: 100%;
+      }
+    }
+    .questionLibContent {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.requisition {
+  padding-bottom: 24px;
+  .subject-name {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 30px;
+  }
+  .newrequisition{
+    color: #fff;
+    background-color: #55a532;
+  }
+  .newrequisition:hover{
+   background-color: #63a35c;
+    color: #000;
+  }
+  .sub-li {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    .c1{
+      line-height: 20px;
+      color: darkgray;
+      font-size: 10px;
+    }
+    .ant-btn {
+      margin: 0 5px;
+    }
+  }
+  .ant-pagination{
+    margin-top: 20px;
+  }
+}
+
+.jumpModal {
+  .jumpHeader {
+    margin-top: 40px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    .ant-radio-wrapper {
+      margin-right: 50px;
+    }
+  }
+  .jumpContent {
+    padding: 10px 5px;
+    min-height: 300px;
+  }
+}
