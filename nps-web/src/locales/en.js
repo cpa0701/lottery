@@ -15,7 +15,23 @@ export default {
         'detail':'Details',
         'domainName':'DomainName',
         'domainType':'DomainType',
-        'domainID':'DomainID'
+        'domainID':'DomainID',
+        'AddDomain':'AddDomain',
+        'ModifyDomain':'ModifyDomain',
+        'DeleteDomain':'DeleteDomain',
+        'DomainMark':'DomainMark',
+        'DomainName':'DomainName',
+        'DomainType':'DomainType',
+        'DomainId':'DomainId',
+        'DomainNo':'DomainNo',
+        'Save':'Save',
+        'Cancel':'Cancel',
+        'Select':'Please select',
+        'SelectFirst':'Please select an item first',
+
+    },
+    'role':{
+
     },
     'authority':{
         'insert':'Insert',
