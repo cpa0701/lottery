@@ -4,49 +4,78 @@ import { Modal, Form, Select, Button, Row, Col, Radio, Icon, Popconfirm } from '
 import InitQuestionList from './InitQuestionList';
 
 import './questionApplication.less';
+import {message} from "antd/lib/index";
 
 const [FormItem, Option, RadioGroup] = [Form.Item, Select.Option, Radio.Group];
 
-let uuid = 0;
+let uuid = 1;
 @Form.create()
 export default class extends Component {
-    state = {
-        value:0,
-        question:[],
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            questions: props.questions ? props.questions : [{}],
+            // key: [0],
+        };
+    }
 
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
-                return;
+                return '';
             }
-
+            console.log(values);
         });
-        this.props.onClose()
+        // this.props.onClose()
     };
 
-    afterClose = () => this.props.form.resetFields();
-
-    handleChange=(value)=>{
-        let question = this.props.connList.filter(item => item.questionId === value);
+    afterClose = () => {
         this.setState({
-            value: 1,
-            question,
+            questions: this.props.questions ? this.props.questions : [{}],
+            // key: [0]
         });
+        this.props.form.resetFields();
+    };
+
+    handleChange = (value, record) => {
+        if(this.state.questions.filter(item => item.questionOrder === value).length === 0) {
+            let question = this.props.connList.filter(item => item.questionOrder === value)[0];
+            let _obj = JSON.stringify(this.state.questions);
+            let arr = JSON.parse(_obj);
+            arr.length = this.state.questions.length - 1;
+
+            let questionArr = [
+                ...arr,
+                question,
+            ];
+            this.setState({
+                questions: questionArr
+            });
+        } else {
+            message.info('该题已设置关联逻辑，关联题目不可重复');
+        }
     };
 
     // 新增关联题选框
     add = () => {
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
+        if(keys.length === this.props.connList.length) {
+            message.info('已超过可关联的题目数量');
+            return '';
+        }
         const nextKeys = keys.concat(uuid);
         uuid++;
+        this.setState({
+            questions: [...this.state.questions, {}]
+        });
+
         form.setFieldsValue({
             keys: nextKeys,
         });
     };
     // 删除关联题选框
-    remove = (k) => {
+    remove = (k, index) => {
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
         if (keys.length === 1) {
@@ -55,30 +84,33 @@ export default class extends Component {
         form.setFieldsValue({
             keys: keys.filter(key => key !== k),
         });
+        this.setState({
+            questions: [...this.state.questions.filter((item, x) => x !== index)]
+        });
     };
 
     render() {
-        const { conn, index, record, connList, form: { getFieldDecorator, getFieldValue } } = this.props;
+        const { conn, index, record, connList, keyS = [0], form: { getFieldDecorator, getFieldValue } } = this.props;
+        const { questions } = this.state;
 
         const optionList = connList.map((item) => {
-            return  <Option key={item.questionId} value={item.questionId}>{item.questionName}</Option>
+            return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
-
-        getFieldDecorator('keys', { initialValue: [1] });
+        getFieldDecorator('keys', keyS !== null ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
-        const formItems = keys.map((k, index) => {
+        const formItems = keys.map((index, k) => {
             return (
-                <div>
+                <div key={k}>
                     <FormItem
                         labelCol={{span: 4}}
                         wrapperCol={{span: 20}}
-                        label={`关联题目${index + 1}`}
+                        label={`关联题目${k + 1}`}
                         required={false}
-                        key={index}
                     >
                         {getFieldDecorator(`question[${k}]`, {
                             validateTrigger: ['onChange', 'onBlur'],
-                            onChange: this.handleChange
+                            onChange: (value) => this.handleChange(value, `question[${k}]`),
+                            initialValue: JSON.stringify(questions[k]) !== '{}' ? questions[k].questionOrder : undefined,
                         })(
                             <Select
                                 style={{width: '90%', marginRight: 8}}
@@ -96,19 +128,18 @@ export default class extends Component {
                                 className="dynamic-delete-button"
                                 type="minus-circle-o"
                                 disabled={keys.length === 1}
-                                onClick={() => this.remove(k)}
+                                onClick={() => this.remove(index, k)}
                             />
                         ) : null}
                     </FormItem>
-                    <div style={{ padding: '0 60px', marginBottom: '10px'}}>{(this.state.value===1) ?
-                        <div>
-                            当关联题目{ index + 1 } 选择下面的选项<br/>
-                            {this.state.question.map((item, i) => {
-                                return(
-                                    <InitQuestionList questionType={item.questionType} questionId={item.questionId} key={item.questionId} index={i+1} questionName={item.questionName} optionList={item.optionList}/>
-                                )})}
-                            中的任意一个时，"当前题目"才出现
-                        </div> : ''}
+                    <div style={{ padding: '0 60px', marginBottom: '10px'}}>
+                        { JSON.stringify(questions[k]) !== '{}' ?
+                            <div>
+                                当关联题目{ k + 1 } 选择下面的选项<br/>
+                                <InitQuestionList questionType={questions[k].questionType} questionOrder={questions[k].questionOrder} key={questions[k].questionOrder} index={ k+1 } questionName={questions[k].questionName.split('、')[1]} optionList={questions[k].optionList}/>
+                                中的任意一个时，"当前题目"才出现
+                            </div>
+                        : '' }
                     </div>
                 </div>
             );
@@ -123,7 +154,7 @@ export default class extends Component {
                 onCancel={() => this.props.onClose()}
                 afterClose={this.afterClose}
                 footer={[
-                    <Popconfirm title="你确定删除该题所有关联逻辑?" onConfirm=""><Button key="cancel" type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
+                    <Popconfirm key="delete"  title="你确定删除该题所有关联逻辑?" onConfirm={() => this.onSubmit()}><Button type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
                     <Button key="submit" type="primary" icon="check-circle-o" onClick={this.onSubmit}>确定</Button>,
                 ]}
             >
@@ -134,7 +165,7 @@ export default class extends Component {
                     <Col span={24} className="jumpContent">
                         <Form className="connContent">
                             {formItems}
-                            {this.state.value ?
+                            {keys.length > 1 ?
                                 <FormItem
                                     labelCol={{span: 4}}
                                     wrapperCol={{span: 20}}

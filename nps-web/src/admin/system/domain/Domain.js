@@ -275,22 +275,22 @@ export default class Domain extends PureComponent {
                     }
                     }/>
                     <Modal
-                        title="新增区域"
+                        title={domain.AddDomain}
                         width={800}
                         centered
                         visible={this.state.addVisible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                          footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleAddSubmit}>保存</Button>,
-                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleAddSubmit}>{domain.Save}</Button>,
+                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>{domain.Cancel}</Button>
                          ]}
                     >
                         <Form>
                             <Row>
                             <Col span={12}>
                                 <FormItem
-                                    label="所属标识"
+                                    label={domain.DomainMark}
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
@@ -305,7 +305,7 @@ export default class Domain extends PureComponent {
                             </Col>
                             <Col span={12}>
                                 <FormItem
-                                    label="区域名称"
+                                    label={domain.DomainName}
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
@@ -321,7 +321,7 @@ export default class Domain extends PureComponent {
                             <Row>
                             <Col span={12}>
                                 <FormItem
-                                    label="区域类型"
+                                    label={domain.DomainType}
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
@@ -335,14 +335,14 @@ export default class Domain extends PureComponent {
                                             <Option value="3">县市</Option>
                                             <Option value="4">扇区</Option>
                                             <Option value="5">自定义</Option>
-                                            <Option value="6" disabled>请选择</Option>
+                                            <Option value="6" disabled>{domain.Select}</Option>
                                         </Select>
                                     )}
                                 </FormItem>
                             </Col>
                             <Col span={12}>
                                 <FormItem
-                                    label="区域码"
+                                    label={domain.DomainId}
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
@@ -360,40 +360,39 @@ export default class Domain extends PureComponent {
                             <Row>
                             <Col span={12}>
                                 <FormItem
-                                    label="序号"
+                                    label={domain.DomainNo}
                                     labelCol={{span: 10}}
                                     wrapperCol={{span: 14}}
                                 >
                                     {getFieldDecorator('sequence', {
-                                        rules: [],
-                                        initialValue:" ",
+                                        rules: [{ }],
+                                        initialValue:Number(this.state.domainData.sequence),
                                     })(
-
-                                        <InputNumber min={1} max={10000}  />
-
+                                        <InputNumber min={1} max={10000}/>
                                     )}
+
                                 </FormItem>
                             </Col>
                             </Row>
                         </Form>
                     </Modal>
                     <Modal
-                        title="修改区域"
+                        title={domain.ModifyDomain}
                         width={800}
                         centered
                         visible={this.state.editVisible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleUpdateSubmit}>保存</Button>,
-                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleUpdateSubmit}>{domain.Save}</Button>,
+                            <Button key="back"  icon="close-circle-o" onClick={this.handleCancel}>{domain.Cancel}</Button>
                         ]}
                     >
                         <Form  onSubmit={this.handleSubmit}>
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="所属标识"
+                                        label={domain.DomainMark}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -407,7 +406,7 @@ export default class Domain extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域名称"
+                                        label={domain.DomainName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -423,7 +422,7 @@ export default class Domain extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域类型"
+                                        label={domain.DomainType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -444,7 +443,7 @@ export default class Domain extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域码"
+                                        label={domain.DomainId}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -460,13 +459,13 @@ export default class Domain extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="序号"
+                                        label={domain.DomainNo}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('sequence', {
                                             rules: [{ }],
-                                            initialValue:this.state.domainData.sequence,
+                                            initialValue:Number(this.state.domainData.sequence),
                                         })(
                                             <InputNumber min={1} max={10000}/>
                                         )}
@@ -482,7 +481,7 @@ export default class Domain extends PureComponent {
                         </Form>
                     </Modal>
                     <Modal
-                        title="详情信息"
+                        title={domain.detail}
                         width={800}
                         centered
                         visible={this.state.userVisible}
@@ -494,7 +493,7 @@ export default class Domain extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="所属标识"
+                                        label={domain.DomainMark}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -505,7 +504,7 @@ export default class Domain extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域名称"
+                                        label={domain.DomainName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -516,7 +515,7 @@ export default class Domain extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域类型"
+                                        label={domain.DomainType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -532,7 +531,7 @@ export default class Domain extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="区域码"
+                                        label={domain.DomainNo}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -543,7 +542,7 @@ export default class Domain extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="序号"
+                                        label={domain.DomainId}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >

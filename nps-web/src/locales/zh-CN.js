@@ -15,8 +15,22 @@ export default {
         'detail':'详情',
         'domainName':'区域名称',
         'domainType':'区域类型',
-        'domainID':'区域码'
+        'domainID':'区域码',
+        'AddDomain':'新增区域',
+        'ModifyDomain':'修改区域',
+        'DeleteDomain':'删除区域',
+        'DomainMark':'所属标识',
+        'DomainName':'区域名称',
+        'DomainType':'区域类型',
+        'DomainId':'区域码',
+        'DomainNo':'序号',
+        'Save':'保存',
+        'Cancel':'取消',
+        'Select':'请选择',
+        'SelectFirst':'请先选择',
+
     },
+    'role':{},
     'authority':{
         'insert':'新增',
         'modify':'修改',

@@ -19,35 +19,7 @@ class QuestionEdit extends React.PureComponent {
         this.state = {
             questionDisplayList: [],
             questionDisplayList1: [],
-            logic: [
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 0,
-                    "logicType": "01",
-                    "optionOrder": "2",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 4
-                },
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 0,
-                    "logicType": "01",
-                    "optionOrder": "3",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 6
-                },
-                {
-                    "actType": 0,
-                    "andOr": 0,
-                    "isMain": 1,
-                    "logicType": "00",
-                    "optionOrder": "1,2",
-                    "setupQuestionOrder": 2,
-                    "skiptoQuestionOrder": 5
-                },
-            ],
+            logic: [],
             otherQuestion: [
                 {
                     questionOrder: '0',
@@ -77,8 +49,12 @@ class QuestionEdit extends React.PureComponent {
 
     // 获取题库具体题目
     getDom = (data) => {
-        this.state.questionDisplayList1.push(data);
-        this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+        if(this.state.questionDisplayList.filter(item => item.questionOrder === data.questionOrder).length === 0) {
+            this.state.questionDisplayList1.push(data);
+            this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+        } else {
+            message.info('该题已存在问卷中，且不可重复');
+        }
     };
 
     // 进入预览
@@ -99,8 +75,11 @@ class QuestionEdit extends React.PureComponent {
         }
         if (show) {
             let _obj=JSON.stringify(this.state.questionDisplayList);
-            let connList = JSON.parse(_obj);
-            connList.length = i;
+            let connList = JSON.parse(_obj).splice(0, i).map((item, k) => {
+                item.questionName = k + 1 + '、' + item.questionName;
+                return item;
+            });
+            //connList.length = i;
             // 过滤出非填空题
             connList = connList.filter(item => item.questionType === '01' || item.questionType === '02');
             if(connList.length === 0) {
@@ -162,7 +141,8 @@ class QuestionEdit extends React.PureComponent {
             this.setState({
                 jump: true,
                 record: props,
-                jumpList
+                jumpList,
+
             });
         } else {
             this.setState({ jump: false, radioValue: 0 });
@@ -199,7 +179,7 @@ class QuestionEdit extends React.PureComponent {
     };
 
     render() {
-        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue } = this.state;
+        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue,logic } = this.state;
 
         // 关联弹窗
         const connModalProps = {
@@ -217,6 +197,7 @@ class QuestionEdit extends React.PureComponent {
             record,
             jumpList,
             radioValue,
+            logic,
             onClose: () => {
                 this.jumpModal(false);
             },
