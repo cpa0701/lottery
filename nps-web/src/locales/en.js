@@ -31,6 +31,22 @@ export default {
 
     },
     'role':{
+        'userName':'UserName',
+        'department':'Department',
+        'creator':'Creator',
+        'insert':'Insert',
+        'modify':'Modify',
+        'delete':'Delete',
+        'copy':'Copy',
+        'roleList':'RoleList',
+        'Cancel':'Cancel',
+        'Confirm':'Confirm',
+        'Authority':'Authority Management',
+        'modifyAuthority':'Modify Authority',
+        'batchdeletion':'Batch Deletion',
+        'authorityName':'Authority Name',
+        'personnel':'Personnel',
+        'select':'Select'
 
     },
     'authority':{

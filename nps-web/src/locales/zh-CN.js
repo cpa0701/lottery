@@ -30,7 +30,24 @@ export default {
         'SelectFirst':'请先选择',
 
     },
-    'role':{},
+    'role':{
+        'userName':'用户名称',
+        'department':'部门名称',
+        'creator':'创建者',
+        'insert':'新增',
+        'modify':'修改',
+        'delete':'删除',
+        'copy':'复制',
+        'roleList':'角色列表',
+        'Cancel':'取消',
+        'Confirm':'确认',
+        'Authority':'权限管理',
+        'modifyAuthority':'修改权限',
+        'batchdeletion':'批量删除',
+        'authorityName':'权限名称',
+        'personnel':'人员',
+        'select':'查询'
+    },
     'authority':{
         'insert':'新增',
         'modify':'修改',

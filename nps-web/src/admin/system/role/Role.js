@@ -16,10 +16,11 @@ import AuthEdit from './modal/AuthEdit';
 import UserAdd from './modal/UserAdd';
 
 import './Role.less';
+import {inject} from "mobx-react/index";
 
 const [TabPane, RadioGroup, FormItem] = [Tabs.TabPane, Radio.Group, Form.Item];
 const {Sider, Content} = Layout;
-
+@inject('stores')
 @Form.create({})
 export default class Role extends PureComponent {
     state = {
@@ -437,6 +438,7 @@ export default class Role extends PureComponent {
     };
 
     render() {
+        const {role} = this.props.stores.I18nModel.outputLocale
         const {
             pagination,
             loading,
@@ -455,17 +457,17 @@ export default class Role extends PureComponent {
         // 表格列
         const userColumns = [
             {
-                title: '用户名称',
+                title:role.userName,
                 dataIndex: 'name',
                 width: '20%'
             },
             {
-                title: '部门名称',
+                title: role.department,
                 dataIndex: 'deptId',
                 width: '60%'
             },
             {
-                title: '创建者',
+                title: role.creator,
                 dataIndex: 'createdBy',
                 width: '20%'
             }
@@ -719,7 +721,7 @@ export default class Role extends PureComponent {
                     className="leftTree"
                 >
                     <header>
-                        角色列表
+                        {role.roleList}
                         <Icon
                             className={this.state.collapsed ? 'trigger triggered' : 'trigger'}
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
@@ -728,20 +730,20 @@ export default class Role extends PureComponent {
                         />
                     </header>
                     <div className="btnGroup">
-                        <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>新增</Button>
+                        <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>{role.insert}</Button>
                         <div className="divider"></div>
-                        <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>修改</Button>
+                        <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>{role.modify}</Button>
                         <div className="divider"></div>
                         <Popconfirm
                             onConfirm={() => this.delRoles()}
                             title={<span>此操作将删除所勾选的角色？</span>}
-                            okText="确认"
-                            cancelText="取消"
+                            okText={role.Confirm}
+                            cancelText={role.Cancel}
                         >
-                            <Button type="danger" icon="delete">删除</Button>
+                            <Button type="danger" icon="delete">{role.delete}</Button>
                         </Popconfirm>
                         <div className="divider"></div>
-                        <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>复制</Button>
+                        <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>{role.copy}</Button>
                     </div>
                     <div className="treeStyle">
                         <Tree {...roleProps} onLoadData={this.loadRoleData}/>
@@ -751,11 +753,11 @@ export default class Role extends PureComponent {
                     <Content style={{background: '#fff', minHeight: 280, paddingLeft: "10px"}}  className="rightContent">
                         <div>
                             <Tabs type="card">
-                                <TabPane tab="权限管理" key="1">
+                                <TabPane tab={role.Authority} key="1">
                                     <div className="btnGroup" style={{width: '18%', padding: '5px 0'}}>
-                                        <Button type="primary" icon="edit" style={{width: '42%'}} onClick={() => this.editAuthModal(true, this.state.checkedKeys, 0)}>修改权限</Button>
+                                        <Button type="primary" icon="edit" style={{width: '42%'}} onClick={() => this.editAuthModal(true, this.state.checkedKeys, 0)}>{role.modifyAuthority}</Button>
                                         <div className="divider"></div>
-                                        <Button type="danger" icon="delete" style={{width: '42%'}} onClick={() => this.delAuths()}>批量删权</Button>
+                                        <Button type="danger" icon="delete" style={{width: '42%'}} onClick={() => this.delAuths()}>{role.batchdeletion}</Button>
                                         {/*<div className="divider"></div>*/}
                                         {/*<Button type="primary" icon="edit">修改个性域</Button>*/}
                                         {/*<div className="divider"></div>*/}
@@ -767,7 +769,7 @@ export default class Role extends PureComponent {
                                         {/*</RadioGroup>*/}
                                     </div>
                                     <div className="authorityManage">
-                                        <header>权限名称</header>
+                                        <header>{role.authorityName}</header>
                                         <div className="authorityTree">
                                             <Tree {...authProps}/>
                                         </div>
@@ -796,12 +798,12 @@ export default class Role extends PureComponent {
                         </div>
                         <div>
                             <Tabs type="card">
-                                <TabPane tab="人员" key="1">
+                                <TabPane tab={role.personnel} key="1">
                                     <div className="searchForm">
                                         <Form layout="inline">
                                             <FormItem
                                                 {...formItemLayout}
-                                                label="部门名称"
+                                                label={role.department}
                                                 style={{"marginBottom": 0}}
                                             >
                                                 {getFieldDecorator('deptName', {
@@ -812,7 +814,7 @@ export default class Role extends PureComponent {
                                             </FormItem>
                                             <FormItem
                                                 {...formItemLayout}
-                                                label="用户名称"
+                                                label={role.userName}
                                                 style={{"marginBottom": 0}}
                                             >
                                                 {getFieldDecorator('userName', {
@@ -824,9 +826,9 @@ export default class Role extends PureComponent {
                                         </Form>
                                     </div>
                                     <div className="btnGroup" style={{width: '20%', padding: '5px 2px'}}>
-                                        <Button type="primary" onClick={this.handleSearch} icon="search" className="btnThre">查询</Button>
+                                        <Button type="primary" onClick={this.handleSearch} icon="search" className="btnThre">{role.select}</Button>
                                         <div className="divider"></div>
-                                        <Button type="primary" icon="plus-circle-o" className="btnThre"onClick={() => this.addUsers(this.state.checkedKeys, 0)}>新增</Button>
+                                        <Button type="primary" icon="plus-circle-o" className="btnThre"onClick={() => this.addUsers(this.state.checkedKeys, 0)}>{role.insert}</Button>
                                         <div className="divider"></div>
                                         <Popconfirm
                                             onConfirm={() => this.delUsers()}
@@ -834,7 +836,7 @@ export default class Role extends PureComponent {
                                             okText="确认"
                                             cancelText="取消"
                                         >
-                                            <Button type="danger" icon="delete" className="btnThre">删除</Button>
+                                            <Button type="danger" icon="delete" className="btnThre">{role.delete}</Button>
                                         </Popconfirm>
                                     </div>
                                     <Table
