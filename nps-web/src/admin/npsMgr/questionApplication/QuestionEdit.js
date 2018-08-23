@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Input, message } from "antd"
+import { Row, Col, Button, Input, message, Popconfirm } from "antd"
 
 import InitQuestionList from './InitQuestionList'
 import QuestionLib from './QuestionLib'
@@ -19,7 +19,7 @@ class QuestionEdit extends React.PureComponent {
         this.state = {
             questionDisplayList: [],
             questionDisplayList1: [],
-            logic: [],
+            logic: [], // 逻辑表
             otherQuestion: [
                 {
                     questionOrder: '0',
@@ -34,9 +34,11 @@ class QuestionEdit extends React.PureComponent {
                     questionName: "直接提交为无效答卷",
                 },
             ],
-            record: {},
-            connList: [],
-            jumpList: [],
+            record: {}, // 当前设置逻辑的题
+            connList: [], // 可设置关联的题
+            jumpList: [], // 可设置跳转的题
+            questions: [{}], // 存已存在逻辑的题
+            keyS: [], // 对应已存在逻辑的key
             index: undefined,
             value: '',
             radioValue: 0,
@@ -74,12 +76,75 @@ class QuestionEdit extends React.PureComponent {
             return '';
         }
         if (show) {
-            let _obj=JSON.stringify(this.state.questionDisplayList);
+            // 打开弹框前获取已存在的关联逻辑关系并存入questions
+            let questions = [], arr = [], keyS = [], andOr = null;
+
+            let logicProp = this.state.logic.filter(item => item.skiptoQuestionOrder === props.questionOrder && item.logicType === '00');
+            if(logicProp) {
+                logicProp.map(item => {
+                    andOr = item.andOr;
+                    arr = this.state.questionDisplayList.filter(k => k.questionOrder === item.setupQuestionOrder);
+                    if(arr) {
+                        if(arr[0].questionType === '01') {
+                            arr[0] = {
+                                ...arr[0],
+                                value: Number(item.optionOrder)
+                            };
+
+                            arr[0].optionList.map(x => {
+                                if(x.optionOrder === Number(item.optionOrder)) {
+                                    x.checked = true;
+                                } else {
+                                    x.checked = false;
+                                }
+                                return '';
+                            })
+                        } else if(arr[0].questionType === '02') {
+                            let checkOption = item.optionOrder.split(',');
+                            if(checkOption) {
+                                checkOption.map(y => {
+                                    arr[0].optionList.map(x => {
+                                        if(x.optionOrder === y) {
+                                            x.checked = true;
+                                        } else {
+                                            x.checked = false;
+                                        }
+                                        return '';
+                                    });
+                                    return '';
+                                })
+                            }
+                        }
+                    }
+                    questions.push(...arr);
+                    return '';
+                });
+            }
+            questions = questions.map((item, k) => {
+                item = {
+                    ...item,
+                    index: k,
+                    isLib: true,
+                    questionName: item.questionOrder + '、' + item.questionName
+                };
+                return item;
+            });
+            keyS = questions.map((item, k) => {
+                return k;
+            });
+
+            // console.log('1',andOr);
+            // console.log('2',questions);
+            // console.log('3',keyS);
+            //
+            // debugger;
+
+            let _obj = JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj).splice(0, i).map((item, k) => {
                 item.questionName = k + 1 + '、' + item.questionName;
                 return item;
             });
-            //connList.length = i;
+
             // 过滤出非填空题
             connList = connList.filter(item => item.questionType === '01' || item.questionType === '02');
             if(connList.length === 0) {
@@ -88,6 +153,8 @@ class QuestionEdit extends React.PureComponent {
             }
 
             this.setState({
+                questions,
+                keyS,
                 conn: true,
                 record: props,
                 connList,
@@ -177,18 +244,35 @@ class QuestionEdit extends React.PureComponent {
             })
         }
     };
+    // 删除题目
+    delQestion = (props, i) => {
+      message.info('66666')
+    };
 
     render() {
-        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue,logic } = this.state;
-
+        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue, logic, questions, keyS } = this.state;
         // 关联弹窗
         const connModalProps = {
             conn,
             index,
+            keyS,
+            questions,
             record,
             connList,
             onClose: () => {
                 this.connModal(false);
+            },
+            onCreate: (value) => {
+                let logic = [
+                    ...this.state.logic,
+                    ...value
+                ];
+                this.setState({
+                    logic
+                }, () => {
+                    message.success('编辑成功');
+                    this.connModal(false);
+                });
             },
         };
         // 跳转弹窗
@@ -258,6 +342,9 @@ class QuestionEdit extends React.PureComponent {
                                                onClick={() => this.jumpUp(i, item)}>上移</a>
                                             <a href="javascript:void(0);"
                                                onClick={() => this.jumpDown(i, item)}>下移</a>
+                                            <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i)}>
+                                                <a href="javascript:void(0);">删除</a>
+                                            </Popconfirm>
                                         </div>
                                     </div>
                                 )

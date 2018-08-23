@@ -3,8 +3,8 @@ import Http from '../../common/Http';
 class QuestionLibMgrService {
     // 获取题库
     getQuestionList = async (param) => {
-        // let url = 'mock/questionMgr/getQuestionLIst';
-        let url = 'http://rapapi.org/mockjsdata/36231/questionBank';
+        let url = 'mock/questionMgr/getQuestionLIst';
+        // let url = 'http://rapapi.org/mockjsdata/36231/questionBank';
         return await Http.post(url, param);
     };
     // 新增题目

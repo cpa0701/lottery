@@ -25,21 +25,18 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            questionType, index, questionName, optionList,isLib,
+            questionType, index, questionName, optionList, isLib, onRadioChange, onCheckBoxChange
         } = this.props;
         let dom = '';
         switch (questionType) {
             case '01':
-                dom = <RadioModule questionName={questionName} index={index}
-                                   optionList={optionList} isView={true}/>
+                dom = <RadioModule questionName={questionName} index={index} optionList={optionList} onChange={onRadioChange} isView={true}/>;
                 break;
             case '02':
-                dom = <CheckboxModule questionName={questionName} index={index}
-                                      optionList={optionList}isView={true}/>
+                dom = <CheckboxModule questionName={questionName} index={index} optionList={optionList} onChange={onCheckBoxChange} isView={true}/>;
                 break;
             case '03':
-                dom = <BlankModule questionName={questionName} index={index}
-                                   optionList={optionList}isView={true}/>
+                dom = <BlankModule questionName={questionName} index={index} optionList={optionList} isView={true}/>;
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>

@@ -647,16 +647,32 @@ Mock.mock('mock/questionMgr/getQuestionLIst', (params) => {
     let pageNum = param ? param.pageNum : 1;
     return Mock.mock({
         result: {
-            'list|10': [{
-                title: '@csentence',
-                'id|+1': 1,
-                'type|1': ['radio', 'checkbox', 'blank']
-            }],
+            'list|10': [
+                {
+                    questionName: '@csentence',
+                    questionName2: '', // 题目提示描述
+                    'questionId|+1': 1,
+                    'questionOrder|+1': 1,
+                    'questionType|1': ['01', '02', '03', '04'],
+                    questionCategory: '@csentence', // 题目分类
+                    status: 1, // 默认1
+                    'optionList|3': [
+                        {
+                            'optionOrder|+1': 1,
+                            optionName: '@cname',
+                        }],
+                    optionLayout: 0, // 默认0
+                    lenthCheck: 0, // 默认0
+                    isNps: 0, // 默认0 nps
+                    isSatisfied: 0, // 默认0 满意度
+                    contentCheck: 0 // 默认0 内容限制
+                }
+            ],
             pageNum: pageNum,
             total: '@integer(10,50)',
         }
     })
-})
+});
 
 // 获取问卷内容
 Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
