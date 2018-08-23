@@ -17,7 +17,7 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            questionType, index, questionName, optionList, isSetup, isShow, isPaging, jumped,
+            questionType, index, questionName, optionList, isSetup, isShow, isPaging, jumped, isJump,
             questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange
         } = this.props;
         let dom = '';
@@ -43,7 +43,7 @@ class InitQuestionList extends React.PureComponent {
                 break;
         }
         return (<div
-            style={{display: isPaging === '1' ? 'block' : (jumped ? "none" : (isShow ? 'block' : (isSetup ? 'none' : 'block')))}}
+            style={{display: isPaging === '1' ? 'block' : (isJump ? 'block' : (jumped ? "none" : (isShow ? 'block' : (isSetup ? 'none' : 'block'))))}}
             className={isPaging === '1' ? 'paging' : 'questionList'}>
             {dom}
         </div>);

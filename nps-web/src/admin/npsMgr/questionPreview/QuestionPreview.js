@@ -131,6 +131,8 @@ class QuestionPreview extends React.PureComponent {
                     questionList.map((item, i) => {
                         if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                             item.jumped = true;
+                            //去除被跳过的题目中已经勾选或填写的答案
+                            //去logicList中找与被跳过题相关的逻辑
                         }
                     })
                 else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
@@ -173,6 +175,7 @@ class QuestionPreview extends React.PureComponent {
                                      isSetup={item.isSetup}
                                      isShow={item.isShow}
                                      jumped={item.jumped}
+                                     isJump={item.isJump}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
                                      onBlankChange={this.onBlankChange}

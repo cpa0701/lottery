@@ -80,8 +80,8 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         },
         {
             menuName: '调研任务管理',
-            icon: '/missionMgr',
-            menuUrl: 'list',
+            icon: 'bulb',
+            menuUrl: '/missionMgr',
             menuId: 3,
             children: [
                 {
