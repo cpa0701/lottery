@@ -786,6 +786,7 @@ export default class Dept extends PureComponent {
     }
 
     render() {
+        const {dept} = this.props.stores.I18nModel.outputLocale
         const loop = data => data.map((item) => {
             if (item.children) {
                 return (
@@ -808,7 +809,7 @@ export default class Dept extends PureComponent {
                     style={{background: '#fff'}}
                     width={300}
                 >
-                    <div className='dept-logo'>部门列表
+                    <div className='dept-logo'>{dept.depatmentList}
                         <Icon
                             className={this.state.collapsed ? 'trigger triggered' : 'trigger'}
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}

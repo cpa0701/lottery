@@ -306,14 +306,14 @@ class NewApplicationForm extends React.PureComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span='12' style={{paddingTop:'20px' ,paddingLeft:'50px'}}>
+                        <Col span='18' style={{paddingTop:'20px' ,paddingLeft:'50px'}}>
                         <Upload >
                             <Button type="ghost">
                                 <Icon type="upload" /> 点击上传
                             </Button>
                         </Upload>
                         </Col>
-                        <Col span='12' style={{paddingTop:'20px' ,paddingLeft:'50px'}}>
+                        <Col span='6' style={{paddingTop:'20px' ,paddingLeft:'50px'}}>
                             （文档类型仅支持doc、docx、txt、xls、xlsx、pdf格式，且大小不能超过5M）
                         </Col>
                     </Row>
