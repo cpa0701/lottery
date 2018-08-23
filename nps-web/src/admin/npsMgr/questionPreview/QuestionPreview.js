@@ -62,11 +62,6 @@ class QuestionPreview extends React.PureComponent {
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             return question.isPaging === '0';
         });
-        this.state.logicList.map(item => {//将此题所关联的题先隐藏
-            if (item.logicType === '00' && item.setupQuestionOrder === e.target.questionIndex) {
-                questionList[item.skiptoQuestionOrder - 1].isShow = false;
-            }
-        })
         questionList[e.target.questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false，仅对单选
             item.checked = false;
         });
@@ -88,7 +83,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 })
-                let arr000 = [], arr001 = [];//定义关联且，关联或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [], arr010 = [], arr011 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.map(option => {
@@ -97,12 +92,16 @@ class QuestionPreview extends React.PureComponent {
                                     arr000.push(option);
                                 } else if (logic.logicType === '00' && logic.andOr === 1) {//关联的或逻辑
                                     arr001.push(option)
+                                } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
+                                    arr010.push(option)
+                                } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
+                                    arr011.push(option)
                                 }
                             })
                         })
                     })
                 });
-                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//关联逻辑中有一个满足即可显示
+                questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//或的被关联题关联逻辑的结果
                     if (arr.length) {
                         if (i === 0) {//关联且逻辑
                             return arr.every(option => {
@@ -115,6 +114,31 @@ class QuestionPreview extends React.PureComponent {
                         }
                     } else return false;
                 })
+                questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                    if (arr.length) {
+                        if (i === 0) {//跳转且逻辑
+                            return arr.every(option => {
+                                return option.checked;
+                            })
+                        } else if (i === 1) {//跳转或逻辑
+                            return arr.some(option => {
+                                return option.checked;
+                            })
+                        }
+                    } else return false;
+                })
+                if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
+                    questionList.map((item, i) => {
+                        if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                            item.jumped = true;
+                        }
+                    })
+                else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
+                    questionList.map((item, i) => {
+                        if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                            item.jumped = false;
+                        }
+                    })
                 let questionResultList = this.state.questionList.map(question => {//将分页信息装回
                     questionList.map(item => {
                         if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
@@ -130,6 +154,9 @@ class QuestionPreview extends React.PureComponent {
     //复选框值改变
     onCheckBoxChange = (e) => {
         debugger;
+        let questionList = this.state.questionList.filter(question => {//去除分页数据
+            return question.isPaging === '0';
+        });
     }
     //填空题改变
     onBlankChange = (e) => {
@@ -145,6 +172,7 @@ class QuestionPreview extends React.PureComponent {
                                      optionList={item.optionList}
                                      isSetup={item.isSetup}
                                      isShow={item.isShow}
+                                     jumped={item.jumped}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
                                      onBlankChange={this.onBlankChange}

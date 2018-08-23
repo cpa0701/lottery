@@ -456,10 +456,10 @@ export default class QuestionAddMgr extends PureComponent {
             } else {
                 values.isSatisfied = 0;
             }
-            let value = {
+            let value = {question:{
                 ...this.state.questionList[0],
                 ...values
-            };
+            }};
             console.log(value);
             if (value.questionId) {
                 QuestionLibMgrService.editQuestion(value).then(data => {

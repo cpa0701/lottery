@@ -10,19 +10,19 @@ class QuestionLibMgrService {
     // 新增题目
     addQuestion = async (param) => {
         // let url = 'mock/questionMgr/addQuestion';
-        let url = 'http://rapapi.org/mockjsdata/36231/addQuestion';
+        let url = 'questionMgr/addQuestion';
         return await Http.post(url, param);
     };
     // 编辑题目
     editQuestion = async (param) => {
-        // let url = 'mock/questionMgr/editQuestion';
-        let url = 'http://rapapi.org/mockjsdata/36231/editQuestion';
+        // let url = 'mock/questionMgr//editQuestion';
+        let url = 'questionMgr/editQuestion';
         return await Http.post(url, param);
     };
     // 删除题目
     delQuestion = async (param) => {
         // let url = 'mock/questionMgr/deleteQuestion';
-        let url = 'http://rapapi.org/mockjsdata/36231/deleteQuestion';
+        let url = 'questionMgr/deleteQuestion';
         return await Http.post(url, param);
     };
 

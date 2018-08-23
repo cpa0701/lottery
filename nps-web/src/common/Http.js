@@ -20,7 +20,8 @@ export class Http {
                 break;
             }
             case 'product': {
-                prefix = 'http://10.45.50.199:18088/';
+                if (!url.includes('rapapi'))
+                    prefix = 'http://'+window.location.host+':18088/';
                 break;
             }
             default: {
@@ -60,7 +61,7 @@ export class Http {
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: api, data: JSON.stringify(data), type: "post", datatype: "json",
+                    url: api, data: JSON.stringify(data), type: "post", datatype: "json",contentType: "application/json;charset=utf-8",
                     success: (res) => {
                         resolve(res.data ? res.data : JSON.parse(res))//在异步操作成功时调用
                     },
@@ -102,7 +103,12 @@ export class Http {
     }
 
     async _request(params, config = {
-        baseURL: '',
+        withCredentails:true,
+        header:{
+            'Access-Control-Allow-Origin':true,
+            'Content-Type':'application/x-www-form-urlencoded'
+        },
+        credentials:'same-origin'
     }) {
         params = Object.assign(params, config);
         return await axios(params)
