@@ -18,9 +18,11 @@ export default class extends Component {
         };
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.questions.length !== 0 && !nextProps.questions) {
+        if (nextProps.questions.length !== 0 && nextProps.questions) {
             this.setState({
-                questions: nextProps.questions
+                questions: [...nextProps.questions]
+            }, () => {
+                console.log('a',this.state.questions)
             });
         }
     }
