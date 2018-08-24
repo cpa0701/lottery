@@ -24,6 +24,7 @@ export default class extends Component {
             });
         }
     }
+
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
@@ -125,8 +126,18 @@ export default class extends Component {
         form.setFieldsValue({
             keys: keys.filter(key => key !== k),
         });
+        let arr = JSON.stringify(this.state.questions);
+        let newQuestions = JSON.parse(arr).splice(index, 1);
+        this.props.changeQuestion(newQuestions);
+    };
+
+    // 删除关联逻辑
+    delConnLogic = (order, type) => {
+        this.props.delConnLogic(order, type);
         this.setState({
-            questions: [...this.state.questions.filter((item, x) => x !== index)]
+            questions: [{}]
+        }, () => {
+            message.info('删除成功');
         });
     };
 
@@ -148,8 +159,8 @@ export default class extends Component {
         });
         this.setState({
             questions: [...this.state.questions]
-        }, () => {
-            console.log('radio', this.state.questions)
+        },() => {
+            console.log('a',this.state.questions)
         });
     };
     // 复选框值改变
@@ -167,15 +178,15 @@ export default class extends Component {
         });
         this.setState({
             questions: [...this.state.questions]
-        }, () => {
-            console.log('checked', this.state.questions)
+        },() => {
+            console.log('b',this.state.questions)
         });
     };
 
     render() {
-        const { conn, index, record, connList, keyS, form: { getFieldDecorator, getFieldValue } } = this.props;
-
+        const { conn, index, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
         const { questions } = this.state;
+
         const optionList = connList.map((item) => {
             return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
@@ -247,7 +258,7 @@ export default class extends Component {
                 onCancel={() => this.props.onClose()}
                 afterClose={this.afterClose}
                 footer={[
-                    <Popconfirm key="delete"  title="你确定删除该题所有关联逻辑?" onConfirm={() => this.onSubmit()}><Button type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
+                    <Popconfirm key="delete"  title="你确定删除该题所有关联逻辑?" onConfirm={() => this.delConnLogic(record.questionOrder, 0)}><Button type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
                     <Button key="submit" type="primary" icon="check-circle-o" onClick={this.onSubmit}>确定</Button>,
                 ]}
             >
@@ -267,7 +278,7 @@ export default class extends Component {
                                     key={index}
                                 >
                                     {getFieldDecorator('andOr', {
-                                        initialValue: '0',
+                                        initialValue: andOr ? String(andOr) : '0',
                                     })(
                                         <RadioGroup>
                                             多题之间 <Radio value="0">为“且”的关系(必须满足所有关联条件)</Radio>
