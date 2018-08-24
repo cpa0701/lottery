@@ -37,7 +37,7 @@ class QuestionEdit extends React.PureComponent {
             record: {}, // 当前设置逻辑的题
             connList: [], // 可设置关联的题
             jumpList: [], // 可设置跳转的题
-            questions: [{}], // 存已存在逻辑的题
+            questions: [], // 存已存在逻辑的题
             keyS: [], // 对应已存在逻辑的key
             index: undefined,
             value: '',
@@ -133,9 +133,9 @@ class QuestionEdit extends React.PureComponent {
                 return k;
             });
 
-            // console.log('1',andOr);
-            // console.log('2',questions);
-            // console.log('3',keyS);
+            console.log('1',andOr);
+            console.log('2',questions);
+            console.log('3',keyS);
             //
             // debugger;
 
@@ -261,6 +261,10 @@ class QuestionEdit extends React.PureComponent {
             connList,
             onClose: () => {
                 this.connModal(false);
+                this.setState({
+                    questions: [], // 存已存在逻辑的题
+                    keyS: [], // 对应已存在逻辑的key
+                });
             },
             onCreate: (value) => {
                 let logic = [
@@ -268,7 +272,9 @@ class QuestionEdit extends React.PureComponent {
                     ...value
                 ];
                 this.setState({
-                    logic
+                    logic,
+                    questions: [], // 存已存在逻辑的题
+                    keyS: [], // 对应已存在逻辑的key
                 }, () => {
                     message.success('编辑成功');
                     this.connModal(false);

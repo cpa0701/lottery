@@ -21,8 +21,6 @@ export default class extends Component {
         if (nextProps.questions.length !== 0 && nextProps.questions) {
             this.setState({
                 questions: [...nextProps.questions]
-            }, () => {
-                console.log('a',this.state.questions)
             });
         }
     }
@@ -178,9 +176,6 @@ export default class extends Component {
         const { conn, index, record, connList, keyS, form: { getFieldDecorator, getFieldValue } } = this.props;
 
         const { questions } = this.state;
-        console.log('pp',keyS);
-        console.log('qq',this.props.questions);
-        console.log('ww',this.state.questions);
         const optionList = connList.map((item) => {
             return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
