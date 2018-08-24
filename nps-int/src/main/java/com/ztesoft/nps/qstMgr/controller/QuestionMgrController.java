@@ -27,7 +27,6 @@ public class QuestionMgrController {
 
     @PostMapping("/deleteQuestion")
     public Result<Object> deleteQuestion(@RequestBody Map<String,Object> params){
-        System.out.println("method deleteQst");
         String questionId = MapUtil.getString(params,"questionId");
         if(StringUtil.isNull(questionId) || questionMgrService.deleteQuestion(questionId)==0){
             throw new NpsObjectNotFoundException(questionId);
@@ -37,7 +36,6 @@ public class QuestionMgrController {
 
     @PostMapping("/addQuestion")
     public Result<Object> addQuestion(@RequestBody Map<String,Object> params){
-        System.out.println("method addQuestion");
         questionMgrService.addQuestion(params);
         return Result.success();
     }
@@ -48,8 +46,9 @@ public class QuestionMgrController {
         if(StringUtil.isNull(questionId)){
             throw new NpsObjectNotFoundException(questionId);
         }
-        Object obj = questionMgrService.questionById(questionId);
-        return Result.success(obj);
+        //Object obj = questionMgrService.questionById(questionId);
+        List<Map<String,Object>> result= DatabaseUtil.queryForListByPage("select * from users",1,2);
+        return Result.success(result);
     }
 
     @PostMapping("/editQuestion")
