@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import {Form, Row, Col, Input, Button, Select, Popconfirm, Icon} from 'antd';
-
+import {inject} from "mobx-react/index"
 const Option = Select.Option;
 const FormItem = Form.Item;
-
+@inject('stores')
 class AdvancedSearchForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            depart:this.props.stores.I18nModel.outputLocale.dept,
             expand: true
         }
         this.toggle = this.toggle.bind(this);
@@ -34,37 +35,37 @@ class AdvancedSearchForm extends Component {
         const children = [];
         const fieldList = [
             {
-                label: '部门范围',
+                label: this.props.stores.I18nModel.outputLocale.dept.scopedepartment,
                 key: 'range',
                 type: 'select',
-                optionList: [{key: 'dept', title: '部门及子部门'}, {key: 'currentDept', title: '当前部门'}, {
+                optionList: [{key: 'dept', title:this.props.stores.I18nModel.outputLocale.dept.subdepartment }, {key: 'currentDept', title: '当前部门'}, {
                     key: 'domain',
-                    title: '按区域'
+                    title: this.props.stores.I18nModel.outputLocale.dept.accordArea
                 }]
             }, {
-                label: '人员帐号',
+                label: this.props.stores.I18nModel.outputLocale.dept.personnelAccount,
                 key: 'account', type: 'input'
             }, {
-                label: '人员工号',
+                label: this.props.stores.I18nModel.outputLocale.dept.personnelWorking,
                 key: 'no',
                 type: 'input'
             }, {
-                label: '人员姓名',
+                label:this.props.stores.I18nModel.outputLocale.dept.stuffName ,
                 key: 'name',
                 type: 'input'
             }, {
-                label: '账号状态',
+                label: this.props.stores.I18nModel.outputLocale.dept.accountStatus,
                 type: 'select',
                 key: 'status ',
-                optionList: [{key: '', title: '全部'}, {key: 1, title: '正常'}, {key: 2, title: '已封存'}, {
+                optionList: [{key: '', title:this.props.stores.I18nModel.outputLocale.dept.all }, {key: 1, title: this.props.stores.I18nModel.outputLocale.dept.normal}, {key: 2, title: this.props.stores.I18nModel.outputLocale.dept.seal}, {
                     key: 3,
-                    title: '待修改密码'
-                }, {key: 4, title: '长期锁定'}, {key: 5, title: '短期锁定'}]
+                    title:this.props.stores.I18nModel.outputLocale.dept.changepwd,
+                }, {key: 4, title:this.props.stores.I18nModel.outputLocale.dept.longLock }, {key: 5, title: this.props.stores.I18nModel.outputLocale.dept.shortLock}]
             }, {
-                label: '是否有效',
+                label: this.props.stores.I18nModel.outputLocale.dept.isitEffective,
                 type: 'select',
                 key: 'valid',
-                optionList: [{key: '', title: '全部'}, {key: 1, title: '有效'}, {key: 0, title: '无效'}]
+                optionList: [{key: '', title: this.props.stores.I18nModel.outputLocale.dept.all}, {key: 1, title: this.props.stores.I18nModel.outputLocale.dept.effective}, {key: 0, title: this.props.stores.I18nModel.outputLocale.dept.invalid}]
             }]
         for (let i = 0; i < fieldList.length; i++) {
             children.push(
@@ -89,6 +90,7 @@ class AdvancedSearchForm extends Component {
 
     render() {
         const {handleAdd, handleEdit, handleDelete, handleChangeDept} = this.props
+        const {dept} = this.props.stores.I18nModel.outputLocale
         return (
             <Form
                 className="ant-advanced-search-form"
@@ -97,17 +99,17 @@ class AdvancedSearchForm extends Component {
                 <Row gutter={24}>{this.getFields()}</Row>
                 <Row>
                     <Col span={24}>
-                        <Button type="primary" htmlType="submit">查询</Button>
-                        <Button onClick={handleAdd}>新增</Button>
-                        <Button onClick={handleEdit} type="dashed">修改</Button>
-                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={handleDelete}>
-                            <Button type="danger">删除</Button>
+                        <Button type="primary" htmlType="submit">{dept.query}</Button>
+                        <Button onClick={handleAdd}>{dept.insert}</Button>
+                        <Button onClick={handleEdit} type="dashed">{dept.modify}</Button>
+                        <Popconfirm title={dept.shuredelete} okText={dept.ok} cancelText={dept.cancel} onConfirm={handleDelete}>
+                            <Button type="danger">{dept.delete}</Button>
                         </Popconfirm>
-                        <Popconfirm title="确定更改吗?" okText="确定" cancelText="取消" onConfirm={handleChangeDept}>
-                            <Button>更改部门</Button>
+                        <Popconfirm title={dept.shurechange} okText={dept.ok} cancelText={dept.cancel} onConfirm={handleChangeDept}>
+                            <Button>{dept.changeDepartment}</Button>
                         </Popconfirm>
                         <a style={{marginLeft: 8, fontSize: 12}} onClick={this.toggle}>
-                            收起 <Icon type={this.state.expand ? 'up' : 'down'}/>
+                            {dept.packUp} <Icon type={this.state.expand ? 'up' : 'down'}/>
                         </a>
                     </Col>
                 </Row>

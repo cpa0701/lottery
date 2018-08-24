@@ -3,9 +3,9 @@ import {Modal, TreeSelect, Row, Col} from 'antd';
 
 import DeptService from '../../../../services/system/DeptService';
 import TreeComponent from '../../../../common/components/tree/tree';
-
+import {inject} from "mobx-react/index"
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-
+@inject('stores')
 class changeDeptModal extends PureComponent {
     constructor(props) {
         super(props);
@@ -80,22 +80,23 @@ class changeDeptModal extends PureComponent {
     }
 
     render() {
+        const {dept} = this.props.stores.I18nModel.outputLocale
         const {changeDeptVisible, modalChangeDeptVisible, staffData, domainTreeDate, deptTreeForChangeData} = this.props
         const {confirmLoading, value, deptTreeData} = this.state;
         const selectDomain = value ? value : (staffData.deptId ? staffData.deptId.toString() : "");
         const deptTree = deptTreeData ? deptTreeData : deptTreeForChangeData;
         return (
             <Modal
-                title="更改部门"
+                title={dept.changeDepartment}
                 visible={modalChangeDeptVisible}
                 onOk={this.handleChangedDept}
                 confirmLoading={confirmLoading}
                 onCancel={() => changeDeptVisible(false)}
-                okText="确认"
-                cancelText="取消"
+                okText={dept.ok}
+                cancelText={dept.cancel}
             >
                 <Row>
-                    <Col span={8}>所属区域</Col>
+                    <Col span={8}>{dept.area}</Col>
                     <Col span={16}>
                         {/*<TreeSelect*/}
                         {/*value={selectDomain}*/}
