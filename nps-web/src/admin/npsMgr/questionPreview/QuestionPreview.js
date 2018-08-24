@@ -65,10 +65,10 @@ class QuestionPreview extends React.PureComponent {
         questionList[e.target.questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false，仅对单选
             item.checked = false;
         });
-        questionList[e.target.questionIndex - 1].optionList[e.target.value - 1].checked = e.target.checked;//将当前选项的值改为true
+        questionList[e.target.questionIndex - 1].optionList[e.target.value - 1].checked = e.target.checked;//将当前选项的值改为选项值
         questionList[e.target.questionIndex - 1].optionList.map(item => {//遍历当前单选题所有选项的逻辑
             item.logicList.length && item.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
-                let skiptoQuestionOrder = k.skiptoQuestionOrder;//找到当前逻辑被关联的题目序号
+                let skiptoQuestionOrder = k.skiptoQuestionOrder;//找到当前逻辑被相关的题目序号
                 let relatedLogicList = this.state.logicList.filter(logic => {
                     return logic.skiptoQuestionOrder === skiptoQuestionOrder//根据题目序号找到所有和此题目有关的所有逻辑
                 });
@@ -131,8 +131,6 @@ class QuestionPreview extends React.PureComponent {
                     questionList.map((item, i) => {
                         if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                             item.jumped = true;
-                            //去除被跳过的题目中已经勾选或填写的答案
-                            //去logicList中找与被跳过题相关的逻辑
                         }
                     })
                 else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
@@ -155,10 +153,102 @@ class QuestionPreview extends React.PureComponent {
     }
     //复选框值改变
     onCheckBoxChange = (e) => {
-        debugger;
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             return question.isPaging === '0';
         });
+        questionList[e.target.questionIndex - 1].optionList.map(option => {//为复选框当前所选选项的相同逻辑选项的选项值改为true
+            option.logicList.map(logic => {//遍历此选项的逻辑列表找出当前逻辑相关选项中包含此选项的optionOrder
+                if (logic.optionOrder.includes(e.target.value.toString())) {
+                    let index = logic.optionOrder.split(",");
+                    index.map(i => {//遍历当前所选中选项的相同关联选项，并将其全部修改为选中状态
+                        questionList[e.target.questionIndex - 1].optionList[i - 1].checked = true;
+                    })
+                }
+            })
+        })
+        questionList[e.target.questionIndex - 1].optionList[e.target.value - 1].checked = e.target.checked;//将当前选项的值改为选项值
+        e.target.logicList.length && e.target.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
+            let skiptoQuestionOrder = k.skiptoQuestionOrder;//找到当前逻辑被相关的题目序号
+            let relatedLogicList = this.state.logicList.filter(logic => {
+                return logic.skiptoQuestionOrder === skiptoQuestionOrder//根据题目序号找到所有和此题目有关的所有逻辑
+            });
+            let relatedQuestionList = relatedLogicList.map(logic => {//遍历所有相关逻辑，与题目列表相匹配，过滤出所有相关题目及其相关选项
+                return questionList.filter(question => {
+                    if (logic.setupQuestionOrder === question.questionOrder) {
+                        question.optionFilteredList = question.optionList.filter(option => {
+                            let optionArr = logic.optionOrder.split(',');
+                            return optionArr.includes(option.optionOrder.toString())
+                        })
+                    }
+                    return logic.setupQuestionOrder === question.questionOrder
+                })
+            })
+            let arr000 = [], arr001 = [], arr010 = [], arr011 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+            relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
+                list.map(question => {
+                    question.optionFilteredList.map(option => {
+                        option.logicList.map(logic => {
+                            if (logic.logicType === '00' && logic.andOr === 0) {//关联的且逻辑
+                                arr000.push(option);
+                            } else if (logic.logicType === '00' && logic.andOr === 1) {//关联的或逻辑
+                                arr001.push(option)
+                            } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
+                                arr010.push(option)
+                            } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
+                                arr011.push(option)
+                            }
+                        })
+                    })
+                })
+            });
+            questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//或的被关联题关联逻辑的结果
+                if (arr.length) {
+                    if (i === 0) {//关联且逻辑
+                        return arr.every(option => {
+                            return option.checked;
+                        })
+                    } else if (i === 1) {//关联或逻辑
+                        return arr.some(option => {
+                            return option.checked;
+                        })
+                    }
+                } else return false;
+            })
+            questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                if (arr.length) {
+                    if (i === 0) {//跳转且逻辑
+                        return arr.every(option => {
+                            return option.checked;
+                        })
+                    } else if (i === 1) {//跳转或逻辑
+                        return arr.some(option => {
+                            return option.checked;
+                        })
+                    }
+                } else return false;
+            })
+            if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
+                questionList.map((item, i) => {
+                    if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                        item.jumped = true;
+                    }
+                })
+            else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
+                questionList.map((item, i) => {
+                    if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                        item.jumped = false;
+                    }
+                })
+            let questionResultList = this.state.questionList.map(question => {//将分页信息装回
+                questionList.map(item => {
+                    if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
+                        question = item
+                    }
+                })
+                return question;
+            })
+            this.setState({questionList: [...questionResultList]})
+        })
     }
     //填空题改变
     onBlankChange = (e) => {
