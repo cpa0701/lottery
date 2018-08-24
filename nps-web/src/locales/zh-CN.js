@@ -86,7 +86,7 @@ export default {
         'authoritySensitive':'是否敏感'
     },
     'footer':{
-        'text':'© 中兴软创科技股份有限公司 | 版权所有'
+        'text':'© 浩鲸云计算科技股份有限公司 | 版权所有'
     },
     'header':{
         'logout':'登出'

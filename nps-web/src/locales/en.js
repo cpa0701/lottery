@@ -85,7 +85,7 @@ export default {
         'authoritySensitive':'Sensitive'
     },
     'footer':{
-        'text':'© Powered by ZteSoft | All Rights Reserved'
+        'text':'© Powered by IWhaleCloud | All Rights Reserved'
     },
     'header':{
         'logout':'Logout'

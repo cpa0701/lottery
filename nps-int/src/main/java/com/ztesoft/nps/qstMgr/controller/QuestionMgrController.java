@@ -3,6 +3,7 @@ package com.ztesoft.nps.qstMgr.controller;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
+import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,8 +46,9 @@ public class QuestionMgrController {
         if(StringUtil.isNull(questionId)){
             throw new NpsObjectNotFoundException(questionId);
         }
-        Object obj = questionMgrService.questionById(questionId);
-        return Result.success(obj);
+        //Object obj = questionMgrService.questionById(questionId);
+        List<Map<String,Object>> result= DatabaseUtil.queryForListByPage("select * from users",1,2);
+        return Result.success(result);
     }
 
     @PostMapping("/editQuestion")

@@ -14,9 +14,15 @@ export default class extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            questions: props.questions ? props.questions : [{}],
-            // key: [0],
+            questions: [{}],
         };
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.questions.length !== 0 && nextProps.questions) {
+            this.setState({
+                questions: [...nextProps.questions]
+            });
+        }
     }
 
     onSubmit = () => {
@@ -24,15 +30,44 @@ export default class extends Component {
             if (errors) {
                 return '';
             }
-            console.log(values);
+            let record = this.props.record, logicArr = [], _Obj = {};
+            this.state.questions.map(item => {
+                if(item.questionType === '01') { // 单选处理
+                    _Obj = {
+                        "actType": 0,
+                        "andOr": values.andOr ? Number(values.andOr) : 0,
+                        "isMain": 0,
+                        "logicType": "00",
+                        "optionOrder": String(item.value),
+                        "setupQuestionOrder": item.questionOrder,
+                        "skiptoQuestionOrder": record.questionOrder
+                    };
+                    logicArr.push(_Obj);
+                } else if (item.questionType === '02') { // 多选处理
+                    let optionChecked = item.optionList.filter(item => item.checked === true);
+                    let optionOrder = optionChecked.map(item => {
+                        return item.optionOrder;
+                    }).join(',');
+                    _Obj = {
+                        "actType": 0,
+                        "andOr": values.andOr ? Number(values.andOr) : 0,
+                        "isMain": 0,
+                        "logicType": "00",
+                        "optionOrder": optionOrder,
+                        "setupQuestionOrder": item.questionOrder,
+                        "skiptoQuestionOrder": record.questionOrder
+                    };
+                    logicArr.push(_Obj);
+                }
+                return '';
+            });
+            this.props.onCreate(logicArr)
         });
-        // this.props.onClose()
     };
 
     afterClose = () => {
         this.setState({
-            questions: this.props.questions ? this.props.questions : [{}],
-            // key: [0]
+            questions: [{}],
         });
         this.props.form.resetFields();
     };
@@ -40,6 +75,13 @@ export default class extends Component {
     handleChange = (value, record) => {
         if(this.state.questions.filter(item => item.questionOrder === value).length === 0) {
             let question = this.props.connList.filter(item => item.questionOrder === value)[0];
+            if (question.optionList) {
+                question.optionList.map(k => {
+                    k.checked = false;
+                    return '';
+                });
+            }
+
             let _obj = JSON.stringify(this.state.questions);
             let arr = JSON.parse(_obj);
             arr.length = this.state.questions.length - 1;
@@ -84,19 +126,71 @@ export default class extends Component {
         form.setFieldsValue({
             keys: keys.filter(key => key !== k),
         });
+        let arr = JSON.stringify(this.state.questions);
+        let newQuestions = JSON.parse(arr).splice(index, 1);
+        this.props.changeQuestion(newQuestions);
+    };
+
+    // 删除关联逻辑
+    delConnLogic = (order, type) => {
+        this.props.delConnLogic(order, type);
         this.setState({
-            questions: [...this.state.questions.filter((item, x) => x !== index)]
+            questions: [{}]
+        }, () => {
+            message.info('删除成功');
+        });
+    };
+
+    // 单选框值改变
+    onRadioChange = (e) => {
+        this.state.questions.map(item => {
+            if(item.questionOrder === e.target.questionIndex) {
+                item.optionList.map(k => {
+                    if (k.optionOrder === e.target.value) {
+                        k.checked = e.target.checked;
+                        item.value = k.optionOrder;
+                    } else {
+                        k.checked = false;
+                    }
+                    return '';
+                })
+            }
+            return '';
+        });
+        this.setState({
+            questions: [...this.state.questions]
+        },() => {
+            console.log('a',this.state.questions)
+        });
+    };
+    // 复选框值改变
+    onCheckBoxChange = (e) => {
+        this.state.questions.map(item => {
+            if(item.questionOrder === e.target.questionIndex) {
+                item.optionList.map(k => {
+                    if(k.optionOrder === e.target.value) {
+                        k.checked = e.target.checked;
+                    }
+                    return '';
+                })
+            }
+            return '';
+        });
+        this.setState({
+            questions: [...this.state.questions]
+        },() => {
+            console.log('b',this.state.questions)
         });
     };
 
     render() {
-        const { conn, index, record, connList, keyS = [0], form: { getFieldDecorator, getFieldValue } } = this.props;
+        const { conn, index, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
         const { questions } = this.state;
 
         const optionList = connList.map((item) => {
             return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
-        getFieldDecorator('keys', keyS !== null ? {initialValue: [...keyS]} : {initialValue: [0]});
+        getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
         const formItems = keys.map((index, k) => {
             return (
@@ -136,7 +230,17 @@ export default class extends Component {
                         { JSON.stringify(questions[k]) !== '{}' ?
                             <div>
                                 当关联题目{ k + 1 } 选择下面的选项<br/>
-                                <InitQuestionList questionType={questions[k].questionType} questionOrder={questions[k].questionOrder} key={questions[k].questionOrder} index={ k+1 } questionName={questions[k].questionName.split('、')[1]} optionList={questions[k].optionList}/>
+                                    <InitQuestionList
+                                        index={ questions[k].questionOrder }
+                                        key={questions[k].questionOrder}
+                                        value={questions[k].value ? questions[k].value : undefined}
+                                        questionType={questions[k].questionType}
+                                        questionOrder={questions[k].questionOrder}
+                                        questionName={questions[k].questionName.split('、')[1]}
+                                        optionList={questions[k].optionList}
+                                        onRadioChange={this.onRadioChange}
+                                        onCheckBoxChange={this.onCheckBoxChange}
+                                    />
                                 中的任意一个时，"当前题目"才出现
                             </div>
                         : '' }
@@ -148,13 +252,13 @@ export default class extends Component {
         return(
             <Modal
                 width={800}
-                maskClosable={true}
+                maskClosable={false}
                 visible={conn}
                 onOk={this.onSubmit}
                 onCancel={() => this.props.onClose()}
                 afterClose={this.afterClose}
                 footer={[
-                    <Popconfirm key="delete"  title="你确定删除该题所有关联逻辑?" onConfirm={() => this.onSubmit()}><Button type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
+                    <Popconfirm key="delete"  title="你确定删除该题所有关联逻辑?" onConfirm={() => this.delConnLogic(record.questionOrder, 0)}><Button type="danger" icon="delete">删除关联逻辑</Button></Popconfirm>,
                     <Button key="submit" type="primary" icon="check-circle-o" onClick={this.onSubmit}>确定</Button>,
                 ]}
             >
@@ -174,7 +278,7 @@ export default class extends Component {
                                     key={index}
                                 >
                                     {getFieldDecorator('andOr', {
-                                        initialValue: '0',
+                                        initialValue: andOr ? String(andOr) : '0',
                                     })(
                                         <RadioGroup>
                                             多题之间 <Radio value="0">为“且”的关系(必须满足所有关联条件)</Radio>

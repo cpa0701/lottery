@@ -212,15 +212,14 @@
   
   <insert id="batchSaveOpt" parameterType="java.util.List">
       insert into question_option
-      (question_id, option_id, option_order, option_name, is_other)
+      (question_id, option_order, option_name, is_other)
       VALUES
         <foreach collection ="list" item="questionOpt" index= "index" separator =",">
           (
-              #(questionOpt.question_id),
-              #(questionOpt.option_id),
-              #(questionOpt.option_order),
-              #(questionOpt.option_name),
-              #(questionOpt.is_other)
+              #{questionOpt.questionId},
+              #{questionOpt.optionOrder},
+              #{questionOpt.optionName},
+              #{questionOpt.isOther}
           )
         </foreach>
 
