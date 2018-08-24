@@ -2,8 +2,10 @@ package com.ztesoft.nps.qstMgr.mapper;
 
 import com.ztesoft.nps.qstMgr.model.QuestionOption;
 import com.ztesoft.nps.qstMgr.model.QuestionOptionExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface QuestionOptionMapper {
     int countByExample(QuestionOptionExample example);
@@ -29,4 +31,6 @@ public interface QuestionOptionMapper {
     int updateByPrimaryKey(QuestionOption record);
 
     int batchSaveOpt(List<QuestionOption> questionOpt);
+
+    List<QuestionOption> selectOptionsByIds(List<String> qstIdList);
 }

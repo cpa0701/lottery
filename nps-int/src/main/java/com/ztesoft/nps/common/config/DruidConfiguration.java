@@ -1,20 +1,25 @@
 package com.ztesoft.nps.common.config;
 
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
 import com.ztesoft.utils.plugin.jdbc.dialect.MysqlDialect;
 import com.ztesoft.utils.plugin.jdbc.dialect.OracleDialect;
 import com.ztesoft.utils.plugin.jdbc.source.DatabaseConfig;
-import com.ztesoft.utils.sys.util.ClassUtil;
-import com.ztesoft.utils.sys.util.ReflectUtil;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @ConfigurationProperties("spring.datasource")
@@ -76,6 +81,21 @@ public class DruidConfiguration {
 	@Value("${spring.datasource.useGlobalDataSourceStat}")
 	private boolean useGlobalDataSourceStat;
 
+//	@Bean(name = "wallFilter")
+//	@DependsOn("wallConfig")
+//	public WallFilter wallFilter(WallConfig wallConfig) {
+//		WallFilter wallFilter = new WallFilter();
+//		wallFilter.setConfig(wallConfig);
+//		return wallFilter;
+//	}
+//
+//	@Bean(name = "wallConfig")
+//	public WallConfig wallConfig() {
+//		WallConfig wallConfig = new WallConfig();
+//		wallConfig.setMultiStatementAllow(true);//允许一次执行多条语句
+//		wallConfig.setNoneBaseStatementAllow(true);//允许一次执行多条语句
+//		return wallConfig;
+//	}
 
 	@Bean
 	@Primary
@@ -105,6 +125,11 @@ public class DruidConfiguration {
 		} catch (SQLException e) {
 			System.err.println("druid configuration initialization filter: " + e);
 		}
+//		//配置拦截器，解决mybatis批量插入报错
+//		List<Filter> filters = new ArrayList<>();
+//		filters.add(new WallFilter());
+//		datasource.setProxyFilters(filters);
+
 		datasource.setConnectionProperties(connectionProperties);
 
 		myJdbcDataSourcejInit();//初始化jdbc数据源
@@ -128,4 +153,6 @@ public class DruidConfiguration {
 		}
 
 	}
+
+
 }
