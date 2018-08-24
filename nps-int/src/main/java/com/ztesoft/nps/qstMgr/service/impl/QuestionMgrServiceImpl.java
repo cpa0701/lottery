@@ -97,6 +97,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         //插入题目信息
         QuestionBank questionBank = MapUtil.convertMap2Bean(param.getObjectMap(),QuestionBank.class);
         questionBank.setQuestionId(uuid);
+        questionBank.setCreateTime(new Date());
         questionBankMapper.insertSelective(questionBank);
 
         //插入题目选项信息
