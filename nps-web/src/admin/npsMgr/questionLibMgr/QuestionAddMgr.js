@@ -12,7 +12,8 @@ import {
     TreeSelect,
     message,
     Select,
-    Tooltip
+    Tooltip,
+    Input
 } from "antd";
 
 import {RadioModule, CheckboxModule, BlankModule} from '../questionModule/QuestionModules'
@@ -20,26 +21,30 @@ import OptionsAdd from './OptionsAdd';
 import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
 
 import './questionLibMgr.less';
+import {inject, observer} from "mobx-react/index";
 
 const [FormItem, Option] = [Form.Item, Select.Option];
 const SubMenu = Menu.SubMenu;
 const treeData = [{
-    title: '网络',
-    value: '网络',
+    title: '终端',
+    value: '1',
     key: '0-0',
-    children: [{
-        title: '4G',
-        value: '4G',
-        key: '0-0-1',
-    }, {
-        title: '5G',
-        value: '5G',
-        key: '0-0-2',
-    }],
 }, {
-    title: '业务',
-    value: '业务',
+    title: '套餐',
+    value: '2',
     key: '0-1',
+},{
+    title: '流量',
+    value: '3',
+    key: '0-3',
+}, {
+    title: '账单',
+    value: '4',
+    key: '0-4',
+}, {
+    title: '其它',
+    value: '5',
+    key: '0-5',
 }];
 const questionData = [
     {
@@ -533,6 +538,16 @@ export default class QuestionAddMgr extends PureComponent {
                             )}
                         </FormItem>
                         : <div/>}
+                    <FormItem >
+                        {getFieldDecorator('isCommon', {
+                            initialValue: 1,
+                        })(<Input type="hidden"/>)}
+                    </FormItem>
+                    <FormItem >
+                        {getFieldDecorator('createUid', {
+                            initialValue:sessionStorage.getItem('uid'),
+                        })(<Input type="hidden"/>)}
+                    </FormItem>
                 </Form>
             </div>
         </div>;
@@ -582,11 +597,11 @@ export default class QuestionAddMgr extends PureComponent {
                                 <Menu.Item key="02"><Icon type='check-square-o'/><span>多选题</span></Menu.Item>
                                 <Menu.Item key="03"><Icon type='wallet'/><span>单项填空</span></Menu.Item>
                                 <Menu.Item key="04"><Icon type='profile'/><span>多项填空</span></Menu.Item>
-                                <SubMenu title={<span><Icon type="user"/><span>个人信息</span></span>}>
-                                    <Menu.Item key="05"><Icon type='check-circle-o'/><span>姓名</span></Menu.Item>
-                                    <Menu.Item key="06"><Icon type='check-square-o'/><span>性别</span></Menu.Item>
+                                <SubMenu title={<span><Icon type="idcard"/><span>个人信息</span></span>}>
+                                    <Menu.Item key="05"><Icon type='user'/><span>姓名</span></Menu.Item>
+                                    <Menu.Item key="06"><Icon type='code-o'/><span>性别</span></Menu.Item>
                                     <Menu.Item key="07"><Icon type='wallet'/><span>年龄</span></Menu.Item>
-                                    <Menu.Item key="08"><Icon type='profile'/><span>手机</span></Menu.Item>
+                                    <Menu.Item key="08"><Icon type='phone'/><span>手机</span></Menu.Item>
                                 </SubMenu>
                             </Menu>
                         </Card>

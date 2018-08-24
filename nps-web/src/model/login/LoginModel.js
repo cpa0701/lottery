@@ -16,12 +16,12 @@ class LoginModel {
 
     @action
     login(user) {
-        this.userstatus = user.status;
+        this.userstatus = 1111;
         this.username = user.username;
         this.token = user.token;
         this.idcard = user.idcard;
         this.uid = user.uid;
-
+        this.setSession('uid', user.uid)
         this.setSession('uc', user.status)
     }
 
@@ -31,7 +31,7 @@ class LoginModel {
         this.username = '';
         this.token = '';
         this.idcard = '';
-
+        this.removeSession('uid');
         this.removeSession('uc');
     }
 

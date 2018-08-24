@@ -26,7 +26,16 @@ class QuestionLibMgr extends React.PureComponent {
     }
 
     componentWillMount() {
-        this.getQuestionList()
+         let obj={
+             pageNum:this.state.pageNum,
+             questionCategory:'',
+             questionName:'',
+             pageSize:10,
+             isNps:'',
+             questionType:'',
+             isSatisfied:''
+         };
+        this.getQuestionList(obj)
     }
 
     // 获取题目列表
@@ -34,12 +43,15 @@ class QuestionLibMgr extends React.PureComponent {
         this.setState({
             loading: true
         }, () => QuestionLibMgrService.getQuestionList(params).then(result => {
+            console.log(result)
+            if(result){
             this.setState({
                 questionList: result.list,
-                pageNum: result.pageNum,
+                pageNum:result.pageNum,
                 total: result.total,
                 loading: false
             })
+            }
         }))
     };
     // 创建题目
