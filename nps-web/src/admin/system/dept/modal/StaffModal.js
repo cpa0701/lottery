@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Form, Input, Modal, message, Select, Row, Col} from 'antd';
-
+import {inject} from "mobx-react/index"
 import DeptService from '../../../../services/system/DeptService';
 
 const {TextArea} = Input;
@@ -11,11 +11,12 @@ const actionTypeMap = {
     'M': '修改部门',
     'V': '查看部门'
 }
-
+@inject('stores')
 class StaffModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            depart:this.props.stores.I18nModel.outputLocale.dept,
             actionTypeName: actionTypeMap['A'],
         }
         this.actionType = 'A';
@@ -91,7 +92,7 @@ class StaffModal extends PureComponent {
             promise = DeptService.ediStaff({...fields, id: staffData.id})
         }
         promise.then(result => {
-            message.success(this.state.actionTypeName + '成功');
+            message.success(this.state.actionTypeName + this.state.depart.success);
             handleModalVisible();
         });
     }
@@ -106,7 +107,7 @@ class StaffModal extends PureComponent {
             .then(result => {
                 code = result.code
                 if (code && code === '1' && this.actionType === 'A') {
-                    callback('系统名称已存在！')
+                    callback(this.state.depart.exisitSystem)
                 }
                 callback()
             })
@@ -118,13 +119,13 @@ class StaffModal extends PureComponent {
             <div>
                 <Col span={12}>
                     <FormItem
-                        label="人员姓名"
+                        label={this.state.depart.stuffName}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
                         {form.getFieldDecorator('name', {
                             rules: [
-                                {required: true, message: '人员姓名不能为空'}
+                                {required: true, message:this.state.depart.nameEmpty}
                             ],
                             initialValue: staffData.name,
                         })(
@@ -134,13 +135,13 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="登录账号"
+                        label={this.state.depart.loginAccount}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
                         {form.getFieldDecorator('account', {
                             rules: [
-                                {required: true, message: '登录账号不能为空'}
+                                {required: true, message: this.state.depart.emptyAccount}
                             ],
                             initialValue: staffData.account,
                         })(
@@ -150,13 +151,13 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="用户工号"
+                        label={this.state.depart.userNumber}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
                         {form.getFieldDecorator('no', {
                             rules: [
-                                {required: true, message: '用户工号不能为空'}
+                                {required: true, message: this.state.depart.emptyUserNumber}
                             ],
                             initialValue: staffData.no,
                         })(
@@ -166,26 +167,26 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="性别"
+                        label={this.state.depart.gender}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
                         {form.getFieldDecorator('sex', {
                             rules: [
-                                {required: true, message: '性别不能为空'}
+                                {required: true, message: this.state.depart.emptygender}
                             ],
                             initialValue: staffData.sex,
                         })(
-                            <Select placeholder="请选择性别" disabled={actionType === "V"}>
-                                <Option value="M">男</Option>
-                                <Option value="F">女</Option>
+                            <Select placeholder={this.state.depart.selectGender} disabled={actionType === "V"}>
+                                <Option value="M">{this.state.depart.man}</Option>
+                                <Option value="F">{this.state.depart.female}</Option>
                             </Select>
                         )}
                     </FormItem>
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="手机号"
+                        label={this.state.depart.phoneNumber}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
@@ -199,7 +200,7 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12} style={{'display': 'none'}}>
                     <FormItem
-                        label="部门id"
+                        label={this.state.depart.departID}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
@@ -213,7 +214,7 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="邮箱"
+                        label={this.state.depart.email}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
@@ -228,7 +229,7 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={12}>
                     <FormItem
-                        label="身份证"
+                        label={this.state.depart.idCard}
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
@@ -242,7 +243,7 @@ class StaffModal extends PureComponent {
                 </Col>
                 <Col span={24}>
                     <FormItem
-                        label="备注"
+                        label={this.state.depart.notes}
                         labelCol={{span: 5}}
                         wrapperCol={{span: 19}}
                     >
@@ -261,18 +262,18 @@ class StaffModal extends PureComponent {
         const {modalVisible, form, handleModalVisible, thisTime} = this.props;
         let action = {
             actionType: 'A',
-            actionTypeName: '新增人员'
+            actionTypeName: this.state.depart.newStaff
         }
         if (thisTime === "M") {
             action = {
                 actionType: 'M',
-                actionTypeName: '修改人员'
+                actionTypeName: this.state.depart.modifyStaff
             };
             this.actionType = 'M'
         } else if (thisTime === "V") {
             action = {
                 actionType: 'V',
-                actionTypeName: '查看人员'
+                actionTypeName: this.state.depart.checkStuff
             };
             this.actionType = 'V'
         }

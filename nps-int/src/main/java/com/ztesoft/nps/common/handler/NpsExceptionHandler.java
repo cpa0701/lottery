@@ -1,5 +1,6 @@
 package com.ztesoft.nps.common.handler;
 
+import com.ztesoft.utils.sys.util.LogUtil;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,14 +21,12 @@ import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
  */
 @ControllerAdvice
 public class NpsExceptionHandler {
-	private static final Logger logger = Logger.getLogger(NpsExceptionHandler.class);
 
 	@ExceptionHandler(NpsObjectNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
 	public Result<Object> objectNotFound(NpsObjectNotFoundException e) {
-		logger.error("发生异常", e);
-		// return Result.failed(ResultCodeEnum.NOT_FOUND, e.getMessage());
+		e.printStackTrace();
 		return Result.failed(ResultCodeEnum.NOT_FOUND);
 	}
 
@@ -35,7 +34,7 @@ public class NpsExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ResponseBody
 	public Result<Object> deleteException(NpsDeleteException e) {
-		logger.error("发生异常", e);
+		e.printStackTrace();
 		return Result.failed(ResultCodeEnum.FORBIDDEN, e.getMessage());
 	}
 
@@ -43,7 +42,7 @@ public class NpsExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public Result<Object> innerException(Exception e) {
-		logger.error("发生异常", e);
+		e.printStackTrace();
 		return Result.failed(ResultCodeEnum.INNER_ERROR, e.getMessage());
 	}
 }

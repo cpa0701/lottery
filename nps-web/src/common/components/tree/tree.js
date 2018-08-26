@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Tree} from 'antd';
-
+import {inject} from "mobx-react/index"
 const TreeNode = Tree.TreeNode;
 const loop = data => data.map((item) => {
     if (item.children) {
@@ -12,9 +12,11 @@ const loop = data => data.map((item) => {
     }
     return <TreeNode {...item} dataRef={item}/>;
 });
-
+@inject('stores')
 class TreeComponent extends PureComponent {
+
     render() {
+        const {dept} = this.props.stores.I18nModel.outputLocale
         const {treeData, onSelect, onCheck, checkedKeys, onLoadData, checkable, showLine, defaultExpandedKeys, defaultDeptSelectedKeys} = this.props;
 
         return treeData.length
@@ -27,7 +29,7 @@ class TreeComponent extends PureComponent {
                 onSelect={onSelect}
                 onCheck={onCheck}
                 loadData={onLoadData}>{loop(treeData)}</Tree>
-            : '暂无数据';
+            : dept.nodata;
     }
 }
 

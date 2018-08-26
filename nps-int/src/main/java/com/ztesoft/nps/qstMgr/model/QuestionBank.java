@@ -1,6 +1,9 @@
 package com.ztesoft.nps.qstMgr.model;
 
+import org.apache.ibatis.annotations.Options;
+
 import java.util.Date;
+import java.util.List;
 
 public class QuestionBank {
     private String questionId;
@@ -32,6 +35,16 @@ public class QuestionBank {
     private String status;
 
     private String questionTags;
+
+    private List<QuestionOption> optList;
+
+    public List<QuestionOption> getOptList() {
+        return optList;
+    }
+
+    public void setOptList(List<QuestionOption> optList) {
+        this.optList = optList;
+    }
 
     public String getQuestionId() {
         return questionId;
