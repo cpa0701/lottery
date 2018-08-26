@@ -748,7 +748,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "actType": 0,
                 "andOr": 0,
                 "isMain": 1,
-                "logicType": "00",
+                "logicType": "01",
                 "optionOrder": "1,2",
                 "setupQuestionOrder": 3,
                 "skiptoQuestionOrder": 5

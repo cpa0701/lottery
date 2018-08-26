@@ -250,10 +250,6 @@ class QuestionPreview extends React.PureComponent {
             this.setState({questionList: [...questionResultList]})
         })
     }
-    //填空题改变
-    onBlankChange = (e) => {
-        debugger;
-    }
 
     render() {
         const questionnaire = this.state.questionList.map((item, i) => {
@@ -268,7 +264,6 @@ class QuestionPreview extends React.PureComponent {
                                      isJump={item.isJump}
                                      onRadioChange={this.onRadioChange}
                                      onCheckBoxChange={this.onCheckBoxChange}
-                                     onBlankChange={this.onBlankChange}
                                      questionNameBlur={this.questionNameBlur}
                                      optionNameBlur={this.optionNameBlur}/>
         })

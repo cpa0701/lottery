@@ -46,6 +46,36 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
     {publicPath: Array(cssFilename.split('/').length).join('../')}
     : {};
 
+// 遍历html
+const entryObj = {};
+const htmlPluginsAray = paths.htmlArray.map((v) => {
+    const fileParse = path.parse(v);
+
+    entryObj[fileParse.name] = [
+        "babel-polyfill",
+        require.resolve('./polyfills'),
+        // require.resolve('react-dev-utils/webpackHotDevClient'),
+        `${paths.appSrc}/${fileParse.name}.js`,
+    ]
+    return new HtmlWebpackPlugin({
+        inject: true,
+        chunks: [fileParse.name,'vendor'],
+        template: `${paths.appPublic}/${fileParse.base}`,
+        filename: fileParse.base,
+        minify: {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+        },
+    })
+});
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
@@ -54,9 +84,16 @@ module.exports = {
     bail: true,
     // We generate sourcemaps in production. This is slow but gives good results.
     // You can exclude the *.map files from the build during deployment.
-    devtool: shouldUseSourceMap ? 'source-map' : false,
+    devtool: false,
     // In production, we only want to load the polyfills and the app code.
-    entry: ["babel-polyfill",require.resolve('./polyfills'), paths.appIndexJs],
+    // entry: {
+    //     index: ["babel-polyfill", require.resolve('./polyfills'), paths.appIndexJs],
+    //     question: ["babel-polyfill", require.resolve('./polyfills'), paths.questionJs]
+    // },
+    entry: Object.assign({
+        // 用到什么公共lib（例如jquery.js），就把它加进vendor去，目的是将公用库单独提取打包
+        'vendor': ['react', 'react-dom', 'react-router-dom', 'jquery']
+    }, entryObj),
     output: {
         // The build folder.
         path: paths.appBuild,
@@ -299,6 +336,14 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        // 将代码中有重复的依赖包去重
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            filename: 'vendor.bundle.js',
+            minChunks: Infinity
+        }),
         // Makes some environment variables available in index.html.
         // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
         // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
@@ -306,22 +351,43 @@ module.exports = {
         // in `package.json`, in which case it will be the pathname of that URL.
         new InterpolateHtmlPlugin(env.raw),
         // Generates an `index.html` file with the <script> injected.
-        new HtmlWebpackPlugin({
-            inject: true,
-            template: paths.appHtml,
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-            },
-        }),
+        // new HtmlWebpackPlugin({
+        //     inject: true,
+        //     template: paths.appHtml,
+        //     minify: {
+        //         removeComments: true,
+        //         collapseWhitespace: true,
+        //         removeRedundantAttributes: true,
+        //         useShortDoctype: true,
+        //         removeEmptyAttributes: true,
+        //         removeStyleLinkTypeAttributes: true,
+        //         keepClosingSlash: true,
+        //         minifyJS: true,
+        //         minifyCSS: true,
+        //         minifyURLs: true,
+        //     },
+        //     chunks: ['index']
+        // }),
+        // new HtmlWebpackPlugin({
+        //     inject: true,
+        //     template: paths.appHtml,
+        //     filename: 'question.html',//编译后的文件名
+        //     minify: {
+        //         removeComments: true,
+        //         collapseWhitespace: true,
+        //         removeRedundantAttributes: true,
+        //         useShortDoctype: true,
+        //         removeEmptyAttributes: true,
+        //         removeStyleLinkTypeAttributes: true,
+        //         keepClosingSlash: true,
+        //         minifyJS: true,
+        //         minifyCSS: true,
+        //         minifyURLs: true,
+        //     },
+        //     title:'问卷调查',
+        //     chunks: ['question']
+        // }),
+        ...htmlPluginsAray,
         // Makes some environment variables available to the JS code, for example:
         // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
         // It is absolutely essential that NODE_ENV was set to production here.
