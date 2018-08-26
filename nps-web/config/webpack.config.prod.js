@@ -54,7 +54,7 @@ const htmlPluginsAray = paths.htmlArray.map((v) => {
     entryObj[fileParse.name] = [
         "babel-polyfill",
         require.resolve('./polyfills'),
-        // require.resolve('react-dev-utils/webpackHotDevClient'),
+        require.resolve('react-dev-utils/webpackHotDevClient'),
         `${paths.appSrc}/${fileParse.name}.js`,
     ]
     return new HtmlWebpackPlugin({
