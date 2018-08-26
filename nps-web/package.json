@@ -116,6 +116,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "compression-webpack-plugin": "^1.1.11",
     "less": "^3.8.0",
     "less-loader": "^4.1.0"
   }
