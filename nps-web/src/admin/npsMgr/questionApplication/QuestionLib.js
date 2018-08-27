@@ -101,8 +101,7 @@ class QuestionLib extends React.PureComponent {
                     </div>
                     <div className={'questionLibContent'}>
                         {this.state.questionList.map((question, i) => {
-                            return <InitQuestionList getDom={this.props.getDom} questionType={question.questionType} key={question.questionId} questionId={question.questionId}
-                                                     index={i} questionName={question.questionName} questionOrder={question.questionOrder} isLib={true} optionList={question.optionList}/>
+                            return <InitQuestionList key={i} getDom={this.props.getDom} question={question} index={i} isLib={true}/>
                         })}
                     </div>
                     <Pagination current={this.state.pageNum} onChange={this.refreshLib} total={50}/>

@@ -24,23 +24,21 @@ class InitQuestionList extends React.PureComponent {
     }
 
     render() {
-        const {
-            questionType, index, questionName, optionList, isLib, onRadioChange, onCheckBoxChange
-        } = this.props;
+        const { index, isLib, onRadioChange, onCheckBoxChange, question } = this.props;
         let dom = '';
-        switch (questionType) {
+        switch (question.questionType) {
             case '01':
-                dom = <RadioModule questionName={questionName} index={index} optionList={optionList} onChange={onRadioChange} isView={true}/>;
+                dom = <RadioModule questionName={question.questionName} index={index} value={question.value} optionList={question.optionList} onChange={onRadioChange} isView={true}/>;
                 break;
             case '02':
-                dom = <CheckboxModule questionName={questionName} index={index} optionList={optionList} onChange={onCheckBoxChange} isView={true}/>;
+                dom = <CheckboxModule questionName={question.questionName} index={index} optionList={question.optionList} onChange={onCheckBoxChange} isView={true}/>;
                 break;
             case '03':
-                dom = <BlankModule questionName={questionName} index={index} optionList={optionList} isView={true}/>;
+                dom = <BlankModule questionName={question.questionName} index={index} optionList={question.optionList} isView={true}/>;
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
-            {isLib ? <span>{index + 1}.{questionName}</span> : ''}
+            {isLib ? <span>{index + 1}.{question.questionName}</span> : ''}
             {isLib ? '' : (<div>
                 {dom}
             </div>)}
