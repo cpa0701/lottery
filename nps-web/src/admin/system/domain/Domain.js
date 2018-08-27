@@ -25,10 +25,10 @@ export default class Domain extends PureComponent {
             });
         } else {
             const ref = info({
-                title: '请先选择修改项',
+                title: this.state.domain.selectModifyItem,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.domain.ok,
+                cancelText: this.state.domain.Cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -43,10 +43,10 @@ export default class Domain extends PureComponent {
             });
             DomainService.deleteDomain(this.state.domainData).then((data) => {
                 const ref = info({
-                    title: '已删除',
+                    title: this.state.domain.deleted,
                     content: '',
-                    okText: '确定',
-                    cancelText: '取消',
+                    okText: this.state.domain.ok,
+                    cancelText: this.state.domain.Cancel,
                     onOk: () => {
                         ref.destroy();
                     }
@@ -58,10 +58,10 @@ export default class Domain extends PureComponent {
 
         } else {
             const ref = info({
-                title: '请先选择删除项',
+                title: this.state.domain.selectDeleteItem,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.domain.ok,
+                cancelText: this.state.Cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -78,10 +78,10 @@ export default class Domain extends PureComponent {
             });
         } else {
             const ref = info({
-                title: '请先选择区域项',
+                title: this.state.domain.selectedAreaItem,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.domain.ok,
+                cancelText: this.state.domain.Cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -106,6 +106,7 @@ export default class Domain extends PureComponent {
             userVisible:false,
             editVisible:false,
             confirmLoading: false,
+            domain:this.props.stores.I18nModel.outputLocale.domain,
         }
     }
     //获取区域树
@@ -217,11 +218,11 @@ export default class Domain extends PureComponent {
             width: '32%',
             render: (text, record, index) => {
                     switch(text){
-                        case 1: return '省'
-                        case 2: return '本地网'
-                        case 3: return '县市'
-                        case 4: return '扇区'
-                        case 5: return '自定义'
+                        case 1: return this.state.domain.province
+                        case 2: return this.state.domain.localNet
+                        case 3: return this.state.domain.countyCity
+                        case 4: return this.state.domain.sector
+                        case 5: return this.state.domain.theCustom
                     }
 
             }
@@ -330,11 +331,11 @@ export default class Domain extends PureComponent {
                                         initialValue:"6",
                                     })(
                                         <Select>
-                                            <Option value="1">省</Option>
-                                            <Option value="2">本地网 </Option>
-                                            <Option value="3">县市</Option>
-                                            <Option value="4">扇区</Option>
-                                            <Option value="5">自定义</Option>
+                                            <Option value="1">{domain.province}</Option>
+                                            <Option value="2">{domain.localNet} </Option>
+                                            <Option value="3">{domain.countyCity}</Option>
+                                            <Option value="4">{domain.sector}</Option>
+                                            <Option value="5">{domain.custom}</Option>
                                             <Option value="6" disabled>{domain.Select}</Option>
                                         </Select>
                                     )}
@@ -431,12 +432,12 @@ export default class Domain extends PureComponent {
                                             initialValue:String(this.state.domainData.type),
                                         })(
                                             <Select >
-                                                <Option value="1">省</Option>
-                                                <Option value="2">本地网 </Option>
-                                                <Option value="3">县市</Option>
-                                                <Option value="4">扇区</Option>
-                                                <Option value="5">自定义</Option>
-                                                <Option value="6" disabled>请选择</Option>
+                                                <Option value="1">{domain.province}</Option>
+                                                <Option value="2">{domain.localNet} </Option>
+                                                <Option value="3">{domain.countyCity}</Option>
+                                                <Option value="4">{domain.sector}</Option>
+                                                <Option value="5">{domain.theCustom}</Option>
+                                                <Option value="6" disabled>{domain.Select}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -520,12 +521,12 @@ export default class Domain extends PureComponent {
                                         wrapperCol={{span: 14}}
                                     >
                                         <Select value={String(this.state.domainData.type)} disabled>
-                                            <Option value="1">省</Option>
-                                            <Option value="2">本地网 </Option>
-                                            <Option value="3">县市</Option>
-                                            <Option value="4">扇区</Option>
-                                            <Option value="5">自定义</Option>
-                                            <Option value="6" disabled>请选择</Option>
+                                            <Option value="1">{domain.province}</Option>
+                                            <Option value="2">{domain.localNet} </Option>
+                                            <Option value="3">{domain.countyCity}</Option>
+                                            <Option value="4">{domain.sector}</Option>
+                                            <Option value="5">{domain.theCustom}</Option>
+                                            <Option value="6" disabled>{domain.Select}</Option>
                                         </Select>
                                     </FormItem>
                                 </Col>

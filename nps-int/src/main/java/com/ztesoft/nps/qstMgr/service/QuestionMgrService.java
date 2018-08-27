@@ -1,5 +1,9 @@
 package com.ztesoft.nps.qstMgr.service;
 
+import com.ztesoft.nps.qstMgr.model.QuestionBank;
+import com.ztesoft.nps.qstMgr.query.QuestionQuery;
+import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
+
 import java.util.Map;
 
 /**
@@ -8,11 +12,11 @@ import java.util.Map;
 public interface QuestionMgrService {
     int deleteQuestion(String id);
 
-    int addQuestion(Map<String,Object> params);
+    int addQuestion(QuestionBank bank);
 
     Object questionById(String id);
 
-    int editQuestion(Map<String,Object> params);
+    int editQuestion(QuestionBank bank);
 
-    Object questionBank();
+    LPageHelper questionBank(QuestionQuery condition);
 }

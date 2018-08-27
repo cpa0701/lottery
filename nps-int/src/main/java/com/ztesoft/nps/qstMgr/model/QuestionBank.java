@@ -1,37 +1,70 @@
 package com.ztesoft.nps.qstMgr.model;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.apache.ibatis.annotations.Options;
 
+import java.util.Date;
+import java.util.List;
+
+@ApiModel
 public class QuestionBank {
+
+    @ApiModelProperty("题目ID")
     private String questionId;
 
+    @ApiModelProperty("题目名称")
     private String questionName;
 
+    @ApiModelProperty("题目副标题")
     private String questionName2;
 
+    @ApiModelProperty("题目类型")
     private String questionType;
 
-    private Short questionCategory;
+    @ApiModelProperty("题目分类")
+    private Integer questionCategory;
 
+    @ApiModelProperty("是否公共题目")
     private Integer isCommon;
 
+    @ApiModelProperty("是否nps评分题")
     private Integer isNps;
 
+    @ApiModelProperty("是否满意度评分题")
     private Integer isSatisfied;
 
+    @ApiModelProperty("选项布局")
     private Integer optionLayout;
 
+    @ApiModelProperty("内容校验")
     private Integer contentCheck;
 
+    @ApiModelProperty("字数限制")
     private Long lenthCheck;
 
+    @ApiModelProperty("创建人")
     private Long createUid;
 
+    @ApiModelProperty("创建时间")
     private Date createTime;
 
+    @ApiModelProperty("状态")
     private String status;
 
+    @ApiModelProperty("标签")
     private String questionTags;
+
+    @ApiModelProperty("选项信息")
+    private List<QuestionOption> optionList;
+
+    public List<QuestionOption> getOptionList() {
+        return optionList;
+    }
+
+    public void setOptionList(List<QuestionOption> optionList) {
+        this.optionList = optionList;
+    }
 
     public String getQuestionId() {
         return questionId;
@@ -65,11 +98,11 @@ public class QuestionBank {
         this.questionType = questionType == null ? null : questionType.trim();
     }
 
-    public Short getQuestionCategory() {
+    public Integer getQuestionCategory() {
         return questionCategory;
     }
 
-    public void setQuestionCategory(Short questionCategory) {
+    public void setQuestionCategory(Integer questionCategory) {
         this.questionCategory = questionCategory;
     }
 

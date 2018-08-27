@@ -224,4 +224,13 @@
         </foreach>
 
   </insert>
+
+  <select id="selectOptionsByIds" resultType="com.ztesoft.nps.qstMgr.model.QuestionOption">
+
+     select <include refid="Base_Column_List" /> from question_option where question_id in
+          <foreach item="item" index="index" collection="list"   open="(" separator="," close=")">
+            #{item}
+          </foreach>
+
+  </select>
 </mapper>

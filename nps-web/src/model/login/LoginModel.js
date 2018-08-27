@@ -3,7 +3,7 @@ import {observable, action} from 'mobx'
 class LoginModel {
 
     @observable
-    userstatus = '';
+    identityCard = '';
 
     @observable
     username = '';
@@ -16,7 +16,7 @@ class LoginModel {
 
     @action
     login(user) {
-        this.userstatus = user.status;
+        this.identityCard = user.identityCard;
         this.username = user.username;
         this.token = user.token;
         this.idcard = user.idcard;
@@ -27,7 +27,7 @@ class LoginModel {
 
     @action
     logout() {
-        this.userstatus = '';
+        this.identityCard = '';
         this.username = '';
         this.token = '';
         this.idcard = '';

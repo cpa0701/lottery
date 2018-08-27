@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Form, Select, Button, Row, Col, Radio, Icon, Popconfirm } from 'antd';
+import { Modal, Form, Select, Button, Row, Col, Radio, Icon, Popconfirm,message } from 'antd';
 
 import InitQuestionList from './InitQuestionList';
 
 import './questionApplication.less';
-import {message} from "antd/lib/index";
 
 const [FormItem, Option, RadioGroup] = [Form.Item, Select.Option, Radio.Group];
 

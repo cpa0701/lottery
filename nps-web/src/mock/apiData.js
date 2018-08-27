@@ -748,7 +748,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "actType": 0,
                 "andOr": 0,
                 "isMain": 1,
-                "logicType": "00",
+                "logicType": "01",
                 "optionOrder": "1,2",
                 "setupQuestionOrder": 3,
                 "skiptoQuestionOrder": 5
@@ -761,6 +761,33 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "optionOrder": "1",
                 "setupQuestionOrder": 2,
                 "skiptoQuestionOrder": 5
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 0,
+                "logicType": "01",
+                "optionOrder": "1",
+                "setupQuestionOrder": 6,
+                "skiptoQuestionOrder": 9
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 1,
+                "logicType": "00",
+                "optionOrder": "1",
+                "setupQuestionOrder": 4,
+                "skiptoQuestionOrder": 7
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 0,
+                "logicType": "00",
+                "optionOrder": "1",
+                "setupQuestionOrder": 7,
+                "skiptoQuestionOrder": 8
             }
         ],
         "qstnaireId": 520,
@@ -771,7 +798,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -799,7 +826,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -831,7 +858,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -863,7 +890,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": "",
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": "",
                 "isNps": "",
                 "isPaging": "1",//分页数据
@@ -952,7 +979,118 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionOrder": 6,
                 "questionType": "01",
                 "status": 1
-            }
+            },
+            {
+                "contentCheck": "",
+                "createTime": "当前时间",
+                "createUid": 20,
+                "isBlank": 0,
+                "isCommon": "",
+                "isNps": "",
+                "isPaging": "1",//分页数据
+                "isSatisfied": "",
+                "lenthCheck": "",
+                "optionLayout": "",
+                "optionList": "",
+                "questionCategory": "",
+                "questionName": "",
+                "questionName2": "",
+                "questionOrder": 7,
+                "questionType": "00",
+                "status": ""
+            },
+            {
+                "contentCheck": 0,
+                "createTime": "当前时间",
+                "createUid": 20,
+                "isBlank": 0,
+                "isCommon": 1,
+                "isNps": 0,
+                "isPaging": "0",
+                "isSatisfied": 0,
+                "lenthCheck": 0,
+                "optionLayout": 0,
+                "optionList": [
+                    {
+                        "optionName": "测试选项a",
+                        "optionOrder": 1
+                    },
+                    {
+                        "optionName": "测试选项b",
+                        "optionOrder": 2
+                    }
+                ],
+                "questionCategory": 0,
+                "questionName": "测试题目4a，2个选项",
+                "questionName2": "",
+                "questionOrder": 7,
+                "questionType": "01",
+                "status": 1
+            },
+            {
+                "contentCheck": 0,
+                "createTime": "当前时间",
+                "createUid": 20,
+                "isBlank": 0,
+                "isCommon": 1,
+                "isNps": 0,
+                "isPaging": "0",
+                "isSatisfied": 0,
+                "lenthCheck": 0,
+                "optionLayout": 0,
+                "optionList": [
+                    {
+                        "optionName": "测试选项a",
+                        "optionOrder": 1
+                    },
+                    {
+                        "optionName": "测试选项b",
+                        "optionOrder": 2
+                    },
+                    {
+                        "optionName": "测试选项c",
+                        "optionOrder": 3
+                    }
+                ],
+                "questionCategory": 0,
+                "questionName": "测试题目78787a，3个选项",
+                "questionName2": "单选测试题目",
+                "questionOrder": 8,
+                "questionType": "01",
+                "status": 1
+            },
+            {
+                "contentCheck": 0,
+                "createTime": "当前时间",
+                "createUid": 20,
+                "isBlank": 0,
+                "isCommon": 1,
+                "isNps": 0,
+                "isPaging": "0",
+                "isSatisfied": 0,
+                "lenthCheck": 0,
+                "optionLayout": 0,
+                "optionList": [
+                    {
+                        "optionName": "测试选项a",
+                        "optionOrder": 1
+                    },
+                    {
+                        "optionName": "测试选项b",
+                        "optionOrder": 2
+                    },
+                    {
+                        "optionName": "测试选项c",
+                        "optionOrder": 3
+                    }
+                ],
+                "questionCategory": 0,
+                "questionName": "测试题目a，3个选项",
+                "questionName2": "复选测试",
+                "questionOrder": 9,
+                "questionType": "02",
+                "status": 1
+            },
         ]
     })
 })

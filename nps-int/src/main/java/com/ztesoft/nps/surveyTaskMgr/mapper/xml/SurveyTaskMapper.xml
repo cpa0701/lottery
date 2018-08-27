@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.surveyTaskMgr.mapper.SurveyTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.surveyTaskMgr.model.SurveyTask" >
+    <id column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="task_type" property="taskType" jdbcType="DECIMAL" />
+    <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR" />
+    <result column="survey_sdate" property="surveySdate" jdbcType="DATE" />
+    <result column="survey_edate" property="surveyEdate" jdbcType="DATE" />
+    <result column="create_uid" property="createUid" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="deal_tache" property="dealTache" jdbcType="VARCHAR" />
+    <result column="deal_role" property="dealRole" jdbcType="BIGINT" />
+    <result column="deal_uid" property="dealUid" jdbcType="BIGINT" />
+    <result column="deal_org" property="dealOrg" jdbcType="BIGINT" />
+    <result column="deal_type" property="dealType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    task_id, task_name, task_type, qstnaire_id, survey_sdate, survey_edate, create_uid, 
+    create_time, update_time, status, deal_tache, deal_role, deal_uid, deal_org, deal_type
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTaskExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from survey_task
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from survey_task
+    where task_id = #{taskId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from survey_task
+    where task_id = #{taskId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTaskExample" >
+    delete from survey_task
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTask" >
+    insert into survey_task (task_id, task_name, task_type, 
+      qstnaire_id, survey_sdate, survey_edate, 
+      create_uid, create_time, update_time, 
+      status, deal_tache, deal_role, 
+      deal_uid, deal_org, deal_type
+      )
+    values (#{taskId,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{taskType,jdbcType=DECIMAL}, 
+      #{qstnaireId,jdbcType=VARCHAR}, #{surveySdate,jdbcType=DATE}, #{surveyEdate,jdbcType=DATE}, 
+      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{dealTache,jdbcType=VARCHAR}, #{dealRole,jdbcType=BIGINT}, 
+      #{dealUid,jdbcType=BIGINT}, #{dealOrg,jdbcType=BIGINT}, #{dealType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTask" >
+    insert into survey_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="taskName != null" >
+        task_name,
+      </if>
+      <if test="taskType != null" >
+        task_type,
+      </if>
+      <if test="qstnaireId != null" >
+        qstnaire_id,
+      </if>
+      <if test="surveySdate != null" >
+        survey_sdate,
+      </if>
+      <if test="surveyEdate != null" >
+        survey_edate,
+      </if>
+      <if test="createUid != null" >
+        create_uid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="dealTache != null" >
+        deal_tache,
+      </if>
+      <if test="dealRole != null" >
+        deal_role,
+      </if>
+      <if test="dealUid != null" >
+        deal_uid,
+      </if>
+      <if test="dealOrg != null" >
+        deal_org,
+      </if>
+      <if test="dealType != null" >
+        deal_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        #{taskType,jdbcType=DECIMAL},
+      </if>
+      <if test="qstnaireId != null" >
+        #{qstnaireId,jdbcType=VARCHAR},
+      </if>
+      <if test="surveySdate != null" >
+        #{surveySdate,jdbcType=DATE},
+      </if>
+      <if test="surveyEdate != null" >
+        #{surveyEdate,jdbcType=DATE},
+      </if>
+      <if test="createUid != null" >
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTache != null" >
+        #{dealTache,jdbcType=VARCHAR},
+      </if>
+      <if test="dealRole != null" >
+        #{dealRole,jdbcType=BIGINT},
+      </if>
+      <if test="dealUid != null" >
+        #{dealUid,jdbcType=BIGINT},
+      </if>
+      <if test="dealOrg != null" >
+        #{dealOrg,jdbcType=BIGINT},
+      </if>
+      <if test="dealType != null" >
+        #{dealType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTaskExample" resultType="java.lang.Integer" >
+    select count(*) from survey_task
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update survey_task
+    <set >
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskName != null" >
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskType != null" >
+        task_type = #{record.taskType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.qstnaireId != null" >
+        qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.surveySdate != null" >
+        survey_sdate = #{record.surveySdate,jdbcType=DATE},
+      </if>
+      <if test="record.surveyEdate != null" >
+        survey_edate = #{record.surveyEdate,jdbcType=DATE},
+      </if>
+      <if test="record.createUid != null" >
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealTache != null" >
+        deal_tache = #{record.dealTache,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealRole != null" >
+        deal_role = #{record.dealRole,jdbcType=BIGINT},
+      </if>
+      <if test="record.dealUid != null" >
+        deal_uid = #{record.dealUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.dealOrg != null" >
+        deal_org = #{record.dealOrg,jdbcType=BIGINT},
+      </if>
+      <if test="record.dealType != null" >
+        deal_type = #{record.dealType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update survey_task
+    set task_id = #{record.taskId,jdbcType=VARCHAR},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      task_type = #{record.taskType,jdbcType=DECIMAL},
+      qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+      survey_sdate = #{record.surveySdate,jdbcType=DATE},
+      survey_edate = #{record.surveyEdate,jdbcType=DATE},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR},
+      deal_tache = #{record.dealTache,jdbcType=VARCHAR},
+      deal_role = #{record.dealRole,jdbcType=BIGINT},
+      deal_uid = #{record.dealUid,jdbcType=BIGINT},
+      deal_org = #{record.dealOrg,jdbcType=BIGINT},
+      deal_type = #{record.dealType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTask" >
+    update survey_task
+    <set >
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        task_type = #{taskType,jdbcType=DECIMAL},
+      </if>
+      <if test="qstnaireId != null" >
+        qstnaire_id = #{qstnaireId,jdbcType=VARCHAR},
+      </if>
+      <if test="surveySdate != null" >
+        survey_sdate = #{surveySdate,jdbcType=DATE},
+      </if>
+      <if test="surveyEdate != null" >
+        survey_edate = #{surveyEdate,jdbcType=DATE},
+      </if>
+      <if test="createUid != null" >
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTache != null" >
+        deal_tache = #{dealTache,jdbcType=VARCHAR},
+      </if>
+      <if test="dealRole != null" >
+        deal_role = #{dealRole,jdbcType=BIGINT},
+      </if>
+      <if test="dealUid != null" >
+        deal_uid = #{dealUid,jdbcType=BIGINT},
+      </if>
+      <if test="dealOrg != null" >
+        deal_org = #{dealOrg,jdbcType=BIGINT},
+      </if>
+      <if test="dealType != null" >
+        deal_type = #{dealType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.surveyTaskMgr.model.SurveyTask" >
+    update survey_task
+    set task_name = #{taskName,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=DECIMAL},
+      qstnaire_id = #{qstnaireId,jdbcType=VARCHAR},
+      survey_sdate = #{surveySdate,jdbcType=DATE},
+      survey_edate = #{surveyEdate,jdbcType=DATE},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      deal_tache = #{dealTache,jdbcType=VARCHAR},
+      deal_role = #{dealRole,jdbcType=BIGINT},
+      deal_uid = #{dealUid,jdbcType=BIGINT},
+      deal_org = #{dealOrg,jdbcType=BIGINT},
+      deal_type = #{dealType,jdbcType=VARCHAR}
+    where task_id = #{taskId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -40,6 +40,7 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
+
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
 measureFileSizesBeforeBuild(paths.appBuild)
@@ -142,9 +143,15 @@ function build(previousFileSizes) {
   });
 }
 
-function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
-  });
+// function copyPublicFolder() {
+//   fs.copySync(paths.appPublic, paths.appBuild, {
+//     dereference: true,
+//     filter: file => file !== paths.appHtml,
+//   });
+// }
+const copyPublicFolder = async() => {
+    fs.copySync(paths.appPublic, paths.appBuild, {
+     dereference: true,
+     filter: file => (file !== `${paths.appPublic}/*.html`),
+    });
 }

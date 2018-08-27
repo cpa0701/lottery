@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Modal, Row, Col, Input, Form } from 'antd';
-
+import {inject} from "mobx-react/index";
+import Role from "../../Role";
 const {TextArea} = Input;
 const FormItem = Form.Item;
 
 @Form.create()
+@inject('stores')
 export default class extends Component {
   onSubmit = () => {
     this.props.form.validateFieldsAndScroll((errors, values) => {
@@ -19,6 +21,7 @@ export default class extends Component {
   };
 
   render() {
+    const {role} = this.props.stores.I18nModel.outputLocale
     const {add, parentId = '0',form: {getFieldDecorator}} = this.props;
     const formItemLayout = {
       labelCol: {xs: {span: 24}, sm: {span: 6}},
@@ -27,7 +30,7 @@ export default class extends Component {
 
     return (
       <Modal
-        title="新增角色"
+        title={role.newRole}
         width={400}
         maskClosable={false}
         visible={add}
@@ -38,23 +41,23 @@ export default class extends Component {
         <Form>
           <Row>
             <Col span={24}>
-              <FormItem {...formItemLayout} label="角色名称">
+              <FormItem {...formItemLayout} label={role.characterName}>
                 {getFieldDecorator('name', {
                   rules: [
-                    {required: true, message: '请输入角色名称'},
+                    {required: true, message: role.enterRoleName},
                   ],
-                })(<Input placeholder="请输入角色名称"/>)}
+                })(<Input placeholder={role.enterRoleName}/>)}
               </FormItem>
             </Col>
             <Col span={24}>
-              <FormItem {...formItemLayout} label="备注信息">
+              <FormItem {...formItemLayout} label={role.noteInformation}>
                 {getFieldDecorator('description', {
                   initialValue: '',
                   rules: [
-                    {max: 255, message: '备注不能超过255个字符'},
+                    {max: 255, message: role.noteexcceed},
                   ],
                 })(
-                  <TextArea placeholder="请输入备注信息"/>
+                  <TextArea placeholder={role.enterRemarks}/>
                 )}
               </FormItem>
                 {getFieldDecorator('parentId', {
