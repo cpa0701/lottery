@@ -23,7 +23,7 @@ public class SwaggerConfig {
 				.groupName("NPS")
 				.select()
 				.apis(RequestHandlerSelectors
-						.basePackage("com.ztesoft.nps.safe.controller"))
+						.basePackage("com.ztesoft.nps.qstMgr.controller"))
 				.apis(RequestHandlerSelectors
 						.withMethodAnnotation(ApiOperation.class))
 				.paths(PathSelectors.any()).build();
