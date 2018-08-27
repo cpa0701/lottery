@@ -48,17 +48,19 @@ class QuestionPreview extends React.PureComponent {
                         pageList.push(pageCount++);
                     }
                     logicList.map(k => {
-                        if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
-                            if (item.questionOrder === k.skiptoQuestionOrder) {
-                                item.isSetup = true;//被关联题隐藏
+                        if(item.isPaging!=='1'){
+                            if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
+                                if (item.questionOrder === k.skiptoQuestionOrder) {
+                                    item.isSetup = true;//被关联题隐藏
+                                }
                             }
-                        }
-                        if (item.questionOrder === k.setupQuestionOrder) {
-                            let optionList = k.optionOrder.split(",");
-                            optionList.map(option => {
-                                let optionIndex = option - 1//有逻辑的选项索引
-                                item.optionList[optionIndex].logicList.push(k);
-                            })
+                            if (item.questionOrder === k.setupQuestionOrder) {
+                                let optionList = k.optionOrder.split(",");
+                                optionList.map(option => {
+                                    let optionIndex = option - 1//有逻辑的选项索引
+                                    item.optionList[optionIndex].logicList.push(k);
+                                })
+                            }
                         }
                     })
                 });
