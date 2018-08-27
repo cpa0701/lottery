@@ -88,6 +88,7 @@ export default {
         'newStaff':'The new staff',
         'modifyStaff':'Modify stuff',
         'checkStuff':'Check the staff',
+        'clear':'Clear',
     },
     'domain':{
         'insert':'Insert',

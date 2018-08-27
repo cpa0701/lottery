@@ -88,8 +88,7 @@ export default {
         'newStaff':'新增人员',
         'modifyStaff':'修改人员',
         'checkStuff':'查看人员',
-
-
+        'clear':'清空',
     },
     'domain':{
         'insert':'新增',

@@ -17,8 +17,8 @@ import DeptService from "../../../services/system/DeptService"
 import DeptModal from "./modal/DeptModal"
 import StaffModal from "./modal/StaffModal"
 import ChangeDeptModal from "./modal/ChangeDeptModal"
-import AddRoleModal from "./modal/AddRoleModal"
-import EditAuthorityModal from "./modal/EditAuthorityModal"
+// import AddRoleModal from "./modal/AddRoleModal"
+// import EditAuthorityModal from "./modal/EditAuthorityModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/table';
 import TreeComponent from '../../../common/components/tree/tree';
@@ -133,11 +133,6 @@ export default class Dept extends PureComponent {
         this.getDomainTree();
         this.getDeptTree();
         // this.getAllAuthorityData();
-    }
-
-    componentDidMount() {
-        //第一次默认加载
-        // this.standardTable.handleSearch({current: 1, pageSize: 10})
     }
 
     //收起展开部门
@@ -497,6 +492,10 @@ export default class Dept extends PureComponent {
         }, () => {
             this.standardTable.handleSearch({pageNumber: 1, pageSize: 10, ...params})
         });
+    }
+    //查询人员表格
+    onRef = (ref) => {
+        this.standardTable = ref
     }
     //新增人员
     handleStaffAdd = () => {
@@ -885,9 +884,9 @@ export default class Dept extends PureComponent {
                                               handleChangeDept={this.handleChangeDept}
                                               getStaffParams={this.getStaffData}/>
                                     <StandardTable
-                                        ref={child => this.standardTable = child}
                                         rowKey={"id"}
                                         // rowSelection={{selectedRowKeys:[10000]}}
+                                        onRef={this.onRef}
                                         columns={staffColumns}
                                         service={DeptService}
                                         method="getStaffData"
