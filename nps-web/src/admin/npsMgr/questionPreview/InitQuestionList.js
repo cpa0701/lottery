@@ -18,12 +18,12 @@ class InitQuestionList extends React.PureComponent {
     render() {
         const {
             questionType, index, questionName, optionList, isSetup, isShow, isPaging, jumped, isJump,
-            questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange
+            questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange, belongToPage,pageCount
         } = this.props;
         let dom = '';
         switch (questionType) {
             case '00':
-                dom = `第${isPaging}页`;
+                dom = `${belongToPage}/${pageCount}页`;
                 break;
             case '01':
                 dom = <RadioModule questionName={questionName} index={index}
@@ -44,7 +44,7 @@ class InitQuestionList extends React.PureComponent {
         }
         return (<div
             style={{display: isPaging === '1' ? 'block' : (isJump ? 'block' : (jumped ? "none" : (isShow ? 'block' : (isSetup ? 'none' : 'block'))))}}
-            className={isPaging === '1' ? 'paging' : 'questionList'}>
+            className={`${isPaging === '1' ? 'paging' : 'questionList'}`}>
             {dom}
         </div>);
     }

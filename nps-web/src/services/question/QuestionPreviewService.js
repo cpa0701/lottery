@@ -6,7 +6,7 @@ import Http from '../../common/Http';
 class QuestionPreviewService {
     //获取题库
     getPreviewLIst = async (param) => {
-        var url = 'mock/questionPreview/getPreviewLIst';
+        const url = 'mock/questionPreview/getPreviewLIst';
         return await Http.post(url, param);
     }
 }

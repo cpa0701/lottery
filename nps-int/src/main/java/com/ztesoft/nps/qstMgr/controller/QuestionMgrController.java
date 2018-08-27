@@ -1,7 +1,11 @@
 package com.ztesoft.nps.qstMgr.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.qstMgr.model.QuestionBank;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
 import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
@@ -46,9 +50,8 @@ public class QuestionMgrController {
         if(StringUtil.isNull(questionId)){
             throw new NpsObjectNotFoundException(questionId);
         }
-        //Object obj = questionMgrService.questionById(questionId);
-        List<Map<String,Object>> result= DatabaseUtil.queryForListByPage("select * from users",1,2);
-        return Result.success(result);
+        Object obj = questionMgrService.questionById(questionId);
+        return Result.success(obj);
     }
 
     @PostMapping("/editQuestion")
@@ -59,6 +62,13 @@ public class QuestionMgrController {
 
     @PostMapping("/questionBank")
     public Result<Object> questionBank(@RequestBody Map<String,Object> params){
-        return Result.success();
+        if(StringUtil.isNull(MapUtil.getString(params,"pageNum")) ||
+                StringUtil.isNull(MapUtil.getString(params,"pageSize"))){
+            throw new NpsBusinessException("分页参数缺失");
+        }
+
+        List<QuestionBank> bankList = questionMgrService.questionBank(params);
+        PageInfo<QuestionBank> page = new PageInfo<QuestionBank>(bankList);
+        return Result.success(bankList);
     }
 }

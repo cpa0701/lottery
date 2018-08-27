@@ -1,5 +1,8 @@
 package com.ztesoft.nps.qstMgr.service;
 
+import com.ztesoft.nps.qstMgr.model.QuestionBank;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,5 +17,5 @@ public interface QuestionMgrService {
 
     int editQuestion(Map<String,Object> params);
 
-    Object questionBank();
+    List<QuestionBank> questionBank(Map<String,Object> params);
 }

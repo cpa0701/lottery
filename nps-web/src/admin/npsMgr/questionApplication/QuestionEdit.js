@@ -9,9 +9,8 @@ import JumpModal from './JumpModal';
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 
 import './questionApplication.less'
-
-
 const { TextArea } = Input;
+let page = 1;
 
 class QuestionEdit extends React.PureComponent {
     constructor(props) {
@@ -53,11 +52,43 @@ class QuestionEdit extends React.PureComponent {
     // 获取题库具体题目
     getDom = (data) => {
         if(this.state.questionDisplayList.filter(item => item.questionOrder === data.questionOrder).length === 0) {
-            this.state.questionDisplayList1.push(data);
-            this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+            let arr = JSON.stringify(this.state.questionDisplayList1);
+            let newArr = JSON.parse(arr);
+            if(newArr.length === 0) {
+                this.state.questionDisplayList1.push({...data, number: null, isBlank: 0, isPaging: '0'});
+                this.orderQuestion();
+                this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+            } else {
+                if(newArr[newArr.length - 1].isPaging === '1') {
+                    newArr[newArr.length - 1].questionOrder = data.questionOrder
+                }
+                this.setState({
+                    questionDisplayList1: [...newArr]
+                }, () => {
+                    this.state.questionDisplayList1.push({...data, number: null, isBlank: 0, isPaging: '0'});
+                    this.orderQuestion();
+                    this.setState({questionDisplayList: [...this.state.questionDisplayList1]},() =>{
+                        console.log('mmm',this.state.questionDisplayList)
+                    })
+                });
+            }
         } else {
             message.info('该题已存在问卷中，且不可重复');
         }
+    };
+
+    // 对获取的题进行排序
+    orderQuestion = () => {
+        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === '0');
+        newArr.map((item, k) => {
+            this.state.questionDisplayList1.map(x => {
+                if(item.questionOrder === x.questionOrder && x.isPaging === '0') {
+                    x.number = k;
+                }
+                return '';
+            });
+            return '';
+        })
     };
 
     // 进入预览
@@ -239,7 +270,7 @@ class QuestionEdit extends React.PureComponent {
         }
     };
     // 删除题目
-    delQestion = (props, i) => {
+    delQestion = (props) => {
         let newQuestionList = this.state.questionDisplayList.filter(item => item.questionOrder !== props.questionOrder);
         this.setState({
             questionDisplayList: [...newQuestionList],
@@ -268,6 +299,31 @@ class QuestionEdit extends React.PureComponent {
             });
         }
 
+    };
+
+    // 添加分页
+    addPagination = () => {
+        let param = {
+            "contentCheck": "",
+            "createTime": "当前时间",
+            "createUid": 20,
+            "isBlank": 0,
+            "isCommon": "",
+            "isNps": "",
+            "isPaging": "1",//分页数据
+            "isSatisfied": "",
+            "lenthCheck": "",
+            "optionLayout": "",
+            "optionList":"",
+            "questionCategory": "",
+            "questionName": "",
+            "questionName2": "",
+            "questionOrder": null,
+            "questionType": "00",
+            "status": ""
+        };
+        this.state.questionDisplayList1.push(param);
+        this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
     };
 
     render() {
@@ -349,7 +405,7 @@ class QuestionEdit extends React.PureComponent {
                     <Col span={12} offset={8}>
                         <Button type="primary">完成编辑</Button>
                         <Button type="primary" icon="eye-o" onClick={this.preview} style={{marginLeft: '16px'}}>预览</Button>
-                        <Button style={{float: 'right'}}>分页</Button>
+                        <Button style={{float: 'right'}} onClick={() => this.addPagination()}>分页</Button>
                     </Col>
                 </Row>
                 <Row className={'height'}>
@@ -362,31 +418,41 @@ class QuestionEdit extends React.PureComponent {
                                 <Input className={'questionInput'} placeholder="标题"/>
                                 <TextArea className={"surveyDescription"} placeholder="添加问卷说明" autosize={{ minRows: 1}}/>
                             </div>
-                            <div className={"question"}>
-                                <div className={"div_preview"}>
-                                    <span className={"div_topic_page_question paging-bg"}>]<span>第1页/共2页</span>[</span>
-                                    <span className={"line_as_hr"}/>
-                                </div>
-                            </div>
                             {questionDisplayList.map((item, i) => {
                                 return (
-                                    <div key={i}>
-                                        <InitQuestionList questionType={item.questionType} questionOrder={item.questionOrder}
-                                                          index={i + 1} questionName={item.questionName} optionList={item.optionList}/>
-                                        <div className="link-group">
-                                            <a href="javascript:void(0);"
-                                               onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
-                                            <a href="javascript:void(0);"
-                                               onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
-                                            <a href="javascript:void(0);"
-                                               onClick={() => this.jumpUp(i, item)}>上移</a>
-                                            <a href="javascript:void(0);"
-                                               onClick={() => this.jumpDown(i, item)}>下移</a>
-                                            <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i)}>
-                                                <a href="javascript:void(0);">删除</a>
-                                            </Popconfirm>
+                                    item.isPaging === '0' ?
+                                        <div key={i}>
+                                            <InitQuestionList questionType={item.questionType} questionOrder={item.questionOrder}
+                                                              index={item.number + 1} questionName={item.questionName} optionList={item.optionList}/>
+                                            <div className="link-group">
+                                                <a href="javascript:void(0);"
+                                                   onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
+                                                <a href="javascript:void(0);"
+                                                   onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
+                                                <a href="javascript:void(0);"
+                                                   onClick={() => this.jumpUp(i, item)}>上移</a>
+                                                <a href="javascript:void(0);"
+                                                   onClick={() => this.jumpDown(i, item)}>下移</a>
+                                                <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item)}>
+                                                    <a href="javascript:void(0);">删除</a>
+                                                </Popconfirm>
+                                            </div>
                                         </div>
-                                    </div>
+                                        :  <div key={i} className="questionStyle">
+                                            <div className={"question"}>
+                                                <div className={"div_preview"}>
+                                                    <span className={"div_topic_page_question paging-bg"}>]<span>第1页</span>[</span>
+                                                    <span className={"line_as_hr"}/>
+                                                </div>
+                                            </div>
+                                            {i !== 0 ?
+                                            <div className="link-group">
+                                                <a href="javascript:void(0);" onClick={() => this.jumpUp(i, item)}>上移</a>
+                                                <a href="javascript:void(0);" onClick={() => this.jumpDown(i, item)}>下移</a>
+                                                <a href="javascript:void(0);" onClick={() => this.delQestion(item)}>删除</a>
+                                            </div>
+                                        : ''}
+                                        </div>
                                 )
                             })}
                         </div>

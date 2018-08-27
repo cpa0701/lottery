@@ -24,6 +24,7 @@ const {Sider, Content} = Layout;
 @Form.create({})
 export default class Role extends PureComponent {
     state = {
+        role:this.props.stores.I18nModel.outputLocale.role,
         treeData: [], // 角色树
         authData: [], // 角色拥有权限树
         regionData: [], // 用户区域管理树
@@ -115,7 +116,7 @@ export default class Role extends PureComponent {
     // 点击、勾选角色树节点时
     onSelect = (selectedKeys, info) => {
         if (selectedKeys.length > 1) {
-            message.info('每次只能选择一个角色');
+            message.info(this.state.role.selectOneCharacter);
             return;
         }
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
@@ -144,7 +145,7 @@ export default class Role extends PureComponent {
     editRoleModal = (show, record, checkedKeys, type) => {
         if (Object.keys(record).length !== 0 ) {
             if(checkedKeys.length > 1) {
-                message.info('一次只能编辑一条角色');
+                message.info(this.state.role.editOneCharacter);
                 return;
             }
             this.setState({
@@ -154,14 +155,14 @@ export default class Role extends PureComponent {
             this.setState({edit: false});
         } else {
             this.setState({edit: false});
-            message.info('请选择需要编辑的角色');
+            message.info(this.state.role.selectEditCharacter);
         }
     };
     // 复制角色
     copyRoleModal = (show, record, checkedKeys, type) => {
         if (Object.keys(record).length !== 0) {
             if(checkedKeys.length > 1) {
-                message.info('一次只能复制一条角色');
+                message.info(this.state.role.copyCharacter);
                 return;
             }
             this.setState({
@@ -171,22 +172,22 @@ export default class Role extends PureComponent {
             this.setState({copy: false});
         } else {
             this.setState({copy: false});
-            message.info('请选择需要复制的角色');
+            message.info(this.state.role.selectCopyCharacter);
         }
     };
     // 删除角色
     delRoles = () => {
         let checkedKeys = this.state.checkedKeys;
         if(checkedKeys.length === 0) {
-            message.info('一次只能删除一条角色');
+            message.info(this.state.role.deleteOneCharacter);
             return;
         } else if(checkedKeys.length > 1) {
-            message.info('请选择要删除的角色');
+            message.info(this.state.role.selectDeleteCharacter);
             return;
         }
         this.setState({loading: true}, () => {
             SysRoleMgService.delRoles({id: checkedKeys[0]}).then((res) => {
-                message.success('删除成功');
+                message.success(this.state.role.deleteSuccess);
                 this.roleQuery({parentId: '0'});
                 this.setState({checkedKeys: [], record: {}, loading: false});
             });
@@ -246,19 +247,19 @@ export default class Role extends PureComponent {
             this.setState({editAuth: false});
         } else {
             this.setState({editAuth: false});
-            message.info('请选择需要编辑权限的角色');
+            message.info(this.state.role.selectEditRole);
         }
     };
     // 删除权限
     delAuths = () => {
         let checkedKeys = this.state.checkedKeys;
         if(checkedKeys.length === 0) {
-            message.info('请在左侧勾选要删除权限的角色');
+            message.info(this.state.role.tickDeleteRole);
             return;
         }
         this.setState({loading: true}, () => {
             SysRoleMgService.delRoleAuth(checkedKeys[0]).then((res) => {
-                    message.success('删除成功');
+                    message.success(this.state.role.deleteSuccess);
                     if (checkedKeys.length  === 1) {
                         this.authQuery(checkedKeys);
                     }
@@ -321,7 +322,7 @@ export default class Role extends PureComponent {
             this.setState({editReg: false});
         } else {
             this.setState({editReg: false});
-            message.info('请选择需要选择区域的角色');
+            message.info(this.state.role.selectAreaRole);
         }
     };
 
@@ -375,7 +376,7 @@ export default class Role extends PureComponent {
             this.setState({editDept: false});
         } else {
             this.setState({editDept: false});
-            message.info('请选择需要编辑部门的角色');
+            message.info(this.state.role.selectEditDepartmentRole);
         }
     };
 
@@ -403,7 +404,7 @@ export default class Role extends PureComponent {
     // 获取勾选用户表格id
     onSelectChange = (selectedRowKeys) => {
         if(selectedRowKeys.length !== 1) {
-            message.info('请勾选需要删除的用户，且每次只能勾选一条用户信息');
+            message.info(this.state.role.checkDeleteUser);
             return;
         }
         this.setState({ selRowKeys: selectedRowKeys });
@@ -418,19 +419,19 @@ export default class Role extends PureComponent {
             this.setState({addUser: false});
         } else {
             this.setState({addUser: false});
-            message.info('请选择需要新增人员的角色');
+            message.info(this.state.role.selectAddCharacter);
         }
     };
     // 删除用户
     delUsers = () => {
         let selRowKeys = this.state.selRowKeys;
         if(selRowKeys.length === 0) {
-            message.info('请选择要删除的用户');
+            message.info(this.state.role.selectDeleteUser);
             return;
         }
         this.setState({loading: true}, () => {
             SysRoleMgService.delRoleUsers({rid: this.state.selectedKeys, uid: selRowKeys}).then((res) => {
-                message.success('删除成功');
+                message.success(this.state.role.deleteSuccess);
                 this.getUserData({id: this.state.selectedKeys});
                 this.setState({loading: false});
             });
@@ -539,14 +540,14 @@ export default class Role extends PureComponent {
             onCreate: (values) => {
                 SysRoleMgService.addRoles({...values}).then((data) => {
                     if (data) {
-                        message.success('保存成功');
+                        message.success(role.success);
                         if (this.isMount) {
                             this.setState({add: false, loading: false}, () => {
                                 this.roleQuery({parentId: '0'});
                             });
                         }
                     } else {
-                        message.error('保存失败');
+                        message.error(role.saveFailed);
                         if (this.isMount) {
                             this.setState({loading: false});
                         }
@@ -563,7 +564,7 @@ export default class Role extends PureComponent {
             onCreate: (values) => {
                 console.log(values);
                 SysRoleMgService.editRoles({...values}).then((data) => {
-                    message.success('编辑成功!');
+                    message.success(role.editSuccess);
                     if (this.isMount) {
                         this.setState({checkedKeys: [], record: {}, edit: false}, () => {
                             this.roleQuery({parentId: '0'});
@@ -581,14 +582,14 @@ export default class Role extends PureComponent {
             onCreate: (values) => {
                 SysRoleMgService.copyRoles({...values}).then((data) => {
                     if (data.code === 0) {
-                        message.success('复制成功!');
+                        message.success(role.copySuccess);
                         if (this.isMount) {
                             this.setState({edit: false}, () => {
                                 this.roleQuery({parentId: '0'});
                             });
                         }
                     } else {
-                        message.error('复制失败');
+                        message.error(role.copyFailed);
                         if (this.isMount) {
                             this.setState({loading: false});
                         }
@@ -700,7 +701,7 @@ export default class Role extends PureComponent {
                 SysRoleMgService.addRoleUserDate(params).then((data) => {
                     debugger;
                         this.setState({addUser: false}, () => {
-                            message.success('新增人员成功!');
+                            message.success(role.newRecruitSuccess);
                             if (checkedKeys.length  === 1) {
                                 this.getUserData({id: checkedKeys[0]});
                             }
@@ -736,7 +737,7 @@ export default class Role extends PureComponent {
                         <div className="divider"></div>
                         <Popconfirm
                             onConfirm={() => this.delRoles()}
-                            title={<span>此操作将删除所勾选的角色？</span>}
+                            title={<span>{role.deleteSelectRole}</span>}
                             okText={role.Confirm}
                             cancelText={role.Cancel}
                         >
@@ -832,9 +833,9 @@ export default class Role extends PureComponent {
                                         <div className="divider"></div>
                                         <Popconfirm
                                             onConfirm={() => this.delUsers()}
-                                            title={<span>此操作将删除所勾选的用户？</span>}
-                                            okText="确认"
-                                            cancelText="取消"
+                                            title={<span>{role.deleteSelectRole}</span>}
+                                            okText={role.Confirm}
+                                            cancelText={role.Cancel}
                                         >
                                             <Button type="danger" icon="delete" className="btnThre">{role.delete}</Button>
                                         </Popconfirm>

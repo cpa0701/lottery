@@ -1,13 +1,14 @@
 import React, {PureComponent} from 'react';
 import {Modal} from 'antd';
-
+import {inject} from "mobx-react/index"
 import TreeComponent from '../../../../common/components/tree/tree';
 import DeptService from "../../../../services/system/DeptService"
-
+@inject('stores')
 class AddRoleModal extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            depart:this.props.stores.I18nModel.outputLocale.dept,
             confirmLoading: false
         }
     }
@@ -33,13 +34,13 @@ class AddRoleModal extends PureComponent {
         const {confirmLoading} = this.state;
         return (
             <Modal
-                title="更改部门"
+                title={this.state.depart.changeDepartment}
                 visible={modalChangeRoleVisible}
                 onOk={this.handleAddRole}
                 confirmLoading={confirmLoading}
                 onCancel={() => addRoleVisible(false)}
-                okText="确认"
-                cancelText="取消"
+                okText={this.state.depart.ok}
+                cancelText={this.state.depart.cancel}
             >
                 <h6 className='departmentH6'>角色树</h6>
                 <div>

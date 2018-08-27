@@ -1,7 +1,5 @@
-package com.ztesoft.nps.common.handler;
+package com.ztesoft.nps.common.exception.handler;
 
-import com.ztesoft.utils.sys.util.LogUtil;
-import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

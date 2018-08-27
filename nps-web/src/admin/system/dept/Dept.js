@@ -17,8 +17,8 @@ import DeptService from "../../../services/system/DeptService"
 import DeptModal from "./modal/DeptModal"
 import StaffModal from "./modal/StaffModal"
 import ChangeDeptModal from "./modal/ChangeDeptModal"
-import AddRoleModal from "./modal/AddRoleModal"
-import EditAuthorityModal from "./modal/EditAuthorityModal"
+// import AddRoleModal from "./modal/AddRoleModal"
+// import EditAuthorityModal from "./modal/EditAuthorityModal"
 import DeptForm from "./DeptForm"
 import StandardTable from '../../../common/components/table/table';
 import TreeComponent from '../../../common/components/tree/tree';
@@ -35,6 +35,7 @@ const TreeNode = TreeSelect.TreeNode;
 @inject('stores')
 export default class Dept extends PureComponent {
     state = {
+        depart:this.props.stores.I18nModel.outputLocale.dept,
         collapsed: false,
         value: undefined,
         activeKey: 'role',
@@ -63,7 +64,8 @@ export default class Dept extends PureComponent {
         modalChangeAuthorityVisible: false,
         staffColumns: [
             {
-                title: '登录账号',
+               // title: '登录账号',
+                title: this.props.stores.I18nModel.outputLocale.dept.loginAccount,
                 dataIndex: 'account',
                 render: (text, record, index) => {
                     return (
@@ -74,37 +76,38 @@ export default class Dept extends PureComponent {
                 }
             },
             {
-                title: '人员工号',
+                //人员工号
+                title: this.props.stores.I18nModel.outputLocale.dept.personnelWorking,
                 dataIndex: 'no'
             },
             {
-                title: '人员姓名',
+                title: this.props.stores.I18nModel.outputLocale.dept.stuffName,
                 dataIndex: 'name',
             },
             {
-                title: '性别',
+                title: this.props.stores.I18nModel.outputLocale.dept.gender,
                 dataIndex: 'sex',
                 render: (text, record, index) => {
-                    return text === 'M' ? '男' : '女'
+                    return text === 'M' ? this.props.stores.I18nModel.outputLocale.dept.man : this.props.stores.I18nModel.outputLocale.dept.female
                 }
             },
             {
-                title: '账号状态',
+                title: this.props.stores.I18nModel.outputLocale.dept.accountStatus,
                 dataIndex: 'status',
                 render: (text, record, index) => {
-                    return text === 0 ? '失效' : '有效'
+                    return text === 0 ? this.props.stores.I18nModel.outputLocale.dept.invalid : this.props.stores.I18nModel.outputLocale.dept.effective
                 }
             },
             {
-                title: '手机号码',
+                title: this.props.stores.I18nModel.outputLocale.dept.phonenumber,
                 dataIndex: 'cellphone',
             },
             {
-                title: '邮箱',
+                title: this.props.stores.I18nModel.outputLocale.dept.email,
                 dataIndex: 'email',
             },
             {
-                title: '部门名称',
+                title: this.props.stores.I18nModel.outputLocale.dept.departmentName,
                 dataIndex: 'deptId',
             }
         ],
@@ -130,11 +133,6 @@ export default class Dept extends PureComponent {
         this.getDomainTree();
         this.getDeptTree();
         // this.getAllAuthorityData();
-    }
-
-    componentDidMount() {
-        //第一次默认加载
-        // this.standardTable.handleSearch({current: 1, pageSize: 10})
     }
 
     //收起展开部门
@@ -435,10 +433,10 @@ export default class Dept extends PureComponent {
             this.handleDeptModalVisible(true);
         } else {
             const ref = info({
-                title: '请先选择要修改的部门',
+                title: this.state.depart.selectChangeDepart,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -453,15 +451,15 @@ export default class Dept extends PureComponent {
             // params.id = row.map(item => item + ''); //平台角色id，必填
             params.id = row;
             DeptService.dleDept(params).then(result => {
-                message.success('删除成功');
+                message.success(this.state.depart.deleteSuccess);
                 this.handlerSearchDepartment();
             });
         } else {
             const ref = info({
-                title: '请先选择要删除的部门',
+                title: this.state.depart.selectDeleteDepart,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -495,6 +493,10 @@ export default class Dept extends PureComponent {
             this.standardTable.handleSearch({pageNumber: 1, pageSize: 10, ...params})
         });
     }
+    //查询人员表格
+    onRef = (ref) => {
+        this.standardTable = ref
+    }
     //新增人员
     handleStaffAdd = () => {
         if (this.state.departmentEditData.length !== 0) {
@@ -502,10 +504,10 @@ export default class Dept extends PureComponent {
             this.handleStaffModalVisible(true);
         } else {
             const ref = info({
-                title: '请先选择要新增人员的所属部门',
+                title: this.state.depart.selectedAddDepart,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -524,10 +526,10 @@ export default class Dept extends PureComponent {
                 });
             } else {
                 const ref = info({
-                    title: '请先选择要修改的人员',
+                    title: this.state.depart.modifyPerson,
                     content: '',
-                    okText: '确定',
-                    cancelText: '取消',
+                    okText: this.state.depart.ok,
+                    cancelText: this.state.depart.cancel,
                     onOk: () => {
                         ref.destroy();
                     }
@@ -535,10 +537,10 @@ export default class Dept extends PureComponent {
             }
         } else {
             const ref = info({
-                title: '请先选择要修改人员的所属部门',
+                title: this.state.depart.modifyDepart,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -561,16 +563,16 @@ export default class Dept extends PureComponent {
             this.state.staffData.status = 0;
             DeptService.ediStaff(this.state.staffData).then(result => {
                 if (result) {
-                    message.success('删除成功');
+                    message.success(this.state.depart.deleteSuccess);
                     this.getStaffData({deptId: this.state.selectedDeptKey});
                 }
             });
         } else {
             const ref = info({
-                title: '请先选择要删除的部门',
+                title: this.state.depart.selectDeleteDepart,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -598,10 +600,10 @@ export default class Dept extends PureComponent {
             });
         } else {
             const ref = info({
-                title: '请先选择要修改的人员',
+                title: this.state.depart.modifyPerson,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.depart.ok,
+                cancelText: this.state.depart.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -821,7 +823,7 @@ export default class Dept extends PureComponent {
                         <FormItem
                             labelCol={{span: 6}}
                             wrapperCol={{span: 17}}
-                            label="所属区域"
+                            label={dept.area}
                             style={{"marginBottom": 0}}
                         >
                             <TreeSelect
@@ -829,7 +831,7 @@ export default class Dept extends PureComponent {
                                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
                                 treeCheckable={false}
                                 showCheckedStrategy={SHOW_PARENT}
-                                searchPlaceholder={'请选择区域'}
+                                searchPlaceholder={this.state.depart.selectedArea}
                                 loadData={this.onLoadDomainTreeData}
                                 onChange={this.onChange}
                             >{loop(domainTreeDate)}</TreeSelect>
@@ -837,7 +839,7 @@ export default class Dept extends PureComponent {
                         <FormItem
                             labelCol={{span: 6}}
                             wrapperCol={{span: 17}}
-                            label="部门名称"
+                            label={dept.departmentName}
                             style={{"marginBottom": 0}}
                         >
                             {getFieldDecorator('name', {
@@ -848,14 +850,14 @@ export default class Dept extends PureComponent {
                         </FormItem>
                     </Form>
                     <div className='departmentBtn'>
-                        <Button onClick={this.handlerSearchDepartment} type="primary">查询</Button>
-                        <Button onClick={this.handleDeptAdd}>新增</Button>
-                        <Button type="dashed" onClick={this.handleDeptUpdate}>修改</Button>
-                        <Popconfirm title="确定删除吗?" okText="确定" cancelText="取消" onConfirm={this.handleDeptDelete}>
-                            <Button type="danger">删除</Button>
+                        <Button onClick={this.handlerSearchDepartment} type="primary">{dept.query}</Button>
+                        <Button onClick={this.handleDeptAdd}>{dept.insert}</Button>
+                        <Button type="dashed" onClick={this.handleDeptUpdate}>{dept.modify}</Button>
+                        <Popconfirm title={this.state.depart.shuredelete} okText={this.state.depart.ok} cancelText={this.state.depart.cancel} onConfirm={this.handleDeptDelete}>
+                            <Button type="danger">{dept.delete}</Button>
                         </Popconfirm>,
                     </div>
-                    <h6 className='departmentH6'>部门导航树</h6>
+                    <h6 className='departmentH6'>{dept.departNavigationtree}</h6>
                     <TreeComponent
                         showLine={true}
                         checkable={true}
@@ -875,16 +877,16 @@ export default class Dept extends PureComponent {
                     <Content style={{background: '#fff', minHeight: 280, paddingLeft: "10px"}}>
                         <div>
                             <Tabs type="card">
-                                <TabPane tab="人员管理" key="1">
+                                <TabPane tab={dept.p} key="1">
                                     <DeptForm handleAdd={this.handleStaffAdd}
                                               handleEdit={this.handleStaffEdit}
                                               handleDelete={this.handleStaffDelete}
                                               handleChangeDept={this.handleChangeDept}
                                               getStaffParams={this.getStaffData}/>
                                     <StandardTable
-                                        ref={child => this.standardTable = child}
                                         rowKey={"id"}
                                         // rowSelection={{selectedRowKeys:[10000]}}
+                                        onRef={this.onRef}
                                         columns={staffColumns}
                                         service={DeptService}
                                         method="getStaffData"

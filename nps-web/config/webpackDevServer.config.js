@@ -9,6 +9,15 @@ const paths = require('./paths');
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const host = process.env.HOST || '0.0.0.0';
 
+const path = require('path');
+
+const htmlPluginsAray = paths.htmlArray.map((v)=> {
+    const fileParse = path.parse(v);
+    return {
+        from: new RegExp(`^\/${fileParse.base}`), to: `/build/${fileParse.base}`
+    };
+});
+
 module.exports = function(proxy, allowedHost) {
   return {
     // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
@@ -78,6 +87,7 @@ module.exports = function(proxy, allowedHost) {
       // Paths with dots should still use the history fallback.
       // See https://github.com/facebookincubator/create-react-app/issues/387.
       disableDotRule: true,
+        rewrites: htmlPluginsAray
     },
     public: allowedHost,
       proxy: [{
