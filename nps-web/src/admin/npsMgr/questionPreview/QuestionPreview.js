@@ -31,11 +31,10 @@ class QuestionPreview extends React.PureComponent {
                 let logicList = result.logic;
                 this.state.logicList = result.logic;
                 let questionList = result.question;
-                let page = 1;
-                let pageCount = 1;
-                let pageList = [1];
+                let page = 1;//页码
+                let pageCount = 2;//由于isPaging属性是放在每页最前的一个对象中，所以从2开始
+                let pageList = [1];//页码list
                 let isPaging = questionList.some(item => {
-                    item.isPaging === '1' && pageList.push(++pageCount);
                     return item.isPaging === '1';
                 });
                 questionList.map(item => {
@@ -46,6 +45,7 @@ class QuestionPreview extends React.PureComponent {
                     item.belongToPage = page;
                     if (item.isPaging === '1') {
                         page++;
+                        pageList.push(pageCount++);
                     }
                     logicList.map(k => {
                         if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
@@ -62,10 +62,30 @@ class QuestionPreview extends React.PureComponent {
                         }
                     })
                 });
+                isPaging && questionList.push({//如果有分页添加最后一页的对象
+                    "contentCheck": "",
+                    "belongToPage": page,
+                    "createTime": "当前时间",
+                    "createUid": 20,
+                    "isBlank": 0,
+                    "isCommon": "",
+                    "isNps": "",
+                    "isPaging": "1",//分页数据
+                    "isSatisfied": "",
+                    "lenthCheck": "",
+                    "optionLayout": "",
+                    "optionList": "",
+                    "questionCategory": "",
+                    "questionName": "",
+                    "questionName2": "",
+                    "questionOrder": questionList[questionList.length - 1].questionOrder,
+                    "questionType": "00",
+                    "status": ""
+                })
                 this.setState({
                     loading: false,
                     isPaging: isPaging,
-                    pageCount: pageCount,
+                    pageCount: pageCount - 1,
                     pageList: [...pageList],
                     questionList: questionList,
                     qstnaireTitle: result.qstnaireTitle
@@ -282,7 +302,7 @@ class QuestionPreview extends React.PureComponent {
 
     render() {
         let questionnaireBlock = this.state.pageList.map(page => {
-            return <div style={{display: page === this.state.currentPage ? 'block' : 'none'}}>
+            return <div key={page} style={{display: page === this.state.currentPage ? 'block' : 'none'}}>
                 {
                     this.state.questionList.map((item, i) => {
                         if (item.belongToPage === page) {
@@ -291,6 +311,7 @@ class QuestionPreview extends React.PureComponent {
                                 questionType={item.questionType} key={i}
                                 index={item.questionOrder}
                                 isPaging={item.isPaging}
+                                pageCount={this.state.pageCount}
                                 questionName={item.questionName}
                                 optionList={item.optionList}
                                 isSetup={item.isSetup}

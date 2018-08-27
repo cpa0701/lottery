@@ -10,7 +10,7 @@ class AuthorizedRoute extends React.Component {
 
         const {stores} = this.props;
         let loginModel = stores.LoginModel;
-        let modelUsercode = loginModel.userstatus;
+        let modelUsercode = loginModel.identityCard;
 
         if (!sessionStorage) {
             return logined;
@@ -28,7 +28,7 @@ class AuthorizedRoute extends React.Component {
 
         return (
             <Route render={props => {
-                return !this.hasLogined()
+                return this.hasLogined()
                     ? <Component {...props} />
                     : <Redirect to="/login"/>
             }}/>

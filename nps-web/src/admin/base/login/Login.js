@@ -106,7 +106,7 @@ class Login extends React.Component {
 
     isLogined() {
         autorun(() => {
-            if (this.store.LoginModel.userstatus) {
+            if (this.store.LoginModel.identityCard) {
                 this.props.history.push('/');
             }
         })
