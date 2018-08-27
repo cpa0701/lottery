@@ -86,7 +86,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
     @Override
     public LPageHelper questionBank(QuestionQuery condition) {
 
-        StringBuilder qstBankQuerySql = new StringBuilder(" select * from question_bank where 1=1 ");
+        StringBuilder qstBankQuerySql = getQuestionBankQuerySql();
         if (StringUtil.isNotNull(condition.getQuestionCategory())) {
             qstBankQuerySql.append(" and question_category = '").append(condition.getQuestionCategory()).append("' ");
         }
@@ -111,23 +111,22 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         String qstIds = "";
         if (ListUtil.isNotNull(bankRows)) {
             for (Map<String,Object> bank : bankRows) {
-                qstIds += MapUtil.getString(bank,"question_id") + ",";
+                qstIds += MapUtil.getString(bank,"questionId") + ",";
             }
         }
 
         if (StringUtil.isNotNull(qstIds)) {
-            StringBuilder optQuerySql = new StringBuilder();
-            optQuerySql.append(" select option_id, question_id, option_order, option_name, is_other ");
-            optQuerySql.append(" from question_option where question_id in( ");
+            StringBuilder optQuerySql = getOptionQuerySql();
+            optQuerySql.append(" and question_id in( ");
             optQuerySql.append(StringUtil.getFormatString(qstIds.substring(0, qstIds.lastIndexOf(","))));
             optQuerySql.append(" ) ");
 
             List<Map<String, Object>> optList = DatabaseUtil.queryForList(optQuerySql.toString());
-            List chirlOptList = new ArrayList();
             for (Map<String,Object> bank : bankRows) {
-                String questionId = MapUtil.getString(bank,"question_id");
+                List chirlOptList = new ArrayList();
+                String questionId = MapUtil.getString(bank,"questionId");
                 for (Map<String, Object> optMap : optList) {
-                    String qstId = MapUtil.getString(optMap, "question_id");
+                    String qstId = MapUtil.getString(optMap, "questionId");
                     if (StringUtil.isNotNull(qstId) && questionId.equals(qstId)) {
                         chirlOptList.add(optMap);
                     }
@@ -160,4 +159,27 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         }
         questionOptionMapper.batchSaveOpt(optList);
     }
+
+    private StringBuilder getQuestionBankQuerySql(){
+        StringBuilder qstBankQuerySql = new StringBuilder();
+        qstBankQuerySql.append(" select question_id as questionId, question_name as questionName, ");
+        qstBankQuerySql.append(" question_type as questionType, question_category as questionCategory, ");
+        qstBankQuerySql.append(" is_common as isCommon, is_nps as isNps, ");
+        qstBankQuerySql.append(" is_satisfied as isSatisfied, option_layout as optionLayout, ");
+        qstBankQuerySql.append(" content_check as contentCheck, lenth_check as lenthCheck, ");
+        qstBankQuerySql.append(" create_uid as createUid, create_time as create_time, ");
+        qstBankQuerySql.append(" status, question_tags as questionTags ");
+        qstBankQuerySql.append(" from question_bank where 1=1 ");
+        return qstBankQuerySql;
+    }
+
+    private StringBuilder getOptionQuerySql(){
+        StringBuilder optQuerySql = new StringBuilder();
+        optQuerySql.append(" select option_id as optionId, question_id as questionId, ");
+        optQuerySql.append(" option_order as optionOrder, option_name as optionName, ");
+        optQuerySql.append(" is_other as isOther ");
+        optQuerySql.append(" from question_option where 1=1 ");
+        return optQuerySql;
+    }
+
 }
