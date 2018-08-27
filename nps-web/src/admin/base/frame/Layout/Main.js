@@ -17,10 +17,6 @@ const {Content} = Layout;
 @inject("stores")
 @observer
 class Main extends React.Component {
-    componentWillUpdate(nextProps) {
-        // console.log(nextProps)//监听路由
-    }
-
     render() {
         return (
             <Router>

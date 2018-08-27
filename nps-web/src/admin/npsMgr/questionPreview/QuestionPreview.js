@@ -2,7 +2,7 @@
  * Create by chenpengan on 2018/8/15
  */
 import React from 'react';
-import {Row, Col, Spin} from "antd"
+import {Row, Col, Spin, Button} from "antd"
 
 import QuestionPreviewService from '../../../services/question/QuestionPreviewService'
 import InitQuestionList from './InitQuestionList'
@@ -13,10 +13,13 @@ class QuestionPreview extends React.PureComponent {
     constructor(props) {
         super(props);
         // let id = props.location.query.id;
-        // console.log(id);
         this.state = {
             loading: false,
-            questionList: []
+            currentPage: 1,
+            pageCount: 1,
+            pageList: [],
+            questionList: [],
+            isPaging: false
         }
     }
 
@@ -28,11 +31,22 @@ class QuestionPreview extends React.PureComponent {
                 let logicList = result.logic;
                 this.state.logicList = result.logic;
                 let questionList = result.question;
+                let page = 1;
+                let pageCount = 1;
+                let pageList = [1];
+                let isPaging = questionList.some(item => {
+                    item.isPaging === '1' && pageList.push(++pageCount);
+                    return item.isPaging === '1';
+                });
                 questionList.map(item => {
                     item.isShow = false;
                     item.optionList.length && item.optionList.map(k => {
                         k.logicList = [];
-                    })
+                    });
+                    item.belongToPage = page;
+                    if (item.isPaging === '1') {
+                        page++;
+                    }
                     logicList.map(k => {
                         if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
                             if (item.questionOrder === k.skiptoQuestionOrder) {
@@ -50,6 +64,9 @@ class QuestionPreview extends React.PureComponent {
                 });
                 this.setState({
                     loading: false,
+                    isPaging: isPaging,
+                    pageCount: pageCount,
+                    pageList: [...pageList],
                     questionList: questionList,
                     qstnaireTitle: result.qstnaireTitle
                 });
@@ -251,21 +268,44 @@ class QuestionPreview extends React.PureComponent {
         })
     }
 
+    // 下一页
+    changePage(type) {
+        let page = this.state.currentPage;
+        let pageCount = this.state.pageCount;
+        if (type === 'pre') {
+            page > 0 ? page-- : page = 1;
+        } else {
+            page < pageCount ? page++ : page = pageCount;
+        }
+        this.setState({currentPage: page})
+    }
+
     render() {
-        const questionnaire = this.state.questionList.map((item, i) => {
-            return <InitQuestionList questionType={item.questionType} key={i}
-                                     index={item.questionOrder}
-                                     isPaging={item.isPaging}
-                                     questionName={item.questionName}
-                                     optionList={item.optionList}
-                                     isSetup={item.isSetup}
-                                     isShow={item.isShow}
-                                     jumped={item.jumped}
-                                     isJump={item.isJump}
-                                     onRadioChange={this.onRadioChange}
-                                     onCheckBoxChange={this.onCheckBoxChange}
-                                     questionNameBlur={this.questionNameBlur}
-                                     optionNameBlur={this.optionNameBlur}/>
+        let questionnaireBlock = this.state.pageList.map(page => {
+            return <div style={{display: page === this.state.currentPage ? 'block' : 'none'}}>
+                {
+                    this.state.questionList.map((item, i) => {
+                        if (item.belongToPage === page) {
+                            return <InitQuestionList
+                                style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}
+                                questionType={item.questionType} key={i}
+                                index={item.questionOrder}
+                                isPaging={item.isPaging}
+                                questionName={item.questionName}
+                                optionList={item.optionList}
+                                isSetup={item.isSetup}
+                                isShow={item.isShow}
+                                jumped={item.jumped}
+                                isJump={item.isJump}
+                                belongToPage={item.belongToPage}
+                                onRadioChange={this.onRadioChange}
+                                onCheckBoxChange={this.onCheckBoxChange}
+                                questionNameBlur={this.questionNameBlur}
+                                optionNameBlur={this.optionNameBlur}/>
+                        }
+                    })
+                }
+            </div>;
         })
         return (
             <Spin spinning={this.state.loading}>
@@ -274,7 +314,15 @@ class QuestionPreview extends React.PureComponent {
                         <h1>{this.state.qstnaireTitle}</h1>
                     </Col>
                     <Col span={12} offset={6}>
-                        {questionnaire}
+                        {questionnaireBlock}
+                    </Col>
+                    <Col span={12} offset={6} className={'paging'}
+                         style={{display: this.state.isPaging ? 'block' : 'none', marginTop: '10px'}}>
+                        <Button style={{display: this.state.currentPage === 1 ? 'none' : 'inline-block'}} type="primary"
+                                onClick={this.changePage.bind(this, 'pre')}>上一页</Button>
+                        <Button
+                            style={{display: this.state.currentPage === this.state.pageCount ? 'none' : 'inline-block'}}
+                            type="primary" onClick={this.changePage.bind(this, 'next')}>下一页</Button>
                     </Col>
                 </Row>
             </Spin>

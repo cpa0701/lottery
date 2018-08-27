@@ -952,6 +952,25 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "questionOrder": 6,
                 "questionType": "01",
                 "status": 1
+            },
+            {
+                "contentCheck": "",
+                "createTime": "当前时间",
+                "createUid": 20,
+                "isBlank": 0,
+                "isCommon": "",
+                "isNps": "",
+                "isPaging": "1",//分页数据
+                "isSatisfied": "",
+                "lenthCheck": "",
+                "optionLayout": "",
+                "optionList": "",
+                "questionCategory": "",
+                "questionName": "",
+                "questionName2": "",
+                "questionOrder": 7,
+                "questionType": "00",
+                "status": ""
             }
         ]
     })
