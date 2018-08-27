@@ -10,8 +10,6 @@ import com.ztesoft.nps.qstMgr.model.QuestionOptionExample;
 import com.ztesoft.nps.qstMgr.query.QuestionQuery;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
-import com.ztesoft.utils.sys.datastruct.IVarForeachHandler;
-import com.ztesoft.utils.sys.datastruct.Var;
 import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
 import com.ztesoft.utils.sys.util.MapUtil;

@@ -1,28 +1,21 @@
 package com.ztesoft.nps.qstMgr.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
-import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.qstMgr.model.QuestionBank;
 import com.ztesoft.nps.qstMgr.query.QuestionIdQuery;
 import com.ztesoft.nps.qstMgr.query.QuestionQuery;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
-import com.ztesoft.nps.safe.model.Department;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
-import com.ztesoft.utils.sys.datastruct.Var;
-import com.ztesoft.utils.sys.util.DatabaseUtil;
-import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by 64671 on 2018/8/16.
