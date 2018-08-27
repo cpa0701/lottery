@@ -289,11 +289,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户';
 
 -- ----------------------------
--- Records of users
--- ----------------------------
-INSERT INTO `users` VALUES ('1', '10000', 'admin', '管理员', 'F', '189432435', 'admin@ztesoft.com', '5434324326432', '1', 'd5ba2f763ef411812252a1d093d597c4', '32', '0', '系统管理员', '', '2018-08-13 14:15:51', '', '2018-08-13 14:15:51');
-
--- ----------------------------
 -- Table structure for user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `user_role`;

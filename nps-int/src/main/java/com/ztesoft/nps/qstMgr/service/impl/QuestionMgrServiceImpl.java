@@ -10,6 +10,8 @@ import com.ztesoft.nps.qstMgr.model.QuestionBankExample;
 import com.ztesoft.nps.qstMgr.model.QuestionOption;
 import com.ztesoft.nps.qstMgr.model.QuestionOptionExample;
 import com.ztesoft.nps.qstMgr.service.QuestionMgrService;
+import com.ztesoft.utils.plugin.jdbc.source.Data;
+import com.ztesoft.utils.plugin.jdbc.source.PageUtil;
 import com.ztesoft.utils.sys.datastruct.IVarForeachHandler;
 import com.ztesoft.utils.sys.datastruct.Var;
 import com.ztesoft.utils.sys.datastruct.WeekArray;
@@ -104,15 +106,15 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
             criteria.andIsSatisfiedEqualTo(MapUtil.getInteger(params, "isSatisfied"));
         }
 
-        PageHelper.startPage(MapUtil.getInteger(params, "pageNum"), MapUtil.getInteger(params, "pageSize"));
+        PageHelper.startPage(MapUtil.getInteger(params, "pageNum"), MapUtil.getInteger(params, "pageSize"),true);
         List<QuestionBank> bankList = questionBankMapper.selectByExample(qstExample);
 
-//        List<String> qstIdList = new ArrayList<String>();
-//        if (ListUtil.isNotNull(bankList)) {
-//            for (QuestionBank bank : bankList) {
-//                qstIdList.add(bank.getQuestionId());
-//            }
-//        }
+        List<String> qstIdList = new ArrayList<String>();
+        if (ListUtil.isNotNull(bankList)) {
+            for (QuestionBank bank : bankList) {
+                qstIdList.add(bank.getQuestionId());
+            }
+        }
         String qstIds = "";
         if (ListUtil.isNotNull(bankList)) {
             for (QuestionBank bank : bankList) {
@@ -120,38 +122,25 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
             }
         }
 
-        if(StringUtil.isNotNull(qstIds)){
+        if (StringUtil.isNotNull(qstIds)) {
             StringBuilder optQuerySql = new StringBuilder();
             optQuerySql.append(" select option_id as optionId, question_id as questionId, option_order as optionOrder, option_name as optionName, is_other as isOther ");
             optQuerySql.append(" from question_option where question_id in( ");
-            optQuerySql.append(StringUtil.getFormatString(qstIds.substring(0,qstIds.lastIndexOf(","))));
+            optQuerySql.append(StringUtil.getFormatString(qstIds.substring(0, qstIds.lastIndexOf(","))));
             optQuerySql.append(" ) ");
 
-            List<Map<String,Object>> optList = DatabaseUtil.queryForList(optQuerySql.toString());
+            List<Map<String, Object>> optList = DatabaseUtil.queryForList(optQuerySql.toString());
             List<QuestionOption> chirlOptList = new ArrayList<QuestionOption>();
             for (QuestionBank bank : bankList) {
                 String questionId = bank.getQuestionId();
-                for(Map<String,Object> optMap : optList){
-                    String qstId = MapUtil.getString(optMap,"questionId");
-                    if(StringUtil.isNotNull(qstId) && questionId.equals(qstId)){
-                        chirlOptList.add(MapUtil.convertMap2Bean(optMap,QuestionOption.class));
+                for (Map<String, Object> optMap : optList) {
+                    String qstId = MapUtil.getString(optMap, "questionId");
+                    if (StringUtil.isNotNull(qstId) && questionId.equals(qstId)) {
+                        chirlOptList.add(MapUtil.convertMap2Bean(optMap, QuestionOption.class));
                     }
                 }
                 bank.setOptList(chirlOptList);
             }
-//            List<QuestionOption> optList = questionOptionMapper.selectOptionsByIds(qstIdList);
-//
-//            List<QuestionOption> chirlOptList = new ArrayList<QuestionOption>();
-//            for (QuestionBank bank : bankList) {
-//                String questionId = bank.getQuestionId();
-//                for(QuestionOption opt : optList){
-//                    if(questionId.equals(opt.getQuestionId())){
-//                        chirlOptList.add(opt);
-//                    }
-//                }
-//                bank.setOptList(chirlOptList);
-//            }
-
         }
 
         return bankList;

@@ -69,6 +69,6 @@ public class QuestionMgrController {
 
         List<QuestionBank> bankList = questionMgrService.questionBank(params);
         PageInfo<QuestionBank> page = new PageInfo<QuestionBank>(bankList);
-        return Result.success(page);
+        return Result.success(bankList);
     }
 }
