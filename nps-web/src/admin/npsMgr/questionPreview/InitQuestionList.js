@@ -2,12 +2,12 @@
  * Create by chenpengan on 2018/8/14
  */
 import React from 'react';
-import {Row, Col, Radio, Checkbox, Input} from "antd"
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 import {RadioModule} from "../questionModule/QuestionModules"
-import {CheckboxModule} from "../questionModule/QuestionModules"
+// import {CheckboxModule} from "../questionModule/QuestionModules"
 import {BlankModule} from "../questionModule/QuestionModules"
+import CheckboxGroupModule from "../questionModule/CheckboxGroupModule"
 
 
 class InitQuestionList extends React.PureComponent {
@@ -17,7 +17,7 @@ class InitQuestionList extends React.PureComponent {
 
     render() {
         const {
-            questionType, index, questionName, optionList, isPaging, isBlank, display,
+            questionType, index, questionName, optionList, isPaging, isBlank, display, isShowTip,
             questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange, belongToPage, pageCount
         } = this.props;
         //定义此题是否显示（分页比显示，被跳题>被跳过的题>被关联的题>首次被关联默认隐藏的题)
@@ -34,10 +34,9 @@ class InitQuestionList extends React.PureComponent {
                                    isView={true}/>
                 break;
             case '02':
-                dom = <CheckboxModule questionName={questionName} index={index} isBlank={isBlank}
+                dom =<CheckboxGroupModule questionName={questionName} index={index} isBlank={isBlank}
                                       optionList={optionList} onChange={onCheckBoxChange}
-                                      questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}
-                                      isView={true}/>
+                                      questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}/>
                 break;
             case '03':
                 dom = <BlankModule questionName={questionName} index={index} isBlank={isBlank}
@@ -45,10 +44,11 @@ class InitQuestionList extends React.PureComponent {
                 break;
         }
         return (<div
-            style={{display: show}}
+            style={{display: show, border: isShowTip ? "1px dashed rgb(222, 103, 82)" : 0}}
             className={`${isPaging === '1' ? 'paging' : 'questionList'}`}>
             {dom}
             {isPaging === '1' ? '' : (isBlank === 1 ? <span className="req">*</span> : '')}
+            {isShowTip ? <div className={'errorMessage'}>请选择选项</div> : ''}
         </div>);
     }
 }

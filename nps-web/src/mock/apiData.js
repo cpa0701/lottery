@@ -737,7 +737,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 0,
                 "logicType": "01",
                 "optionOrder": "3",
@@ -746,7 +746,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 1,
                 "logicType": "01",
                 "optionOrder": "1,2",
@@ -760,11 +760,11 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "logicType": "00",
                 "optionOrder": "1",
                 "setupQuestionOrder": 2,
-                "skiptoQuestionOrder": 5
+                "skiptoQuestionOrder": 6
             },
             {
                 "actType": 0,
-                "andOr": 0,
+                "andOr": 1,
                 "isMain": 0,
                 "logicType": "01",
                 "optionOrder": "1",
