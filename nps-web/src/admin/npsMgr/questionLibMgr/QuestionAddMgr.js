@@ -191,7 +191,6 @@ export default class QuestionAddMgr extends PureComponent {
         }
         else {
             questionData.map((item, k) => {
-                console.log(item)
                 if (item.key === e.key) {
                     let questionList = [];
                     questionList = [item];
@@ -461,10 +460,11 @@ export default class QuestionAddMgr extends PureComponent {
             } else {
                 values.isSatisfied = 0;
             }
-            let value = {question:{
+            values.createUid=18573;
+            let value = {
                 ...this.state.questionList[0],
                 ...values
-            }};
+            };
             console.log(value);
             if (value.questionId) {
                 QuestionLibMgrService.editQuestion(value).then(data => {
@@ -476,17 +476,20 @@ export default class QuestionAddMgr extends PureComponent {
                 });
             }
             this.setState({questionList: []});
-            this.props.history.push('/npsMgr/questionLibMgr');
-
+            this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}});
+            // this.props.history.goBack()
         });
     };
     // 取消保存
-    cancelSave = () => {
+    cancelSave1 = () => {
         this.setState({questionList: []});
     };
-
+    cancelSave2 = () => {
+        this.props.history.push('/npsMgr/questionLibMgr');
+    };
     render() {
         const {questionList, addOption, index, isTextArea} = this.state;
+        console.log('999999',questionList)
         const {getFieldDecorator} = this.props.form;
         const options = [{name: '不限', value: 0}, {name: '数字', value: 1}, {name: '字符', value: 2}, {
             name: '中文',
@@ -613,9 +616,15 @@ export default class QuestionAddMgr extends PureComponent {
                                 <div className="addBtn">
                                     <Button type="primary" icon="plus-circle-o"
                                             onClick={() => this.saveQuestion()}>保存</Button>
-                                    <Popconfirm title="你确定清除新建题目？" onConfirm={() => this.cancelSave()}>
+                                    {this.props.location.state ?
+                                        <Popconfirm title="你确定取消编辑题目？" onConfirm={() => this.cancelSave2()}>
+                                            <Button type="danger" icon="delete" style={{marginLeft: '16px'}}>取消</Button>
+                                        </Popconfirm>
+                                        :
+                                        <Popconfirm title="你确定清除新建题目？" onConfirm={() => this.cancelSave1()}>
                                         <Button type="danger" icon="delete" style={{marginLeft: '16px'}}>取消</Button>
-                                    </Popconfirm>,
+                                        </Popconfirm>
+                                    }
                                 </div>
                                 :
                                 <div className="emptyContent">请在左侧选择需要添加的题型</div>}

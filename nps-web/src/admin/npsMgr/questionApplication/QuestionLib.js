@@ -53,7 +53,7 @@ class QuestionLib extends React.PureComponent {
             QuestionLibMgrService.getQuestionList(params).then(result => {
                 if (result) {
                     this.setState({
-                        questionList: result.result.list,
+                        questionList: result.rows,
                         pageNum: this.getInteger(result.result.pageNum)
                     })
                 }

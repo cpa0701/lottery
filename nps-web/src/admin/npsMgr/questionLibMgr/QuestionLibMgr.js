@@ -1,8 +1,7 @@
 import React from 'react';
-import {Row, Col, Tabs, Button, Input, Icon, Pagination, Spin, message, Popconfirm } from "antd"
+import {Row, Col, Tabs, Button, Input, Icon, Pagination, Spin, message, Popconfirm} from "antd"
 
 import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
-
 import QuestionShow from './QuestionShow';
 import '../questionApplication/questionApplication.less';
 import './questionLibMgr.less';
@@ -19,23 +18,17 @@ class QuestionLibMgr extends React.PureComponent {
             record: {},
             show: false,
             pageNum: 1,
-            total: 1
+            total: 0,
+            pageSize: 10,
         };
         this.createQuestion = this.createQuestion.bind(this);
         this.editQuestion = this.editQuestion.bind(this);
+        this.refreshLib=this.refreshLib.bind(this);
+        if(this.props.location.state && this.props.location.state.isFresh)   this.refreshLib();
     }
 
     componentWillMount() {
-         let obj={
-             pageNum:this.state.pageNum,
-             questionCategory:'',
-             questionName:'',
-             pageSize:10,
-             isNps:'',
-             questionType:'',
-             isSatisfied:''
-         };
-        this.getQuestionList(obj)
+         this.refreshLib();
     }
 
     // 获取题目列表
@@ -43,14 +36,12 @@ class QuestionLibMgr extends React.PureComponent {
         this.setState({
             loading: true
         }, () => QuestionLibMgrService.getQuestionList(params).then(result => {
-            console.log(result)
-            if(result){
-            this.setState({
-                questionList: result.list,
-                pageNum:result.pageNum,
-                total: result.total,
-                loading: false
-            })
+            if (result) {
+                this.setState({
+                    questionList: result.rows,
+                    total: result.totalCount,
+                    loading: false
+                })
             }
         }))
     };
@@ -69,8 +60,9 @@ class QuestionLibMgr extends React.PureComponent {
     };
     // 编辑题目
     editQuestion = (record) => {
+        console.log(record)
         // this.props.history.push('/npsMgr/questionAddMgr', record);
-        this.props.history.push({ pathname:'/npsMgr/questionAddMgr', state:{ record } })
+        this.props.history.push({pathname: '/npsMgr/questionAddMgr', state: {record}})
     };
     // 删除题目
     delQuestion = (id) => {
@@ -78,15 +70,35 @@ class QuestionLibMgr extends React.PureComponent {
             loading: true
         }, () => QuestionLibMgrService.delQuestion({questionId: id}).then(result => {
             message.success('删除成功');
-            this.setState({ loading: false });
-            this.getQuestionList();
+            this.setState({loading: false});
+            this.refreshLib();
         }))
     };
+    //刷新题库
+    refreshLib = () => {
+        let obj = {
+            pageNum: this.state.pageNum,
+            questionCategory: '',
+            questionName: '',
+            pageSize: this.state.pageSize,
+            isNps: '',
+            questionType: '',
+            isSatisfied: ''
+        };
+        this.getQuestionList(obj)
+    };
+    onPageChange = (page) => {
+        this.setState({
+            pageNum: page,
+        });
+        this.refreshLib();
+    }
 
     render() {
-        const { questionList, total, pageNum, show, record } = this.state;
-
-        let tabTitle = "全部题目( 共" + questionList.length + "条 )";
+        // console.log(this.props.location.state)
+        const {questionList, total, pageNum, show, record, pageSize} = this.state;
+        // if(this.props.location.state && this.props.location.state.isFresh)   this.refreshLib();
+        let tabTitle = "全部题目( 共" + total + "条 )";
         const showQuestionProps = {
             show,
             questionList: [record],
@@ -94,45 +106,53 @@ class QuestionLibMgr extends React.PureComponent {
                 this.showQuestion(false);
             }
         };
-
         const questionLIst = <div className="listStyle">
-                                <Spin spinning={this.state.loading}>
-                                    {questionList.map((item, k) => {
-                                        return (<div key={item.questionId} className={'sub-li'}>
-                                                <Row type="flex" justify="space-between" className='titleStyle'>
-                                                    <Col span={19} className={'subject-name'}>{k + 1}、{item.questionName}</Col>
-                                                    <Col span={5}>
-                                                        <Button type="primary" onClick={() => this.showQuestion(true, item)} icon="eye-o">查看</Button>
-                                                        <Button type="primary" onClick={() => this.editQuestion(item)} icon="edit">编辑</Button>
-                                                        <Popconfirm title="你确定删除该题目?" onConfirm={() => this.delQuestion(item.questionId)}>
-                                                            <Button type="danger" icon="delete">删除</Button>
-                                                        </Popconfirm>
-                                                    </Col>
-                                                </Row>
-                                                <Row type="flex" justify="start">
-                                                    <Col span={3}><Icon type="info-circle-o" style={{marginRight: '5px'}}/>
-                                                        题型：{item.questionType === '01' ? '单选题' :
-                                                              item.questionType === '02' ? '多选题' :
-                                                              item.questionType === '03' ? '单项填空' :
-                                                              item.questionType === '04' ? '多项填空' : '其他类型'}
-                                                    </Col>
-                                                    <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.questionCategory}</Col>
-                                                    <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
-                                                        NPS评分题：{item.isNps === 0 ? '否' : item.isNps === 1 ? '是' : ''}
-                                                    </Col>
-                                                    <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
-                                                        满意度评分题：{item.isSatisfied === 0 ? '否' : item.isSatisfied === 0 ? '是' : ''}
-                                                    </Col>
-                                                    <Col span={5}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
-                                                    <Col span={5}><Icon type="clock-circle" style={{marginRight: '5px'}}/>创建时间： {item.createTime}
-                                                    </Col>
-                                                </Row>
-                                            </div>
-                                        )
-                                    })}
-                                </Spin>
-                                <Pagination current={ pageNum } onChange={this.refreshLib} total={ total }/>
-                            </div>;
+            <Spin spinning={this.state.loading}>
+                {questionList.map((item, k) => {
+                    return (<div key={item.questionId} className={'sub-li'}>
+                            <Row type="flex" justify="space-between" className='titleStyle'>
+                                <Col span={19} className={'subject-name'}>{k + 1}、{item.questionName}</Col>
+                                <Col span={5}>
+                                    <Button type="primary" onClick={() => this.showQuestion(true, item)}
+                                            icon="eye-o">查看</Button>
+                                    <Button type="primary" onClick={() => this.editQuestion(item)}
+                                            icon="edit">编辑</Button>
+                                    <Popconfirm title="你确定删除该题目?" onConfirm={() => this.delQuestion(item.questionId)}>
+                                        <Button type="danger" icon="delete">删除</Button>
+                                    </Popconfirm>
+                                </Col>
+                            </Row>
+                            <Row type="flex" justify="start">
+                                <Col span={3}><Icon type="info-circle-o" style={{marginRight: '5px'}}/>
+                                    题型：{item.questionType === '01' ? '单选题' :
+                                        item.questionType === '02' ? '多选题' :
+                                            item.questionType === '03' ? '单项填空' :
+                                                item.questionType === '04' ? '多项填空' : '其他类型'}
+                                </Col>
+                                <Col span={3}><Icon type="appstore"
+                                                    style={{marginRight: '5px'}}/>
+                                    分类:
+                                    {item.questionCategory == '1' ? '终端' :
+                                        item.questionCategory == '2' ? '套餐' :
+                                            item.questionCategory == '3' ? '流量' :
+                                                item.questionCategory == '4' ? '账单' : '其它'}</Col>
+                                <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
+                                    NPS评分题：{item.isNps === 0 ? '否' : item.isNps === 1 ? '是' : ''}
+                                </Col>
+                                <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
+                                    满意度评分题：{item.isSatisfied === 0 ? '否' : item.isSatisfied === 1 ? '是' : ''}
+                                </Col>
+                                <Col span={5}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
+                                <Col span={5}><Icon type="clock-circle"
+                                                    style={{marginRight: '5px'}}/>创建时间： {item.create_time}
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                })}
+            </Spin>
+            <Pagination current={pageNum} onChange={this.onPageChange} total={total} pageSize={pageSize}/>
+        </div>;
         const operations = <Search
             placeholder="在结果中查询"
             onSearch={value => console.log(value)}
