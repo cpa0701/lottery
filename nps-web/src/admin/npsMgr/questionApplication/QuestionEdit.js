@@ -59,7 +59,7 @@ class QuestionEdit extends React.PureComponent {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
-                this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: ''});
+                this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                 this.orderQuestion();
             } else {
                 if(newArr[newArr.length - 1].isPaging === '1') {
@@ -68,7 +68,7 @@ class QuestionEdit extends React.PureComponent {
                 this.setState({
                     questionDisplayList1: [...newArr]
                 }, () => {
-                    this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: ''});
+                    this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                     this.orderQuestion();
                 });
             }
@@ -238,6 +238,13 @@ class QuestionEdit extends React.PureComponent {
             if(logicProp) {
                 logicProp.map(item => {
                     let optionOrderArr = item.optionOrder.split(',');
+                    // 判断是否是无条件跳转
+                    if(optionOrderArr.length === props.optionList.length) {
+                        props.jumpOrder = item.skiptoQuestionOrder;
+                        this.setState({radioValue: 1});
+                    } else {
+                        props.jumpOrder = null;
+                    }
                     props.optionList.map(k => {
                         optionOrderArr.map(x => {
                             if (String(k.optionOrder) === x) {
@@ -247,10 +254,6 @@ class QuestionEdit extends React.PureComponent {
                         });
                         return '';
                     });
-                    // 判断是否是无条件跳转
-                    if(optionOrderArr.length === props.optionList.length) {
-                        this.setState({radioValue: 1});
-                    }
                     return '';
                 });
             }

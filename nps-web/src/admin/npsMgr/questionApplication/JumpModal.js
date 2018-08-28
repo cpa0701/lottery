@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Modal, Row, Col, Form, Radio, Select, Input} from 'antd';
+import React, { Component } from 'react';
+import { Modal, Row, Col, Form, Radio, Select } from 'antd';
 
 import './questionApplication.less';
 
-const [FormItem, RadioGroup, Option] = [Form.Item, Radio.Group, Select.Option];
+const [ FormItem, RadioGroup, Option ] = [ Form.Item, Radio.Group, Select.Option ];
 
 @Form.create()
 export default class extends Component {
@@ -14,10 +14,11 @@ export default class extends Component {
     pushLogic = (obj) => {
         let logicList = this.props.logic;
         logicList.map((item, k) => {
-            if (item.setupQuestionOrder === obj.setupQuestionOrder && item.logicType === obj.logicType && item.optionOrder === obj.optionOrder)
+            if (item.setupQuestionOrder === obj.setupQuestionOrder && item.logicType === obj.logicType)
                 logicList.splice(k, 1);
+            return '';
         })
-    }
+    };
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
@@ -70,11 +71,6 @@ export default class extends Component {
         this.props.onChange(e);
     };
 
-    // 无条件跳转选择
-    handleChange = (value) => {
-        console.log(value);
-    };
-
     componentWillUnmount() {
         //重写组件的setState方法，直接返回空
         this.setState = (state, callback) => {
@@ -85,7 +81,7 @@ export default class extends Component {
     afterClose = () => this.props.form.resetFields();
 
     render() {
-        const {jump, jumpList = [], radioValue = 0, record = {}, logic, form: {getFieldDecorator}} = this.props;
+        const {jump, jumpList = [], radioValue = 0, record = {}, form: {getFieldDecorator}} = this.props;
         const optionHtml = jumpList.map((item, k) => {
             return <Option key={k} value={item.questionOrder}>{item.questionName}</Option>;
         });
@@ -170,7 +166,7 @@ export default class extends Component {
                                     <Form>
                                         <FormItem label="填写此题后跳转到" labelCol={{span: 7}} wrapperCol={{span: 14}}>
                                             {getFieldDecorator('unconditional', {
-                                                initialValue: '0',
+                                                initialValue: record.jumpOrder ? record.jumpOrder : '0',
                                                 rules: [
                                                     {required: false},
                                                 ],
