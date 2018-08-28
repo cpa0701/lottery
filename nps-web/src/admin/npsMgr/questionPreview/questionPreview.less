@@ -6,6 +6,7 @@
     padding: 40px 2% 30px;
     background: url(../../../image/question/oldbg2.jpg) no-repeat 100% / 100%;
     background-size: 100%;
+    margin-bottom: 20px;
     h1 {
       font-size: 24px !important;
       font-weight: bold;
@@ -26,16 +27,27 @@
     width: 96%;
     height: auto;
     position: relative;
+    .errorMessage {
+      position: relative;
+      padding-left: 12px;
+      color: Red;
+      line-height: 38px;
+      background-color: #ffe5e0;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 9px;
+      transition: all 1s ease 0s;
+    }
+    .req {
+      color: red;
+      font-weight: bold;
+      position: absolute;
+      top: 15px;
+    }
   }
   .paging {
     text-align: center;
     line-height: 24px;
     color: #007EE5;
-  }
-  .req {
-    color: red;
-    font-weight: bold;
-    position: absolute;
-    top: 15px;
   }
 }
