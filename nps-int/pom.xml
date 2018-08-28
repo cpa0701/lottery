@@ -28,7 +28,6 @@
 		<pagehelper.version>1.2.5</pagehelper.version>
 		<swagger.version>2.6.1</swagger.version>
 		<mysql.version>5.1.43</mysql.version>
-		<druid.version>1.1.9</druid.version>
 		<logj.version>1.2.17</logj.version>
 		<fastjson.version>1.2.47</fastjson.version>
 	</properties>
@@ -70,13 +69,6 @@
 			<version>${mysql.version}</version>
 		</dependency>
 
-		<!-- 连接池 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
-		</dependency>
-
 		<!-- 日志 -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -107,6 +99,18 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.17</version>
 		</dependency>
 
 		<dependency>

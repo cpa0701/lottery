@@ -8,8 +8,7 @@ import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
 @ServletComponentScan
-@ImportResource(locations = { "classpath:druid-bean.xml" })
-@MapperScan(basePackages = { "com.ztesoft.nps.*.mapper" })
+@MapperScan(basePackages = { "com.ztesoft.nps.**.mapper" })
 //@EnableDiscoveryClient
 public class NpsApplication {
 

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.qstMgr.mapper.QuestionOptionMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstMgr.model.QuestionOption" >
+    <id column="option_id" property="optionId" jdbcType="VARCHAR" />
+    <result column="question_id" property="questionId" jdbcType="VARCHAR" />
+    <result column="option_order" property="optionOrder" jdbcType="TINYINT" />
+    <result column="option_name" property="optionName" jdbcType="VARCHAR" />
+    <result column="is_other" property="isOther" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    option_id, question_id, option_order, option_name, is_other
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOptionExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from question_option
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from question_option
+    where option_id = #{optionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from question_option
+    where option_id = #{optionId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOptionExample" >
+    delete from question_option
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOption" >
+    insert into question_option (option_id, question_id, option_order, 
+      option_name, is_other)
+    values (#{optionId,jdbcType=VARCHAR}, #{questionId,jdbcType=VARCHAR}, #{optionOrder,jdbcType=TINYINT}, 
+      #{optionName,jdbcType=VARCHAR}, #{isOther,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOption" >
+    insert into question_option
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optionId != null" >
+        option_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="optionOrder != null" >
+        option_order,
+      </if>
+      <if test="optionName != null" >
+        option_name,
+      </if>
+      <if test="isOther != null" >
+        is_other,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optionId != null" >
+        #{optionId,jdbcType=VARCHAR},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="optionOrder != null" >
+        #{optionOrder,jdbcType=TINYINT},
+      </if>
+      <if test="optionName != null" >
+        #{optionName,jdbcType=VARCHAR},
+      </if>
+      <if test="isOther != null" >
+        #{isOther,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOptionExample" resultType="java.lang.Integer" >
+    select count(*) from question_option
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update question_option
+    <set >
+      <if test="record.optionId != null" >
+        option_id = #{record.optionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.questionId != null" >
+        question_id = #{record.questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.optionOrder != null" >
+        option_order = #{record.optionOrder,jdbcType=TINYINT},
+      </if>
+      <if test="record.optionName != null" >
+        option_name = #{record.optionName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isOther != null" >
+        is_other = #{record.isOther,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update question_option
+    set option_id = #{record.optionId,jdbcType=VARCHAR},
+      question_id = #{record.questionId,jdbcType=VARCHAR},
+      option_order = #{record.optionOrder,jdbcType=TINYINT},
+      option_name = #{record.optionName,jdbcType=VARCHAR},
+      is_other = #{record.isOther,jdbcType=BIT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOption" >
+    update question_option
+    <set >
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="optionOrder != null" >
+        option_order = #{optionOrder,jdbcType=TINYINT},
+      </if>
+      <if test="optionName != null" >
+        option_name = #{optionName,jdbcType=VARCHAR},
+      </if>
+      <if test="isOther != null" >
+        is_other = #{isOther,jdbcType=BIT},
+      </if>
+    </set>
+    where option_id = #{optionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.qstMgr.model.QuestionOption" >
+    update question_option
+    set question_id = #{questionId,jdbcType=VARCHAR},
+      option_order = #{optionOrder,jdbcType=TINYINT},
+      option_name = #{optionName,jdbcType=VARCHAR},
+      is_other = #{isOther,jdbcType=BIT}
+    where option_id = #{optionId,jdbcType=VARCHAR}
+  </update>
+  
+  <insert id="batchSaveOpt" parameterType="java.util.List">
+      insert into question_option
+      (question_id, option_order, option_name, is_other)
+      VALUES
+        <foreach collection ="list" item="questionOpt" index= "index" separator =",">
+          (
+              #{questionOpt.questionId},
+              #{questionOpt.optionOrder},
+              #{questionOpt.optionName},
+              #{questionOpt.isOther}
+          )
+        </foreach>
+
+  </insert>
+
+  <select id="selectOptionsByIds" resultType="com.ztesoft.nps.business.qstMgr.model.QuestionOption">
+
+     select <include refid="Base_Column_List" /> from question_option where question_id in
+          <foreach item="item" index="index" collection="list"   open="(" separator="," close=")">
+            #{item}
+          </foreach>
+
+  </select>
+</mapper>
