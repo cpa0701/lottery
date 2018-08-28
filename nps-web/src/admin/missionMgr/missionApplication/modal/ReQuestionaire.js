@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Row, Col, Input, Form,Tabs,Pagination  } from 'antd';
+import { Modal, Row, Col, Input, Form,Tabs,Pagination,Button  } from 'antd';
 import './ReQuestionaire.less'
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
@@ -10,8 +10,10 @@ const FormItem = Form.Item;
 export default class extends Component {
     state = {
         loading: false,
+        questionList: [],
         pageNum: 1,
-        total: 0
+        total: 0,
+        pageSize: 10,
     }
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
@@ -31,6 +33,8 @@ export default class extends Component {
 
     render() {
         const {add} = this.props;
+        const {total} = this.state;
+        let tabTitle = "问卷列表( 共" + total + "条 )";
         return (
             <Modal
                 title="选择问卷"
@@ -54,13 +58,17 @@ export default class extends Component {
                         onSearch={value => console.log(value)}
                     />
                 </Row>
+                <br />
                 <Row>
-                    <Tabs onTabClick={this.onTabClick}>
-                        <TabPane tab="问卷库" key="1">33</TabPane>
-                        <TabPane tab="我的问卷" key="2">56</TabPane>
-                    </Tabs>
+                        <span style={{marginRight: '5px'}}>问卷来源：</span>
+                        <Button type="primary">问卷库</Button>
+                        <Button type="primary">我的问卷</Button>
                 </Row>
-                <Pagination size="small" total={50} showSizeChanger showQuickJumper />
+                <Tabs>
+                    <TabPane tab={tabTitle} key="1">
+                    </TabPane>
+                </Tabs>
+                <Pagination size="small" total={50} showQuickJumper />
             </Modal>
         );
     }
