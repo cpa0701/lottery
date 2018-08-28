@@ -14,6 +14,7 @@ import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
 import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import NewApplicationForm from "../admin/missionMgr/missionApplication/NewApplicationForm"
 import NotFound from '../admin/base/error/NotFound';
+import ReviewApplication from "../admin/missionMgr/reviewApplication/ReviewApplication";
 
 class RouteList extends React.PureComponent {
     render() {
@@ -28,6 +29,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/questionMgr/questionPreview" component={QuestionPreview}/>
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
+                    <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>

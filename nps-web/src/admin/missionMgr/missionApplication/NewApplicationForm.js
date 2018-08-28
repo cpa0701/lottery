@@ -2,10 +2,12 @@ import React from 'react';
 import ReQuestionaire from './modal/ReQuestionaire';
 import SelectTabs from './modal/SelectTabs';
 import './NewApplicationForm.less'
-import { Form, Input, Row, Col, Button, DatePicker,Radio,Icon,Upload,Select,Checkbox } from 'antd';
+import { Form, Input, Row, Col, Button, DatePicker,Radio,Icon,Upload,Select,Checkbox,Tabs} from 'antd';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+const TabPane = Tabs.TabPane;
+const QRCode = require('qrcode.react');
 class NewApplicationForm extends React.PureComponent {
     constructor(props){
         super(props);
@@ -15,9 +17,11 @@ class NewApplicationForm extends React.PureComponent {
             endOpen: false,
             checkedMeasure:false,
             checkedResearch:false,
+            rsFlag:true,
             checkedObject:false,
             add:false,
             selecttabs:false,
+            path: null
         }
     }
     // 新增问卷弹框
@@ -86,8 +90,14 @@ class NewApplicationForm extends React.PureComponent {
     onTrigger=(e)=>{
         this.setState({checkedObject:e.target.checked})
     }
+    handleChange=(value)=>{
+        console.log(value)
+        if(value==7)
+        this.setState({rsFlag:false})
 
+    }
     render() {
+        console.log(this.state.rsFlag)
         //新增问卷弹框属性传值是否显示弹窗
         const addModalProps = {
             add: this.state.add,
@@ -131,21 +141,106 @@ class NewApplicationForm extends React.PureComponent {
         let research=null;
         if(this.state.checkedResearch){
             research=(
-                <div><Row className={'row2'}>
-                    <Col span='12' className={'select'}>
-                        <FormItem label="赠费类型："labelCol={{ span: 4}} wrapperCol={{ span: 12 }} >
-                            <Select  multiple placeholder="--请选择--" style={{ width: '100%' }}>
-                                <Option value="shortmessage">10元赠费</Option>
-                                <Option value="wechart">30元赠费</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span='12' className={'select'}>
-                        <FormItem label="赠费数量："labelCol={{ span: 4}} wrapperCol={{ span: 12 }} >
-                            <Input size="default"/>
-                        </FormItem>
-                    </Col>
-                </Row>
+                <div>
+                    <Row className={'row2'}>
+                        <Col span='4' className={'select'}>
+                            <FormItem>
+                                <Select defaultValue="6" onChange={this.handleChange}>
+                                    <Option value="6">每月</Option>
+                                    <Option value="7">每季度</Option>
+                                </Select>
+                            </FormItem>
+                        </Col>
+                        {this.state.rsFlag?
+                        <div>
+                        <Col span='12' className={'select'}>
+                            <FormItem>
+                                <RadioGroup>
+                                    <Radio className={'radio'} value={1} disabled>1</Radio>
+                                    <Radio className={'radio'} value={2} disabled>2</Radio>
+                                    <Radio className={'radio'} value={3} disabled>3</Radio>
+                                    <Radio className={'radio'} value={4} disabled>4</Radio>
+                                    <Radio className={'radio'} value={5} disabled>5</Radio>
+                                    <Radio className={'radio'} value={6}>6</Radio>
+                                    <Radio className={'radio'} value={7}>7</Radio>
+                                    <Radio className={'radio'} value={8}>8</Radio>
+                                    <Radio className={'radio'} value={9}>9</Radio>
+                                    <Radio className={'radio'} value={10}>10</Radio>
+                                    <Radio className={'radio'} value={11}>11</Radio>
+                                    <Radio className={'radio'} value={12}>12</Radio>
+                                    <Radio className={'radio'} value={13}>13</Radio>
+                                    <Radio className={'radio'} value={14}>14</Radio>
+                                    <Radio className={'radio'} value={15}>15</Radio>
+                                    <Radio className={'radio'} value={16}>16</Radio>
+                                    <Radio className={'radio'} value={17}>17</Radio>
+                                    <Radio className={'radio'} value={18}>18</Radio>
+                                    <Radio className={'radio'} value={19}>19</Radio>
+                                    <Radio className={'radio'} value={20}>20</Radio>
+                                    <Radio className={'radio'} value={21}>21</Radio>
+                                    <Radio className={'radio'} value={22}>22</Radio>
+                                    <Radio className={'radio'} value={23}>23</Radio>
+                                    <Radio className={'radio'} value={24}>24</Radio>
+                                    <Radio className={'radio'} value={25}>25</Radio>
+                                    <Radio className={'radio'} value={26}>26</Radio>
+                                    <Radio className={'radio'} value={27} disabled>27</Radio>
+                                    <Radio className={'radio'} value={28} disabled>28</Radio>
+                                    <Radio className={'radio'} value={29} disabled>29</Radio>
+                                    <Radio className={'radio'} value={30} disabled>30</Radio>
+                                    <Radio className={'radio'} value={31} disabled>31</Radio>
+                                </RadioGroup>
+                            </FormItem>
+                        </Col>
+                        <Col span='4' className={'select'}>
+                            <span>注：按月前后五天不可选择</span>
+                        </Col>
+                        </div>:<div>
+                                <Col span='12' className={'select'}>
+                                    <FormItem>
+                                        <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                            <Radio value={1}>第一月</Radio>
+                                            <Radio value={2}>第二月</Radio>
+                                            <Radio value={3}>第三月</Radio>
+                                        </RadioGroup>
+                                        <RadioGroup>
+                                            <Radio className={'radio'} value={1} disabled>1</Radio>
+                                            <Radio className={'radio'} value={2} disabled>2</Radio>
+                                            <Radio className={'radio'} value={3} disabled>3</Radio>
+                                            <Radio className={'radio'} value={4} disabled>4</Radio>
+                                            <Radio className={'radio'} value={5} disabled>5</Radio>
+                                            <Radio className={'radio'} value={6}>6</Radio>
+                                            <Radio className={'radio'} value={7}>7</Radio>
+                                            <Radio className={'radio'} value={8}>8</Radio>
+                                            <Radio className={'radio'} value={9}>9</Radio>
+                                            <Radio className={'radio'} value={10}>10</Radio>
+                                            <Radio className={'radio'} value={11}>11</Radio>
+                                            <Radio className={'radio'} value={12}>12</Radio>
+                                            <Radio className={'radio'} value={13}>13</Radio>
+                                            <Radio className={'radio'} value={14}>14</Radio>
+                                            <Radio className={'radio'} value={15}>15</Radio>
+                                            <Radio className={'radio'} value={16}>16</Radio>
+                                            <Radio className={'radio'} value={17}>17</Radio>
+                                            <Radio className={'radio'} value={18}>18</Radio>
+                                            <Radio className={'radio'} value={19}>19</Radio>
+                                            <Radio className={'radio'} value={20}>20</Radio>
+                                            <Radio className={'radio'} value={21}>21</Radio>
+                                            <Radio className={'radio'} value={22}>22</Radio>
+                                            <Radio className={'radio'} value={23}>23</Radio>
+                                            <Radio className={'radio'} value={24}>24</Radio>
+                                            <Radio className={'radio'} value={25}>25</Radio>
+                                            <Radio className={'radio'} value={26}>26</Radio>
+                                            <Radio className={'radio'} value={27} disabled>27</Radio>
+                                            <Radio className={'radio'} value={28} disabled>28</Radio>
+                                            <Radio className={'radio'} value={29} disabled>29</Radio>
+                                            <Radio className={'radio'} value={30} disabled>30</Radio>
+                                            <Radio className={'radio'} value={31} disabled>31</Radio>
+                                        </RadioGroup>
+                                    </FormItem>
+                                </Col>
+                                <Col span='4' className={'select'}>
+                                    <span>注：按月前后五天不可选择</span>
+                                </Col>
+                            </div>}
+                    </Row>
                 </div>)
         }
         //调研对象
@@ -271,9 +366,10 @@ class NewApplicationForm extends React.PureComponent {
                         <Col span='12' className={'select'}>
                             <FormItem label="调研渠道：" required={true} labelCol={{ span: 4}} wrapperCol={{ span: 12 }} >
                                 <Select  multiple placeholder="--请选择--" style={{ width: '100%' }}>
-                                    <Option value="message">短信</Option>
-                                    <Option value="wechart">微信</Option>
-                                    <Option value="huawei">华为外呼</Option>
+                                    <Option value="1">短信发送</Option>
+                                    <Option value="2">微信发送</Option>
+                                    <Option value="3">邮件发送</Option>
+                                    <Option value="4">二维码发送</Option>
                                 </Select>
                             </FormItem>
                         </Col>
@@ -318,7 +414,7 @@ class NewApplicationForm extends React.PureComponent {
                         </Col>
                     </Row>
                     <Row style={{paddingTop:'10px'}}>
-                        <FormItem wrapperCol={{ span: 12, offset: 7 }} >
+                        <FormItem wrapperCol={{ span: 12, offset: 6 }} >
                             <Button type="primary" onClick={this.handleSubmit}>保存草稿(save)</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="primary" onClick={this.handleSubmit}>提交审核(save)</Button>
@@ -327,6 +423,23 @@ class NewApplicationForm extends React.PureComponent {
                         </FormItem>
                     </Row>
                 </Form>
+                {/*<Tabs defaultActiveKey="2">*/}
+                    {/*<TabPane tab={<span><Icon type="apple" />链接与二维码</span>} key="1">*/}
+                        {/*<div>*/}
+                            {/*<div>问卷链接与二维码</div>*/}
+                            {/*<QRCode size={150} value="http://www.baidu.com"/>*/}
+                        {/*</div>*/}
+                    {/*</TabPane>*/}
+                    {/*<TabPane tab={<span><Icon type="android" />微信发送</span>} key="2">*/}
+                        {/*微信发送*/}
+                    {/*</TabPane>*/}
+                    {/*<TabPane tab={<span><Icon type="apple" />邮件发送</span>} key="3">*/}
+                        {/*邮件发送*/}
+                    {/*</TabPane>*/}
+                    {/*<TabPane tab={<span><Icon type="android" />短信发送</span>} key="4">*/}
+                        {/*短信发送*/}
+                    {/*</TabPane>*/}
+                {/*</Tabs>*/}
                 <ReQuestionaire {...addModalProps}/>
                 <SelectTabs {...selectModalProps}/>
             </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Row, Col, Tabs, Button, Input, Menu, Dropdown, Icon, Pagination, Spin} from "antd"
-import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
+import TaskResearchService from "../../../services/research/TaskResearchService"
 import './missionApplication.less'
 import { Collapse } from 'antd';
 const Panel = Collapse.Panel;
@@ -34,7 +34,7 @@ class MissionApplication extends React.PureComponent {
         }
        this.setState({
             loading: true
-        }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
+        }, () => TaskResearchService.getTaskList(params).then(result => {
             this.setState({
                 questionnaireList: result.list,
                 pageNum: result.pageNum,
@@ -132,12 +132,12 @@ class MissionApplication extends React.PureComponent {
                     新建申请单
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab="我的申请单( 共10条 )" key="1">{questionLIst}</TabPane>
-                    <TabPane tab="审批中(9)" key="2">{questionLIst}</TabPane>
-                    <TabPane tab="已发布( 1 )" key="3">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决( 0 )" key="4">{questionLIst}</TabPane>
-                    <TabPane tab="审核作废( 0 )" key="5">{questionLIst}</TabPane>
-                    <TabPane tab="草稿( 1 )" key="6">{questionLIst}</TabPane>
+                    <TabPane tab="我的申请单" key="1">{questionLIst}</TabPane>
+                    <TabPane tab="审批中" key="2">{questionLIst}</TabPane>
+                    <TabPane tab="已发布" key="3">{questionLIst}</TabPane>
+                    <TabPane tab="审核否决" key="4">{questionLIst}</TabPane>
+                    <TabPane tab="审核作废" key="5">{questionLIst}</TabPane>
+                    <TabPane tab="草稿" key="6">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )

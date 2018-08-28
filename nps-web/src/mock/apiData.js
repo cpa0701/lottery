@@ -91,7 +91,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                 },
                 {
                     menuName: '调研任务审核',
-                    menuUrl: 'card-list',
+                    menuUrl: '/missionMgr/reviewApplication',
                     menuId: 33,
                 },
                 {
@@ -101,7 +101,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                 },
                 {
                     menuName: '周期性调研',
-                    menuUrl: 'card-list',
+                    menuUrl: '',
                     menuId: 35,
                 }
             ],
