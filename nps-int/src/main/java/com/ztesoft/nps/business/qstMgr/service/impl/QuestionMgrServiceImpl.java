@@ -15,6 +15,7 @@ import com.ztesoft.utils.sys.util.ListUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ExceptionDepthComparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +36,14 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
     @Autowired
     private QuestionOptionMapper questionOptionMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteQuestion(String id) {
+        //删除题目选项
+        QuestionOptionExample optExample = new QuestionOptionExample();
+        optExample.createCriteria().andQuestionIdEqualTo(id);
+        questionOptionMapper.deleteByExample(optExample);
+
         QuestionBankExample example = new QuestionBankExample();
         example.createCriteria().andQuestionIdEqualTo(id);
         return questionBankMapper.deleteByExample(example);
@@ -129,7 +136,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
                         chirlOptList.add(optMap);
                     }
                 }
-                bank.put("optList",chirlOptList);
+                bank.put("optionList",chirlOptList);
             }
         }
 
