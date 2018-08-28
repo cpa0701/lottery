@@ -54,7 +54,14 @@ const questionData = [
         questionType: '03',
         questionCategory: '', // 题目分类
         status: 1, // 默认1
-        optionList: null,
+        optionList: [
+            {
+                optionOrder: 1, // 选项序号
+                // optionId: 1,
+                optionName: '姓名',
+                isOther: 0  // 默认0
+            },
+        ],
         optionLayout: 0, // 默认0
         lenthCheck: 0, // 默认0
         isNps: 0, // 默认0 nps
@@ -143,7 +150,14 @@ const questionData = [
         questionType: '03',
         questionCategory: '', // 题目分类
         status: 1, // 默认1
-        optionList: null,
+        optionList: [
+            {
+                optionOrder: 1, // 选项序号
+                // optionId: 1,
+                optionName: '手机号',
+                isOther: 0  // 默认0
+            },
+        ],
         optionLayout: 0, // 默认0
         lenthCheck: 0, // 默认0
         isNps: 0, // 默认0 nps
