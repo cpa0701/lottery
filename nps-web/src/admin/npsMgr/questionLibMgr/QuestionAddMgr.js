@@ -54,7 +54,14 @@ const questionData = [
         questionType: '03',
         questionCategory: '', // 题目分类
         status: 1, // 默认1
-        optionList: null,
+        optionList: [
+            {
+                optionOrder: 1, // 选项序号
+                // optionId: 1,
+                optionName: '姓名',
+                isOther: 0  // 默认0
+            },
+        ],
         optionLayout: 0, // 默认0
         lenthCheck: 0, // 默认0
         isNps: 0, // 默认0 nps
@@ -143,7 +150,14 @@ const questionData = [
         questionType: '03',
         questionCategory: '', // 题目分类
         status: 1, // 默认1
-        optionList: null,
+        optionList: [
+            {
+                optionOrder: 1, // 选项序号
+                // optionId: 1,
+                optionName: '手机号',
+                isOther: 0  // 默认0
+            },
+        ],
         optionLayout: 0, // 默认0
         lenthCheck: 0, // 默认0
         isNps: 0, // 默认0 nps
@@ -179,7 +193,7 @@ export default class QuestionAddMgr extends PureComponent {
         questionList[0].questionName = questionList[0].questionName + "_______";
         this.setState({questionList: [...questionList]});
 
-    }
+    };
     // 点击左边新增题目
     selectQuestionType = (e) => {
         let param = {
@@ -196,6 +210,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [item];
                     this.setState({questionList});
                 }
+                return '';
             })
         }
     };
@@ -469,15 +484,15 @@ export default class QuestionAddMgr extends PureComponent {
             if (value.questionId) {
                 QuestionLibMgrService.editQuestion(value).then(data => {
                     message.success('编辑成功');
+                    this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}})
                 });
             } else {
                 QuestionLibMgrService.addQuestion(value).then(data => {
                     message.success('新增成功');
+                    this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}})
                 });
             }
             this.setState({questionList: []});
-            this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}});
-            // this.props.history.goBack()
         });
     };
     // 取消保存
@@ -489,7 +504,6 @@ export default class QuestionAddMgr extends PureComponent {
     };
     render() {
         const {questionList, addOption, index, isTextArea} = this.state;
-        console.log('999999',questionList)
         const {getFieldDecorator} = this.props.form;
         const options = [{name: '不限', value: 0}, {name: '数字', value: 1}, {name: '字符', value: 2}, {
             name: '中文',
