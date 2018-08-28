@@ -12,7 +12,8 @@ import './questionPreview.less'
 class QuestionPreview extends React.PureComponent {
     constructor(props) {
         super(props);
-        // let id = props.location.query.id;
+        let id = props.match.params.id;
+        console.log(id);
         this.state = {
             loading: false,
             currentPage: 1,
@@ -326,9 +327,13 @@ class QuestionPreview extends React.PureComponent {
     }
     //验证必填
     validIsBlank = () => {
-        return this.state.questionList.some(question => {//去除分页数据
-            return question.isPaging === '0' && !question.value && question.display && question.isBlank;
+        let blankList = this.state.questionList.filter(question => {//去除分页数据
+            if (question.isPaging === '0' && !question.value && question.display && question.isBlank) {
+                return question.questionOrder;
+            }
         });
+        if (blankList.length)
+            return true;
     }
 
     render() {

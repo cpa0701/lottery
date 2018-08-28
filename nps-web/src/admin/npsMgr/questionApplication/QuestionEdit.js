@@ -138,7 +138,7 @@ class QuestionEdit extends React.PureComponent {
             pathname: '/npsMgr/questionMgr/questionPreview',
             query: {id: id},
         };
-        this.props.history.push('/npsMgr/questionMgr/questionPreview');
+        this.props.history.push(`/npsMgr/questionMgr/questionPreview/${id}`);
     };
 
     // 关联逻辑弹窗
