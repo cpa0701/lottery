@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Button, Input, message, Popconfirm } from "antd"
+import { Row, Col, Button, Input, message, Popconfirm, Checkbox } from "antd"
 
 import InitQuestionList from './InitQuestionList'
 import QuestionLib from './QuestionLib'
@@ -9,8 +9,8 @@ import JumpModal from './JumpModal';
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 
 import './questionApplication.less'
+
 const { TextArea } = Input;
-let page = 1;
 
 class QuestionEdit extends React.PureComponent {
     constructor(props) {
@@ -42,6 +42,9 @@ class QuestionEdit extends React.PureComponent {
             index: undefined,
             value: '',
             radioValue: 0,
+            qstnaireTitle: '',
+            qstnaireLeadin: '',
+            belongTo: null,
             conn: false,
             jump: false
         };
@@ -51,25 +54,22 @@ class QuestionEdit extends React.PureComponent {
 
     // 获取题库具体题目
     getDom = (data) => {
-        if(this.state.questionDisplayList.filter(item => item.questionOrder === data.questionOrder).length === 0) {
+        let questionData = data.question;
+        if(this.state.questionDisplayList.filter(item => item.questionOrder === questionData.questionOrder).length === 0) {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
-                this.state.questionDisplayList1.push({...data, number: null, isBlank: 0, isPaging: '0'});
+                this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                 this.orderQuestion();
-                this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
             } else {
                 if(newArr[newArr.length - 1].isPaging === '1') {
-                    newArr[newArr.length - 1].questionOrder = data.questionOrder
+                    newArr[newArr.length - 1].questionOrder = questionData.questionOrder
                 }
                 this.setState({
                     questionDisplayList1: [...newArr]
                 }, () => {
-                    this.state.questionDisplayList1.push({...data, number: null, isBlank: 0, isPaging: '0'});
+                    this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                     this.orderQuestion();
-                    this.setState({questionDisplayList: [...this.state.questionDisplayList1]},() =>{
-                        console.log('mmm',this.state.questionDisplayList)
-                    })
                 });
             }
         } else {
@@ -88,7 +88,47 @@ class QuestionEdit extends React.PureComponent {
                 return '';
             });
             return '';
+        });
+        this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+    };
+    // 对分页栏进行排序
+    orderPageNum = () => {
+        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === '1');
+        newArr.map((item, k) => {
+            this.state.questionDisplayList1.map(x => {
+                if(item.questionOrder === x.questionOrder && x.isPaging === '1') {
+                    x.pageNum = k + 1;
+                }
+                return '';
+            });
+            return '';
+        });
+        this.setState({questionDisplayList: [...this.state.questionDisplayList1], belongTo: newArr.length});
+    };
+    // 勾选必填项
+    onChangeCheckbox = (e, i) => {
+        this.state.questionDisplayList1.map((item, k) => {
+            if(Number(i) === k) {
+                item.isBlank = e.target.checked ? 0 : 1;
+            }
+            return '';
+        });
+        this.setState({
+            questionDisplayList: [...this.state.questionDisplayList1]
         })
+    };
+
+    // 问卷标题
+    qstnaireTitle = (e) => {
+        this.setState({
+            qstnaireTitle: e.target.value
+        });
+    };
+    // 问卷描述
+    qstnaireDes = (e) => {
+        this.setState({
+            qstnaireLeadin: e.target.value
+        });
     };
 
     // 进入预览
@@ -165,7 +205,7 @@ class QuestionEdit extends React.PureComponent {
 
             let _obj = JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj).splice(0, i).map((item, k) => {
-                item.questionName = k + 1 + '、' + item.questionName;
+                item.questionName = item.number + 1 + '、' + item.questionName;
                 return item;
             });
 
@@ -198,6 +238,13 @@ class QuestionEdit extends React.PureComponent {
             if(logicProp) {
                 logicProp.map(item => {
                     let optionOrderArr = item.optionOrder.split(',');
+                    // 判断是否是无条件跳转
+                    if(optionOrderArr.length === props.optionList.length) {
+                        props.jumpOrder = item.skiptoQuestionOrder;
+                        this.setState({radioValue: 1});
+                    } else {
+                        props.jumpOrder = null;
+                    }
                     props.optionList.map(k => {
                         optionOrderArr.map(x => {
                             if (String(k.optionOrder) === x) {
@@ -207,18 +254,15 @@ class QuestionEdit extends React.PureComponent {
                         });
                         return '';
                     });
-                    // 判断是否是无条件跳转
-                    if(optionOrderArr.length === props.optionList.length) {
-                        this.setState({radioValue: 1});
-                    }
                     return '';
                 });
             }
 
             // 获取本题后面所有的题目
             let _obj=JSON.stringify(this.state.questionDisplayList);
-            let jumpList = JSON.parse(_obj).splice(i + 1).map((item, k) => {
-                item.questionName = i + k + 2 + '、' + item.questionName;
+            let arr = JSON.parse(_obj).splice(i + 1).filter(item => item.isPaging !== '1');
+            let jumpList = arr.map((item, k) => {
+                item.questionName = item.number + 1 + '、' + item.questionName;
                 return item;
             });
             jumpList = [
@@ -241,45 +285,93 @@ class QuestionEdit extends React.PureComponent {
         }
     };
 
-    // 题目上移动作
-    jumpUp = (i, props) => {
+    // 题目、页码上移动作
+    jumpUp = (i, props, type) => {
         if (i === 0) {
             message.info("当前位置不可上移");
             return '';
         } else {
-            let questionDisplayList2 = this.state.questionDisplayList;
+            let questionDisplayList2 = this.state.questionDisplayList1;
+            if (type === 'pageNum') { // 上移分页
+                if (i === 1) {
+                    questionDisplayList2[i].questionOrder = questionDisplayList2[i - 1].questionOrder;
+                } else {
+                    if (questionDisplayList2[i - 2].isPaging === '1') {
+                        message.info('当前页码位置不可继续上移');
+                        return '';
+                    }
+                    questionDisplayList2[i].questionOrder = questionDisplayList2[i - 1].questionOrder;
+                }
+            } else if (type === 'question') { // 上移题目
+                if (i > 0 && i < questionDisplayList2.length - 1 && questionDisplayList2[i - 1].isPaging === '1' && questionDisplayList2[i + 1].isPaging === '1') {
+                    message.info('当前题目位置不可上移');
+                    return '';
+                } else if (i > 0 && i < questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === '1') {
+                    if (i === questionDisplayList2.length - 1) {
+                        questionDisplayList2[i - 1].questionOrder = null;
+                    }
+                    questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                }
+            }
             questionDisplayList2.splice(i - 1, 0, props);
             questionDisplayList2.splice(i + 1, 1);
-            this.setState({
-                questionDisplayList: [...questionDisplayList2]
-            })
+            this.orderQuestion();
         }
 
     };
-    // 题目下移动作
-    jumpDown = (i, props) => {
-        let questionDisplayList2 = this.state.questionDisplayList;
+    // 题目、页码下移动作
+    jumpDown = (i, props, type) => {
+        let questionDisplayList2 = this.state.questionDisplayList1;
         if (i === questionDisplayList2.length - 1) {
             message.info("当前位置不可下移")
         } else {
+            if (type === 'pageNum') { // 下移分页
+                if (i < questionDisplayList2.length - 2) {
+                    if(questionDisplayList2[i + 2].isPaging === '1') {
+                        message.info('当前页码位置不可继续下移');
+                        return '';
+                    }
+                    questionDisplayList2[i].questionOrder = questionDisplayList2[i + 2].questionOrder;
+                } else {
+                    questionDisplayList2[i].questionOrder = null;
+                }
+            } else if (type === 'question') { // 下移题目
+                if (i > 0 && questionDisplayList2[i - 1].isPaging === '1' && questionDisplayList2[i + 1].isPaging === '1') {
+                    message.info('当前题目位置不可下移');
+                    return '';
+                } else if (i > 0 && questionDisplayList2[i - 1].isPaging === '1') {
+                    questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                } else if (questionDisplayList2[i + 1].isPaging === '1') {
+                    questionDisplayList2[i + 1].questionOrder = questionDisplayList2[i].questionOrder;
+                }
+            }
             questionDisplayList2.splice(i + 2, 0, props);
             questionDisplayList2.splice(i, 1);
-            this.setState({
-                questionDisplayList: [...questionDisplayList2]
-            })
+            this.orderQuestion();
         }
     };
     // 删除题目
-    delQestion = (props) => {
-        let newQuestionList = this.state.questionDisplayList.filter(item => item.questionOrder !== props.questionOrder);
-        this.setState({
-            questionDisplayList: [...newQuestionList],
-            questionDisplayList1: [...newQuestionList]
-        }, () => {
-            this.delLogic(props.questionOrder, 1);
-            message.info('删除成功')
-        });
+    delQestion = (props, i, type) => {
+        if (type === 'question') {
+            if (i > 0) {
+                if(this.state.questionDisplayList1[i - 1].isPaging === '1') {
+                    if (i === this.state.questionDisplayList1.length - 1) {
+                        this.state.questionDisplayList1[i - 1].questionOrder = null;
+                    } else {
+                        this.state.questionDisplayList1[i - 1].questionOrder = this.state.questionDisplayList1[i + 1].questionOrder;
+                    }
+                    this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+                }
+            }
+        }
 
+        this.state.questionDisplayList1.splice(i, 1);
+        if (type === 'pageNum') {
+            this.orderPageNum()
+        }
+        this.orderQuestion();
+        this.delLogic(props.questionOrder, 1);
+        message.info('删除成功')
     };
     // 删除与题目有关的所有逻辑
     delLogic = (order, type) => {
@@ -303,7 +395,12 @@ class QuestionEdit extends React.PureComponent {
 
     // 添加分页
     addPagination = () => {
+        if (this.state.questionDisplayList1.length > 0 && this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].isPaging === '1') {
+            message.info('当前不可添加分页');
+            return '';
+        }
         let param = {
+            "pageNum": null,
             "contentCheck": "",
             "createTime": "当前时间",
             "createUid": 20,
@@ -323,7 +420,28 @@ class QuestionEdit extends React.PureComponent {
             "status": ""
         };
         this.state.questionDisplayList1.push(param);
-        this.setState({questionDisplayList: [...this.state.questionDisplayList1]})
+        this.orderPageNum()
+    };
+
+    // 完成编辑
+    save =() => {
+        let belongTo = this.state.belongTo;
+        if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === '0') {
+            belongTo += 1
+        }
+        let params = {
+            qstnaire: {
+                belongTo,
+                qstnaireTitle: this.state.qstnaireTitle,
+                qstnaireLeadin: this.state.qstnaireLeadin,
+                question: this.state.questionDisplayList,
+                logic: this.state.logic
+            }
+        };
+        console.log(params);
+        // QuestionApplicationService.addQstnaireBank(params).then(data => {
+        //     message.success('保存成功');
+        // });
     };
 
     render() {
@@ -403,7 +521,7 @@ class QuestionEdit extends React.PureComponent {
             <div className={'questionApplication'}>
                 <Row className={'questionAppHead'}>
                     <Col span={12} offset={8}>
-                        <Button type="primary">完成编辑</Button>
+                        <Button type="primary" onClick={this.save}>完成编辑</Button>
                         <Button type="primary" icon="eye-o" onClick={this.preview} style={{marginLeft: '16px'}}>预览</Button>
                         <Button style={{float: 'right'}} onClick={() => this.addPagination()}>分页</Button>
                     </Col>
@@ -415,25 +533,25 @@ class QuestionEdit extends React.PureComponent {
                     <Col span={15} offset={1} style={{ height: '100%' }}>
                         <div className={'questionAppContent'}>
                             <div className={'questionAppContentTitle'}>
-                                <Input className={'questionInput'} placeholder="标题"/>
-                                <TextArea className={"surveyDescription"} placeholder="添加问卷说明" autosize={{ minRows: 1}}/>
+                                <Input className={'questionInput'} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
+                                <TextArea className={"surveyDescription"} placeholder="添加问卷说明" autosize={{ minRows: 1}} onBlur={(e) => this.qstnaireDes(e)} />
                             </div>
                             {questionDisplayList.map((item, i) => {
                                 return (
                                     item.isPaging === '0' ?
                                         <div key={i}>
-                                            <InitQuestionList questionType={item.questionType} questionOrder={item.questionOrder}
-                                                              index={item.number + 1} questionName={item.questionName} optionList={item.optionList}/>
+                                            <InitQuestionList question={item} index={item.number + 1}/>
                                             <div className="link-group">
+                                                <Checkbox defaultChecked={item.isBlank === 0} onChange={(e) => this.onChangeCheckbox(e, i)}>必填</Checkbox>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
                                                 <a href="javascript:void(0);"
-                                                   onClick={() => this.jumpUp(i, item)}>上移</a>
+                                                   onClick={() => this.jumpUp(i, item, 'question')}>上移</a>
                                                 <a href="javascript:void(0);"
-                                                   onClick={() => this.jumpDown(i, item)}>下移</a>
-                                                <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item)}>
+                                                   onClick={() => this.jumpDown(i, item, 'question')}>下移</a>
+                                                <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i, 'question')}>
                                                     <a href="javascript:void(0);">删除</a>
                                                 </Popconfirm>
                                             </div>
@@ -441,17 +559,17 @@ class QuestionEdit extends React.PureComponent {
                                         :  <div key={i} className="questionStyle">
                                             <div className={"question"}>
                                                 <div className={"div_preview"}>
-                                                    <span className={"div_topic_page_question paging-bg"}>]<span>第1页</span>[</span>
+                                                    <span className={"div_topic_page_question paging-bg"}>]<span>第{item.pageNum}页</span>[</span>
                                                     <span className={"line_as_hr"}/>
                                                 </div>
                                             </div>
-                                            {i !== 0 ?
                                             <div className="link-group">
-                                                <a href="javascript:void(0);" onClick={() => this.jumpUp(i, item)}>上移</a>
-                                                <a href="javascript:void(0);" onClick={() => this.jumpDown(i, item)}>下移</a>
-                                                <a href="javascript:void(0);" onClick={() => this.delQestion(item)}>删除</a>
+                                                <a href="javascript:void(0);" onClick={() => this.jumpUp(i, item, 'pageNum')}>上移</a>
+                                                <a href="javascript:void(0);" onClick={() => this.jumpDown(i, item, 'pageNum')}>下移</a>
+                                                <Popconfirm key="delete"  title="你确定删除该分页栏?" onConfirm={() => this.delQestion(item, i, 'pageNum')}>
+                                                    <a href="javascript:void(0);">删除</a>
+                                                </Popconfirm>
                                             </div>
-                                        : ''}
                                         </div>
                                 )
                             })}

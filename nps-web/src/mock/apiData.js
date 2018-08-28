@@ -761,6 +761,33 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "optionOrder": "1",
                 "setupQuestionOrder": 2,
                 "skiptoQuestionOrder": 5
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 0,
+                "logicType": "01",
+                "optionOrder": "1",
+                "setupQuestionOrder": 6,
+                "skiptoQuestionOrder": 9
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 1,
+                "logicType": "00",
+                "optionOrder": "1",
+                "setupQuestionOrder": 4,
+                "skiptoQuestionOrder": 7
+            },
+            {
+                "actType": 0,
+                "andOr": 0,
+                "isMain": 0,
+                "logicType": "00",
+                "optionOrder": "1",
+                "setupQuestionOrder": 7,
+                "skiptoQuestionOrder": 8
             }
         ],
         "qstnaireId": 520,
@@ -771,7 +798,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -799,7 +826,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -831,7 +858,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",
@@ -863,7 +890,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": "",
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": "",
                 "isNps": "",
                 "isPaging": "1",//分页数据

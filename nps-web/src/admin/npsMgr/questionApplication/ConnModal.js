@@ -191,6 +191,7 @@ export default class extends Component {
         });
         getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
+        console.log('aa', connList)
         const formItems = keys.map((index, k) => {
             return (
                 <div key={k}>
@@ -232,11 +233,13 @@ export default class extends Component {
                                     <InitQuestionList
                                         index={ questions[k].questionOrder }
                                         key={questions[k].questionOrder}
-                                        value={questions[k].value ? questions[k].value : undefined}
-                                        questionType={questions[k].questionType}
-                                        questionOrder={questions[k].questionOrder}
-                                        questionName={questions[k].questionName.split('、')[1]}
-                                        optionList={questions[k].optionList}
+                                        question={
+                                            {
+                                                ...questions[k],
+                                                value: questions[k].value ? questions[k].value : undefined,
+                                                questionName: questions[k].questionName.split('、')[1]
+                                            }
+                                        }
                                         onRadioChange={this.onRadioChange}
                                         onCheckBoxChange={this.onCheckBoxChange}
                                     />
@@ -263,7 +266,7 @@ export default class extends Component {
             >
                 <Row className="jumpModal">
                     <Col span={24} className="jumpHeader">
-                        <h2>当前题目：{index}、{record.questionName}</h2>
+                        <h2>当前题目：{record.number + 1}、{record.questionName}</h2>
                     </Col>
                     <Col span={24} className="jumpContent">
                         <Form className="connContent">
