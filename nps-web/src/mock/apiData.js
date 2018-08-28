@@ -1112,4 +1112,35 @@ Mock.mock('mock/questionMgr/getQuestionnaireList', (params) => {
         pageNum: pageNum,
         total: '@integer(10,50)'
     })
-})
+});
+
+//获取任务列表
+Mock.mock('mock/missionMgr/getMissionList', (params) => {
+    let param = params.body ? JSON.parse(params.body) : "";
+    let pageNum = param.pageNum ? param.pageNum : 1;
+    return Mock.mock({
+        'list|10': [{
+            taskId: '@integer(1,6)',
+            taskName: '@csentence',
+            testFlag: '@cname',
+            'objType|1': [1, 2],
+            qstNaireId: '@integer(1,6)',
+            createUid: '@integer(1,6)',
+            catalogId: '@integer(1,6)',
+            catalogName: '@cname',
+            createTime: '@datetime',
+            updateTime: '@datetime',
+            channelId: '@integer(1,6)',
+            'channelName|1': ['短信', '微信'],
+            deal_tache: '@cname',
+            deal_type: '@integer(1,6)',
+            note: '',
+            searchrn: '@integer(1,6)',
+            'status|1': ['00', '01', '02', '03', '04', '05'],
+            survey_count: '@integer(1,6)',
+        }],
+        pageNum: pageNum,
+        pageSize: 10,
+        totalCount: '@integer(10,50)'
+    })
+});
