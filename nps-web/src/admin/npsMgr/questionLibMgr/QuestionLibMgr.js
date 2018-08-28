@@ -60,8 +60,6 @@ class QuestionLibMgr extends React.PureComponent {
     };
     // 编辑题目
     editQuestion = (record) => {
-        console.log(record)
-        // this.props.history.push('/npsMgr/questionAddMgr', record);
         this.props.history.push({pathname: '/npsMgr/questionAddMgr', state: {record}})
     };
     // 删除题目
@@ -92,12 +90,11 @@ class QuestionLibMgr extends React.PureComponent {
             pageNum: page,
         });
         this.refreshLib();
-    }
+    };
 
     render() {
-        // console.log(this.props.location.state)
         const {questionList, total, pageNum, show, record, pageSize} = this.state;
-        // if(this.props.location.state && this.props.location.state.isFresh)   this.refreshLib();
+
         let tabTitle = "全部题目( 共" + total + "条 )";
         const showQuestionProps = {
             show,
