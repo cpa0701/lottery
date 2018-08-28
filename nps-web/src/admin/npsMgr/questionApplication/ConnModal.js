@@ -183,7 +183,7 @@ export default class extends Component {
     };
 
     render() {
-        const { conn, index, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
+        const { conn, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
         const { questions } = this.state;
 
         const optionList = connList.map((item) => {
@@ -191,7 +191,6 @@ export default class extends Component {
         });
         getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
-        console.log('aa', connList)
         const formItems = keys.map((index, k) => {
             return (
                 <div key={k}>
@@ -266,7 +265,7 @@ export default class extends Component {
             >
                 <Row className="jumpModal">
                     <Col span={24} className="jumpHeader">
-                        <h2>当前题目：{record.number + 1}、{record.questionName}</h2>
+                        <h2>当前题目：{record.questionOrder}、{record.questionName}</h2>
                     </Col>
                     <Col span={24} className="jumpContent">
                         <Form className="connContent">
@@ -277,7 +276,6 @@ export default class extends Component {
                                     wrapperCol={{span: 20}}
                                     label={'关联多题时'}
                                     required={false}
-                                    key={index}
                                 >
                                     {getFieldDecorator('andOr', {
                                         initialValue: andOr ? String(andOr) : '0',

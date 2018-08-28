@@ -36,6 +36,9 @@ class InitQuestionList extends React.PureComponent {
             case '03':
                 dom = <BlankModule questionName={question.questionName} index={index} optionList={question.optionList} isView={true}/>;
                 break;
+            case '04':
+                dom = <BlankModule questionName={question.questionName} index={index} optionList={question.optionList} isView={true}/>;
+                break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
             {isLib ? <span>{index + 1}.{question.questionName}</span> : ''}

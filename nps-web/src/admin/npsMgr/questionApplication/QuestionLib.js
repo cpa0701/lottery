@@ -14,17 +14,18 @@ class QuestionLib extends React.PureComponent {
         this.state = {
             questionList: [],
             questionName: '',
-            questionType: undefined,
+            questionType: '',
             questionBusiness: undefined,
             pageNum: 1,
+            pageSize: 10,
             loading: false,
-            isNps: undefined,
-            isSatisfied: undefined
+            isNps: '',
+            isSatisfied: ''
         }
     }
 
     componentWillMount() {
-        this.refreshLib(1);
+        this.refreshLib();
     }
 
     getInteger = (value) => {
@@ -39,13 +40,15 @@ class QuestionLib extends React.PureComponent {
         }
     };
     //刷新题库
-    refreshLib = (page) => {
+    refreshLib = () => {
         let params = {
             questionName: this.state.questionName,
             questionType: this.state.questionType,
-            isNps:this.state.isNps,
-            isSatisfied:this.state.isSatisfied,
-            pageNum: page,
+            questionCategory: '',
+            isNps: this.state.isNps,
+            isSatisfied: this.state.isSatisfied,
+            pageSize: this.state.pageSize,
+            pageNum: this.state.pageNum,
         };
         this.setState({
             loading: true
@@ -54,7 +57,7 @@ class QuestionLib extends React.PureComponent {
                 if (result) {
                     this.setState({
                         questionList: result.rows,
-                        pageNum: this.getInteger(result.result.pageNum)
+                        total: result.totalCount
                     })
                 }
                 this.setState({
@@ -62,6 +65,13 @@ class QuestionLib extends React.PureComponent {
                 })
             });
         })
+    };
+
+    onPageChange = (page) => {
+        this.setState({
+            pageNum: page,
+        });
+        this.refreshLib();
     };
 
     render() {
@@ -75,23 +85,23 @@ class QuestionLib extends React.PureComponent {
                                 <Input placeholder="请输入题目"
                                        onKeyUp={(e) => {
                                            let value = e.target.value;
-                                           this.setState({questionName: value}, () => this.refreshLib(1))
+                                           this.setState({questionName: value}, () => this.refreshLib())
                                        }}/>
                             </Col>
                             <Col span={12}>
                                 <Select placeholder={'请选择题型'}
                                         onChange={(e) => {
-                                            this.setState({questionType: e}, () => this.refreshLib(1))
+                                            this.setState({questionType: e}, () => this.refreshLib())
                                         }}>
-                                    <Option value={0}>单选</Option>
-                                    <Option value={1}>多选</Option>
-                                    <Option value={2}>填空</Option>
+                                    <Option value={'01'}>单选</Option>
+                                    <Option value={'02'}>多选</Option>
+                                    <Option value={'03'}>填空</Option>
                                 </Select>
                             </Col>
                             <Col span={12}>
                                 <Select placeholder={'请选择业务类型'}
                                         onChange={(e) => {
-                                          this.setState({isNps:e?0:1,isSatisfied:e?1:0}, () => this.refreshLib(1))
+                                          this.setState({isNps: e ? 0 : 1, isSatisfied:e ? 1 : 0}, () => this.refreshLib())
                                         }}>
                                     <Option value={0}>nps</Option>
                                     <Option value={1}>满意度</Option>
@@ -104,7 +114,7 @@ class QuestionLib extends React.PureComponent {
                             return <InitQuestionList key={i} getDom={this.props.getDom} question={question} index={i} isLib={true}/>
                         })}
                     </div>
-                    <Pagination current={this.state.pageNum} onChange={this.refreshLib} total={50}/>
+                    <Pagination current={this.state.pageNum} onChange={this.onPageChange} total={this.state.total} pageSize={this.state.pageSize}/>
                 </div>
             </Spin>)
     }

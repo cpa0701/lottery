@@ -54,22 +54,24 @@ class QuestionEdit extends React.PureComponent {
 
     // 获取题库具体题目
     getDom = (data) => {
+        console.log('qqwqq',data)
         let questionData = data.question;
-        if(this.state.questionDisplayList.filter(item => item.questionOrder === questionData.questionOrder).length === 0) {
+        if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
-                this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
+                this.state.questionDisplayList1.push({...questionData, questionOrder: 1, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                 this.orderQuestion();
             } else {
-                if(newArr[newArr.length - 1].isPaging === '1') {
-                    newArr[newArr.length - 1].questionOrder = questionData.questionOrder
-                }
                 this.setState({
                     questionDisplayList1: [...newArr]
                 }, () => {
-                    this.state.questionDisplayList1.push({...questionData, number: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
+                    this.state.questionDisplayList1.push({...questionData, questionOrder: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                     this.orderQuestion();
+                    if(this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].isPaging === '1') {
+                        this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].questionOrder = this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].questionOrder
+                        this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+                    }
                 });
             }
         } else {
@@ -82,8 +84,8 @@ class QuestionEdit extends React.PureComponent {
         let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === '0');
         newArr.map((item, k) => {
             this.state.questionDisplayList1.map(x => {
-                if(item.questionOrder === x.questionOrder && x.isPaging === '0') {
-                    x.number = k;
+                if(item.questionId === x.questionId && x.isPaging === '0') {
+                    x.questionOrder = k + 1;
                 }
                 return '';
             });
@@ -205,7 +207,7 @@ class QuestionEdit extends React.PureComponent {
 
             let _obj = JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj).splice(0, i).map((item, k) => {
-                item.questionName = item.number + 1 + '、' + item.questionName;
+                item.questionName = item.questionOrder + '、' + item.questionName;
                 return item;
             });
 
@@ -223,7 +225,6 @@ class QuestionEdit extends React.PureComponent {
                 record: props,
                 connList,
                 andOr,
-                index: i + 1
             });
         } else {
             this.setState({conn: false});
@@ -262,7 +263,7 @@ class QuestionEdit extends React.PureComponent {
             let _obj=JSON.stringify(this.state.questionDisplayList);
             let arr = JSON.parse(_obj).splice(i + 1).filter(item => item.isPaging !== '1');
             let jumpList = arr.map((item, k) => {
-                item.questionName = item.number + 1 + '、' + item.questionName;
+                item.questionName = item.questionOrder + '、' + item.questionName;
                 return item;
             });
             jumpList = [
@@ -312,6 +313,9 @@ class QuestionEdit extends React.PureComponent {
                     }
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                 }
+            }
+            if (props.isPaging === '0') {
+                this.delLogic(props.questionOrder, 1);
             }
             questionDisplayList2.splice(i - 1, 0, props);
             questionDisplayList2.splice(i + 1, 1);
@@ -445,12 +449,11 @@ class QuestionEdit extends React.PureComponent {
     };
 
     render() {
-        const { questionDisplayList, conn, jump, record, index, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
+        const { questionDisplayList, conn, jump, record, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
         // 关联弹窗
         const connModalProps = {
             conn,
             andOr,
-            index,
             keyS,
             questions,
             record,
@@ -540,17 +543,19 @@ class QuestionEdit extends React.PureComponent {
                                 return (
                                     item.isPaging === '0' ?
                                         <div key={i}>
-                                            <InitQuestionList question={item} index={item.number + 1}/>
+                                            <InitQuestionList question={item} index={item.questionOrder}/>
                                             <div className="link-group">
                                                 <Checkbox defaultChecked={item.isBlank === 0} onChange={(e) => this.onChangeCheckbox(e, i)}>必填</Checkbox>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
-                                                <a href="javascript:void(0);"
-                                                   onClick={() => this.jumpUp(i, item, 'question')}>上移</a>
-                                                <a href="javascript:void(0);"
-                                                   onClick={() => this.jumpDown(i, item, 'question')}>下移</a>
+                                                <Popconfirm key="jumpUp"  title="若该题存在关联、跳转逻辑，上移将清除所有与该题有关的逻辑。确定上移?" onConfirm={() => this.jumpUp(i, item, 'question')}>
+                                                    <a href="javascript:void(0);">上移</a>
+                                                </Popconfirm>
+                                                <Popconfirm key="jumpDown"  title="若该题存在关联、跳转逻辑，下移将清除所有与该题有关的逻辑。确定下移?" onConfirm={() => this.jumpDown(i, item, 'question')}>
+                                                    <a href="javascript:void(0);" >下移</a>
+                                                </Popconfirm>
                                                 <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i, 'question')}>
                                                     <a href="javascript:void(0);">删除</a>
                                                 </Popconfirm>
