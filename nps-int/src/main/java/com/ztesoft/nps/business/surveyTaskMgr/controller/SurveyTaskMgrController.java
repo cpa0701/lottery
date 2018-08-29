@@ -1,8 +1,6 @@
 package com.ztesoft.nps.business.surveyTaskMgr.controller;
 
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskIdQuery;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.*;
 import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
@@ -56,7 +54,7 @@ public class SurveyTaskMgrController {
     @PostMapping("/deleteSurveyTask")
     public Result<Object> deleteSurveyTask(@RequestBody SurveyTaskIdQuery condition){
         String taskId = condition.getTaskId();
-        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(taskId) == 0){
+        if(StringUtil.isNull(taskId)||surveyTaskMgrService.deleteSurveyTask(taskId) == 0){
             throw new NpsDeleteException(taskId);
         }
         return Result.success();
@@ -75,9 +73,9 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "删除目标用户", notes = "删除目标用户")
     @PostMapping("/userTargetDelete")
-    public Result<Object> userTargetDelete(@RequestBody SurveyTaskIdQuery condition){
+    public Result<Object> userTargetDelete(@RequestBody SurveyTaskDelBo condition){
         String taskId = condition.getTaskId();
-        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(taskId) == 0){
+        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(condition) == 0){
             throw new NpsDeleteException(taskId);
         }
         return Result.success();
@@ -85,8 +83,8 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "用户上传", notes = "用户上传")
     @PostMapping("/userTargetImport")
-    public Result<Object> userTargetImport(@RequestParam MultipartFile file){
-        return Result.success(surveyTaskMgrService.userTargetImport(file));
+    public Result<Object> userTargetImport(@RequestParam UserTargetBo bo){
+        return Result.success(surveyTaskMgrService.userTargetImport(bo));
     }
 
     @ApiOperation(value = "发布任务", notes = "发布任务")

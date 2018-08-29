@@ -3,12 +3,11 @@ package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.SurveyTaskMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper;
-import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTask;
-import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel;
-import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample;
-import com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser;
+import com.ztesoft.nps.business.surveyTaskMgr.model.*;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskDelBo;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.UserTargetBo;
 import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
@@ -19,6 +18,7 @@ import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.DateUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -63,13 +63,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     }
 
     @Override
-    public Map<String, Object> userTargetImport(MultipartFile file) {
+    public Map<String, Object> userTargetImport(UserTargetBo bo) {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        Workbook workbook = ExcelUtils.create(file);
+        Workbook workbook = ExcelUtils.create(bo.getFile());
 
-        String taskId = "";
-        String channelId = "";
+        String taskId = bo.getTaskId();
+        String channelType = bo.getChannelType();
 
         Map<String, String> accNbrMap = new HashMap<String, String>(); // key:用户号码 | value : 区域id
         int allCount = 0; //保存总数
@@ -88,7 +88,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
         String regexPhone = "^(1[0-9])\\d{9}$";
 
-        String batchSaveSql = "insert into task_user(task_user_id,channel_id,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
+        String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
         List<String[]> sqlParamList = new ArrayList<String[]>();
         int saveFlag = 0;
         for (Map.Entry<String, String> entry : userMap.entrySet()) {
@@ -96,7 +96,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             String areaId = entry.getValue();
             if (accNum.matches(regexPhone) && !areaSet.contains(areaId)) {
                 sqlParamList.add(
-                        new String[]{StringUtil.getRandom32PK(), channelId, taskId, accNum,
+                        new String[]{StringUtil.getRandom32PK(), channelType, taskId, accNum,
                                 DateUtil.getFormat(new Date(), DateFormatConst.YMDHM_), areaId, "1", "1", ConstantUtils.RES_SYSTEM_NAME});
                 saveFlag++;
             } else {
@@ -130,8 +130,14 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     }
 
     @Override
-    public int userTargetDelete(String taskId) {
-        return taskUserMapper.deleteByPrimaryKey(taskId);
+    public int userTargetDelete(SurveyTaskDelBo bo) {
+        TaskUserExample taskUserExample = new TaskUserExample();
+        TaskUserExample.Criteria criteria = taskUserExample.createCriteria();
+        criteria.andTaskIdEqualTo(bo.getTaskId());
+        if(StringUtil.isNotNull(bo.getChannelType())){
+            criteria.andChannelTypeEqualTo(StringUtil.getShort(bo.getChannelType()));
+        }
+        return taskUserMapper.deleteByExample(taskUserExample);
     }
 
     @Override
@@ -295,6 +301,12 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTaskQuerySql.append(" and tc.channel_type = '2' ");
         if(StringUtil.isNotNull(condition.getTaskName())){
             surveyTaskQuerySql.append(" and st.task_name like '%").append(condition.getTaskName()).append("%'");
+        }
+        if(StringUtil.isNotNull(condition.getTaskType())){
+            surveyTaskQuerySql.append(" and st.task_type = '").append(condition.getTaskType()).append("'");
+        }
+        if(StringUtil.isNotNull(condition.getStatus())){
+            surveyTaskQuerySql.append(" and st.status = '").append(condition.getStatus()).append("'");
         }
         return  surveyTaskQuerySql.toString();
     }
