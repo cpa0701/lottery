@@ -30,10 +30,10 @@ export default class Authority extends PureComponent {
             });
         } else {
             const ref = info({
-                title: '请先选择',
+                title: this.state.authority.pleaseSelect,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.ok,
+                cancelText: this.state.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -53,10 +53,10 @@ export default class Authority extends PureComponent {
 
         } else {
             const ref = info({
-                title: '请先选择删除项',
+                title: this.state.authority.selectDeleteItem,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.authority.ok,
+                cancelText: this.state.authority.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -73,10 +73,10 @@ export default class Authority extends PureComponent {
             });
         } else {
             const ref = info({
-                title: '请先选择',
+                title: this.state.authority.pleaseSelect,
                 content: '',
-                okText: '确定',
-                cancelText: '取消',
+                okText: this.state.authority.ok,
+                cancelText: this.state.authority.cancel,
                 onOk: () => {
                     ref.destroy();
                 }
@@ -195,6 +195,7 @@ export default class Authority extends PureComponent {
             userVisible: false,
             editVisible: false,
             confirmLoading: false,
+            authority:this.props.stores.I18nModel.outputLocale.authority,
         }
     }
 
@@ -242,17 +243,17 @@ export default class Authority extends PureComponent {
             render: (text, record, index) => {
                 switch (text) {
                     case 1:
-                        return '菜单'
+                        return authority.menu
                     case 2:
-                        return '功能按钮'
+                        return authority.functionButton
                     case 3:
-                        return 'C/S权限'
+                        return authority.CSright
                     case 4:
-                        return '其他'
+                        return authority.other
                     case 5:
-                        return 'tab页'
+                        return authority.tab
                     case 6:
-                        return '多数据源权限'
+                        return authority.dataSource
                 }
 
             }
@@ -265,25 +266,25 @@ export default class Authority extends PureComponent {
             render: (text, record, index) => {
                 switch (text) {
                     case 1:
-                        return '全局'
+                        return authority.global
                     case 2:
-                        return '网管系统'
+                        return authority.netManagement
                     case 3:
-                        return '大客户系统'
+                        return authority.keyAccountSystem
                     case 4:
-                        return '江苏有线-移动端'
+                        return authority.jiangsu
                     case 5:
-                        return '报表分析'
+                        return authority.stateAnalysis
                     case 6:
-                        return '自定义报表'
+                        return authority.customReport
                     case 7:
-                        return '统计分析'
+                        return authority.statisticalAnalysis
                     case 8:
-                        return '重保'
+                        return authority.reInsurance
                     case 9:
-                        return '广西门户'
+                        return authority.guangxiPortal
                     case 10:
-                        return '广东资源树'
+                        return authority.guangdongResourceTree
                 }
 
             }
@@ -320,7 +321,7 @@ export default class Authority extends PureComponent {
                     }
                     />
                     <Modal
-                        title="新增权限"
+                        title={authority.additionalPermissions}
                         width={800}
                         centered
                         visible={this.state.addVisible}
@@ -328,15 +329,15 @@ export default class Authority extends PureComponent {
                         onCancel={this.handleCancel}
                         footer={[
                             <Button key="submit" type="primary" icon="check-circle-o"
-                                    onClick={this.handleAddSubmit}>保存</Button>,
-                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                                    onClick={this.handleAddSubmit}>{authority.save}</Button>,
+                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>{authority.cancel}</Button>
                         ]}
                     >
                         <Form>
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限名称"
+                                        label={authority.permissionName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -352,7 +353,7 @@ export default class Authority extends PureComponent {
 
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限类型"
+                                        label={authority.permissionType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -361,19 +362,19 @@ export default class Authority extends PureComponent {
                                             initialValue: "6",
                                         })(
                                             <Select>
-                                                <Option value="1">菜单</Option>
-                                                <Option value="2">功能按钮</Option>
-                                                <Option value="3">C/S按钮</Option>
-                                                <Option value="4">其它</Option>
-                                                <Option value="5">tab页</Option>
-                                                <Option value="6">多数据源权限</Option>
+                                                <Option value="1">{authority.menu}</Option>
+                                                <Option value="2">{authority.functionButton}</Option>
+                                                <Option value="3">{authority.CSbutton}</Option>
+                                                <Option value="4">{authority.other}</Option>
+                                                <Option value="5">{authority.tab}</Option>
+                                                <Option value="6">{authority.dataSource}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="链接URL"
+                                        label={authority.linkURL}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -387,7 +388,7 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限描述"
+                                        label={authority.permissionDescribe}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -402,7 +403,7 @@ export default class Authority extends PureComponent {
 
                                 <Col span={12}>
                                     <FormItem
-                                        label="应用类型"
+                                        label={authority.applicationType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -411,16 +412,16 @@ export default class Authority extends PureComponent {
                                             initialValue: "1",
                                         })(
                                             <Select>
-                                                <Option value="1">全局</Option>
-                                                <Option value="2">网管系统</Option>
-                                                <Option value="3">大客户系统</Option>
-                                                <Option value="4">江苏有线-移动端</Option>
-                                                <Option value="5">报表分析</Option>
-                                                <Option value="6">自定义报表</Option>
-                                                <Option value="7">统计分析</Option>
-                                                <Option value="8">重保</Option>
-                                                <Option value="9">广西门户</Option>
-                                                <Option value="10">广东资源树</Option>
+                                                <Option value="1">{authority.global}</Option>
+                                                <Option value="2">{authority.netManagement}</Option>
+                                                <Option value="3">{authority.keyAccountSystem}</Option>
+                                                <Option value="4">{authority.jiangsu}</Option>
+                                                <Option value="5">{authority.stateAnalysis}</Option>
+                                                <Option value="6">{authority.customReport}</Option>
+                                                <Option value="7">{authority.stateAnalysis}</Option>
+                                                <Option value="8">{authority.reInsurance}</Option>
+                                                <Option value="9">{authority.guangxiPortal}</Option>
+                                                <Option value="10">{authority.guangdongResourceTree}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -429,7 +430,7 @@ export default class Authority extends PureComponent {
                         </Form>
                     </Modal>
                     <Modal
-                        title="修改权限"
+                        title={authority.modifyAuthority}
                         width={800}
                         centered
                         visible={this.state.editVisible}
@@ -437,15 +438,15 @@ export default class Authority extends PureComponent {
                         onCancel={this.handleCancel}
                         footer={[
                             <Button key="submit" type="primary" icon="check-circle-o"
-                                    onClick={this.handleUpdateSubmit}>保存</Button>,
-                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>取消</Button>
+                                    onClick={this.handleUpdateSubmit}>{authority.save}</Button>,
+                            <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>{authority.cancel}</Button>
                         ]}
                     >
                         <Form>
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限标识"
+                                        label={authority.permissionIdentify}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -459,7 +460,7 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限名称"
+                                        label={authority.authorityName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -474,7 +475,7 @@ export default class Authority extends PureComponent {
 
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限类型"
+                                        label={authority.permissionType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -483,19 +484,19 @@ export default class Authority extends PureComponent {
                                             initialValue: String(this.state.authorityData.status),
                                         })(
                                             <Select>
-                                                <Option value="1">菜单</Option>
-                                                <Option value="2">功能按钮</Option>
-                                                <Option value="3">C/S按钮</Option>
-                                                <Option value="4">其它</Option>
-                                                <Option value="5">tab页</Option>
-                                                <Option value="6">多数据源权限</Option>
+                                                <Option value="1">{authority.menu}</Option>
+                                                <Option value="2">{authority.functionButton}</Option>
+                                                <Option value="3">{authority.CSbutton}</Option>
+                                                <Option value="4">{authority.other}</Option>
+                                                <Option value="5">{authority.tab}</Option>
+                                                <Option value="6">{authority.dataSource}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="链接URL"
+                                        label={authority.linkURL}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -510,7 +511,7 @@ export default class Authority extends PureComponent {
 
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限描述"
+                                        label={authority.permissionDescribe}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -524,7 +525,7 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="应用类型"
+                                        label={authority.applicationType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -533,16 +534,16 @@ export default class Authority extends PureComponent {
                                             initialValue: String(this.state.authorityData.appType),
                                         })(
                                             <Select>
-                                                <Option value="1">全局</Option>
-                                                <Option value="2">网管系统</Option>
-                                                <Option value="3">大客户系统</Option>
-                                                <Option value="4">江苏有线-移动端</Option>
-                                                <Option value="5">报表分析</Option>
-                                                <Option value="6">自定义报表</Option>
-                                                <Option value="7">统计分析</Option>
-                                                <Option value="8">重保</Option>
-                                                <Option value="9">广西门户</Option>
-                                                <Option value="10">广东资源数</Option>
+                                                <Option value="1">{authority.global}</Option>
+                                                <Option value="2">{authority.netManagement}</Option>
+                                                <Option value="3">{authority.keyAccountSystem}</Option>
+                                                <Option value="4">{authority.jiangsu}</Option>
+                                                <Option value="5">{authority.stateAnalysis}</Option>
+                                                <Option value="6">{authority.customReport}</Option>
+                                                <Option value="7">{authority.statisticalAnalysis}</Option>
+                                                <Option value="8">{authority.reInsurance}</Option>
+                                                <Option value="9">{authority.guangxiPortal}</Option>
+                                                <Option value="10">{authority.guangdongResourceTree}</Option>
                                             </Select>
                                         )}
                                     </FormItem>
@@ -552,7 +553,7 @@ export default class Authority extends PureComponent {
                         </Form>
                     </Modal>
                     <Modal
-                        title="详情信息"
+                        title={authority.detailedInformation}
                         width={800}
                         centered
                         visible={this.state.userVisible}
@@ -565,7 +566,7 @@ export default class Authority extends PureComponent {
 
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限标识"
+                                        label={authority.permissionIdentify}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -574,7 +575,7 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限名称"
+                                        label={authority.authorityName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -583,23 +584,23 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限类型"
+                                        label={authority.permissionType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
                                         <Select value={String(this.state.authorityData.type)}disabled>
-                                            <Option value="1">菜单</Option>
-                                            <Option value="2">功能按钮</Option>
-                                            <Option value="3">C/S按钮</Option>
-                                            <Option value="4">其它</Option>
-                                            <Option value="5">tab页</Option>
-                                            <Option value="6">多数据源权限</Option>
+                                            <Option value="1">{authority.menu}</Option>
+                                            <Option value="2">{authority.functionButton}</Option>
+                                            <Option value="3">{authority.CSbutton}</Option>
+                                            <Option value="4">{authority.other}</Option>
+                                            <Option value="5">{authority.tab}</Option>
+                                            <Option value="6">{authority.dataSource}</Option>
                                         </Select>
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="链接URL"
+                                        label={authority.linkURL}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -608,7 +609,7 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="权限描述"
+                                        label={authority.permissionDescribe}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
@@ -617,21 +618,21 @@ export default class Authority extends PureComponent {
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
-                                        label="应用类型"
+                                        label={authority.applicationType}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >
                                         <Select value={String(this.state.authorityData.appType)} disabled>
-                                            <Option value="1">全局</Option>
-                                            <Option value="2">网管系统</Option>
-                                            <Option value="3">大客户系统</Option>
-                                            <Option value="4">江苏有线-移动端</Option>
-                                            <Option value="5">报表分析</Option>
-                                            <Option value="6">自定义报表</Option>
-                                            <Option value="7">统计分析</Option>
-                                            <Option value="8">重保</Option>
-                                            <Option value="9">广西门户</Option>
-                                            <Option value="10">广东资源数</Option>
+                                            <Option value="1">{authority.global}</Option>
+                                            <Option value="2">{authority.netManagement}</Option>
+                                            <Option value="3">{authority.keyAccountSystem}</Option>
+                                            <Option value="4">{authority.jiangsu}</Option>
+                                            <Option value="5">{authority.stateAnalysis}</Option>
+                                            <Option value="6">{authority.customReport}</Option>
+                                            <Option value="7">{authority.statisticalAnalysis}</Option>
+                                            <Option value="8">{authority.reInsurance}</Option>
+                                            <Option value="9">{authority.guangxiPortal}</Option>
+                                            <Option value="10">{authority.guangdongResourceTree}</Option>
                                         </Select>
                                     </FormItem>
                                 </Col>

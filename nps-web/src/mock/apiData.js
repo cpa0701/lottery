@@ -109,7 +109,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         {
             menuName: '调研资源管理',
             icon: 'profile',
-            menuUrl: 'profile',
+            menuUrl: '/resourceMgr',
             menuId: 4,
             children: [
                 {
@@ -119,7 +119,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                 },
                 {
                     menuName: '调研资源统计图',
-                    menuUrl: 'advanced',
+                    menuUrl: '/resourceMgr/resourceMap',
                     authority: 'admin',
                     menuId: 42,
                 },
@@ -141,28 +141,28 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         {
             menuName: '客户忠诚度感知',
             icon: 'user',
-            menuUrl: 'profile',
+            menuUrl: '/customerPerception',
             menuId: 6,
             children: [
                 {
                     menuName: '感知总视图',
-                    menuUrl: 'basic',
+                    menuUrl: '/customerPerception/perceptionView',
                     menuId: 61,
                 },
                 {
                     menuName: '支局视图',
-                    menuUrl: 'advanced',
+                    menuUrl: '/customerPerception/brandView',
                     authority: 'admin',
                     menuId: 62,
                 },
                 {
                     menuName: '用户视图',
-                    menuUrl: 'basic',
+                    menuUrl: '/customerPerception/useView',
                     menuId: 63,
                 },
                 {
                     menuName: '统计报表',
-                    menuUrl: 'advanced',
+                    menuUrl: '/customerPerception/statisticReport',
                     authority: 'admin',
                     menuId: 64,
                 },

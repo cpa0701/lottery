@@ -11,8 +11,13 @@ import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
 import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
-import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
+import ResourceMap from "../admin/resourceMgr/resourceMap/ResourceMap"
+import PerceptionView from "../admin/customerPerception/perceptionView/PerceptionView"
+import BrandView from "../admin/customerPerception/brandView/BrandView"
+import UseView from "../admin/customerPerception/useView/UseView"
+import StatisticReport from "../admin/customerPerception/statisticReport/StatisticReport"
 import NewApplicationForm from "../admin/missionMgr/missionApplication/NewApplicationForm"
+import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import NotFound from '../admin/base/error/NotFound';
 import ReviewApplication from "../admin/missionMgr/reviewApplication/ReviewApplication";
 
@@ -30,7 +35,11 @@ class RouteList extends React.PureComponent {
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
                     <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
-                    <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
+                    <Route path="/resourceMgr/resourceMap" component={ResourceMap}/>
+                    <Route path="/customerPerception/perceptionView" component={PerceptionView}/>
+                    <Route path="/customerPerception/brandView" component={BrandView}/>
+                    <Route path="/customerPerception/useView" component={UseView}/>
+                    <Route path="/customerPerception/statisticReport" component={StatisticReport}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>

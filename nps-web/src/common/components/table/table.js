@@ -273,7 +273,7 @@ class StandardTable extends PureComponent {
                         <Alert
                             message={(
                                 <div>
-                                    已选择 <a style={{fontWeight: 600}}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
+                                    {dept.hasChosed} <a style={{fontWeight: 600}}>{selectedRowKeys.length}</a> {dept.item}&nbsp;&nbsp;
                                     {
                                         needTotalList.map(item => (
                                                 <span style={{marginLeft: 8}} key={item.dataIndex}>{item.title}总计&nbsp;

@@ -38,7 +38,7 @@ class AdvancedSearchForm extends Component {
                 label: this.props.stores.I18nModel.outputLocale.dept.scopedepartment,
                 key: 'range',
                 type: 'select',
-                optionList: [{key: 'dept', title:this.props.stores.I18nModel.outputLocale.dept.subdepartment }, {key: 'currentDept', title: '当前部门'}, {
+                optionList: [{key: 'dept', title:this.props.stores.I18nModel.outputLocale.dept.subdepartment }, {key: 'currentDept', title: this.props.stores.I18nModel.outputLocale.dept.currentDepartment}, {
                     key: 'domain',
                     title: this.props.stores.I18nModel.outputLocale.dept.accordArea
                 }]
