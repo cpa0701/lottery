@@ -1,5 +1,7 @@
 package com.ztesoft.nps.common.listenner;
 
+import com.ztesoft.nps.analysisProgram.SmsAccessAnalysis.SmsAccessStarter;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -12,7 +14,7 @@ public class LServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-//        SmsAccessStarter.start();
+        SmsAccessStarter.start();
     }
 
     @Override

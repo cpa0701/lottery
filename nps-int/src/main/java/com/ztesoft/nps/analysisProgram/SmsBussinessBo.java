@@ -3,10 +3,12 @@ package com.ztesoft.nps.analysisProgram;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskExeMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample;
+import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 64671 on 2018/8/29.
@@ -14,22 +16,14 @@ import java.util.List;
  */
 public class SmsBussinessBo {
 
-    @Autowired
-    private TaskExeMapper taskExeMapper;
     /**
      * 根据短链接地址获取长链接地址
      * @param shortUrl
      * @return
      */
-    public TaskExe getBaseUrlFromShortUrl(String shortUrl){
-        TaskExe obj = null;
-        TaskExeExample taskExeExample = new TaskExeExample();
-        taskExeExample.createCriteria().andShortUrlEqualTo(shortUrl);
-        List<TaskExe> taskExeList = taskExeMapper.selectByExample(taskExeExample);
-        if(ListUtil.isNotNull(taskExeList) && taskExeList.get(0)!= null){
-            obj = taskExeList.get(0);
-        }
-        return obj;
+    public Map<String,Object> getBaseUrlFromShortUrl(String shortUrl){
+        Map<String,Object> result = DatabaseUtil.queryForMap("select * from task_exe where short_url ='"+shortUrl+"'");
+        return result;
     }
 
     /**
