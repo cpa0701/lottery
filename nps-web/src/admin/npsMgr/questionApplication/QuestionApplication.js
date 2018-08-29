@@ -15,6 +15,8 @@ class QuestionApplication extends React.PureComponent {
             qstnaireList: [],
             qstnaireTitle: '',
             status: "",
+            opened: 0,
+            draught: 0,
             pageNum: 1,
             pageSize: 10,
             total: 0
@@ -39,11 +41,17 @@ class QuestionApplication extends React.PureComponent {
         this.setState({
             loading: true
         }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
-            this.setState({
-                qstnaireList: result.rows,
-                total: result.totalCount,
-                loading: false
-            })
+            if(result) {
+                let opened = result.rows.filter(item => item.status === '已启用');
+                let draught = result.rows.filter(item => item.status === '草稿');
+                this.setState({
+                    qstnaireList: result.rows,
+                    total: result.totalCount,
+                    opened: opened.length,
+                    draught: draught.length,
+                    loading: false
+                })
+            }
         }))
     };
 
@@ -52,8 +60,16 @@ class QuestionApplication extends React.PureComponent {
         this.props.history.push('/npsMgr/questionMgr/questionEdit');
     };
     // 编辑问卷
-    editQstnaire = (record) => {
-        this.props.history.push({pathname: '/npsMgr/questionMgr/questionEdit', state: {record}})
+    editQstnaire = (id) => {
+        this.setState({
+            loading: true
+        }, () => QuestionApplicationService.getQstnaireById({qstnaireId: id}).then(result => {
+            if(result) {
+                this.setState({loading: false});
+                let record = result.data;
+                this.props.history.push({pathname: '/npsMgr/questionMgr/questionEdit', state: {record}})
+            }
+        }))
     };
     // 删除问卷
     delQstnaire = (id) => {
@@ -98,7 +114,7 @@ class QuestionApplication extends React.PureComponent {
     };
 
     render() {
-        const { qstnaireList } = this.state;
+        const { qstnaireList, total, opened, draught } = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
@@ -148,17 +164,23 @@ class QuestionApplication extends React.PureComponent {
                                 <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>
                             </div>;
 
+        let tab1Title = "我的全部问卷( 共" + total + "条 )";
+        let tab2Title = "已启用( " + opened + " )";
+        let tab3Title = "待审核( " + 0 + " )";
+        let tab4Title = "审核否决( " + 0 + " )";
+        let tab5Title = "草稿( " + draught + " )";
+
         return (
             <div className={'questionnaire'}>
                 <Button type="primary" icon="plus" onClick={this.createQuestion}>
                     创建问卷
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab="我的全部问卷( 共24条 )" key="1">{questionLIst}</TabPane>
-                    <TabPane tab="已启用( 5 )" key="2">{questionLIst}</TabPane>
-                    <TabPane tab="待审核( 0 )" key="3">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决( 0 )" key="4">{questionLIst}</TabPane>
-                    <TabPane tab="草稿( 18 )" key="">{questionLIst}</TabPane>
+                    <TabPane tab={tab1Title} key="全部问卷">{questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="已启用">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="待审核">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="审核否决">{questionLIst}</TabPane>
+                    <TabPane tab={tab5Title} key="草稿">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )
