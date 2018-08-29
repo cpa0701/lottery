@@ -1,5 +1,6 @@
-package com.ztesoft.nps.business.surveyTaskMgr.model;
+package com.ztesoft.nps.business.surveyTaskMgr.model.query;
 
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -36,11 +37,8 @@ public class SurveyTaskAddBo implements Serializable{
     @ApiModelProperty("测试号码")
     private List<String> testNumberList;
 
-    @ApiModelProperty("调研对象")
-    private List<TaskObject> taskObjectList;
-
     @ApiModelProperty("调研渠道")
-    private List<TaskChannel> taskChannelList;
+    private TaskChannel taskChannel;
 
     public String getTaskId() {
         return taskId;
@@ -106,19 +104,11 @@ public class SurveyTaskAddBo implements Serializable{
         this.testNumberList = testNumberList;
     }
 
-    public List<TaskObject> getTaskObjectList() {
-        return taskObjectList;
+    public TaskChannel getTaskChannel() {
+        return taskChannel;
     }
 
-    public void setTaskObjectList(List<TaskObject> taskObjectList) {
-        this.taskObjectList = taskObjectList;
-    }
-
-    public List<TaskChannel> getTaskChannelList() {
-        return taskChannelList;
-    }
-
-    public void setTaskChannelList(List<TaskChannel> taskChannelList) {
-        this.taskChannelList = taskChannelList;
+    public void setTaskChannel(TaskChannel taskChannel) {
+        this.taskChannel = taskChannel;
     }
 }
