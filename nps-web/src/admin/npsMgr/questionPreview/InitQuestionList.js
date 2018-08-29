@@ -44,12 +44,16 @@ class InitQuestionList extends React.PureComponent {
                                    onChange={onBlankChange} isView={true}/>
                 break;
         }
+        let tipContent='请选择选项';
+        if(questionType==='03'||questionType==='04'){
+            tipContent='请输入文字'
+        }
         return (<div
             style={{display: show, border: isShowTip ? "1px dashed rgb(222, 103, 82)" : 0}}
             className={`${isPaging === '1' ? 'paging' : 'questionList'}`}>
             {dom}
             {isPaging === '1' ? '' : (isBlank === 1 ? <span className="req">*</span> : '')}
-            {isShowTip ? <div className={'errorMessage'}>请选择选项</div> : ''}
+            {isShowTip ? <div className={'errorMessage'}>{tipContent}</div> : ''}
         </div>);
     }
 }

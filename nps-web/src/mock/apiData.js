@@ -937,7 +937,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",

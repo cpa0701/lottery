@@ -350,16 +350,16 @@ class QuestionPreview extends React.PureComponent {
 
     // 翻页
     changePage(type) {
-        if (!this.validIsBlank()) {
-            let page = this.state.currentPage;
-            let pageCount = this.state.pageCount;
-            if (type === 'pre') {
-                page > 0 ? page-- : page = 1;
-            } else {
+        let page = this.state.currentPage;
+        let pageCount = this.state.pageCount;
+        if (type === 'pre') {
+            page > 0 ? page-- : page = 1;
+        } else {
+            if (!this.validIsBlank()) {
                 page < pageCount ? page++ : page = pageCount;
             }
-            this.setState({currentPage: page})
         }
+        this.setState({currentPage: page})
     }
 
     //提交
@@ -374,7 +374,7 @@ class QuestionPreview extends React.PureComponent {
     //验证必填
     validIsBlank = () => {
         let blankList = this.state.questionList.filter(question => {//去除分页数据判断必填数据是否有值
-            if (question.isPaging === '0' && !question.value && question.display && question.isBlank) {
+            if (question.isPaging === '0' && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
                 question.showTip = true;
                 return question;
             }
