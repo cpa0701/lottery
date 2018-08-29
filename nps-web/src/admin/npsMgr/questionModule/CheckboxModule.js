@@ -4,7 +4,7 @@ import {Checkbox, Input, Icon} from 'antd';
 //多选
 export default class CheckboxModule extends PureComponent {
     render() {
-        const {index, questionName, optionList, isView, onChange, isBlank} = this.props;
+        const {index, questionName, optionList, isView, onChange, isBlank, jumpDescribe = null, connDescribe = null, infoView} = this.props;
 
         const optionLIst = optionList.map((item, key) => {
             return <Checkbox onChange={onChange} className="optionInput" style={optionList.length > 3 ? {
@@ -32,6 +32,7 @@ export default class CheckboxModule extends PureComponent {
                     <Input className="titleInput" defaultValue={questionName}
                            onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
                 {optionLIst}
+                <br/>{infoView ? <div style={{display: 'inline-block', marginLeft: '8px', marginTop: '5px', color: '#efa030'}}>{jumpDescribe ? "* " + jumpDescribe : ''}  {connDescribe ? "*" + connDescribe : ''}</div> : ''}
             </div>
         );
     }

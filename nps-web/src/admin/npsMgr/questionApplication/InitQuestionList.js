@@ -24,20 +24,20 @@ class InitQuestionList extends React.PureComponent {
     }
 
     render() {
-        const { index, isLib, onRadioChange, onCheckBoxChange, question } = this.props;
+        const { index, isLib, onRadioChange, onCheckBoxChange, question, infoView = false } = this.props;
         let dom = '';
         switch (question.questionType) {
             case '01':
-                dom = <RadioModule questionName={question.questionName} index={index} value={question.value} optionList={question.optionList} onChange={onRadioChange} isView={true}/>;
+                dom = <RadioModule questionName={question.questionName} index={index} value={question.value} connDescribe={question.connDescribe} jumpDescribe={question.jumpDescribe} optionList={question.optionList} onChange={onRadioChange} isView={true} infoView={infoView}/>;
                 break;
             case '02':
-                dom = <CheckboxModule questionName={question.questionName} index={index} optionList={question.optionList} onChange={onCheckBoxChange} isView={true}/>;
+                dom = <CheckboxModule questionName={question.questionName} index={index} connDescribe={question.connDescribe} jumpDescribe={question.jumpDescribe} optionList={question.optionList} onChange={onCheckBoxChange} isView={true} infoView={infoView}/>;
                 break;
             case '03':
-                dom = <BlankModule questionName={question.questionName} index={index} optionList={question.optionList} isView={true}/>;
+                dom = <BlankModule questionName={question.questionName} connDescribe={question.connDescribe} jumpDescribe={question.jumpDescribe} index={index} optionList={question.optionList} isView={true} infoView={infoView}/>;
                 break;
             case '04':
-                dom = <BlankModule questionName={question.questionName} index={index} optionList={question.optionList} isView={true}/>;
+                dom = <BlankModule questionName={question.questionName} connDescribe={question.connDescribe} jumpDescribe={question.jumpDescribe} index={index} optionList={question.optionList} isView={true} infoView={infoView}/>;
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>

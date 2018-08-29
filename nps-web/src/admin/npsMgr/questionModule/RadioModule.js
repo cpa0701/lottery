@@ -6,7 +6,7 @@ const RadioGroup = Radio.Group;
 //单选
 export default class RadioModule extends PureComponent {
     render() {
-        const {index, questionName, optionList, isView, onChange, value, isBlank} = this.props;
+        const {index, questionName, optionList, isView, onChange, value, isBlank, jumpDescribe = null, connDescribe = null, infoView} = this.props;
 
         const optionLIst = optionList.map((item) => {
             return <Radio className="optionInput" style={optionList.length > 3 ? {
@@ -16,8 +16,11 @@ export default class RadioModule extends PureComponent {
                 marginLeft: '20px'
             } : {marginLeft: '20px'}} questionIndex={index} value={item.optionOrder} key={item.optionOrder}
                           isblank={isBlank}
-                          logicList={item.logicList}>{isView ? item.optionName :
-                <span>
+                          logicList={item.logicList}>{isView ?
+                                                    <div style={{display: 'inline-block'}}>{item.optionName}
+                                                        {infoView ? <div style={{display: 'inline-block', marginLeft: '8px'}}>{item.describe ? <span style={{ color: '#efa030'}}>{item.describe}</span> : ''}</div> : ''}
+                                                    </div> :
+                            <span>
                                 <Input defaultValue={item.optionName}
                                        onBlur={(e) => this.props.optionNameBlur(e, item.optionOrder)}/>
                                 <Icon type="delete" title="删除"
@@ -33,6 +36,8 @@ export default class RadioModule extends PureComponent {
                 <RadioGroup onChange={onChange} defaultValue={value}>
                     {optionLIst}
                 </RadioGroup>
+                <br/>
+                {infoView ? <div style={{display: 'inline-block', marginLeft: '8px', marginTop: '5px', color: '#efa030'}}>{jumpDescribe ? "* " + jumpDescribe : ''}  {connDescribe ? "*" + connDescribe : ''}</div> : ''}
             </div>
         );
     }

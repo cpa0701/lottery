@@ -9,6 +9,7 @@ import JumpModal from './JumpModal';
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 
 import './questionApplication.less'
+import QuestionApplication from "./QuestionApplication";
 
 const { TextArea } = Input;
 
@@ -16,9 +17,9 @@ class QuestionEdit extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            questionDisplayList: [],
-            questionDisplayList1: [],
-            logic: [], // 逻辑表
+            questionDisplayList: this.props.location.state ? [...this.props.location.state.record.question] : [],
+            questionDisplayList1: this.props.location.state ? [...this.props.location.state.record.question] : [],
+            logic: this.props.location.state ? [...this.props.location.state.record.logic] : [], // 逻辑表
             otherQuestion: [
                 {
                     questionOrder: '0',
@@ -42,9 +43,10 @@ class QuestionEdit extends React.PureComponent {
             index: undefined,
             value: '',
             radioValue: 0,
-            qstnaireTitle: '',
-            qstnaireLeadin: '',
-            belongTo: null,
+            qstnaireTitle: this.props.location.state ? this.props.location.state.record.qstnaireTitle : '',
+            qstnaireLeadin: this.props.location.state ? this.props.location.state.record.qstnaireLeadin : '',
+            belongTo: this.props.location.state ? this.props.location.state.record.belongTo : null,
+            qstnaireId: this.props.location.state ? this.props.location.state.record.qstnaireId : null,
             conn: false,
             jump: false
         };
@@ -54,7 +56,6 @@ class QuestionEdit extends React.PureComponent {
 
     // 获取题库具体题目
     getDom = (data) => {
-        console.log('qqwqq',data)
         let questionData = data.question;
         if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
             let arr = JSON.stringify(this.state.questionDisplayList1);
@@ -141,6 +142,69 @@ class QuestionEdit extends React.PureComponent {
             query: {id: id},
         };
         this.props.history.push(`/npsMgr/questionMgr/questionPreview/${id}`);
+    };
+
+    // 题目逻辑提示
+    questionLogicInfo = () => {
+        let logic = this.state.logic, questions = this.state.questionDisplayList1, newArr = [];
+        questions.map(item => {
+            if(item.optionList) {
+                let obj = item.optionList.map(k => {
+                    return {...k, describe: null}
+                });
+                item.optionList = [...obj];
+            }
+            item.jumpDescribe = null;
+            item.connDescribe = null;
+            item.jumpOrder = null;
+            return '';
+        });
+
+        newArr = questions.map(k => {
+            let param = {...k};
+            logic.map(item => {
+                if (item.logicType === '01' && item.setupQuestionOrder === k.questionOrder) {
+                    if (k.questionType === '01') {
+                        let arr = item.optionOrder.split(',');
+                        if (arr.length === k.optionList.length) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            }
+                        } else {
+                            k.optionList.map(x => {
+                               if(x.optionOrder === Number(item.optionOrder)) {
+                                   x.describe =  '跳转到第' + item.skiptoQuestionOrder + '题';
+                               }
+                               return '';
+                            });
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑'
+                            }
+                        }
+                    } else {
+                        param = {
+                            ...k,
+                            jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                        }
+                    }
+                } else if (item.logicType === '00' && item.skiptoQuestionOrder === k.questionOrder) {
+                    param = {
+                        ...k,
+                        connDescribe: k.connDescribe ? k.connDescribe + '，第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
+                            : '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
+                    };
+                    k.connDescribe = '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项';
+                }
+                return '';
+            });
+            return param;
+        });
+        this.setState({
+            questionDisplayList1: [...newArr],
+            questionDisplayList: [...newArr]
+        })
     };
 
     // 关联逻辑弹窗
@@ -257,6 +321,14 @@ class QuestionEdit extends React.PureComponent {
                     });
                     return '';
                 });
+            } else {
+                props.jumpOrder = null;
+                if(props.optionList) {
+                    props.optionList.map(item => {
+                        item.questionOrder = null;
+                        return '';
+                    })
+                }
             }
 
             // 获取本题后面所有的题目
@@ -270,8 +342,8 @@ class QuestionEdit extends React.PureComponent {
                 ...this.state.otherQuestion,
                 ...jumpList
             ];
-            // 判断是否是无条件跳转 单行，多行填空
-            if (props.questionType === '03' || props.questionType === '04') {
+            // 判断是否是无条件跳转 多选，单行，多行填空
+            if (props.questionType === '02' || props.questionType === '03' || props.questionType === '04') {
                 this.setState({radioValue: 1});
             }
 
@@ -312,10 +384,11 @@ class QuestionEdit extends React.PureComponent {
                         questionDisplayList2[i - 1].questionOrder = null;
                     }
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                } else if (i > 0  && questionDisplayList2[i - 1].isPaging === '0') { // 如果上一题是题目，将清除本题及上一题所有逻辑
+                    this.delLogic(props.questionOrder, 1);
+                    this.delLogic(questionDisplayList2[i - 1].questionOrder, 1);
+                    this.questionLogicInfo();
                 }
-            }
-            if (props.isPaging === '0') {
-                this.delLogic(props.questionOrder, 1);
             }
             questionDisplayList2.splice(i - 1, 0, props);
             questionDisplayList2.splice(i + 1, 1);
@@ -345,6 +418,9 @@ class QuestionEdit extends React.PureComponent {
                     return '';
                 } else if (i > 0 && questionDisplayList2[i - 1].isPaging === '1') {
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                    this.delLogic(props.questionOrder, 1);
+                    this.delLogic(questionDisplayList2[i + 1].questionOrder, 1);
+                    this.questionLogicInfo();
                 } else if (questionDisplayList2[i + 1].isPaging === '1') {
                     questionDisplayList2[i + 1].questionOrder = questionDisplayList2[i].questionOrder;
                 }
@@ -354,6 +430,7 @@ class QuestionEdit extends React.PureComponent {
             this.orderQuestion();
         }
     };
+
     // 删除题目
     delQestion = (props, i, type) => {
         if (type === 'question') {
@@ -375,6 +452,7 @@ class QuestionEdit extends React.PureComponent {
         }
         this.orderQuestion();
         this.delLogic(props.questionOrder, 1);
+        this.questionLogicInfo();
         message.info('删除成功')
     };
     // 删除与题目有关的所有逻辑
@@ -443,13 +521,21 @@ class QuestionEdit extends React.PureComponent {
             }
         };
         console.log(params);
-        // QuestionApplicationService.addQstnaireBank(params).then(data => {
-        //     message.success('保存成功');
-        // });
+        if (this.state.qstnaireId) {
+            // QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
+            //     message.success('编辑成功');
+            // this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+            // });
+        } else {
+            // QuestionApplicationService.addQstnaireBank(params).then(data => {
+            //     message.success('保存成功');
+            //     this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+            // });
+        }
     };
 
     render() {
-        const { questionDisplayList, conn, jump, record, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
+        const { qstnaireTitle, qstnaireLeadin, questionDisplayList, conn, jump, record, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
         // 关联弹窗
         const connModalProps = {
             conn,
@@ -473,6 +559,9 @@ class QuestionEdit extends React.PureComponent {
                     ...newLogic,
                     ...value
                 ];
+                console.log('qwer',logic)
+
+
                 this.setState({
                     logic,
                     questions: [], // 存已存在逻辑的题
@@ -482,6 +571,7 @@ class QuestionEdit extends React.PureComponent {
                     andOr: null
                 }, () => {
                     message.success('编辑成功');
+                    this.questionLogicInfo();
                     this.connModal(false);
                 });
             },
@@ -512,6 +602,7 @@ class QuestionEdit extends React.PureComponent {
                     jumpList: [], // 可设置跳转的题
                 }, () => {
                     message.success('编辑成功');
+                    this.questionLogicInfo();
                     this.jumpModal(false);
                 });
             },
@@ -536,24 +627,24 @@ class QuestionEdit extends React.PureComponent {
                     <Col span={15} offset={1} style={{ height: '100%' }}>
                         <div className={'questionAppContent'}>
                             <div className={'questionAppContentTitle'}>
-                                <Input className={'questionInput'} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
-                                <TextArea className={"surveyDescription"} placeholder="添加问卷说明" autosize={{ minRows: 1}} onBlur={(e) => this.qstnaireDes(e)} />
+                                <Input className={'questionInput'} defaultValue={qstnaireTitle} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
+                                <TextArea className={"surveyDescription"} defaultValue={qstnaireLeadin} placeholder="添加问卷说明" autosize={{ minRows: 1}} onBlur={(e) => this.qstnaireDes(e)} />
                             </div>
                             {questionDisplayList.map((item, i) => {
                                 return (
                                     item.isPaging === '0' ?
                                         <div key={i}>
-                                            <InitQuestionList question={item} index={item.questionOrder}/>
+                                            <InitQuestionList question={item} index={item.questionOrder} infoView={true}/>
                                             <div className="link-group">
                                                 <Checkbox defaultChecked={item.isBlank === 0} onChange={(e) => this.onChangeCheckbox(e, i)}>必填</Checkbox>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.jumpModal(true, item, i)}>跳转逻辑</a>
-                                                <Popconfirm key="jumpUp"  title="若该题存在关联、跳转逻辑，上移将清除所有与该题有关的逻辑。确定上移?" onConfirm={() => this.jumpUp(i, item, 'question')}>
+                                                <Popconfirm key="jumpUp"  title="若该题存在关联、跳转逻辑，上移将清除与该题及上一题有关的所有逻辑(忽略分页)。确定上移?" onConfirm={() => this.jumpUp(i, item, 'question')}>
                                                     <a href="javascript:void(0);">上移</a>
                                                 </Popconfirm>
-                                                <Popconfirm key="jumpDown"  title="若该题存在关联、跳转逻辑，下移将清除所有与该题有关的逻辑。确定下移?" onConfirm={() => this.jumpDown(i, item, 'question')}>
+                                                <Popconfirm key="jumpDown"  title="若该题存在关联、跳转逻辑，下移将清除与该题及下一题有关所有的逻辑(忽略分页)。确定下移?" onConfirm={() => this.jumpDown(i, item, 'question')}>
                                                     <a href="javascript:void(0);" >下移</a>
                                                 </Popconfirm>
                                                 <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i, 'question')}>

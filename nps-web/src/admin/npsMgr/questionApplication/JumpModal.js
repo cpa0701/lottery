@@ -61,7 +61,8 @@ export default class extends Component {
                     }
                 }
             }
-            this.props.onCreate(logicArr);
+            let newLogicArr = logicArr.filter(item => item.skiptoQuestionOrder !== 0);
+            this.props.onCreate(newLogicArr);
         });
     };
     onChange = (e) => {
@@ -136,7 +137,7 @@ export default class extends Component {
                                     {required: false},
                                 ],
                             })(
-                                record.questionType === '01' || record.questionType === '02' ?
+                                record.questionType === '01' ?
                                     <RadioGroup onChange={this.props.onChange}>
                                         <Radio value={0}>按选项跳题</Radio>
                                         <Radio value={1}>无条件跳题</Radio>
@@ -150,7 +151,7 @@ export default class extends Component {
                     </Col>
                     <Col span={24} className="jumpContent">
                         <div className="jumpFormItem">
-                            <h3>1、{record.questionName}</h3>
+                            <h3>{record.questionOrder}、{record.questionName}</h3>
                             {radioValue === 0 ?
                                 <div style={{textAlign: 'center'}}>
                                     <Row>
