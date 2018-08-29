@@ -46,10 +46,15 @@
 		</javaClientGenerator>
 
 		<!--对应数据库表名 domainObjectName="Module"-->
-		<table tableName="survey_task" enableCountByExample="true"  domainObjectName="SurveyTask"
+		<table tableName="task_channel" enableCountByExample="true"  domainObjectName="TaskChannel"
 			   enableUpdateByExample="true" enableDeleteByExample="true"
 			   enableSelectByExample="true" selectByExampleQueryId="true" >
 		</table>
+
+		<!--<table tableName="task_exe" enableCountByExample="true"  domainObjectName="TaskExe"-->
+			   <!--enableUpdateByExample="true" enableDeleteByExample="true"-->
+			   <!--enableSelectByExample="true" selectByExampleQueryId="true" >-->
+		<!--</table>-->
 
 	</context>
 </generatorConfiguration>

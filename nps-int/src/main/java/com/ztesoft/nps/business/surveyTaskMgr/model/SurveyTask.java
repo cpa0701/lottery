@@ -1,8 +1,9 @@
 package com.ztesoft.nps.business.surveyTaskMgr.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SurveyTask {
+public class SurveyTask implements Serializable{
     private String taskId;
 
     private String taskName;

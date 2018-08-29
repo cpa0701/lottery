@@ -1,7 +1,11 @@
 package com.ztesoft.nps.business.surveyTaskMgr.controller;
 
-import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
+import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTaskAddBo;
+import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.views.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,46 +16,72 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "surveyTaskMgr")
+@Api(value = "调研任务管理", description = "调研任务管理")
 public class SurveyTaskMgrController {
 
+    @Autowired
+    private SurveyTaskMgrService surveyTaskMgrService;
 
-    @PostMapping("/userTargetImport")
-    public Result<Object> userTargetImport(@RequestParam MultipartFile file){
+    @ApiOperation(value = "任务列表", notes = "任务列表")
+    @PostMapping("/surveyTaskList")
+    public Result<Object> surveyTaskList(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "新增任务", notes = "新增任务")
     @PostMapping("/addSurveyTask")
-    public Result<Object> addSurveyTask(@RequestBody Map<String,Object> params){
+    public Result<Object> addSurveyTask(@RequestBody SurveyTaskAddBo bo){
+        surveyTaskMgrService.addSurveyTask(bo);
         return Result.success();
     }
 
+    @ApiOperation(value = "任务保存草稿", notes = "任务保存草稿")
     @PostMapping("/addSurveyTaskToDraft")
     public Result<Object> addSurveyTaskToDraft(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "添加任务审核", notes = "添加任务审核")
     @PostMapping("/addSurveyTaskToProcess")
     public Result<Object> addSurveyTaskToProcess(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "删除任务", notes = "删除任务")
     @PostMapping("/deleteSurveyTask")
     public Result<Object> deleteSurveyTask(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "编辑任务", notes = "编辑任务")
     @PostMapping("/editSurveyTask")
     public Result<Object> editSurveyTask(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "复制任务", notes = "复制任务")
     @PostMapping("/copySurveyTask")
     public Result<Object> copySurveyTask(@RequestBody Map<String,Object> params){
         return Result.success();
     }
 
+    @ApiOperation(value = "发布任务", notes = "发布任务")
     @PostMapping("/publishSurveyTask")
     public Result<Object> publishSurveyTask(@RequestBody Map<String,Object> params){
         return Result.success();
     }
+
+    @ApiOperation(value = "删除目标用户", notes = "删除目标用户")
+    @PostMapping("/userTargetDelete")
+    public Result<Object> userTargetDelete(@RequestParam Map<String,Object> params){
+        return Result.success();
+    }
+
+    @ApiOperation(value = "用户上传", notes = "用户上传")
+    @PostMapping("/userTargetImport")
+    public Result<Object> userTargetImport(@RequestParam MultipartFile file){
+        surveyTaskMgrService.userTargetImport(file);
+        return Result.success();
+    }
+
 }
