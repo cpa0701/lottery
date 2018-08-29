@@ -128,7 +128,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 })
-                let arr000 = [], arr001 = [], arr010 = [], arr011 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.length && question.optionFilteredList.map(optionFiltered => {
@@ -138,10 +138,12 @@ class QuestionPreview extends React.PureComponent {
                                         arr000.push(option);
                                     } else if (logic.logicType === '00' && logic.andOr === 1) {//关联的或逻辑
                                         arr001.push(option)
-                                    } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
-                                        arr010.push(option)
-                                    } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
-                                        arr011.push(option)
+                                        // } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
+                                        //     arr010.push(option)
+                                        // } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
+                                        //     arr011.push(option)
+                                    } else if (logic.logicType === '01') {//跳转的逻辑
+                                        arr01.push(option)
                                     }
                                 })
                             })
@@ -163,17 +165,24 @@ class QuestionPreview extends React.PureComponent {
                         } else return false;
                     })
                 } else {//跳转逻辑判断
-                    questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                    // questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                    //     if (arr.length) {
+                    //         if (i === 0) {//跳转且逻辑
+                    //             return arr.every(option => {
+                    //                 return option.checked;
+                    //             })
+                    //         } else if (i === 1) {//跳转或逻辑
+                    //             return arr.some(option => {
+                    //                 return option.checked;
+                    //             })
+                    //         }
+                    //     } else return false;
+                    // })
+                    questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
                         if (arr.length) {
-                            if (i === 0) {//跳转且逻辑
-                                return arr.every(option => {
-                                    return option.checked;
-                                })
-                            } else if (i === 1) {//跳转或逻辑
-                                return arr.some(option => {
-                                    return option.checked;
-                                })
-                            }
+                            return arr.some(option => {
+                                return option.checked;
+                            })
                         } else return false;
                     })
                     if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
@@ -242,7 +251,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 })
-                let arr000 = [], arr001 = [], arr010 = [], arr011 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.length && question.optionFilteredList.map(optionFiltered => {
@@ -252,10 +261,12 @@ class QuestionPreview extends React.PureComponent {
                                         arr000.push(option);
                                     } else if (logic.logicType === '00' && logic.andOr === 1) {//关联的或逻辑
                                         arr001.push(option)
-                                    } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
-                                        arr010.push(option)
-                                    } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
-                                        arr011.push(option)
+                                        // } else if (logic.logicType === '01' && logic.andOr === 0) {//跳转的且逻辑
+                                        //     arr010.push(option)
+                                        // } else if (logic.logicType === '01' && logic.andOr === 1) {//跳转的或逻辑
+                                        //     arr011.push(option)
+                                    } else if (logic.logicType === '01') {//跳转的逻辑
+                                        arr01.push(option)
                                     }
                                 })
                             })
@@ -277,17 +288,24 @@ class QuestionPreview extends React.PureComponent {
                         } else return false;
                     })
                 } else {//跳转逻辑判断
-                    questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                    // questionList[skiptoQuestionOrder - 1].isJump = [arr010, arr011].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                    //     if (arr.length) {
+                    //         if (i === 0) {//跳转且逻辑
+                    //             return arr.every(option => {
+                    //                 return option.checked;
+                    //             })
+                    //         } else if (i === 1) {//跳转或逻辑
+                    //             return arr.some(option => {
+                    //                 return option.checked;
+                    //             })
+                    //         }
+                    //     } else return false;
+                    // })
+                    questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
                         if (arr.length) {
-                            if (i === 0) {//跳转且逻辑
-                                return arr.every(option => {
-                                    return option.checked;
-                                })
-                            } else if (i === 1) {//跳转或逻辑
-                                return arr.some(option => {
-                                    return option.checked;
-                                })
-                            }
+                            return arr.some(option => {
+                                return option.checked;
+                            })
                         } else return false;
                     })
                     if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
@@ -378,7 +396,7 @@ class QuestionPreview extends React.PureComponent {
                         // isShow={item.isShow}//是否显示被关联题
                         // jumped={item.jumped}//是否被跳过
                         // isJump={item.isJump}//是否跳转题，用于覆盖关联题的隐藏
-                        item.display = item.isJump ? true : (item.jumped ? false : (item.isShow ? true : !item.isSetup))
+                        item.display = item.jumped ? false : (item.isJump ? true : (item.isShow ? true : !item.isSetup))
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}

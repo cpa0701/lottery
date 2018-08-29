@@ -39,6 +39,7 @@ class InitQuestionList extends React.PureComponent {
                                       questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}/>
                 break;
             case '03':
+            case '04':
                 dom = <BlankModule questionName={questionName} index={index} isBlank={isBlank}
                                    onChange={onBlankChange} isView={true}/>
                 break;
