@@ -730,10 +730,10 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "actType": 0,
                 "andOr": 0,
                 "isMain": 0,
-                "logicType": "00",
-                "optionOrder": "2",
+                "logicType": "01",
+                "optionOrder": "1",
                 "setupQuestionOrder": 1,
-                "skiptoQuestionOrder": 4
+                "skiptoQuestionOrder": -1
             },
             {
                 "actType": 0,
@@ -937,7 +937,7 @@ Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
                 "contentCheck": 0,
                 "createTime": "当前时间",
                 "createUid": 20,
-                "isBlank": 0,
+                "isBlank": 1,
                 "isCommon": 1,
                 "isNps": 0,
                 "isPaging": "0",

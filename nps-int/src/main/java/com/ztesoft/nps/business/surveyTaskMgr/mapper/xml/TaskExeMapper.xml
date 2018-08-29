@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskExeMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
+    <id column="serial_id" property="serialId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="channel_type" property="channelType" jdbcType="SMALLINT" />
+    <result column="send_user" property="sendUser" jdbcType="VARCHAR" />
+    <result column="target_user" property="targetUser" jdbcType="VARCHAR" />
+    <result column="is_test" property="isTest" jdbcType="DECIMAL" />
+    <result column="sm_content" property="smContent" jdbcType="VARCHAR" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="base_url" property="baseUrl" jdbcType="VARCHAR" />
+    <result column="short_url" property="shortUrl" jdbcType="VARCHAR" />
+    <result column="is_exe" property="isExe" jdbcType="DECIMAL" />
+    <result column="exe_time" property="exeTime" jdbcType="VARCHAR" />
+    <result column="test_uid" property="testUid" jdbcType="VARCHAR" />
+    <result column="url_flag" property="urlFlag" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    serial_id, task_id, channel_type, send_user, target_user, is_test, sm_content, creat_time, 
+    base_url, short_url, is_exe, exe_time, test_uid, url_flag
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from task_exe
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from task_exe
+    where serial_id = #{serialId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from task_exe
+    where serial_id = #{serialId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample" >
+    delete from task_exe
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
+    insert into task_exe (serial_id, task_id, channel_type, 
+      send_user, target_user, is_test, 
+      sm_content, creat_time, base_url, 
+      short_url, is_exe, exe_time, 
+      test_uid, url_flag)
+    values (#{serialId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
+      #{sendUser,jdbcType=VARCHAR}, #{targetUser,jdbcType=VARCHAR}, #{isTest,jdbcType=DECIMAL}, 
+      #{smContent,jdbcType=VARCHAR}, #{creatTime,jdbcType=TIMESTAMP}, #{baseUrl,jdbcType=VARCHAR}, 
+      #{shortUrl,jdbcType=VARCHAR}, #{isExe,jdbcType=DECIMAL}, #{exeTime,jdbcType=VARCHAR}, 
+      #{testUid,jdbcType=VARCHAR}, #{urlFlag,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
+    insert into task_exe
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serialId != null" >
+        serial_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="channelType != null" >
+        channel_type,
+      </if>
+      <if test="sendUser != null" >
+        send_user,
+      </if>
+      <if test="targetUser != null" >
+        target_user,
+      </if>
+      <if test="isTest != null" >
+        is_test,
+      </if>
+      <if test="smContent != null" >
+        sm_content,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="baseUrl != null" >
+        base_url,
+      </if>
+      <if test="shortUrl != null" >
+        short_url,
+      </if>
+      <if test="isExe != null" >
+        is_exe,
+      </if>
+      <if test="exeTime != null" >
+        exe_time,
+      </if>
+      <if test="testUid != null" >
+        test_uid,
+      </if>
+      <if test="urlFlag != null" >
+        url_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serialId != null" >
+        #{serialId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="sendUser != null" >
+        #{sendUser,jdbcType=VARCHAR},
+      </if>
+      <if test="targetUser != null" >
+        #{targetUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isTest != null" >
+        #{isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="smContent != null" >
+        #{smContent,jdbcType=VARCHAR},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseUrl != null" >
+        #{baseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="shortUrl != null" >
+        #{shortUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isExe != null" >
+        #{isExe,jdbcType=DECIMAL},
+      </if>
+      <if test="exeTime != null" >
+        #{exeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="testUid != null" >
+        #{testUid,jdbcType=VARCHAR},
+      </if>
+      <if test="urlFlag != null" >
+        #{urlFlag,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample" resultType="java.lang.Integer" >
+    select count(*) from task_exe
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update task_exe
+    <set >
+      <if test="record.serialId != null" >
+        serial_id = #{record.serialId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelType != null" >
+        channel_type = #{record.channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.sendUser != null" >
+        send_user = #{record.sendUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetUser != null" >
+        target_user = #{record.targetUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isTest != null" >
+        is_test = #{record.isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="record.smContent != null" >
+        sm_content = #{record.smContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatTime != null" >
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.baseUrl != null" >
+        base_url = #{record.baseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shortUrl != null" >
+        short_url = #{record.shortUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isExe != null" >
+        is_exe = #{record.isExe,jdbcType=DECIMAL},
+      </if>
+      <if test="record.exeTime != null" >
+        exe_time = #{record.exeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.testUid != null" >
+        test_uid = #{record.testUid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.urlFlag != null" >
+        url_flag = #{record.urlFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update task_exe
+    set serial_id = #{record.serialId,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=VARCHAR},
+      channel_type = #{record.channelType,jdbcType=SMALLINT},
+      send_user = #{record.sendUser,jdbcType=VARCHAR},
+      target_user = #{record.targetUser,jdbcType=VARCHAR},
+      is_test = #{record.isTest,jdbcType=DECIMAL},
+      sm_content = #{record.smContent,jdbcType=VARCHAR},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      base_url = #{record.baseUrl,jdbcType=VARCHAR},
+      short_url = #{record.shortUrl,jdbcType=VARCHAR},
+      is_exe = #{record.isExe,jdbcType=DECIMAL},
+      exe_time = #{record.exeTime,jdbcType=VARCHAR},
+      test_uid = #{record.testUid,jdbcType=VARCHAR},
+      url_flag = #{record.urlFlag,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
+    update task_exe
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        channel_type = #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="sendUser != null" >
+        send_user = #{sendUser,jdbcType=VARCHAR},
+      </if>
+      <if test="targetUser != null" >
+        target_user = #{targetUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isTest != null" >
+        is_test = #{isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="smContent != null" >
+        sm_content = #{smContent,jdbcType=VARCHAR},
+      </if>
+      <if test="creatTime != null" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseUrl != null" >
+        base_url = #{baseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="shortUrl != null" >
+        short_url = #{shortUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isExe != null" >
+        is_exe = #{isExe,jdbcType=DECIMAL},
+      </if>
+      <if test="exeTime != null" >
+        exe_time = #{exeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="testUid != null" >
+        test_uid = #{testUid,jdbcType=VARCHAR},
+      </if>
+      <if test="urlFlag != null" >
+        url_flag = #{urlFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where serial_id = #{serialId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
+    update task_exe
+    set task_id = #{taskId,jdbcType=VARCHAR},
+      channel_type = #{channelType,jdbcType=SMALLINT},
+      send_user = #{sendUser,jdbcType=VARCHAR},
+      target_user = #{targetUser,jdbcType=VARCHAR},
+      is_test = #{isTest,jdbcType=DECIMAL},
+      sm_content = #{smContent,jdbcType=VARCHAR},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      base_url = #{baseUrl,jdbcType=VARCHAR},
+      short_url = #{shortUrl,jdbcType=VARCHAR},
+      is_exe = #{isExe,jdbcType=DECIMAL},
+      exe_time = #{exeTime,jdbcType=VARCHAR},
+      test_uid = #{testUid,jdbcType=VARCHAR},
+      url_flag = #{urlFlag,jdbcType=DECIMAL}
+    where serial_id = #{serialId,jdbcType=VARCHAR}
+  </update>
+</mapper>

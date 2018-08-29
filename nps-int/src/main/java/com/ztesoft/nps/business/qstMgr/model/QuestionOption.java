@@ -1,6 +1,8 @@
 package com.ztesoft.nps.business.qstMgr.model;
 
-public class QuestionOption {
+import java.io.Serializable;
+
+public class QuestionOption implements Serializable {
     private String optionId;
 
     private String questionId;

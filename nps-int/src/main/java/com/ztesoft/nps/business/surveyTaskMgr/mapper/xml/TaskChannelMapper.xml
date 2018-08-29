@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
+    <id column="channel_id" property="channelId" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="channel_type" property="channelType" jdbcType="SMALLINT" />
+    <result column="sample_type" property="sampleType" jdbcType="SMALLINT" />
+    <result column="sample_sum" property="sampleSum" jdbcType="BIGINT" />
+    <result column="user_type" property="userType" jdbcType="SMALLINT" />
+    <result column="user_sum" property="userSum" jdbcType="BIGINT" />
+    <result column="sms_way" property="smsWay" jdbcType="SMALLINT" />
+    <result column="sms_content" property="smsContent" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    channel_id, task_id, channel_type, sample_type, sample_sum, user_type, user_sum, 
+    sms_way, sms_content
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from task_channel
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from task_channel
+    where channel_id = #{channelId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from task_channel
+    where channel_id = #{channelId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample" >
+    delete from task_channel
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
+    insert into task_channel (channel_id, task_id, channel_type, 
+      sample_type, sample_sum, user_type, 
+      user_sum, sms_way, sms_content
+      )
+    values (#{channelId,jdbcType=BIGINT}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
+      #{sampleType,jdbcType=SMALLINT}, #{sampleSum,jdbcType=BIGINT}, #{userType,jdbcType=SMALLINT}, 
+      #{userSum,jdbcType=BIGINT}, #{smsWay,jdbcType=SMALLINT}, #{smsContent,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
+    insert into task_channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        channel_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="channelType != null" >
+        channel_type,
+      </if>
+      <if test="sampleType != null" >
+        sample_type,
+      </if>
+      <if test="sampleSum != null" >
+        sample_sum,
+      </if>
+      <if test="userType != null" >
+        user_type,
+      </if>
+      <if test="userSum != null" >
+        user_sum,
+      </if>
+      <if test="smsWay != null" >
+        sms_way,
+      </if>
+      <if test="smsContent != null" >
+        sms_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="channelId != null" >
+        #{channelId,jdbcType=BIGINT},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="sampleType != null" >
+        #{sampleType,jdbcType=SMALLINT},
+      </if>
+      <if test="sampleSum != null" >
+        #{sampleSum,jdbcType=BIGINT},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=SMALLINT},
+      </if>
+      <if test="userSum != null" >
+        #{userSum,jdbcType=BIGINT},
+      </if>
+      <if test="smsWay != null" >
+        #{smsWay,jdbcType=SMALLINT},
+      </if>
+      <if test="smsContent != null" >
+        #{smsContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample" resultType="java.lang.Integer" >
+    select count(*) from task_channel
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update task_channel
+    <set >
+      <if test="record.channelId != null" >
+        channel_id = #{record.channelId,jdbcType=BIGINT},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelType != null" >
+        channel_type = #{record.channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.sampleType != null" >
+        sample_type = #{record.sampleType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.sampleSum != null" >
+        sample_sum = #{record.sampleSum,jdbcType=BIGINT},
+      </if>
+      <if test="record.userType != null" >
+        user_type = #{record.userType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.userSum != null" >
+        user_sum = #{record.userSum,jdbcType=BIGINT},
+      </if>
+      <if test="record.smsWay != null" >
+        sms_way = #{record.smsWay,jdbcType=SMALLINT},
+      </if>
+      <if test="record.smsContent != null" >
+        sms_content = #{record.smsContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update task_channel
+    set channel_id = #{record.channelId,jdbcType=BIGINT},
+      task_id = #{record.taskId,jdbcType=VARCHAR},
+      channel_type = #{record.channelType,jdbcType=SMALLINT},
+      sample_type = #{record.sampleType,jdbcType=SMALLINT},
+      sample_sum = #{record.sampleSum,jdbcType=BIGINT},
+      user_type = #{record.userType,jdbcType=SMALLINT},
+      user_sum = #{record.userSum,jdbcType=BIGINT},
+      sms_way = #{record.smsWay,jdbcType=SMALLINT},
+      sms_content = #{record.smsContent,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
+    update task_channel
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        channel_type = #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="sampleType != null" >
+        sample_type = #{sampleType,jdbcType=SMALLINT},
+      </if>
+      <if test="sampleSum != null" >
+        sample_sum = #{sampleSum,jdbcType=BIGINT},
+      </if>
+      <if test="userType != null" >
+        user_type = #{userType,jdbcType=SMALLINT},
+      </if>
+      <if test="userSum != null" >
+        user_sum = #{userSum,jdbcType=BIGINT},
+      </if>
+      <if test="smsWay != null" >
+        sms_way = #{smsWay,jdbcType=SMALLINT},
+      </if>
+      <if test="smsContent != null" >
+        sms_content = #{smsContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where channel_id = #{channelId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
+    update task_channel
+    set task_id = #{taskId,jdbcType=VARCHAR},
+      channel_type = #{channelType,jdbcType=SMALLINT},
+      sample_type = #{sampleType,jdbcType=SMALLINT},
+      sample_sum = #{sampleSum,jdbcType=BIGINT},
+      user_type = #{userType,jdbcType=SMALLINT},
+      user_sum = #{userSum,jdbcType=BIGINT},
+      sms_way = #{smsWay,jdbcType=SMALLINT},
+      sms_content = #{smsContent,jdbcType=VARCHAR}
+    where channel_id = #{channelId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -2,6 +2,7 @@ package com.ztesoft.nps.business.qstMgr.controller;
 
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
 import com.ztesoft.nps.business.qstMgr.model.query.QuestionIdQuery;
@@ -52,8 +53,7 @@ public class QuestionMgrController {
         if(StringUtil.isNull(questionId)){
             throw new NpsObjectNotFoundException(questionId);
         }
-        Object obj = questionMgrService.questionById(questionId);
-        return Result.success(obj);
+        return Result.success(questionMgrService.questionById(questionId));
     }
 
     @PostMapping("/editQuestion")
@@ -68,10 +68,8 @@ public class QuestionMgrController {
     public Result<Object> questionBank(@RequestBody QuestionQuery condition){
         if(StringUtil.isNull(condition.getPageNum()) ||
                 StringUtil.isNull(condition.getPageSize())){
-            throw new NpsBusinessException("分页参数缺失");
+            throw new NpsBusinessException(ConstantUtils.PAGE_PARAMS_DEFICIENCY);
         }
-
-        LPageHelper result = questionMgrService.questionBank(condition);
-        return Result.success(result);
+        return Result.success(questionMgrService.questionBank(condition));
     }
 }

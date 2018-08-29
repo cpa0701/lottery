@@ -3,11 +3,12 @@ package com.ztesoft.nps.business.qstMgr.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @ApiModel
-public class QuestionBank {
+public class QuestionBank implements Serializable{
 
     @ApiModelProperty("题目ID")
     private String questionId;
