@@ -1,6 +1,7 @@
 import React from 'react';
 import {Layout, Menu, Icon, Dropdown} from 'antd';
 import MenuService from '../../../../services/menu/MenuService';
+import LoginService from '../../../../services/login/LoginService';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'react-router-dom';
 import "./Header.less"
@@ -29,9 +30,13 @@ class Head extends React.Component {
             this.stores.I18nModel.changeLocale(key);
             localStorage.setItem('locale', key);
             window.location.reload();
-        } else {
-            this.stores.LoginModel.logout();
-            window.location.reload();
+        } else {//登出
+            LoginService.logout().then(result => {
+                if (result) {
+                    this.stores.LoginModel.logout();
+                    window.location.reload();
+                }
+            })
         }
     };
 
@@ -86,7 +91,6 @@ class Head extends React.Component {
         return (
             <Header>
                 <div className="logo">
-                    <Icon type="apple"/>
                 </div>
                 <Menu
                     onClick={this.handleClick}
