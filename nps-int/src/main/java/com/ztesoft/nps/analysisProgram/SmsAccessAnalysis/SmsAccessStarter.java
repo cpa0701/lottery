@@ -1,10 +1,6 @@
-package com.ztesoft.nps.business.analysisProgram.SmsAccessAnalysis;
+package com.ztesoft.nps.analysisProgram.SmsAccessAnalysis;
 
-import com.ztesoft.nps.business.analysisProgram.SmsAccessAnalysis.SmsAccess;
-import com.ztesoft.nps.business.analysisProgram.SmsAccessAnalysis.SmsAccessQuequ;
-import com.ztesoft.utils.sys.util.LogUtil;
 import com.ztesoft.utils.sys.util.ThreadUtil;
-import com.ztesoft.utils.test.HelloQueue;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;

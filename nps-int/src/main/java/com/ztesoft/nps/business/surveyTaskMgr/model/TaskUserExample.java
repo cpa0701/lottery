@@ -175,73 +175,63 @@ public class TaskUserExample {
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdIsNull() {
-            addCriterion("channel_id is null");
+        public Criteria andChannelTypeIsNull() {
+            addCriterion("channel_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdIsNotNull() {
-            addCriterion("channel_id is not null");
+        public Criteria andChannelTypeIsNotNull() {
+            addCriterion("channel_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdEqualTo(String value) {
-            addCriterion("channel_id =", value, "channelId");
+        public Criteria andChannelTypeEqualTo(Short value) {
+            addCriterion("channel_type =", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotEqualTo(String value) {
-            addCriterion("channel_id <>", value, "channelId");
+        public Criteria andChannelTypeNotEqualTo(Short value) {
+            addCriterion("channel_type <>", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdGreaterThan(String value) {
-            addCriterion("channel_id >", value, "channelId");
+        public Criteria andChannelTypeGreaterThan(Short value) {
+            addCriterion("channel_type >", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdGreaterThanOrEqualTo(String value) {
-            addCriterion("channel_id >=", value, "channelId");
+        public Criteria andChannelTypeGreaterThanOrEqualTo(Short value) {
+            addCriterion("channel_type >=", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLessThan(String value) {
-            addCriterion("channel_id <", value, "channelId");
+        public Criteria andChannelTypeLessThan(Short value) {
+            addCriterion("channel_type <", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLessThanOrEqualTo(String value) {
-            addCriterion("channel_id <=", value, "channelId");
+        public Criteria andChannelTypeLessThanOrEqualTo(Short value) {
+            addCriterion("channel_type <=", value, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLike(String value) {
-            addCriterion("channel_id like", value, "channelId");
+        public Criteria andChannelTypeIn(List<Short> values) {
+            addCriterion("channel_type in", values, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotLike(String value) {
-            addCriterion("channel_id not like", value, "channelId");
+        public Criteria andChannelTypeNotIn(List<Short> values) {
+            addCriterion("channel_type not in", values, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdIn(List<String> values) {
-            addCriterion("channel_id in", values, "channelId");
+        public Criteria andChannelTypeBetween(Short value1, Short value2) {
+            addCriterion("channel_type between", value1, value2, "channelType");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotIn(List<String> values) {
-            addCriterion("channel_id not in", values, "channelId");
-            return (Criteria) this;
-        }
-
-        public Criteria andChannelIdBetween(String value1, String value2) {
-            addCriterion("channel_id between", value1, value2, "channelId");
-            return (Criteria) this;
-        }
-
-        public Criteria andChannelIdNotBetween(String value1, String value2) {
-            addCriterion("channel_id not between", value1, value2, "channelId");
+        public Criteria andChannelTypeNotBetween(Short value1, Short value2) {
+            addCriterion("channel_type not between", value1, value2, "channelType");
             return (Criteria) this;
         }
 

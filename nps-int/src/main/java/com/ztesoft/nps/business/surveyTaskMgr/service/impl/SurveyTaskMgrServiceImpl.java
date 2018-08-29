@@ -183,7 +183,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         List<String[]> sqlParamList = new ArrayList<String[]>();
         String batchSaveSql = "insert into task_user(task_user_id,channel_id,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
         for (String accNum: accNumList) {
-            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelId(),bo.getTaskId(),accNum,
+            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelId().toString(),bo.getTaskId(),accNum,
                 DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),"","0","1",ConstantUtils.RES_SYSTEM_NAME});
         }
 

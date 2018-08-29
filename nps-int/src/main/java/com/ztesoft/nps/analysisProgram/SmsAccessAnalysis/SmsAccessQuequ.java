@@ -1,4 +1,4 @@
-package com.ztesoft.nps.business.analysisProgram.SmsAccessAnalysis;
+package com.ztesoft.nps.analysisProgram.SmsAccessAnalysis;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper" >
   <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
-    <id column="channel_id" property="channelId" jdbcType="VARCHAR" />
+    <id column="channel_id" property="channelId" jdbcType="BIGINT" />
     <result column="task_id" property="taskId" jdbcType="VARCHAR" />
     <result column="channel_type" property="channelType" jdbcType="SMALLINT" />
     <result column="sample_type" property="sampleType" jdbcType="SMALLINT" />
@@ -89,15 +89,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from task_channel
-    where channel_id = #{channelId,jdbcType=VARCHAR}
+    where channel_id = #{channelId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from task_channel
-    where channel_id = #{channelId,jdbcType=VARCHAR}
+    where channel_id = #{channelId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample" >
     delete from task_channel
@@ -110,7 +110,7 @@
       sample_type, sample_sum, user_type, 
       user_sum, sms_way, sms_content
       )
-    values (#{channelId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
+    values (#{channelId,jdbcType=BIGINT}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
       #{sampleType,jdbcType=SMALLINT}, #{sampleSum,jdbcType=BIGINT}, #{userType,jdbcType=SMALLINT}, 
       #{userSum,jdbcType=BIGINT}, #{smsWay,jdbcType=SMALLINT}, #{smsContent,jdbcType=VARCHAR}
       )
@@ -148,7 +148,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="channelId != null" >
-        #{channelId,jdbcType=VARCHAR},
+        #{channelId,jdbcType=BIGINT},
       </if>
       <if test="taskId != null" >
         #{taskId,jdbcType=VARCHAR},
@@ -186,7 +186,7 @@
     update task_channel
     <set >
       <if test="record.channelId != null" >
-        channel_id = #{record.channelId,jdbcType=VARCHAR},
+        channel_id = #{record.channelId,jdbcType=BIGINT},
       </if>
       <if test="record.taskId != null" >
         task_id = #{record.taskId,jdbcType=VARCHAR},
@@ -219,7 +219,7 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update task_channel
-    set channel_id = #{record.channelId,jdbcType=VARCHAR},
+    set channel_id = #{record.channelId,jdbcType=BIGINT},
       task_id = #{record.taskId,jdbcType=VARCHAR},
       channel_type = #{record.channelType,jdbcType=SMALLINT},
       sample_type = #{record.sampleType,jdbcType=SMALLINT},
@@ -260,7 +260,7 @@
         sms_content = #{smsContent,jdbcType=VARCHAR},
       </if>
     </set>
-    where channel_id = #{channelId,jdbcType=VARCHAR}
+    where channel_id = #{channelId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel" >
     update task_channel
@@ -272,6 +272,6 @@
       user_sum = #{userSum,jdbcType=BIGINT},
       sms_way = #{smsWay,jdbcType=SMALLINT},
       sms_content = #{smsContent,jdbcType=VARCHAR}
-    where channel_id = #{channelId,jdbcType=VARCHAR}
+    where channel_id = #{channelId,jdbcType=BIGINT}
   </update>
 </mapper>

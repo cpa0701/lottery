@@ -5,7 +5,7 @@ import java.util.Date;
 public class TaskUser {
     private String taskUserId;
 
-    private String channelId;
+    private Short channelType;
 
     private String taskId;
 
@@ -29,12 +29,12 @@ public class TaskUser {
         this.taskUserId = taskUserId == null ? null : taskUserId.trim();
     }
 
-    public String getChannelId() {
-        return channelId;
+    public Short getChannelType() {
+        return channelType;
     }
 
-    public void setChannelId(String channelId) {
-        this.channelId = channelId == null ? null : channelId.trim();
+    public void setChannelType(Short channelType) {
+        this.channelType = channelType;
     }
 
     public String getTaskId() {

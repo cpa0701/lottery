@@ -114,62 +114,52 @@ public class TaskChannelExample {
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdEqualTo(String value) {
+        public Criteria andChannelIdEqualTo(Long value) {
             addCriterion("channel_id =", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotEqualTo(String value) {
+        public Criteria andChannelIdNotEqualTo(Long value) {
             addCriterion("channel_id <>", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdGreaterThan(String value) {
+        public Criteria andChannelIdGreaterThan(Long value) {
             addCriterion("channel_id >", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdGreaterThanOrEqualTo(String value) {
+        public Criteria andChannelIdGreaterThanOrEqualTo(Long value) {
             addCriterion("channel_id >=", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLessThan(String value) {
+        public Criteria andChannelIdLessThan(Long value) {
             addCriterion("channel_id <", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLessThanOrEqualTo(String value) {
+        public Criteria andChannelIdLessThanOrEqualTo(Long value) {
             addCriterion("channel_id <=", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdLike(String value) {
-            addCriterion("channel_id like", value, "channelId");
-            return (Criteria) this;
-        }
-
-        public Criteria andChannelIdNotLike(String value) {
-            addCriterion("channel_id not like", value, "channelId");
-            return (Criteria) this;
-        }
-
-        public Criteria andChannelIdIn(List<String> values) {
+        public Criteria andChannelIdIn(List<Long> values) {
             addCriterion("channel_id in", values, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotIn(List<String> values) {
+        public Criteria andChannelIdNotIn(List<Long> values) {
             addCriterion("channel_id not in", values, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdBetween(String value1, String value2) {
+        public Criteria andChannelIdBetween(Long value1, Long value2) {
             addCriterion("channel_id between", value1, value2, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andChannelIdNotBetween(String value1, String value2) {
+        public Criteria andChannelIdNotBetween(Long value1, Long value2) {
             addCriterion("channel_id not between", value1, value2, "channelId");
             return (Criteria) this;
         }

@@ -1,4 +1,4 @@
-package com.ztesoft.nps.business.analysisProgram;
+package com.ztesoft.nps.analysisProgram;
 
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskExeMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe;
@@ -38,5 +38,9 @@ public class SmsBussinessBo {
      */
     public void updateAccessRecord(){
         System.out.println("更新状态");
+    }
+
+    public void updateQuestionAnswer(){
+        System.out.println("更新答题结果统计信息");
     }
 }

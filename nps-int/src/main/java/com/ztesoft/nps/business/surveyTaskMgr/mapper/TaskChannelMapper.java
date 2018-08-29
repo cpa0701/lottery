@@ -10,7 +10,7 @@ public interface TaskChannelMapper {
 
     int deleteByExample(TaskChannelExample example);
 
-    int deleteByPrimaryKey(String channelId);
+    int deleteByPrimaryKey(Long channelId);
 
     int insert(TaskChannel record);
 
@@ -18,7 +18,7 @@ public interface TaskChannelMapper {
 
     List<TaskChannel> selectByExample(TaskChannelExample example);
 
-    TaskChannel selectByPrimaryKey(String channelId);
+    TaskChannel selectByPrimaryKey(Long channelId);
 
     int updateByExampleSelective(@Param("record") TaskChannel record, @Param("example") TaskChannelExample example);
 
