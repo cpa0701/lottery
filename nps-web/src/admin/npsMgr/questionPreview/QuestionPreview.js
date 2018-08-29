@@ -101,6 +101,7 @@ class QuestionPreview extends React.PureComponent {
 
     //单选框值改变
     onRadioChange = (e) => {
+        this.over = false;//将跳转至结束变为false
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             question.optionFilteredList = [];
             return question.isPaging === '0';
@@ -111,6 +112,14 @@ class QuestionPreview extends React.PureComponent {
         questionList[e.target.questionIndex - 1].value = e.target.value;//给questionList对应题目赋值所选值
         questionList[e.target.questionIndex - 1].showTip = false;//将未填写必填的提示去除
         questionList[e.target.questionIndex - 1].optionList[e.target.value - 1].checked = e.target.checked;//将当前选项的值改为选项值
+        //将为true的选项放在最后执行逻辑判断，覆盖同题其他false选项的逻辑判断带来的显示隐藏影响
+        let rightOption = {};
+        questionList[e.target.questionIndex - 1].optionList = questionList[e.target.questionIndex - 1].optionList.filter(o => {
+            if (o.checked)
+                rightOption = o;
+            return !o.checked
+        })
+        questionList[e.target.questionIndex - 1].optionList.push(rightOption);
         questionList[e.target.questionIndex - 1].optionList.map(item => {//遍历当前单选题所有选项的逻辑
             item.logicList.length && item.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
                 let skiptoQuestionOrder = k.skiptoQuestionOrder;//找到当前逻辑被相关的题目序号
@@ -118,10 +127,10 @@ class QuestionPreview extends React.PureComponent {
                     return logic.skiptoQuestionOrder === skiptoQuestionOrder//根据题目序号找到所有和此题目有关的所有逻辑
                 });
                 let relatedQuestionList = relatedLogicList.map(logic => {//遍历所有相关逻辑，与题目列表相匹配，过滤出所有相关题目及其相关选项
+                    let optionArr = logic.optionOrder.split(',');
                     return questionList.filter(question => {
                         if (logic.setupQuestionOrder === question.questionOrder) {
                             question.optionFilteredList.push(question.optionList.filter(option => {
-                                let optionArr = logic.optionOrder.split(',');
                                 return optionArr.includes(option.optionOrder.toString())
                             }))
                         }
@@ -178,48 +187,74 @@ class QuestionPreview extends React.PureComponent {
                     //         }
                     //     } else return false;
                     // })
-                    questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
-                        if (arr.length) {
-                            return arr.some(option => {
-                                return option.checked;
-                            })
-                        } else return false;
-                    })
-                    if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
-                        questionList.map((item, i) => {
-                            if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
-                                item.jumped = true;
-                            }
+                    if (skiptoQuestionOrder === -1 || skiptoQuestionOrder === -2) {//直接调至结尾
+                        let isOver = arr01.some(option => {
+                            return option.checked;
                         })
-                    else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
-                        questionList.map((item, i) => {
-                            if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
-                                item.jumped = false;
-                            }
-                        })
-                }
-                let questionResultList = this.state.questionList.map(question => {//将分页信息装回
-                    questionList.map(item => {
-                        if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
-                            question = item
+                        if (isOver) {
+                            questionList.map((item, i) => {
+                                if (i > (e.target.questionIndex - 1)) {
+                                    item.jumped = true;
+                                }
+                            });
+                            this.over = skiptoQuestionOrder;//将跳转至结束,-1为记录结果，-2为不记录结果
+                        } else {
+                            questionList.map((item, i) => {
+                                if (i > (e.target.questionIndex - 1)) {
+                                    item.jumped = false;
+                                }
+                            });
+                            this.over = false;//将跳转至结束设为false
                         }
-                    })
-                    return question;
-                })
-                this.setState({questionList: [...questionResultList]})
+                    } else {
+                        questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                            if (arr.length) {
+                                return arr.some(option => {
+                                    return option.checked;
+                                })
+                            } else return false;
+                        })
+                        if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
+                            questionList.map((item, i) => {
+                                if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                                    item.jumped = true;
+                                }
+                            })
+                        else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
+                            questionList.map((item, i) => {
+                                if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                                    item.jumped = false;
+                                }
+                            })
+                    }
+                }
             })
         });
+        //将之前替换的位置换回来
+        let length = questionList[e.target.questionIndex - 1].optionList.length;
+        let lastOption = questionList[e.target.questionIndex - 1].optionList[length - 1];
+        questionList[e.target.questionIndex - 1].optionList.splice(length - 1, 1);
+        questionList[e.target.questionIndex - 1].optionList.splice(lastOption.optionOrder - 1, 0, lastOption);
+        let questionResultList = this.state.questionList.map(question => {//将分页信息装回
+            questionList.map(item => {
+                if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
+                    question = item
+                }
+            })
+            return question;
+        })
+        this.setState({questionList: [...questionResultList]})
     }
     //复选框值改变
     onCheckBoxChange = (questionIndex, checkList) => {
+        this.over = false;
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             question.optionFilteredList = [];
             return question.isPaging === '0';
         });
-        if (checkList.length !== 0)
-            questionList[questionIndex - 1].showTip = false;//将未填写必填的提示去除
-        else
-            questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
+        //将未填写必填的提示去除
+        checkList.length ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
+
         questionList[questionIndex - 1].value = checkList.join(',');//给questionList对应题目赋值所选值
 
         questionList[questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false，仅对单选
@@ -301,37 +336,58 @@ class QuestionPreview extends React.PureComponent {
                     //         }
                     //     } else return false;
                     // })
-                    questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
-                        if (arr.length) {
-                            return arr.some(option => {
-                                return option.checked;
-                            })
-                        } else return false;
-                    })
-                    if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
-                        questionList.map((item, i) => {
-                            if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
-                                item.jumped = true;
-                            }
+                    if (skiptoQuestionOrder === -1 || skiptoQuestionOrder === -2) {//直接调至结尾
+                        let isOver = arr01.some(option => {
+                            return option.checked;
                         })
-                    else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
-                        questionList.map((item, i) => {
-                            if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
-                                item.jumped = false;
-                            }
-                        })
-                }
-                let questionResultList = this.state.questionList.map(question => {//将分页信息装回
-                    questionList.map(item => {
-                        if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
-                            question = item
+                        if (isOver) {
+                            questionList.map((item, i) => {
+                                if (i > (questionIndex - 1)) {
+                                    item.jumped = true;
+                                }
+                            });
+                            this.over = skiptoQuestionOrder;//将跳转至结束,-1为记录结果，-2为不记录结果
+                        } else {
+                            questionList.map((item, i) => {
+                                if (i > (questionIndex - 1)) {
+                                    item.jumped = false;
+                                }
+                            });
+                            this.over = false;//将跳转至结束设为false
                         }
-                    })
-                    return question;
-                })
-                this.setState({questionList: [...questionResultList]})
+                    } else {
+                        questionList[skiptoQuestionOrder - 1].isJump = [arr01].some((arr, i) => {//获得被跳转题跳转逻辑结果
+                            if (arr.length) {
+                                return arr.some(option => {
+                                    return option.checked;
+                                })
+                            } else return false;
+                        })
+                        if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
+                            questionList.map((item, i) => {
+                                if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                                    item.jumped = true;
+                                }
+                            })
+                        else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
+                            questionList.map((item, i) => {
+                                if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
+                                    item.jumped = false;
+                                }
+                            })
+                    }
+                }
             })
         });
+        let questionResultList = this.state.questionList.map(question => {//将分页信息装回
+            questionList.map(item => {
+                if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
+                    question = item
+                }
+            })
+            return question;
+        })
+        this.setState({questionList: [...questionResultList]})
     }
     // 填空题数据变化
     onBlankChange = (e) => {
@@ -356,7 +412,11 @@ class QuestionPreview extends React.PureComponent {
             page > 0 ? page-- : page = 1;
         } else {
             if (!this.validIsBlank()) {
-                page < pageCount ? page++ : page = pageCount;
+                if (this.over) {//调至结尾
+                    page = this.state.pageCount;
+                } else {
+                    page < pageCount ? page++ : page = pageCount;
+                }
             }
         }
         this.setState({currentPage: page})
@@ -365,10 +425,14 @@ class QuestionPreview extends React.PureComponent {
     //提交
     handleSubmit = () => {
         if (!this.validIsBlank()) {
-            let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
-                return question.isPaging === '0' && question.value && question.display;
-            });
-            console.log(result)
+            if (this.over !== -2) {
+                let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
+                    return question.isPaging === '0' && question.value && question.display;
+                });
+                console.log(result)
+            } else {
+                console.log('无结果')
+            }
         }
     }
     //验证必填
@@ -431,8 +495,9 @@ class QuestionPreview extends React.PureComponent {
                     </Col>
                     <Col span={12} offset={6} className={'paging'}
                          style={{display: this.state.isPaging ? 'block' : 'none', marginTop: '10px'}}>
-                        <Button style={{display: this.state.currentPage === 1 ? 'none' : 'inline-block'}}
-                                onClick={this.changePage.bind(this, 'pre')}>上一页</Button>
+                        <Button
+                            style={{display: this.over ? 'none' : (this.state.currentPage === 1 ? 'none' : 'inline-block')}}
+                            onClick={this.changePage.bind(this, 'pre')}>上一页</Button>
                         <Button
                             style={{display: this.state.currentPage === this.state.pageCount ? 'none' : 'inline-block'}}
                             onClick={this.changePage.bind(this, 'next')}>下一页</Button>
