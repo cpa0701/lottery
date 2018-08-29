@@ -1,7 +1,6 @@
 package com.ztesoft.nps.common.listenner;
 
-import com.ztesoft.utils.sys.util.ThreadUtil;
-import org.apache.commons.dbcp.BasicDataSource;
+import com.ztesoft.nps.business.analysisProgram.SmsAccessAnalysis.SmsAccessStarter;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -15,7 +14,7 @@ public class LServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("=================初始化服务========================");
+//        SmsAccessStarter.start();
     }
 
     @Override

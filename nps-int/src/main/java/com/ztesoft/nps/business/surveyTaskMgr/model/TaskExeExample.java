@@ -975,6 +975,66 @@ public class TaskExeExample {
             addCriterion("test_uid not between", value1, value2, "testUid");
             return (Criteria) this;
         }
+
+        public Criteria andUrlFlagIsNull() {
+            addCriterion("url_flag is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagIsNotNull() {
+            addCriterion("url_flag is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagEqualTo(Short value) {
+            addCriterion("url_flag =", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagNotEqualTo(Short value) {
+            addCriterion("url_flag <>", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagGreaterThan(Short value) {
+            addCriterion("url_flag >", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagGreaterThanOrEqualTo(Short value) {
+            addCriterion("url_flag >=", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagLessThan(Short value) {
+            addCriterion("url_flag <", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagLessThanOrEqualTo(Short value) {
+            addCriterion("url_flag <=", value, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagIn(List<Short> values) {
+            addCriterion("url_flag in", values, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagNotIn(List<Short> values) {
+            addCriterion("url_flag not in", values, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagBetween(Short value1, Short value2) {
+            addCriterion("url_flag between", value1, value2, "urlFlag");
+            return (Criteria) this;
+        }
+
+        public Criteria andUrlFlagNotBetween(Short value1, Short value2) {
+            addCriterion("url_flag not between", value1, value2, "urlFlag");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

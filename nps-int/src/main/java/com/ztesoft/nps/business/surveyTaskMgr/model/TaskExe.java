@@ -30,6 +30,8 @@ public class TaskExe {
 
     private String testUid;
 
+    private Short urlFlag;
+
     public String getSerialId() {
         return serialId;
     }
@@ -132,5 +134,13 @@ public class TaskExe {
 
     public void setTestUid(String testUid) {
         this.testUid = testUid == null ? null : testUid.trim();
+    }
+
+    public Short getUrlFlag() {
+        return urlFlag;
+    }
+
+    public void setUrlFlag(Short urlFlag) {
+        this.urlFlag = urlFlag;
     }
 }

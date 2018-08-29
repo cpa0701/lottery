@@ -38,7 +38,7 @@ public class SurveyTaskMgrController {
         return Result.success(surveyTaskMgrService.surveyTaskList(condition));
     }
 
-    @ApiOperation(value = "新增任务", notes = "新增任务")
+    @ApiOperation(value = "新增任务(提交审核)", notes = "新增任务")
     @PostMapping("/addSurveyTask")
     public Result<Object> addSurveyTask(@RequestBody SurveyTaskAddBo bo){
         surveyTaskMgrService.addSurveyTask(bo);

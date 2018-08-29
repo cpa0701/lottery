@@ -4,7 +4,9 @@ import com.ztesoft.nps.business.surveyTaskMgr.mapper.SurveyTaskMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTask;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
 import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
@@ -174,6 +176,24 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
         //插入任务渠道信息
         taskChannelMapper.insertSelective(bo.getTaskChannel());
+
+        //插入测试号码
+        TaskUser taskUser = new TaskUser();
+        List<String> accNumList = bo.getTestNumberList();
+        List<String[]> sqlParamList = new ArrayList<String[]>();
+        String batchSaveSql = "insert into task_user(task_user_id,channel_id,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
+        for (String accNum: accNumList) {
+            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelId(),bo.getTaskId(),accNum,
+                DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),"","0","1",ConstantUtils.RES_SYSTEM_NAME});
+        }
+
+        try {
+            DatabaseUtil.excuteBatch(batchSaveSql, sqlParamList);
+        } catch (SQLException e) {
+            throw new NpsBusinessException(e.getMessage());
+        }
+        sqlParamList.clear();
+
     }
 
     /**
@@ -254,7 +274,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name, ");
+        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
@@ -277,5 +297,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             surveyTaskQuerySql.append(" and st.task_name like '%").append(condition.getTaskName()).append("%'");
         }
         return  surveyTaskQuerySql.toString();
+    }
+
+    /**
+     * 生成短信
+     * @param taskId
+     */
+    private void createNairePublish(String taskId){
+
     }
 }
