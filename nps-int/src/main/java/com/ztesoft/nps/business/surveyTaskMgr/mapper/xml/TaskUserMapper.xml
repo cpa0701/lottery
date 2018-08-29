@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser" >
+    <id column="task_user_id" property="taskUserId" jdbcType="VARCHAR" />
+    <result column="channel_id" property="channelId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="is_test" property="isTest" jdbcType="DECIMAL" />
+    <result column="is_flag" property="isFlag" jdbcType="DECIMAL" />
+    <result column="res_sys" property="resSys" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    task_user_id, channel_id, task_id, user_account, creat_time, area_id, is_test, is_flag, 
+    res_sys
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from task_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from task_user
+    where task_user_id = #{taskUserId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from task_user
+    where task_user_id = #{taskUserId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUserExample" >
+    delete from task_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser" >
+    insert into task_user (task_user_id, channel_id, task_id, 
+      user_account, creat_time, area_id, 
+      is_test, is_flag, res_sys
+      )
+    values (#{taskUserId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, 
+      #{userAccount,jdbcType=VARCHAR}, #{creatTime,jdbcType=TIMESTAMP}, #{areaId,jdbcType=VARCHAR}, 
+      #{isTest,jdbcType=DECIMAL}, #{isFlag,jdbcType=DECIMAL}, #{resSys,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser" >
+    insert into task_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskUserId != null" >
+        task_user_id,
+      </if>
+      <if test="channelId != null" >
+        channel_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="userAccount != null" >
+        user_account,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="areaId != null" >
+        area_id,
+      </if>
+      <if test="isTest != null" >
+        is_test,
+      </if>
+      <if test="isFlag != null" >
+        is_flag,
+      </if>
+      <if test="resSys != null" >
+        res_sys,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskUserId != null" >
+        #{taskUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null" >
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null" >
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="areaId != null" >
+        #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="isTest != null" >
+        #{isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="isFlag != null" >
+        #{isFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="resSys != null" >
+        #{resSys,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUserExample" resultType="java.lang.Integer" >
+    select count(*) from task_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update task_user
+    <set >
+      <if test="record.taskUserId != null" >
+        task_user_id = #{record.taskUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelId != null" >
+        channel_id = #{record.channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAccount != null" >
+        user_account = #{record.userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatTime != null" >
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.areaId != null" >
+        area_id = #{record.areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isTest != null" >
+        is_test = #{record.isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isFlag != null" >
+        is_flag = #{record.isFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.resSys != null" >
+        res_sys = #{record.resSys,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update task_user
+    set task_user_id = #{record.taskUserId,jdbcType=VARCHAR},
+      channel_id = #{record.channelId,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=VARCHAR},
+      user_account = #{record.userAccount,jdbcType=VARCHAR},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      area_id = #{record.areaId,jdbcType=VARCHAR},
+      is_test = #{record.isTest,jdbcType=DECIMAL},
+      is_flag = #{record.isFlag,jdbcType=DECIMAL},
+      res_sys = #{record.resSys,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser" >
+    update task_user
+    <set >
+      <if test="channelId != null" >
+        channel_id = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null" >
+        user_account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="creatTime != null" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="areaId != null" >
+        area_id = #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="isTest != null" >
+        is_test = #{isTest,jdbcType=DECIMAL},
+      </if>
+      <if test="isFlag != null" >
+        is_flag = #{isFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="resSys != null" >
+        res_sys = #{resSys,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where task_user_id = #{taskUserId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskUser" >
+    update task_user
+    set channel_id = #{channelId,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=VARCHAR},
+      user_account = #{userAccount,jdbcType=VARCHAR},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      area_id = #{areaId,jdbcType=VARCHAR},
+      is_test = #{isTest,jdbcType=DECIMAL},
+      is_flag = #{isFlag,jdbcType=DECIMAL},
+      res_sys = #{resSys,jdbcType=VARCHAR}
+    where task_user_id = #{taskUserId,jdbcType=VARCHAR}
+  </update>
+</mapper>

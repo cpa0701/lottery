@@ -1,74 +1,107 @@
 package com.ztesoft.nps.business.surveyTaskMgr.model;
 
-import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
-/**
- * Created by 64671 on 2018/8/28.
- */
-public class TaskChannel implements Serializable {
+@ApiModel
+public class TaskChannel {
 
-    /**
-     * 调研渠道id
-     */
+    @ApiModelProperty("渠道ID")
     private String channelId;
 
-    /**
-     *  获取样本方式（1全量/ 2抽样）
-     */
-    private String surveyMagnitude;
+    @ApiModelProperty("任务id")
+    private String taskId;
 
-    /**
-     * 短信下发量
-     */
-    private String smsNum;
+    @ApiModelProperty("渠道类型")
+    private Short channelType;
 
-    /**
-     * 短信下发方式（1短信超链接 / 2短信纯文本）
-     */
-    private String smsWay;
+    @ApiModelProperty("样本方式（1全量 2抽样）")
+    private Short sampleType;
 
-    /**
-     * 短信提示语
-     */
-    private String busiName;
+    @ApiModelProperty("样本数量")
+    private Long sampleSum;
+
+    @ApiModelProperty("用户类型0 用户/1用户标签")
+    private Short userType;
+
+    @ApiModelProperty("用户数量")
+    private Long userSum;
+
+    @ApiModelProperty("发送方式 1短信超链接/2短信纯文本")
+    private Short smsWay;
+
+    @ApiModelProperty("信息内容")
+    private String smsContent;
 
     public String getChannelId() {
         return channelId;
     }
 
     public void setChannelId(String channelId) {
-        this.channelId = channelId;
+        this.channelId = channelId == null ? null : channelId.trim();
     }
 
-    public String getSurveyMagnitude() {
-        return surveyMagnitude;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setSurveyMagnitude(String surveyMagnitude) {
-        this.surveyMagnitude = surveyMagnitude;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId == null ? null : taskId.trim();
     }
 
-    public String getSmsNum() {
-        return smsNum;
+    public Short getChannelType() {
+        return channelType;
     }
 
-    public void setSmsNum(String smsNum) {
-        this.smsNum = smsNum;
+    public void setChannelType(Short channelType) {
+        this.channelType = channelType;
     }
 
-    public String getSmsWay() {
+    public Short getSampleType() {
+        return sampleType;
+    }
+
+    public void setSampleType(Short sampleType) {
+        this.sampleType = sampleType;
+    }
+
+    public Long getSampleSum() {
+        return sampleSum;
+    }
+
+    public void setSampleSum(Long sampleSum) {
+        this.sampleSum = sampleSum;
+    }
+
+    public Short getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Short userType) {
+        this.userType = userType;
+    }
+
+    public Long getUserSum() {
+        return userSum;
+    }
+
+    public void setUserSum(Long userSum) {
+        this.userSum = userSum;
+    }
+
+    public Short getSmsWay() {
         return smsWay;
     }
 
-    public void setSmsWay(String smsWay) {
+    public void setSmsWay(Short smsWay) {
         this.smsWay = smsWay;
     }
 
-    public String getBusiName() {
-        return busiName;
+    public String getSmsContent() {
+        return smsContent;
     }
 
-    public void setBusiName(String busiName) {
-        this.busiName = busiName;
+    public void setSmsContent(String smsContent) {
+        this.smsContent = smsContent == null ? null : smsContent.trim();
     }
 }

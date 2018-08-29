@@ -1,30 +1,31 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.SurveyTaskMapper;
+import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper;
+import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTask;
-import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTaskAddBo;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
 import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
-import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.common.utils.ExcelUtils;
+import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.constance.DateFormatConst;
 import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.DateUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -37,19 +38,36 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     @Autowired
     private SurveyTaskMapper surveyTaskMapper;
 
+    @Autowired
+    private TaskChannelMapper taskChannelMapper;
+
+    @Autowired
+    private TaskUserMapper taskUserMapper;
+
+    @Override
+    public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
+        StringBuilder surveyTaskQuerySql = new StringBuilder();
+        surveyTaskQuerySql.append(" ");
+
+        return DatabaseUtil.queryForPageResult(surveyTaskQuerySql.toString(),
+                StringUtil.getInteger(condition.getPageNum()),
+                StringUtil.getInteger(condition.getPageSize()));
+    }
+
     @Override
     public void addSurveyTask(SurveyTaskAddBo bo) {
-        //插入任务数据
-        surveyTaskMapper.insertSelective(caseBo2Bean(bo));
+        addSurveyMethod(bo, "add");
+    }
 
-        //插入任务渠道信息
-
-        //插入调研对象
+    @Override
+    public void addSurveyTaskToDraft(SurveyTaskAddBo bo) {
 
     }
 
     @Override
-    public void userTargetImport(MultipartFile file) {
+    public Map<String, Object> userTargetImport(MultipartFile file) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
         Workbook workbook = ExcelUtils.create(file);
 
         String taskId = "";
@@ -105,6 +123,61 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             }
             sqlParamList.clear();
         }
+
+        result.put("allCount", allCount);
+        result.put("blackCount", blackCount);
+        result.put("repeatCount", repeatCount);
+        result.put("limitCount", limitCount);
+        return result;
+    }
+
+    @Override
+    public int userTargetDelete(String taskId) {
+        return taskUserMapper.deleteByPrimaryKey(taskId);
+    }
+
+    @Override
+    public int deleteSurveyTask(String taskId) {
+        //删除目标号码
+        taskUserMapper.deleteByPrimaryKey(taskId);
+
+        //删除渠道信息
+        TaskChannelExample example = new TaskChannelExample();
+        example.createCriteria().andTaskIdEqualTo(taskId);
+        taskChannelMapper.deleteByExample(example);
+
+        //删除任务
+        surveyTaskMapper.deleteByPrimaryKey(taskId);
+        return 1;
+    }
+
+    @Override
+    public void editSurveyTask(SurveyTaskAddBo bo) {
+        String taskId = bo.getTaskId();
+        //删除渠道信息
+        TaskChannelExample example = new TaskChannelExample();
+        example.createCriteria().andTaskIdEqualTo(taskId);
+        taskChannelMapper.deleteByExample(example);
+
+        //删除任务
+        surveyTaskMapper.deleteByPrimaryKey(taskId);
+
+        //新增任务信息
+        addSurveyMethod(bo, "add");
+    }
+
+    /**
+     * 添加任务信息
+     *
+     * @param bo
+     * @param type
+     */
+    private void addSurveyMethod(SurveyTaskAddBo bo, String type) {
+        //插入任务数据
+        surveyTaskMapper.insertSelective(caseBo2Bean(bo, type));
+
+        //插入任务渠道信息
+        taskChannelMapper.insertSelective(bo.getTaskChannel());
     }
 
     /**
@@ -158,14 +231,17 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      * @param bo
      * @return
      */
-    private SurveyTask caseBo2Bean(SurveyTaskAddBo bo) {
+    private SurveyTask caseBo2Bean(SurveyTaskAddBo bo, String type) {
         SurveyTask surveyTask = new SurveyTask();
 
         surveyTask.setTaskId(bo.getTaskId());
         surveyTask.setTaskName(bo.getTaskName());
         surveyTask.setTaskType(StringUtil.getShort(bo.getTaskType()));
-        surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
-
+        if (type.equals("add")) {
+            surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
+        } else {
+            surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_02);  //草稿
+        }
         surveyTask.setSurveySdate(DateUtil.getDate(bo.getSurveySdate(), DateFormatConst.YMD));
         surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
         surveyTask.setQstnaireId(bo.getQstnaireId());
