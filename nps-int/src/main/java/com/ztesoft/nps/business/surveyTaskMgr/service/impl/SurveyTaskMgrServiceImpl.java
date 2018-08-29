@@ -4,7 +4,6 @@ import com.ztesoft.nps.business.surveyTaskMgr.mapper.SurveyTaskMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTask;
-import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannel;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskChannelExample;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
 import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
@@ -46,10 +45,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Override
     public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
-        StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" ");
-
-        return DatabaseUtil.queryForPageResult(surveyTaskQuerySql.toString(),
+        return DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
                 StringUtil.getInteger(condition.getPageNum()),
                 StringUtil.getInteger(condition.getPageSize()));
     }
@@ -61,7 +57,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Override
     public void addSurveyTaskToDraft(SurveyTaskAddBo bo) {
-
+        addSurveyMethod(bo, "draft");
     }
 
     @Override
@@ -249,5 +245,37 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTask.setCreateTime(new Date());
 
         return surveyTask;
+    }
+
+    /**
+     * 获取任务列表查询sql
+     * @param condition
+     * @return
+     */
+    private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
+        StringBuilder surveyTaskQuerySql = new StringBuilder();
+        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name, ");
+        surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
+        surveyTaskQuerySql.append("     CASE st.status ");
+        surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
+        surveyTaskQuerySql.append("         WHEN '01' then '").append(ConstantUtils.SURVEY_TASK_STATUS_01).append("' ");
+        surveyTaskQuerySql.append("         WHEN '02' then '").append(ConstantUtils.SURVEY_TASK_STATUS_02).append("' ");
+        surveyTaskQuerySql.append("         WHEN '03' then '").append(ConstantUtils.SURVEY_TASK_STATUS_03).append("' ");
+        surveyTaskQuerySql.append("         WHEN '04' then '").append(ConstantUtils.SURVEY_TASK_STATUS_04).append("' ");
+        surveyTaskQuerySql.append("         WHEN '05' then '").append(ConstantUtils.SURVEY_TASK_STATUS_05).append("' ");
+        surveyTaskQuerySql.append("         WHEN '06' then '").append(ConstantUtils.SURVEY_TASK_STATUS_06).append("' ");
+        surveyTaskQuerySql.append("     END '").append(ConstantUtils.SURVEY_TASK_STATUS_10).append("', ");
+        surveyTaskQuerySql.append("     st.create_time as createTime, tc.user_sum as userSum ");
+        surveyTaskQuerySql.append(" from survey_task st ");
+        surveyTaskQuerySql.append(" left join qstnaire_bank qb on st.qstnaire_id = qb.qstnaire_id ");
+        surveyTaskQuerySql.append(" left join qstnaire_catalog qc on qc.catalog_id = qb.catalog_id ");
+        surveyTaskQuerySql.append(" left join task_channel tc on st.task_id = tc.task_id ");
+        surveyTaskQuerySql.append(" where 1=1 ");
+        surveyTaskQuerySql.append(" and qc.status = '00A' ");
+        surveyTaskQuerySql.append(" and tc.channel_type = '2' ");
+        if(StringUtil.isNotNull(condition.getTaskName())){
+            surveyTaskQuerySql.append(" and st.task_name like '%").append(condition.getTaskName()).append("%'");
+        }
+        return  surveyTaskQuerySql.toString();
     }
 }

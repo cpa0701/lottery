@@ -52,12 +52,6 @@ public class SurveyTaskMgrController {
         return Result.success();
     }
 
-    @ApiOperation(value = "添加任务审核", notes = "添加任务审核")
-    @PostMapping("/addSurveyTaskToProcess")
-    public Result<Object> addSurveyTaskToProcess(@RequestBody Map<String,Object> params){
-        return Result.success();
-    }
-
     @ApiOperation(value = "删除任务", notes = "删除任务")
     @PostMapping("/deleteSurveyTask")
     public Result<Object> deleteSurveyTask(@RequestBody SurveyTaskIdQuery condition){
