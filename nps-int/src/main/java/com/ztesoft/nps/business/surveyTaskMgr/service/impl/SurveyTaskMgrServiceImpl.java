@@ -1,5 +1,9 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 
+import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyNpsInfoMapper;
+import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper;
+import com.ztesoft.nps.business.surveyResultMgr.model.SurveyNpsInfo;
+import com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.SurveyTaskMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskChannelMapper;
 import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskUserMapper;
@@ -20,6 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
@@ -39,6 +44,12 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Autowired
     private TaskUserMapper taskUserMapper;
+
+    @Autowired
+    private SurveyUserInfoMapper surveyUserInfoMapper;
+
+    @Autowired
+    private SurveyNpsInfoMapper surveyNpsInfoMapper;
 
     @Override
     public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
@@ -141,6 +152,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         return taskUserMapper.deleteByExample(taskUserExample);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteSurveyTask(String taskId) {
         //删除目标号码
@@ -156,6 +168,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         return 1;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void editSurveyTask(SurveyTaskAddBo bo) {
         String taskId = bo.getTaskId();
@@ -171,11 +184,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         addSurveyMethod(bo, "add");
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void publishSurvetTask(SurveyTaskPublishBo bo) {
         createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_NO);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void testPublishSurvetTask(SurveyTaskPublishBo bo) {
         createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_YES);
@@ -250,32 +265,66 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             baseUrl.setLength(0);
         }
 
+        if(ListUtil.isNull(authTokenInsertSqlList) || ListUtil.isNull(smsList)){
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+        }
+
         int batchSave = 20000;
-        if(ListUtil.isNotNull(authTokenInsertSqlList)) {
-            String insertAuthTokenSql = "insert into auth_token(create_time,token,task_user_id)values(?,?,?)";
-            long startTime = System.currentTimeMillis();
-            try {
-                DatabaseUtil.excuteBatch(insertAuthTokenSql, authTokenInsertSqlList,batchSave);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            long endTime = System.currentTimeMillis();
-            LogUtil.log("用户token表批量保存，taskid:"+bo.getTaskId()+" 共"+authTokenInsertSqlList.size()+"条数据 ,  每次保存"+batchSave+ "条 , 总耗时"+(endTime-startTime)+"ms ");
+        //生成token数据
+        String insertAuthTokenSql = "insert into auth_token(create_time,token,task_user_id)values(?,?,?)";
+        long startTime = System.currentTimeMillis();
+        try {
+            DatabaseUtil.excuteBatch(insertAuthTokenSql, authTokenInsertSqlList,batchSave);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        long endTime = System.currentTimeMillis();
+        LogUtil.log("用户token表批量保存，taskid:"+bo.getTaskId()+" 共"+authTokenInsertSqlList.size()+"条数据 ,  每次保存"+batchSave+ "条 , 总耗时"+(endTime-startTime)+"ms ");
 
-        if(ListUtil.isNotNull(smsList)){
-            String insertTaskExeSql = "insert into task_exe(serial_id,task_id,channel_type,send_user,target_user," +
-                    "is_test,sm_content,creat_time,base_url,short_url)valus(?,?,?,?,?,?,?,?,?,?)";
-            long startTime = System.currentTimeMillis();
-            try {
-                DatabaseUtil.excuteBatch(insertTaskExeSql, smsList,batchSave);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            long endTime = System.currentTimeMillis();
-            LogUtil.log("短信发送表批量保存，taskid:"+bo.getTaskId()+" 共"+smsList.size()+"条数据 ,  每次保存"+batchSave+ "条 , 总耗时"+(endTime-startTime)+"ms ");
+        //生成消息数据
+        String insertTaskExeSql = "insert into task_exe(serial_id,task_id,channel_type,send_user,target_user," +
+                "is_test,sm_content,creat_time,base_url,short_url)valus(?,?,?,?,?,?,?,?,?,?)";
+        long startTime1 = System.currentTimeMillis();
+        try {
+            DatabaseUtil.excuteBatch(insertTaskExeSql, smsList,batchSave);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        long endTime1 = System.currentTimeMillis();
+        LogUtil.log("短信发送表批量保存，taskid:"+bo.getTaskId()+" 共"+smsList.size()+"条数据 ,  每次保存"+batchSave+ "条 , 总耗时"+(endTime1-startTime1)+"ms ");
 
+        //生成调研结果统计表结果基础数据
+        if(isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){
+            createSurveyTaskResultBaseData(bo.getTaskId(),smsList.size());
+        }
+    }
+
+    /**
+     * 调研任务发布之后，生成调研结果基础数据
+     * @param taskId
+     * @param taskNum 调研对象数量
+     */
+    private void createSurveyTaskResultBaseData(String taskId,int taskNum){
+        Map<String,Object> surveyTaskResult = DatabaseUtil.queryForMap(
+                "select * from survey_task where task_id ='"+taskId+"'");
+        //调研对象分析
+        SurveyUserInfo surveyUserInfo = new SurveyUserInfo();
+        surveyUserInfo.setTaskId(MapUtil.getString(surveyTaskResult,"task_id"));
+        surveyUserInfo.setTaskName(MapUtil.getString(surveyTaskResult,"task_name"));
+        surveyUserInfo.setQstnaireId(MapUtil.getString(surveyTaskResult,"qstnaire_id"));
+        surveyUserInfo.setTaskCount(Long.valueOf(taskNum));
+        surveyUserInfo.setTaskType(MapUtil.getShort(surveyTaskResult,"task_type"));
+        surveyUserInfo.setCreateDate(new Date());
+        surveyUserInfoMapper.insertSelective(surveyUserInfo);
+
+        //调研nps分析
+        SurveyNpsInfo surveyNpsInfo = new SurveyNpsInfo();
+        surveyNpsInfo.setTaskId(MapUtil.getString(surveyTaskResult,"task_id"));
+        surveyNpsInfo.setTaskName(MapUtil.getString(surveyTaskResult,"task_name"));
+        surveyNpsInfo.setQstnaireId(MapUtil.getString(surveyTaskResult,"qstnaire_id"));
+        surveyNpsInfo.setTaskType(MapUtil.getShort(surveyTaskResult,"task_type"));
+        surveyNpsInfo.setCreateDate(new Date());
+        surveyNpsInfoMapper.insertSelective(surveyNpsInfo);
     }
 
     /**

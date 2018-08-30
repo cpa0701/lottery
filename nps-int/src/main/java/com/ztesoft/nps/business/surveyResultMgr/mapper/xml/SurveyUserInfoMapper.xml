@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR" />
+    <result column="task_count" property="taskCount" jdbcType="BIGINT" />
+    <result column="partake_count" property="partakeCount" jdbcType="BIGINT" />
+    <result column="finish_count" property="finishCount" jdbcType="BIGINT" />
+    <result column="partake_ratio" property="partakeRatio" jdbcType="DECIMAL" />
+    <result column="finish_ratio" property="finishRatio" jdbcType="DECIMAL" />
+    <result column="task_type" property="taskType" jdbcType="DECIMAL" />
+    <result column="create_date" property="createDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    task_id, task_name, qstnaire_id, task_count, partake_count, finish_count, partake_ratio, 
+    finish_ratio, task_type, create_date
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from survey_user_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfoExample" >
+    delete from survey_user_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
+    insert into survey_user_info (task_id, task_name, qstnaire_id, 
+      task_count, partake_count, finish_count, 
+      partake_ratio, finish_ratio, task_type, 
+      create_date)
+    values (#{taskId,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{qstnaireId,jdbcType=VARCHAR}, 
+      #{taskCount,jdbcType=BIGINT}, #{partakeCount,jdbcType=BIGINT}, #{finishCount,jdbcType=BIGINT}, 
+      #{partakeRatio,jdbcType=DECIMAL}, #{finishRatio,jdbcType=DECIMAL}, #{taskType,jdbcType=DECIMAL}, 
+      #{createDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
+    insert into survey_user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="taskName != null" >
+        task_name,
+      </if>
+      <if test="qstnaireId != null" >
+        qstnaire_id,
+      </if>
+      <if test="taskCount != null" >
+        task_count,
+      </if>
+      <if test="partakeCount != null" >
+        partake_count,
+      </if>
+      <if test="finishCount != null" >
+        finish_count,
+      </if>
+      <if test="partakeRatio != null" >
+        partake_ratio,
+      </if>
+      <if test="finishRatio != null" >
+        finish_ratio,
+      </if>
+      <if test="taskType != null" >
+        task_type,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="qstnaireId != null" >
+        #{qstnaireId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCount != null" >
+        #{taskCount,jdbcType=BIGINT},
+      </if>
+      <if test="partakeCount != null" >
+        #{partakeCount,jdbcType=BIGINT},
+      </if>
+      <if test="finishCount != null" >
+        #{finishCount,jdbcType=BIGINT},
+      </if>
+      <if test="partakeRatio != null" >
+        #{partakeRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="finishRatio != null" >
+        #{finishRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="taskType != null" >
+        #{taskType,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfoExample" resultType="java.lang.Integer" >
+    select count(*) from survey_user_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update survey_user_info
+    <set >
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskName != null" >
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qstnaireId != null" >
+        qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskCount != null" >
+        task_count = #{record.taskCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.partakeCount != null" >
+        partake_count = #{record.partakeCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.finishCount != null" >
+        finish_count = #{record.finishCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.partakeRatio != null" >
+        partake_ratio = #{record.partakeRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="record.finishRatio != null" >
+        finish_ratio = #{record.finishRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="record.taskType != null" >
+        task_type = #{record.taskType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createDate != null" >
+        create_date = #{record.createDate,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update survey_user_info
+    set task_id = #{record.taskId,jdbcType=VARCHAR},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+      task_count = #{record.taskCount,jdbcType=BIGINT},
+      partake_count = #{record.partakeCount,jdbcType=BIGINT},
+      finish_count = #{record.finishCount,jdbcType=BIGINT},
+      partake_ratio = #{record.partakeRatio,jdbcType=DECIMAL},
+      finish_ratio = #{record.finishRatio,jdbcType=DECIMAL},
+      task_type = #{record.taskType,jdbcType=DECIMAL},
+      create_date = #{record.createDate,jdbcType=DATE}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

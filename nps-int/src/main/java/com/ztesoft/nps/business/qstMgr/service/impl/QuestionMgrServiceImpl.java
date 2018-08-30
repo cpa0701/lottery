@@ -1,5 +1,6 @@
 package com.ztesoft.nps.business.qstMgr.service.impl;
 
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionBankMapper;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionOptionMapper;
@@ -69,7 +70,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int editQuestion(QuestionBank bank) {
+    public int editQuestion(QuestionBank bank) throws NpsDeleteException{
         String questionId = bank.getQuestionId();
         if (StringUtil.isNull(questionId)) {
             throw new NpsObjectNotFoundException(questionId);
