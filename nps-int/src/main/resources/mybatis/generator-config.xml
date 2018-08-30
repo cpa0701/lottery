@@ -30,23 +30,27 @@
 
 
 		<!--生成的model 包路径 -->
-		<javaModelGenerator targetPackage="com.ztesoft.nps.business.surveyTaskMgr.model" targetProject="src/main/java">
+		<javaModelGenerator targetPackage="com.ztesoft.nps.business.surveyResultMgr.model" targetProject="src/main/java">
 			<property name="enableSubPackages" value="true"/>
 			<property name="trimStrings" value="true"/>
 		</javaModelGenerator>
 
 		<!--生成xml mapper文件 路径 -->
-		<sqlMapGenerator targetPackage="com.ztesoft.nps.business.surveyTaskMgr.mapper.xml" targetProject="src/main/java">
+		<sqlMapGenerator targetPackage="com.ztesoft.nps.business.surveyResultMgr.mapper.xml" targetProject="src/main/java">
 			<property name="enableSubPackages" value="true"/>
 		</sqlMapGenerator>
 
 		<!-- 生成的Dao接口 的包路径 -->
-		<javaClientGenerator type="XMLMAPPER" targetPackage="com.ztesoft.nps.business.surveyTaskMgr.mapper" targetProject="src/main/java">
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.ztesoft.nps.business.surveyResultMgr.mapper" targetProject="src/main/java">
 			<property name="enableSubPackages" value="true"/>
 		</javaClientGenerator>
 
 		<!--对应数据库表名 domainObjectName="Module"-->
-		<table tableName="task_exe" enableCountByExample="true"  domainObjectName="TaskExe"
+		<table tableName="survey_user_info" enableCountByExample="true"  domainObjectName="SurveyUserInfo"
+			   enableUpdateByExample="true" enableDeleteByExample="true"
+			   enableSelectByExample="true" selectByExampleQueryId="true" >
+		</table>
+		<table tableName="survey_nps_info" enableCountByExample="true"  domainObjectName="SurveyNpsInfo"
 			   enableUpdateByExample="true" enableDeleteByExample="true"
 			   enableSelectByExample="true" selectByExampleQueryId="true" >
 		</table>
