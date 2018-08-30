@@ -2,7 +2,7 @@
  * Create by chenpengan on 2018/8/15
  */
 import React from 'react';
-import {Row, Col, Spin, Button} from "antd"
+import {Row, Col, Spin, Button, message} from "antd"
 
 import QuestionPreviewService from '../../../services/question/QuestionPreviewService'
 import InitQuestionList from './InitQuestionList'
@@ -12,8 +12,6 @@ import './questionPreview.less'
 class QuestionPreview extends React.PureComponent {
     constructor(props) {
         super(props);
-        let id = props.match.params.id;
-        console.log(id);
         this.state = {
             loading: false,
             currentPage: 1,
@@ -27,10 +25,18 @@ class QuestionPreview extends React.PureComponent {
     }
 
     componentWillMount() {
+        let id = this.props.match.params.id;
+        this.getQuestionData(id);
+    }
+
+    //请求问卷数据
+    getQuestionData = (id) => {
         this.setState({
             loading: true
         }, () => {
-            QuestionPreviewService.getPreviewLIst().then(result => {
+            QuestionPreviewService.getPreviewList({qstnaireId: id}).then(result => {
+                if (result.qstnaireLeadin)
+                    message.info(result.qstnaireLeadin);
                 let logicList = result.logic;
                 this.state.logicList = result.logic;
                 let questionList = result.question;
@@ -98,7 +104,6 @@ class QuestionPreview extends React.PureComponent {
             })
         })
     }
-
     //单选框值改变
     onRadioChange = (e) => {
         this.over = false;//将跳转至结束变为false
