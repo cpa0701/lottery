@@ -10,6 +10,7 @@ import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,10 +30,7 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "任务列表", notes = "任务列表")
     @PostMapping("/surveyTaskList")
-    public Result<Object> surveyTaskList(@RequestBody SurveyTaskQuery condition){
-        if(StringUtil.isNull(condition.getPageNum()) || StringUtil.isNull(condition.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.PAGE_PARAMS_DEFICIENCY);
-        }
+    public Result<Object> surveyTaskList(SurveyTaskQuery condition){
         return Result.success(surveyTaskMgrService.surveyTaskList(condition));
     }
 
@@ -82,9 +80,9 @@ public class SurveyTaskMgrController {
     }
 
     @ApiOperation(value = "用户上传", notes = "用户上传")
-    @PostMapping("/userTargetImport")
-    public Result<Object> userTargetImport(@RequestParam UserTargetBo bo){
-        return Result.success(surveyTaskMgrService.userTargetImport(bo));
+    @PostMapping(value="/userTargetImport",consumes = "multipart/*",headers = "content-type=multipart/form-data")
+    public Result<Object> userTargetImport(@ApiParam(value="上传的文件",required = true) MultipartFile file, UserTargetBo bo){
+        return Result.success(surveyTaskMgrService.userTargetImport(bo,file));
     }
 
     @ApiOperation(value = "发布任务", notes = "发布任务")

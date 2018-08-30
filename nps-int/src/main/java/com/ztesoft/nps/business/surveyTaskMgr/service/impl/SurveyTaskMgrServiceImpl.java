@@ -47,6 +47,12 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Override
     public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
+        if(StringUtil.isNull(condition.getPageNum())){
+            condition.setPageNum(ConstantUtils.PAGE_NUM_DEFAULT);
+        }
+        if(StringUtil.isNull(condition.getPageSize())){
+            condition.setPageSize(ConstantUtils.PAGE_SIZE_DEFAULT);
+        }
         return DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
                 StringUtil.getInteger(condition.getPageNum()),
                 StringUtil.getInteger(condition.getPageSize()));
@@ -63,10 +69,10 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     }
 
     @Override
-    public Map<String, Object> userTargetImport(UserTargetBo bo) {
+    public Map<String, Object> userTargetImport(UserTargetBo bo,MultipartFile file) {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        Workbook workbook = ExcelUtils.create(bo.getFile());
+        Workbook workbook = ExcelUtils.create(file);
 
         String taskId = bo.getTaskId();
         String channelType = bo.getChannelType();

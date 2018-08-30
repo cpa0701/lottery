@@ -8,6 +8,9 @@ public class ConstantUtils {
     public static final String RES_SYSTEM_NAME = "NPS";
 
     public static final String PAGE_PARAMS_DEFICIENCY = "分页参数缺失";
+    public static final String PAGE_NUM_DEFAULT = "1";  //当前页
+    public static final String PAGE_SIZE_DEFAULT = "10"; //每页10条
+
     public static final String EXPORT_FILE_NOT_ALLOWED = "不支持当前版本！";
 
     /**调查任务表survey_task的任务状态STATUS*/

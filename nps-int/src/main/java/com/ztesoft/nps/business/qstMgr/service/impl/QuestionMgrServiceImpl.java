@@ -9,6 +9,7 @@ import com.ztesoft.nps.business.qstMgr.model.QuestionOption;
 import com.ztesoft.nps.business.qstMgr.model.QuestionOptionExample;
 import com.ztesoft.nps.business.qstMgr.model.query.QuestionQuery;
 import com.ztesoft.nps.business.qstMgr.service.QuestionMgrService;
+import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
@@ -90,26 +91,15 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
 
     @Override
     public LPageHelper questionBank(QuestionQuery condition) {
-
-        StringBuilder qstBankQuerySql = getQuestionBankQuerySql();
-        if (StringUtil.isNotNull(condition.getQuestionCategory())) {
-            qstBankQuerySql.append(" and question_category = '").append(condition.getQuestionCategory()).append("' ");
+        if(StringUtil.isNull(condition.getPageNum())){
+            condition.setPageNum(ConstantUtils.PAGE_NUM_DEFAULT);
         }
-        if (StringUtil.isNotNull(condition.getQuestionName())) {
-            qstBankQuerySql.append(" and question_name like '%").append(condition.getQuestionName()).append("%' ");
+        if(StringUtil.isNull(condition.getPageSize())){
+            condition.setPageSize(ConstantUtils.PAGE_SIZE_DEFAULT);
         }
-        if (StringUtil.isNotNull(condition.getIsNps())) {
-            qstBankQuerySql.append(" and isNps = '").append(condition.getIsNps()).append("' ");
-        }
-        if (StringUtil.isNotNull(condition.getQuestionType())) {
-            qstBankQuerySql.append(" and question_type = '").append(condition.getQuestionType()).append("' ");
-        }
-        if (StringUtil.isNotNull(condition.getIsSatisfied())) {
-            qstBankQuerySql.append(" and is_satisfied = '").append(condition.getIsSatisfied()).append("' ");
-        }
-
+        StringBuilder qstBankQuerySql = getQuestionBankQuerySql(condition);
         LPageHelper bankResult = DatabaseUtil.queryForPageResult(qstBankQuerySql.toString(),
-                Integer.valueOf(condition.getPageNum()),Integer.valueOf(condition.getPageSize()));
+                StringUtil.getInteger(condition.getPageNum()),StringUtil.getInteger(condition.getPageSize()));
 
         List<Map<String,Object>> bankRows = bankResult.getRows();
 
@@ -165,7 +155,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         questionOptionMapper.batchSaveOpt(optList);
     }
 
-    private StringBuilder getQuestionBankQuerySql(){
+    private StringBuilder getQuestionBankQuerySql(QuestionQuery condition){
         StringBuilder qstBankQuerySql = new StringBuilder();
         qstBankQuerySql.append(" select question_id as questionId, question_name as questionName, ");
         qstBankQuerySql.append(" question_type as questionType, question_category as questionCategory, ");
@@ -175,6 +165,22 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         qstBankQuerySql.append(" create_uid as createUid, create_time as create_time, ");
         qstBankQuerySql.append(" status, question_tags as questionTags ");
         qstBankQuerySql.append(" from question_bank where 1=1 ");
+
+        if (StringUtil.isNotNull(condition.getQuestionCategory())) {
+            qstBankQuerySql.append(" and question_category = '").append(condition.getQuestionCategory()).append("' ");
+        }
+        if (StringUtil.isNotNull(condition.getQuestionName())) {
+            qstBankQuerySql.append(" and question_name like '%").append(condition.getQuestionName()).append("%' ");
+        }
+        if (StringUtil.isNotNull(condition.getIsNps())) {
+            qstBankQuerySql.append(" and isNps = '").append(condition.getIsNps()).append("' ");
+        }
+        if (StringUtil.isNotNull(condition.getQuestionType())) {
+            qstBankQuerySql.append(" and question_type = '").append(condition.getQuestionType()).append("' ");
+        }
+        if (StringUtil.isNotNull(condition.getIsSatisfied())) {
+            qstBankQuerySql.append(" and is_satisfied = '").append(condition.getIsSatisfied()).append("' ");
+        }
         return qstBankQuerySql;
     }
 

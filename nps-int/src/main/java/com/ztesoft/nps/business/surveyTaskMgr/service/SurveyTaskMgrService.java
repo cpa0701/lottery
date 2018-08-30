@@ -19,7 +19,7 @@ public interface SurveyTaskMgrService {
 
     void addSurveyTaskToDraft(SurveyTaskAddBo bo);
 
-    Map<String,Object> userTargetImport(UserTargetBo bo);
+    Map<String,Object> userTargetImport(UserTargetBo bo,MultipartFile file);
 
     int userTargetDelete(SurveyTaskDelBo bo);
 

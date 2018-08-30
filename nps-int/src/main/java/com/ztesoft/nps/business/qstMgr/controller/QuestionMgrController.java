@@ -66,10 +66,6 @@ public class QuestionMgrController {
     @PostMapping("/questionBank")
     @ApiOperation(value = "查询题目列表", notes = "查询题目列表")
     public Result<Object> questionBank(@RequestBody QuestionQuery condition){
-        if(StringUtil.isNull(condition.getPageNum()) ||
-                StringUtil.isNull(condition.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.PAGE_PARAMS_DEFICIENCY);
-        }
         return Result.success(questionMgrService.questionBank(condition));
     }
 }

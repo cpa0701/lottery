@@ -16,9 +16,6 @@ public class UserTargetBo {
     @ApiModelProperty("渠道类型  0链接与二维码/1微信/2邮件/3短信")
     private String channelType;
 
-    @ApiModelProperty("文件对象")
-    private MultipartFile file;
-
     public String getTaskId() {
         return taskId;
     }
@@ -33,13 +30,5 @@ public class UserTargetBo {
 
     public void setChannelType(String channelType) {
         this.channelType = channelType;
-    }
-
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
     }
 }
