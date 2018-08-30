@@ -1,9 +1,6 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service;
 
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskDelBo;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.UserTargetBo;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.*;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,5 +23,9 @@ public interface SurveyTaskMgrService {
     int deleteSurveyTask(String taskId);
 
     void editSurveyTask(SurveyTaskAddBo bo);
+
+    void publishSurvetTask(SurveyTaskPublishBo bo);
+
+    void testPublishSurvetTask(SurveyTaskPublishBo bo);
 
 }

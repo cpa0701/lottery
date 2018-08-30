@@ -87,13 +87,21 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "发布任务", notes = "发布任务")
     @PostMapping("/publishSurveyTask")
-    public Result<Object> publishSurveyTask(@RequestBody Map<String,Object> params){
+    public Result<Object> publishSurveyTask(@RequestBody SurveyTaskPublishBo bo){
+        if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
+        }
+        surveyTaskMgrService.publishSurvetTask(bo);
         return Result.success();
     }
 
     @ApiOperation(value = "测试任务", notes = "测试任务")
     @PostMapping("/testPublishSurveyTask")
-    public Result<Object> testPublishSurveyTask(@RequestBody Map<String,Object> params){
+    public Result<Object> testPublishSurveyTask(@RequestBody SurveyTaskPublishBo bo){
+        if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
+        }
+        surveyTaskMgrService.testPublishSurvetTask(bo);
         return Result.success();
     }
 }
