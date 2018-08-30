@@ -13,35 +13,40 @@ import './questionApplication.less';
 const { TextArea } = Input;
 const [FormItem] = [Form.Item];
 
-const treeData = [{
-            title: '终端',
-            value: '6',
-            key: '0-0',
-        }, {
-            title: '套餐',
-            value: '2',
-            key: '0-1',
-        },{
-            title: '流量',
-            value: '3',
-            key: '0-3',
-        }, {
-            title: '账单',
-            value: '4',
-            key: '0-4',
-        }, {
-            title: '其它',
-            value: '5',
-            key: '0-5',
-        }];
+const treeData = [
+    {
+        title: '终端',
+        value: '1',
+        key: '0-0',
+    }, {
+        title: '套餐',
+        value: '2',
+        key: '0-1',
+    },{
+        title: '流量',
+        value: '3',
+        key: '0-3',
+    }, {
+        title: '账单',
+        value: '4',
+        key: '0-4',
+    }, {
+        title: '其它',
+        value: '5',
+        key: '0-5',
+    }];
 @Form.create()
 class QuestionEdit extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            questionDisplayList: this.props.location.state ? [...this.props.location.state.record.question] : [],
-            questionDisplayList1: this.props.location.state ? [...this.props.location.state.record.question] : [],
-            logic: this.props.location.state ? [...this.props.location.state.record.logic] : [], // 逻辑表
+            questionDisplayList: [],
+            questionDisplayList1: [],
+            logic: [], // 逻辑表
+            qstnaireTitle: '',
+            qstnaireLeadin: '',
+            belongTo: null,
+            qstnaireId: null,
             otherQuestion: [
                 {
                     questionOrder: '0',
@@ -60,15 +65,12 @@ class QuestionEdit extends React.PureComponent {
             connList: [], // 可设置关联的题
             jumpList: [], // 可设置跳转的题
             questions: [], // 存已存在逻辑的题
-            keyS: [], // 对应已存在逻辑的key
+            keyS: [0], // 对应已存在逻辑的key
+            catalogId: null,
             andOr: 0,
             index: undefined,
             value: '',
             radioValue: 0,
-            qstnaireTitle: this.props.location.state ? this.props.location.state.record.qstnaireTitle : '',
-            qstnaireLeadin: this.props.location.state ? this.props.location.state.record.qstnaireLeadin : '',
-            belongTo: this.props.location.state ? this.props.location.state.record.belongTo : null,
-            qstnaireId: this.props.location.state ? this.props.location.state.record.qstnaireId : null,
             conn: false,
             jump: false
         };
@@ -76,10 +78,44 @@ class QuestionEdit extends React.PureComponent {
         this.preview = this.preview.bind(this);
     }
 
+    componentDidMount() {
+        let id = this.props.match.params.id;
+        if (id !== "666") {
+            this.setState({
+                loading: true
+            }, () => QuestionApplicationService.getQstnaireById({qstnaireId: id}).then(result => {
+                if(result) {
+                    let question = result.question.map(item => {
+                        let param = {...item};
+                       if(String(item.isPaging) === '1') {
+                           param = {...item, pageNum: null};
+                       }
+                       return param;
+                    });
+                    debugger;
+                    this.setState({
+                        questionDisplayList: question,
+                        questionDisplayList1: question,
+                        qstnaireTitle: result.qstnaireTitle,
+                        qstnaireLeadin: result.qstnaireLeadin,
+                        qstnaireId: result.qstnaireId,
+                        catalogId: result.catalogId,
+                        belongTo: result.belongTo,
+                        logic: result.logic,
+                        loading: false
+                    }, () => {
+                        this.orderPageNum();
+                        this.questionLogicInfo();
+                    });
+                }
+            }))
+        }
+    }
+
     // 获取题库具体题目
     getDom = (data) => {
         let questionData = data.question;
-        if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
+        // if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
@@ -97,9 +133,9 @@ class QuestionEdit extends React.PureComponent {
                     }
                 });
             }
-        } else {
-            message.info('该题已存在问卷中，且不可重复');
-        }
+        // } else {
+        //     message.info('该题已存在问卷中，且不可重复');
+        // }
     };
 
     // 对获取的题进行排序
@@ -236,6 +272,7 @@ class QuestionEdit extends React.PureComponent {
             return '';
         }
         if (show) {
+            console.log('111', props);
             // 打开弹框前获取已存在的关联逻辑关系并存入questions
             let questions = [], arr = [], keyS = [], andOr = 0;
 
@@ -306,7 +343,7 @@ class QuestionEdit extends React.PureComponent {
 
             this.setState({
                 questions,
-                keyS,
+                keyS: keyS ? keyS : [0],
                 conn: true,
                 record: props,
                 connList,
@@ -320,8 +357,13 @@ class QuestionEdit extends React.PureComponent {
     // 跳转逻辑弹窗
     jumpModal = (show, props, i) => {
         if (show) {
+            // 清空之前编辑的逻辑
+            props.optionList.map(item => {
+                item.questionOrder = null;
+                return '';
+            });
+
             // 打开弹框前获取已存在的跳转逻辑关系并存入optionList
-            console.log(this.state.logic);
             let logicProp = this.state.logic.filter(item => item.setupQuestionOrder === props.questionOrder && item.logicType === '01');
             if(logicProp) {
                 logicProp.map(item => {
@@ -369,12 +411,10 @@ class QuestionEdit extends React.PureComponent {
             if (props.questionType === '02' || props.questionType === '03' || props.questionType === '04') {
                 this.setState({radioValue: 1});
             }
-
             this.setState({
                 jump: true,
                 record: props,
-                jumpList,
-
+                jumpList
             });
         } else {
             this.setState({ jump: false, radioValue: 0 });
@@ -485,17 +525,20 @@ class QuestionEdit extends React.PureComponent {
             newLogic = this.state.logic.filter(item => item.logicType === '01' || (item.logicType === '00' && item.skiptoQuestionOrder !== order));
             this.setState({
                 questions: [], // 存已存在逻辑的题
-                keyS: [], // 对应已存在逻辑的key
+                keyS: [0], // 对应已存在逻辑的key
                 andOr: 0,
                 logic: [...newLogic]
+            }, () => {
+                this.questionLogicInfo();
             });
         } else if (Number(type) === 1) { // 删除所有与该题有关的逻辑(关联、跳转)
             newLogic = this.state.logic.filter(item => item.setupQuestionOrder !== order && item.skiptoQuestionOrder !== order);
             this.setState({
                 logic: [...newLogic]
+            }, () => {
+                this.questionLogicInfo();
             });
         }
-
     };
 
     // 添加分页
@@ -520,6 +563,7 @@ class QuestionEdit extends React.PureComponent {
             "questionCategory": "",
             "questionName": "",
             "questionName2": "",
+            "questionId": "cf7a7a35dec14c4bab5fa6a9b8bf3009",
             "questionOrder": null,
             "questionType": "00",
             "status": ""
@@ -559,8 +603,23 @@ class QuestionEdit extends React.PureComponent {
     };
 
     render() {
-        const { qstnaireTitle, qstnaireLeadin, questionDisplayList, conn, jump, record, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
-        const {getFieldDecorator} = this.props.form;
+        const {
+            qstnaireTitle,
+            qstnaireLeadin,
+            questionDisplayList,
+            conn,
+            jump,
+            record,
+            connList,
+            jumpList,
+            radioValue,
+            logic,
+            questions,
+            keyS,
+            andOr,
+            catalogId
+        } = this.state;
+        const { getFieldDecorator } = this.props.form;
 
         // 关联弹窗
         const connModalProps = {
@@ -575,7 +634,7 @@ class QuestionEdit extends React.PureComponent {
                 this.connModal(false);
                 this.setState({
                     questions: [], // 存已存在逻辑的题
-                    keyS: [], // 对应已存在逻辑的key
+                    keyS: [0], // 对应已存在逻辑的key
                     andOr: null
                 });
             },
@@ -585,13 +644,10 @@ class QuestionEdit extends React.PureComponent {
                     ...newLogic,
                     ...value
                 ];
-                console.log('qwer',logic)
-
-
                 this.setState({
                     logic,
                     questions: [], // 存已存在逻辑的题
-                    keyS: [], // 对应已存在逻辑的key
+                    keyS: [0], // 对应已存在逻辑的key
                     record: {}, // 当前设置逻辑的题
                     connList: [], // 可设置关联的题
                     andOr: null
@@ -610,10 +666,10 @@ class QuestionEdit extends React.PureComponent {
         // 跳转弹窗
         const jumpModalProps = {
             jump,
+            logic,
             record,
             jumpList,
             radioValue,
-            logic,
             onClose: () => {
                 this.jumpModal(false);
             },
@@ -658,14 +714,17 @@ class QuestionEdit extends React.PureComponent {
                                 <Form layout='inline' style={{marginLeft: '20px',textAlign: 'left'}}>
                                     <FormItem label="问卷分类">
                                         {getFieldDecorator('catalogId', {
-                                            initialValue: this.props.location.state ? this.props.location.state.record.catalogId : "",
+                                            initialValue: catalogId,
+                                            rules: [{
+                                                required: true,
+                                                message: '请选择问卷分类',
+                                            }],
                                         })(
                                             <TreeSelect
                                                 style={{width: 150}}
                                                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
                                                 treeData={treeData}
                                                 treeDefaultExpandAll
-                                                onChange={this.onChange}
                                             />
                                         )}
                                     </FormItem>
@@ -673,7 +732,7 @@ class QuestionEdit extends React.PureComponent {
                             </div>
                             {questionDisplayList.map((item, i) => {
                                 return (
-                                    item.isPaging === '0' ?
+                                    String(item.isPaging) === '0' ?
                                         <div key={i}>
                                             <InitQuestionList question={item} index={item.questionOrder} infoView={true}/>
                                             <div className="link-group">

@@ -61,19 +61,11 @@ class QuestionApplication extends React.PureComponent {
 
     //创建问卷
     createQuestion = () => {
-        this.props.history.push('/npsMgr/questionMgr/questionEdit');
+        this.props.history.push('/npsMgr/questionMgr/questionEdit/666');
     };
     // 编辑问卷
     editQstnaire = (id) => {
-        this.setState({
-            loading: true
-        }, () => QuestionApplicationService.getQstnaireById({qstnaireId: id}).then(result => {
-            if(result) {
-                this.setState({loading: false});
-                let record = result.data;
-                this.props.history.push({pathname: '/npsMgr/questionMgr/questionEdit', state: {record}})
-            }
-        }))
+        this.props.history.push('/npsMgr/questionMgr/questionEdit/'+ id)
     };
     // 删除问卷
     delQstnaire = (id) => {

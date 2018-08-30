@@ -25,7 +25,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
                     <Route path="/npsMgr/QuestionAddMgr" component={QuestionAddMgr}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
-                    <Route path="/npsMgr/questionMgr/questionEdit" component={QuestionEdit}/>
+                    <Route path="/npsMgr/questionMgr/questionEdit/:id" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/questionPreview/:id" component={QuestionPreview}/>
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>

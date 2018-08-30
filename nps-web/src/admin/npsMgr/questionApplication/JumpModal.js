@@ -62,7 +62,6 @@ export default class extends Component {
                 }
             }
             let newLogicArr = logicArr.filter(item => item.skiptoQuestionOrder !== 0);
-            console.log('',newLogicArr)
             this.props.onCreate(newLogicArr);
         });
     };

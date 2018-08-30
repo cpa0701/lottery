@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Modal, Form, Select, Button, Row, Col, Radio, Icon, Popconfirm,message } from 'antd';
 
 import InitQuestionList from './InitQuestionList';
@@ -9,14 +9,18 @@ const [FormItem, Option, RadioGroup] = [Form.Item, Select.Option, Radio.Group];
 
 let uuid = 1;
 @Form.create()
-export default class extends Component {
+export default class extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             questions: [{}],
         };
+        this.add = this.add.bind(this);
     }
     componentWillReceiveProps(nextProps) {
+        if(nextProps.questions === this.props.questions) {
+            return '';
+        }
         if (nextProps.questions.length !== 0 && nextProps.questions) {
             this.setState({
                 questions: [...nextProps.questions]
@@ -107,8 +111,12 @@ export default class extends Component {
         }
         const nextKeys = keys.concat(uuid);
         uuid++;
+
+        let arr = this.state.questions;
+        arr.push({});
+        // this.state.questions.push({});
         this.setState({
-            questions: [...this.state.questions, {}]
+            questions: [...arr]
         });
 
         form.setFieldsValue({
@@ -158,8 +166,6 @@ export default class extends Component {
         });
         this.setState({
             questions: [...this.state.questions]
-        },() => {
-            console.log('a',this.state.questions)
         });
     };
     // 复选框值改变
@@ -177,20 +183,19 @@ export default class extends Component {
         });
         this.setState({
             questions: [...this.state.questions]
-        },() => {
-            console.log('b',this.state.questions)
         });
     };
 
     render() {
         const { conn, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
         const { questions } = this.state;
-
         const optionList = connList.map((item) => {
             return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
         getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
+
+        console.log('333',questions)
         const formItems = keys.map((index, k) => {
             return (
                 <div key={k}>
