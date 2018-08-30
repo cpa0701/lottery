@@ -1,6 +1,5 @@
 package com.ztesoft.nps.business.surveyTaskMgr.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class TaskExe {
@@ -24,9 +23,9 @@ public class TaskExe {
 
     private String shortUrl;
 
-    private BigDecimal isExe;
+    private Short isExe;
 
-    private String exeTime;
+    private Date exeTime;
 
     private String testUid;
 
@@ -112,20 +111,20 @@ public class TaskExe {
         this.shortUrl = shortUrl == null ? null : shortUrl.trim();
     }
 
-    public BigDecimal getIsExe() {
+    public Short getIsExe() {
         return isExe;
     }
 
-    public void setIsExe(BigDecimal isExe) {
+    public void setIsExe(Short isExe) {
         this.isExe = isExe;
     }
 
-    public String getExeTime() {
+    public Date getExeTime() {
         return exeTime;
     }
 
-    public void setExeTime(String exeTime) {
-        this.exeTime = exeTime == null ? null : exeTime.trim();
+    public void setExeTime(Date exeTime) {
+        this.exeTime = exeTime;
     }
 
     public String getTestUid() {

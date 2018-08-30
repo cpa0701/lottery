@@ -13,7 +13,7 @@
     <result column="base_url" property="baseUrl" jdbcType="VARCHAR" />
     <result column="short_url" property="shortUrl" jdbcType="VARCHAR" />
     <result column="is_exe" property="isExe" jdbcType="DECIMAL" />
-    <result column="exe_time" property="exeTime" jdbcType="VARCHAR" />
+    <result column="exe_time" property="exeTime" jdbcType="TIMESTAMP" />
     <result column="test_uid" property="testUid" jdbcType="VARCHAR" />
     <result column="url_flag" property="urlFlag" jdbcType="DECIMAL" />
   </resultMap>
@@ -119,7 +119,7 @@
     values (#{serialId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
       #{sendUser,jdbcType=VARCHAR}, #{targetUser,jdbcType=VARCHAR}, #{isTest,jdbcType=DECIMAL}, 
       #{smContent,jdbcType=VARCHAR}, #{creatTime,jdbcType=TIMESTAMP}, #{baseUrl,jdbcType=VARCHAR}, 
-      #{shortUrl,jdbcType=VARCHAR}, #{isExe,jdbcType=DECIMAL}, #{exeTime,jdbcType=VARCHAR}, 
+      #{shortUrl,jdbcType=VARCHAR}, #{isExe,jdbcType=DECIMAL}, #{exeTime,jdbcType=TIMESTAMP}, 
       #{testUid,jdbcType=VARCHAR}, #{urlFlag,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
@@ -203,7 +203,7 @@
         #{isExe,jdbcType=DECIMAL},
       </if>
       <if test="exeTime != null" >
-        #{exeTime,jdbcType=VARCHAR},
+        #{exeTime,jdbcType=TIMESTAMP},
       </if>
       <if test="testUid != null" >
         #{testUid,jdbcType=VARCHAR},
@@ -256,7 +256,7 @@
         is_exe = #{record.isExe,jdbcType=DECIMAL},
       </if>
       <if test="record.exeTime != null" >
-        exe_time = #{record.exeTime,jdbcType=VARCHAR},
+        exe_time = #{record.exeTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.testUid != null" >
         test_uid = #{record.testUid,jdbcType=VARCHAR},
@@ -282,7 +282,7 @@
       base_url = #{record.baseUrl,jdbcType=VARCHAR},
       short_url = #{record.shortUrl,jdbcType=VARCHAR},
       is_exe = #{record.isExe,jdbcType=DECIMAL},
-      exe_time = #{record.exeTime,jdbcType=VARCHAR},
+      exe_time = #{record.exeTime,jdbcType=TIMESTAMP},
       test_uid = #{record.testUid,jdbcType=VARCHAR},
       url_flag = #{record.urlFlag,jdbcType=DECIMAL}
     <if test="_parameter != null" >
@@ -323,7 +323,7 @@
         is_exe = #{isExe,jdbcType=DECIMAL},
       </if>
       <if test="exeTime != null" >
-        exe_time = #{exeTime,jdbcType=VARCHAR},
+        exe_time = #{exeTime,jdbcType=TIMESTAMP},
       </if>
       <if test="testUid != null" >
         test_uid = #{testUid,jdbcType=VARCHAR},
@@ -346,7 +346,7 @@
       base_url = #{baseUrl,jdbcType=VARCHAR},
       short_url = #{shortUrl,jdbcType=VARCHAR},
       is_exe = #{isExe,jdbcType=DECIMAL},
-      exe_time = #{exeTime,jdbcType=VARCHAR},
+      exe_time = #{exeTime,jdbcType=TIMESTAMP},
       test_uid = #{testUid,jdbcType=VARCHAR},
       url_flag = #{urlFlag,jdbcType=DECIMAL}
     where serial_id = #{serialId,jdbcType=VARCHAR}

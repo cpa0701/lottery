@@ -46,12 +46,7 @@
 		</javaClientGenerator>
 
 		<!--对应数据库表名 domainObjectName="Module"-->
-		<table tableName="task_user" enableCountByExample="true"  domainObjectName="TaskUser"
-			   enableUpdateByExample="true" enableDeleteByExample="true"
-			   enableSelectByExample="true" selectByExampleQueryId="true" >
-		</table>
-
-		<table tableName="task_channel" enableCountByExample="true"  domainObjectName="TaskChannel"
+		<table tableName="task_exe" enableCountByExample="true"  domainObjectName="TaskExe"
 			   enableUpdateByExample="true" enableDeleteByExample="true"
 			   enableSelectByExample="true" selectByExampleQueryId="true" >
 		</table>
