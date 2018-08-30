@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireCatalogMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalog" >
+    <id column="catalog_id" property="catalogId" jdbcType="VARCHAR" />
+    <result column="catalog_name" property="catalogName" jdbcType="VARCHAR" />
+    <result column="catalog_level" property="catalogLevel" jdbcType="SMALLINT" />
+    <result column="parent_id" property="parentId" jdbcType="SMALLINT" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_uid" property="createUid" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    catalog_id, catalog_name, catalog_level, parent_id, status, create_time, create_uid
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from qstnaire_catalog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from qstnaire_catalog
+    where catalog_id = #{catalogId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from qstnaire_catalog
+    where catalog_id = #{catalogId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalogExample" >
+    delete from qstnaire_catalog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalog" >
+    insert into qstnaire_catalog (catalog_id, catalog_name, catalog_level, 
+      parent_id, status, create_time, 
+      create_uid)
+    values (#{catalogId,jdbcType=VARCHAR}, #{catalogName,jdbcType=VARCHAR}, #{catalogLevel,jdbcType=SMALLINT}, 
+      #{parentId,jdbcType=SMALLINT}, #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUid,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalog" >
+    insert into qstnaire_catalog
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="catalogId != null" >
+        catalog_id,
+      </if>
+      <if test="catalogName != null" >
+        catalog_name,
+      </if>
+      <if test="catalogLevel != null" >
+        catalog_level,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUid != null" >
+        create_uid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="catalogId != null" >
+        #{catalogId,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogName != null" >
+        #{catalogName,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogLevel != null" >
+        #{catalogLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null" >
+        #{createUid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalogExample" resultType="java.lang.Integer" >
+    select count(*) from qstnaire_catalog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update qstnaire_catalog
+    <set >
+      <if test="record.catalogId != null" >
+        catalog_id = #{record.catalogId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.catalogName != null" >
+        catalog_name = #{record.catalogName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.catalogLevel != null" >
+        catalog_level = #{record.catalogLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="record.parentId != null" >
+        parent_id = #{record.parentId,jdbcType=SMALLINT},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUid != null" >
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update qstnaire_catalog
+    set catalog_id = #{record.catalogId,jdbcType=VARCHAR},
+      catalog_name = #{record.catalogName,jdbcType=VARCHAR},
+      catalog_level = #{record.catalogLevel,jdbcType=SMALLINT},
+      parent_id = #{record.parentId,jdbcType=SMALLINT},
+      status = #{record.status,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      create_uid = #{record.createUid,jdbcType=BIGINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalog" >
+    update qstnaire_catalog
+    <set >
+      <if test="catalogName != null" >
+        catalog_name = #{catalogName,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogLevel != null" >
+        catalog_level = #{catalogLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null" >
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where catalog_id = #{catalogId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireCatalog" >
+    update qstnaire_catalog
+    set catalog_name = #{catalogName,jdbcType=VARCHAR},
+      catalog_level = #{catalogLevel,jdbcType=SMALLINT},
+      parent_id = #{parentId,jdbcType=SMALLINT},
+      status = #{status,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT}
+    where catalog_id = #{catalogId,jdbcType=VARCHAR}
+  </update>
+</mapper>
