@@ -28,9 +28,9 @@ class RouteList extends React.PureComponent {
                 <Switch>
                     <Route path="/" exact component={Home}/>
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
-                    <Route path="/npsMgr/QuestionAddMgr" component={QuestionAddMgr}/>
+                    <Route path="/npsMgr/QuestionAddMgr/:id" component={QuestionAddMgr}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
-                    <Route path="/npsMgr/questionMgr/questionEdit" component={QuestionEdit}/>
+                    <Route path="/npsMgr/questionMgr/questionEdit/:id" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/questionPreview/:id" component={QuestionPreview}/>
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
@@ -40,6 +40,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/customerPerception/brandView" component={BrandView}/>
                     <Route path="/customerPerception/useView" component={UseView}/>
                     <Route path="/customerPerception/statisticReport" component={StatisticReport}/>
+                    <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>

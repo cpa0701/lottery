@@ -1,6 +1,9 @@
-import React, { Component } from 'react';
-import { Modal, Row, Col, Input, Form,Tabs,Pagination,Button  } from 'antd';
+import React, {Component} from 'react';
+import {Modal, Row, Col, Input, Form, Tabs, Pagination, Button} from 'antd';
+import QuestionApplicationModal from '../components/QuestionApplicationModal'
+
 import './ReQuestionaire.less'
+
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
 const {TextArea} = Input;
@@ -26,6 +29,10 @@ export default class extends Component {
     afterClose = () => {
         this.props.form.resetFields();
     };
+    //获取id
+    choseQuestion = (id) => {
+        console.log(id)
+    }
     //列表分页
     refreshList = (page) => {
         this.getQuestionnaireList({pageNum: page,});
@@ -33,8 +40,6 @@ export default class extends Component {
 
     render() {
         const {add} = this.props;
-        const {total} = this.state;
-        let tabTitle = "问卷列表( 共" + total + "条 )";
         return (
             <Modal
                 title="选择问卷"
@@ -46,7 +51,7 @@ export default class extends Component {
                 onCancel={() => this.props.onClose()}
                 afterClose={this.afterClose}
             >
-                <Row className={'title'} >
+                <Row className={'title'}>
                     <Col span="24">
                         查询
                     </Col>
@@ -58,17 +63,13 @@ export default class extends Component {
                         onSearch={value => console.log(value)}
                     />
                 </Row>
-                <br />
+                <br/>
                 <Row>
-                        <span style={{marginRight: '5px'}}>问卷来源：</span>
-                        <Button type="primary">问卷库</Button>
-                        <Button type="primary">我的问卷</Button>
+                    <span style={{marginRight: '5px'}}>问卷来源：</span>
+                    <Button type="primary">问卷库</Button>
+                    <Button type="primary">我的问卷</Button>
                 </Row>
-                <Tabs>
-                    <TabPane tab={tabTitle} key="1">
-                    </TabPane>
-                </Tabs>
-                <Pagination size="small" total={50} showQuickJumper />
+                <QuestionApplicationModal ChoseQuestion={this.choseQuestion}/>
             </Modal>
         );
     }
