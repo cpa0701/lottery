@@ -1,6 +1,5 @@
 package com.ztesoft.nps.business.surveyTaskMgr.model;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -786,52 +785,52 @@ public class TaskExeExample {
             return (Criteria) this;
         }
 
-        public Criteria andIsExeEqualTo(BigDecimal value) {
+        public Criteria andIsExeEqualTo(Short value) {
             addCriterion("is_exe =", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeNotEqualTo(BigDecimal value) {
+        public Criteria andIsExeNotEqualTo(Short value) {
             addCriterion("is_exe <>", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeGreaterThan(BigDecimal value) {
+        public Criteria andIsExeGreaterThan(Short value) {
             addCriterion("is_exe >", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeGreaterThanOrEqualTo(BigDecimal value) {
+        public Criteria andIsExeGreaterThanOrEqualTo(Short value) {
             addCriterion("is_exe >=", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeLessThan(BigDecimal value) {
+        public Criteria andIsExeLessThan(Short value) {
             addCriterion("is_exe <", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeLessThanOrEqualTo(BigDecimal value) {
+        public Criteria andIsExeLessThanOrEqualTo(Short value) {
             addCriterion("is_exe <=", value, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeIn(List<BigDecimal> values) {
+        public Criteria andIsExeIn(List<Short> values) {
             addCriterion("is_exe in", values, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeNotIn(List<BigDecimal> values) {
+        public Criteria andIsExeNotIn(List<Short> values) {
             addCriterion("is_exe not in", values, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andIsExeBetween(Short value1, Short value2) {
             addCriterion("is_exe between", value1, value2, "isExe");
             return (Criteria) this;
         }
 
-        public Criteria andIsExeNotBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andIsExeNotBetween(Short value1, Short value2) {
             addCriterion("is_exe not between", value1, value2, "isExe");
             return (Criteria) this;
         }
@@ -846,62 +845,52 @@ public class TaskExeExample {
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeEqualTo(String value) {
+        public Criteria andExeTimeEqualTo(Date value) {
             addCriterion("exe_time =", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeNotEqualTo(String value) {
+        public Criteria andExeTimeNotEqualTo(Date value) {
             addCriterion("exe_time <>", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeGreaterThan(String value) {
+        public Criteria andExeTimeGreaterThan(Date value) {
             addCriterion("exe_time >", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeGreaterThanOrEqualTo(String value) {
+        public Criteria andExeTimeGreaterThanOrEqualTo(Date value) {
             addCriterion("exe_time >=", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeLessThan(String value) {
+        public Criteria andExeTimeLessThan(Date value) {
             addCriterion("exe_time <", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeLessThanOrEqualTo(String value) {
+        public Criteria andExeTimeLessThanOrEqualTo(Date value) {
             addCriterion("exe_time <=", value, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeLike(String value) {
-            addCriterion("exe_time like", value, "exeTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andExeTimeNotLike(String value) {
-            addCriterion("exe_time not like", value, "exeTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andExeTimeIn(List<String> values) {
+        public Criteria andExeTimeIn(List<Date> values) {
             addCriterion("exe_time in", values, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeNotIn(List<String> values) {
+        public Criteria andExeTimeNotIn(List<Date> values) {
             addCriterion("exe_time not in", values, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeBetween(String value1, String value2) {
+        public Criteria andExeTimeBetween(Date value1, Date value2) {
             addCriterion("exe_time between", value1, value2, "exeTime");
             return (Criteria) this;
         }
 
-        public Criteria andExeTimeNotBetween(String value1, String value2) {
+        public Criteria andExeTimeNotBetween(Date value1, Date value2) {
             addCriterion("exe_time not between", value1, value2, "exeTime");
             return (Criteria) this;
         }

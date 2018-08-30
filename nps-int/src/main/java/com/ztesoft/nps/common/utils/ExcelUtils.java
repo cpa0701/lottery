@@ -22,7 +22,7 @@ public class ExcelUtils {
     public static Workbook create(MultipartFile file){
         String fileName = file.getOriginalFilename();
         if (!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")) {
-            throw new NpsBusinessException(ConstantUtils.EXPORT_FILE_NOT_ALLOWED);
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_EXPORT_FILE_NOT_ALLOWED);
         }
 
         boolean isExcel2003 = true;

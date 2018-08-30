@@ -21,31 +21,32 @@ import OptionsAdd from './OptionsAdd';
 import QuestionLibMgrService from "../../../services/question/QuestionLibMgrService";
 
 import './questionLibMgr.less';
-import {inject, observer} from "mobx-react/index";
+import {inject} from "mobx-react/index";
 
 const [FormItem, Option] = [Form.Item, Select.Option];
 const SubMenu = Menu.SubMenu;
-const treeData = [{
-    title: '终端',
-    value: '1',
-    key: '0-0',
-}, {
-    title: '套餐',
-    value: '2',
-    key: '0-1',
-},{
-    title: '流量',
-    value: '3',
-    key: '0-3',
-}, {
-    title: '账单',
-    value: '4',
-    key: '0-4',
-}, {
-    title: '其它',
-    value: '5',
-    key: '0-5',
-}];
+const treeData = [
+    {
+        title: '终端',
+        value: '1',
+        key: '0-0',
+    }, {
+        title: '套餐',
+        value: '2',
+        key: '0-1',
+    }, {
+        title: '流量',
+        value: '3',
+        key: '0-3',
+    }, {
+        title: '账单',
+        value: '4',
+        key: '0-4',
+    }, {
+        title: '其它',
+        value: '5',
+        key: '0-5',
+    }];
 const questionData = [
     {
         key: '05',
@@ -166,12 +167,12 @@ const questionData = [
     },
 ];
 @Form.create()
+@inject('stores')
 export default class QuestionAddMgr extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            questionList: this.props.location.state ? [this.props.location.state.record] : [],
-            treeData: [],
+            questionList: [],
             index: undefined,
             isTextArea: false,
             addOption: false
@@ -185,6 +186,16 @@ export default class QuestionAddMgr extends PureComponent {
         //         this.setState({treeData: data})
         //     }
         // });
+        const {id} = this.props.match.params;
+        if (id !== '666')
+        //根据id获取问题数据
+            QuestionLibMgrService.questionById({
+                "questionId": id
+            }).then(result => {
+                if (result) {
+                    this.setState({questionList: [result]})
+                }
+            });
     };
 
     //插入输入线
@@ -284,7 +295,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '单选题标题',
+                            questionName: questionList.length ? questionList.questionName : '单选题标题',
                             questionName2: '', // 题目提示描述
                             questionType: '01',
                             questionCategory: '', // 题目分类
@@ -328,7 +339,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '多选题标题',
+                            questionName: questionList.length ? questionList.questionName : '多选题标题',
                             questionName2: '多选题', // 题目提示描述
                             questionType: '02',
                             questionCategory: '', // 题目分类
@@ -381,7 +392,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '单行填空题',
+                            questionName: questionList.length ? questionList.questionName : '单行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: '03',
                             questionCategory: '', // 题目分类
@@ -420,7 +431,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: this.props.location.state ? this.props.location.state.record.questionName : '多行填空题',
+                            questionName: questionList.length ? questionList.questionName : '多行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: '04',
                             questionCategory: '', // 题目分类
@@ -475,21 +486,20 @@ export default class QuestionAddMgr extends PureComponent {
             } else {
                 values.isSatisfied = 0;
             }
-            values.createUid=18573;
+            values.createUid = 18573;
             let value = {
                 ...this.state.questionList[0],
                 ...values
             };
-            console.log(value);
             if (value.questionId) {
                 QuestionLibMgrService.editQuestion(value).then(data => {
                     message.success('编辑成功');
-                    this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}})
+                    this.props.history.push({pathname: '/npsMgr/questionLibMgr'})
                 });
             } else {
                 QuestionLibMgrService.addQuestion(value).then(data => {
                     message.success('新增成功');
-                    this.props.history.push({pathname:'/npsMgr/questionLibMgr', state: {isFresh:true}})
+                    this.props.history.push({pathname: '/npsMgr/questionLibMgr'})
                 });
             }
             this.setState({questionList: []});
@@ -502,6 +512,7 @@ export default class QuestionAddMgr extends PureComponent {
     cancelSave2 = () => {
         this.props.history.push('/npsMgr/questionLibMgr');
     };
+
     render() {
         const {questionList, addOption, index, isTextArea} = this.state;
         const {getFieldDecorator} = this.props.form;
@@ -515,21 +526,24 @@ export default class QuestionAddMgr extends PureComponent {
                 <Form layout='inline' style={{marginLeft: '20px'}}>
                     <FormItem label="题目分类">
                         {getFieldDecorator('questionCategory', {
-                            initialValue: this.props.location.state ? this.props.location.state.record.questionCategory : "",
+                            initialValue: questionList.length ? questionList[0].questionCategory.toString() : "",
+                            rules: [{
+                                required: true,
+                                message: '请选择题目分类',
+                            }],
                         })(
                             <TreeSelect
                                 style={{width: 150}}
                                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
                                 treeData={treeData}
                                 treeDefaultExpandAll
-                                onChange={this.onChange}
                             />
                         )}
                     </FormItem>
                     <FormItem>
                         {getFieldDecorator('isNps', {
                             valuePropName: 'checked',
-                            initialValue: !this.props.location.state ? false : this.props.location.state.record.isNps === 1,
+                            initialValue: !questionList.length ? false : questionList[0].isNps === 1,
                         })(
                             <Checkbox>NPS评分题</Checkbox>
                         )}
@@ -537,7 +551,7 @@ export default class QuestionAddMgr extends PureComponent {
                     <FormItem>
                         {getFieldDecorator('isSatisfied', {
                             valuePropName: 'checked',
-                            initialValue: !this.props.location.state ? false : this.props.location.state.record.isSatisfied === 1,
+                            initialValue: !questionList.length ? false : questionList[0].isSatisfied === 1,
                         })(
                             <Checkbox>满意度评分题</Checkbox>
                         )}
@@ -545,7 +559,7 @@ export default class QuestionAddMgr extends PureComponent {
                     {isTextArea ?
                         <FormItem className="selectOption" label="内容限制">
                             {getFieldDecorator('contentCheck', {
-                                initialValue: this.props.location.state ? this.props.location.state.record.contentCheck : 0,
+                                initialValue: questionList.length ? questionList[0].contentCheck : 0,
                             })(
                                 <Select>
                                     {options.map((item, k) => {
@@ -555,14 +569,14 @@ export default class QuestionAddMgr extends PureComponent {
                             )}
                         </FormItem>
                         : <div/>}
-                    <FormItem >
+                    <FormItem>
                         {getFieldDecorator('isCommon', {
                             initialValue: 1,
                         })(<Input type="hidden"/>)}
                     </FormItem>
-                    <FormItem >
+                    <FormItem>
                         {getFieldDecorator('createUid', {
-                            initialValue:sessionStorage.getItem('uid'),
+                            initialValue: sessionStorage.getItem('uid'),
                         })(<Input type="hidden"/>)}
                     </FormItem>
                 </Form>
@@ -603,7 +617,6 @@ export default class QuestionAddMgr extends PureComponent {
                 this.setState({questionList});
             }
         };
-
         return (
             <div className="questionLibMgr">
                 <Row>
@@ -630,14 +643,17 @@ export default class QuestionAddMgr extends PureComponent {
                                 <div className="addBtn">
                                     <Button type="primary" icon="plus-circle-o"
                                             onClick={() => this.saveQuestion()}>保存</Button>
-                                    {this.props.location.state ?
+                                    {(questionList.questionId&&questionList.questionId!=='666') ?
                                         <Popconfirm title="你确定取消编辑题目？" onConfirm={() => this.cancelSave2()}>
                                             <Button type="danger" icon="delete" style={{marginLeft: '16px'}}>取消</Button>
                                         </Popconfirm>
                                         :
-                                        <Popconfirm title="你确定清除新建题目？" onConfirm={() => this.cancelSave1()}>
-                                        <Button type="danger" icon="delete" style={{marginLeft: '16px'}}>取消</Button>
-                                        </Popconfirm>
+                                        <div style={{display:'inline-block'}}>
+                                            <Popconfirm title="你确定清除新建题目？" onConfirm={() => this.cancelSave1()}>
+                                                <Button type="danger" icon="delete" style={{marginLeft: '16px'}}>删除</Button>
+                                            </Popconfirm>
+                                            <Button icon="rollback" style={{marginLeft: '16px'}} onClick={this.cancelSave2}>返回</Button>
+                                        </div>
                                     }
                                 </div>
                                 :
