@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
-	private static final Logger logger = Logger.getLogger(LoginFilter.class);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -38,7 +37,6 @@ public class LoginFilter implements Filter {
 
 		String url = request.getRequestURI();
 		String contextPath = request.getContextPath();
-		logger.info("============接受客户端请求 ：" + url);
 		// 登录、注销、静态资源、swagger-ui不用过滤
 		if (url.equals(contextPath + "/login")
 				|| url.equals(contextPath + "/logout")) {

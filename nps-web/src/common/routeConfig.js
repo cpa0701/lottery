@@ -30,7 +30,6 @@ class RouteList extends React.PureComponent {
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
                     <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
-                    <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
                     <Route path="/system/domain" component={Domain}/>
                     <Route path="/system/dept" component={Dept}/>
                     <Route path="/system/role" component={Role}/>

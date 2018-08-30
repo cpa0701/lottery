@@ -12,6 +12,15 @@ public class SurveyTaskQuery {
     @ApiModelProperty("任务名称")
     private String taskName;
 
+    @ApiModelProperty("审核状态")
+    private String actType;
+
+    @ApiModelProperty("任务状态")
+    private String status;
+
+    @ApiModelProperty("任务类型")
+    private String taskType;
+
     @ApiModelProperty("当前页")
     private String pageNum;
 
@@ -40,5 +49,29 @@ public class SurveyTaskQuery {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getActType() {
+        return actType;
+    }
+
+    public void setActType(String actType) {
+        this.actType = actType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
     }
 }

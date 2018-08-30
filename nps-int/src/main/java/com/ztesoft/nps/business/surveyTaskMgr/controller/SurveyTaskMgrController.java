@@ -1,8 +1,6 @@
 package com.ztesoft.nps.business.surveyTaskMgr.controller;
 
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskAddBo;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskIdQuery;
-import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskQuery;
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.*;
 import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
@@ -12,6 +10,7 @@ import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +30,7 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "任务列表", notes = "任务列表")
     @PostMapping("/surveyTaskList")
-    public Result<Object> surveyTaskList(@RequestBody SurveyTaskQuery condition){
-        if(StringUtil.isNull(condition.getPageNum()) || StringUtil.isNull(condition.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.PAGE_PARAMS_DEFICIENCY);
-        }
+    public Result<Object> surveyTaskList(SurveyTaskQuery condition){
         return Result.success(surveyTaskMgrService.surveyTaskList(condition));
     }
 
@@ -56,7 +52,7 @@ public class SurveyTaskMgrController {
     @PostMapping("/deleteSurveyTask")
     public Result<Object> deleteSurveyTask(@RequestBody SurveyTaskIdQuery condition){
         String taskId = condition.getTaskId();
-        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(taskId) == 0){
+        if(StringUtil.isNull(taskId)||surveyTaskMgrService.deleteSurveyTask(taskId) == 0){
             throw new NpsDeleteException(taskId);
         }
         return Result.success();
@@ -75,18 +71,18 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "删除目标用户", notes = "删除目标用户")
     @PostMapping("/userTargetDelete")
-    public Result<Object> userTargetDelete(@RequestBody SurveyTaskIdQuery condition){
+    public Result<Object> userTargetDelete(@RequestBody SurveyTaskDelBo condition){
         String taskId = condition.getTaskId();
-        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(taskId) == 0){
+        if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(condition) == 0){
             throw new NpsDeleteException(taskId);
         }
         return Result.success();
     }
 
     @ApiOperation(value = "用户上传", notes = "用户上传")
-    @PostMapping("/userTargetImport")
-    public Result<Object> userTargetImport(@RequestParam MultipartFile file){
-        return Result.success(surveyTaskMgrService.userTargetImport(file));
+    @PostMapping(value="/userTargetImport",consumes = "multipart/*",headers = "content-type=multipart/form-data")
+    public Result<Object> userTargetImport(@ApiParam(value="上传的文件",required = true) MultipartFile file, UserTargetBo bo){
+        return Result.success(surveyTaskMgrService.userTargetImport(bo,file));
     }
 
     @ApiOperation(value = "发布任务", notes = "发布任务")
