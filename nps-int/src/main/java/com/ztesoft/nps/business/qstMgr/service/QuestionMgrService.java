@@ -2,6 +2,7 @@ package com.ztesoft.nps.business.qstMgr.service;
 
 import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
 import com.ztesoft.nps.business.qstMgr.model.query.QuestionQuery;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 
 /**
@@ -14,7 +15,7 @@ public interface QuestionMgrService {
 
     Object questionById(String id);
 
-    int editQuestion(QuestionBank bank);
+    int editQuestion(QuestionBank bank) throws NpsDeleteException;
 
     LPageHelper questionBank(QuestionQuery condition);
 }

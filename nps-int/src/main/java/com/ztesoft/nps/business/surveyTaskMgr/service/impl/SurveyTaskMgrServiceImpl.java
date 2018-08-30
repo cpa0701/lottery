@@ -276,6 +276,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             LogUtil.log("短信发送表批量保存，taskid:"+bo.getTaskId()+" 共"+smsList.size()+"条数据 ,  每次保存"+batchSave+ "条 , 总耗时"+(endTime-startTime)+"ms ");
         }
 
+
     }
 
     /**
