@@ -2,35 +2,53 @@ import React from 'react';
 import ReQuestionaire from './modal/ReQuestionaire';
 import SelectTabs from './modal/SelectTabs';
 import './NewApplicationForm.less'
-import { Form, Input, Row, Col, Button, DatePicker,Radio,Icon,Upload,Select,Checkbox,Tabs,Modal,message} from 'antd';
+import {
+    Form,
+    Input,
+    Row,
+    Col,
+    Button,
+    DatePicker,
+    Radio,
+    Icon,
+    Upload,
+    Select,
+    Checkbox,
+    Tabs,
+    Modal,
+    message
+} from 'antd';
 import reqwest from 'reqwest';
+
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
-const { TextArea } = Input;
+const {TextArea} = Input;
 const QRCode = require('qrcode.react');
+
 @Form.create({})
 class NewApplicationForm extends React.PureComponent {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             startValue: null,
             endValue: null,
             endOpen: false,
-            checkedMeasure:false,
-            checkedResearch:false,
-            rsFlag:true,
-            accessFlag:true,
-            messageFlag:false,
-            checkedObject:false,
-            add:false,
-            selecttabs:false,
+            checkedMeasure: false,
+            checkedResearch: false,
+            rsFlag: true,
+            accessFlag: true,
+            messageFlag: false,
+            taskType: false,
+            add: false,
+            selecttabs: false,
             path: null,
             fileList: [],
             uploading: false,
         }
     }
+
     // 新增问卷弹框
     addQuestionaire = (show) => {
         if (show) {
@@ -40,8 +58,7 @@ class NewApplicationForm extends React.PureComponent {
         }
     };
     //选择标签弹框
-    selectTab= (show) =>{
-        debugger;
+    selectTab = (show) => {
         if (show) {
             this.setState({selecttabs: true});
         } else {
@@ -80,40 +97,40 @@ class NewApplicationForm extends React.PureComponent {
 
     handleStartOpenChange = (open) => {
         if (!open) {
-            this.setState({ endOpen: true });
+            this.setState({endOpen: true});
         }
     }
 
     handleEndOpenChange = (open) => {
-        this.setState({ endOpen: open });
+        this.setState({endOpen: open});
     }
-    accessHandleChange=(value)=>{
-        if(value==1) this.setState({accessFlag:true})
-        else  this.setState({accessFlag:false})
-        console.log('1',this.state.accessFlag)
+    accessHandleChange = (value) => {
+        if (value == 1) this.setState({accessFlag: true})
+        else this.setState({accessFlag: false})
+        console.log('1', this.state.accessFlag)
 
     }
-    messageHandleChange=(value)=>{
-        if(value==4) this.setState({messageFlag:true})
-        else  this.setState({messageFlag:false})
-        console.log('2',this.state.messageFlag)
+    messageHandleChange = (value) => {
+        if (value == 4) this.setState({messageFlag: true})
+        else this.setState({messageFlag: false})
+        console.log('2', this.state.messageFlag)
 
     }
-    onMeasure=(e)=>{
+    onMeasure = (e) => {
         this.setState({checkedMeasure: e.target.checked})
     }
-    onResearch=(e)=>{
-        this.setState({checkedResearch:e.target.checked})
+    onResearch = (e) => {
+        this.setState({checkedResearch: e.target.checked})
     }
-    onTrigger=(e)=>{
-        this.setState({checkedObject:e.target.checked})
+    onTrigger = (e) => {
+        this.setState({taskType: e.target.checked ? 2 : 1})
     }
-    handleChange=(value)=>{
-        if(value==2) this.setState({rsFlag:false})
-        else  this.setState({rsFlag:true})
+    handleChange = (value) => {
+        if (value == 2) this.setState({rsFlag: false})
+        else this.setState({rsFlag: true})
 
     }
-    info=()=>{
+    info = () => {
         Modal.info({
             title: '',
             content: (
@@ -121,11 +138,12 @@ class NewApplicationForm extends React.PureComponent {
                     <p>您好，中国电信目前正在对新入网用户做一项综合满意度调研，希望了解您的意见和建议，点击链接即可参与：{'{'}{'url'}{'}'}，感谢您的支持。 中国电信</p>
                 </div>
             ),
-            onOk() {},
+            onOk() {
+            },
         });
     }
     handleUpload = () => {
-        const { fileList } = this.state;
+        const {fileList} = this.state;
         const formData = new FormData();
         fileList.forEach((file) => {
             formData.append('files[]', file);
@@ -156,10 +174,10 @@ class NewApplicationForm extends React.PureComponent {
             },
         });
     }
-    beforeUpload=(file)=>{
+    beforeUpload = (file) => {
         console.log(file.type)
         // const isType = (file.type === 'doc/docx/txt/xls/xlsx/pdf');
-        const isType = ((file.type === 'application/msword')||(file.type === 'text/plain')||(file.type === 'application/vnd.ms-excel')||(file.type === 'application/pdf'));
+        const isType = ((file.type === 'application/msword') || (file.type === 'text/plain') || (file.type === 'application/vnd.ms-excel') || (file.type === 'application/pdf'));
         if (!isType) {
             message.error('文档类型仅支持doc、docx、txt、xls、xlsx、pdf格式');
         }
@@ -177,13 +195,13 @@ class NewApplicationForm extends React.PureComponent {
             }
         });
     }
-    handleReset=()=>{
+    handleReset = () => {
         this.props.history.push('/missionMgr/missionApplication');
     }
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const { uploading } = this.state;
+        const {uploading} = this.state;
         //新增问卷弹框属性传值是否显示弹窗
         const addModalProps = {
             add: this.state.add,
@@ -201,7 +219,7 @@ class NewApplicationForm extends React.PureComponent {
         const uploadProps = {
             action: '',
             onRemove: (file) => {
-                this.setState(({ fileList }) => {
+                this.setState(({fileList}) => {
                     const index = fileList.indexOf(file);
                     const newFileList = fileList.slice();
                     newFileList.splice(index, 1);
@@ -211,7 +229,7 @@ class NewApplicationForm extends React.PureComponent {
                 });
             },
             beforeUpload: (file) => {
-                this.setState(({ fileList }) => ({
+                this.setState(({fileList}) => ({
                     fileList: [...fileList, file],
                 }));
                 return false;
@@ -220,11 +238,12 @@ class NewApplicationForm extends React.PureComponent {
         };
 
         //触发式调研任务
-        const TriggerTask=<div style={{position: 'absolute',right:'20px',top:'-10px'}}>
-            <Checkbox onChange={this.onTrigger} checked={this.state.checkedObject} style={{display:'inline'}}>是否触发式任务</Checkbox>
+        const TriggerTask = <div style={{position: 'absolute', right: '20px', top: '-10px'}}>
+            <Checkbox onChange={this.onTrigger} checked={this.state.taskType}
+                      style={{display: 'inline'}}>是否触发式任务</Checkbox>
         </div>
         //调研基本信息
-        let baseInfo=(<div>
+        let baseInfo = (<div>
             <Row style={{background: '#ECECEC', padding: '5px'}}>
                 <Col span="24">
                     <span className={'spantitle'}>*</span>
@@ -245,15 +264,13 @@ class NewApplicationForm extends React.PureComponent {
             <Row className={'row2'}>
                 <Col span='12'>
                     <FormItem label="调研触发时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
-                        {getFieldDecorator('startTime', {
-                            rules: [{required: true,}],
-                            // initialValue: 'Start',
+                        {getFieldDecorator('surveySdate', {
+                            rules: [{type: 'object', required: true, message: 'Please select time!'}],
                         })(
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
                                 showTime
-                                format="YYYY-MM-DD "
-                                value={this.state.startValue}
+                                format="YYYY-MM-DD HH:mm:ss"
                                 onChange={this.onStartChange}
                                 onOpenChange={this.handleStartOpenChange}
                             />
@@ -262,15 +279,13 @@ class NewApplicationForm extends React.PureComponent {
                 </Col>
                 <Col span='12'>
                     <FormItem label="调研结束时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
-                        {getFieldDecorator('endTime', {
-                            rules: [{required: true,}],
-                            // initialValue: 'End',
+                        {getFieldDecorator('surveyEdate', {
+                            rules: [{type: 'object', required: true, message: 'Please select time!'}],
                         })(
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
                                 showTime
-                                format="YYYY-MM-DD "
-                                value={this.state.endValue}
+                                format="YYYY-MM-DD HH:mm:ss"
                                 onChange={this.onEndChange}
                                 open={this.state.endOpen}
                                 onOpenChange={this.handleEndOpenChange}
@@ -282,7 +297,7 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
             <Row>
                 <FormItem label="调研问卷：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
-                    {getFieldDecorator('taskQuestionNaire', {
+                    {getFieldDecorator('qstnaireId', {
                         rules: [{required: true,}],
                     })(
                         <Input placeholder='点击选择调研问卷' onClick={() => this.addQuestionaire(true)}/>
@@ -300,19 +315,31 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
         </div>);
         //调研对象
-        let object=(<div className='object'>
-                <Row style={{background: '#ECECEC', padding: '5px'}}>
-                    <Col span="24">
-                        <span className={'spantitle'}>*</span>
-                        调研对象
-                    </Col>
-                </Row>
-                <Row>
-                    <RadioGroup>
-                        <Radio style={{display: 'block'}} value={1}>
-                            <Row>
-                                <Col span='10'>
-                            <FormItem label="选择标签对象：" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+        let object = (<div className='object'>
+            <Row style={{background: '#ECECEC', padding: '5px'}}>
+                <Col span="24">
+                    <span className={'spantitle'}>*</span>
+                    调研对象
+                </Col>
+            </Row>
+            <Row>
+                <RadioGroup>
+                    <Row>
+                        <Col span={1} offset={1}>
+                            <FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+                                {getFieldDecorator('tagName', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请选择调研对象',
+                                    }],
+                                    initialValue: '',
+                                })(
+                                    <Radio/>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span='20'>
+                            <FormItem label="选择标签对象：" labelCol={{span: 2}} wrapperCol={{span: 20}}>
                                 {getFieldDecorator('tagName', {
                                     rules: [],
                                     initialValue: '',
@@ -320,41 +347,51 @@ class NewApplicationForm extends React.PureComponent {
                                     <Input placeholder="点击选择标签" onClick={() => this.selectTab(true)}/>
                                 )}
                             </FormItem>
-                                </Col>
-                            </Row>
-                        </Radio>
-                        <Radio style={{display: 'block'}} value={2}>
-                            <Row>
-                                <Col span='10'>
-                                    <FormItem label="手工导入数据:" labelCol={{span: 4}} wrapperCol={{span: 20}}>
-                                        {getFieldDecorator('DataName', {
-                                            rules: [],
-                                            initialValue: '',
-                                        })(
-                                            <Upload {...uploadProps}>
-                                                <Button type="ghost">
-                                                    <Icon type="upload"/> 选择文件
-                                                </Button>
-                                            </Upload>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span='1' style={{paddingTop: '10px'}}>
-                                    <Button onClick={this.handleUpload}>上传</Button>
-                                </Col>
-                                <Col span='2' style={{paddingTop: '10px'}}>
-                                    <Button>删除目标号码</Button>
-                                </Col>
-                                <Col span='5' offset={2} style={{paddingTop: '17px'}}>
-                                    <Button>下载批量导入模板</Button>
-                                </Col>
-                            </Row>
-                        </Radio>
-                    </RadioGroup>
-                </Row>
-            </div>);
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={1} offset={1}>
+                            <FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+                                {getFieldDecorator('tagName', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请选择调研对象',
+                                    }],
+                                    initialValue: '',
+                                })(
+                                    <Radio/>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span='10'>
+                            <FormItem label="手工导入数据:" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+                                {getFieldDecorator('DataName', {
+                                    rules: [],
+                                    initialValue: '',
+                                })(
+                                    <Upload {...uploadProps}>
+                                        <Button type="ghost">
+                                            <Icon type="upload"/> 选择文件
+                                        </Button>
+                                    </Upload>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span='2'>
+                            <Button onClick={this.handleUpload}>上传</Button>
+                        </Col>
+                        <Col span='2'>
+                            <Button>删除目标号码</Button>
+                        </Col>
+                        <Col span='5' offset={2}>
+                            <Button>下载批量导入模板</Button>
+                        </Col>
+                    </Row>
+                </RadioGroup>
+            </Row>
+        </div>);
         //调研渠道
-        let channel=(<div>
+        let channel = (<div>
             <Row style={{background: '#ECECEC', padding: '5px'}}>
                 <Col span="24">
                     <span className={'spantitle'}>*</span>
@@ -362,27 +399,28 @@ class NewApplicationForm extends React.PureComponent {
                 </Col>
             </Row>
             <Tabs defaultActiveKey="2">
-                <TabPane tab={<span><Icon type="apple" />链接与二维码</span>} key="1">
+                <TabPane tab={<span><Icon type="apple"/>链接与二维码</span>} key="1">
                     <div>
                         <QRCode size={150} value="http://www.baidu.com"/>
                     </div>
                 </TabPane>
-                <TabPane tab={<span><Icon type="android" />微信发送</span>} key="2">
+                <TabPane tab={<span><Icon type="android"/>微信发送</span>} key="2">
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccess', {
                                     rules: [{required: true,}],
                                 })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--" style={{width: '100%'}}>
+                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
                                         <Option value="1">全量</Option>
                                         <Option value="2">抽样</Option>
                                     </Select>
                                 )}
                             </FormItem>
                         </Col>
-                        {!this.state.accessFlag?<Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span:4}} wrapperCol={{span: 12}}>
+                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
+                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccessNum', {
                                     rules: [{required: true,}],
                                     // initialValue: 'Start',
@@ -390,7 +428,7 @@ class NewApplicationForm extends React.PureComponent {
                                     <Input/>
                                 )}
                             </FormItem>
-                        </Col>:<div></div>}
+                        </Col> : <div></div>}
                     </Row>
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
@@ -405,10 +443,10 @@ class NewApplicationForm extends React.PureComponent {
                         <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
                     </Row>
                 </TabPane>
-                <TabPane tab={<span><Icon type="apple" />邮件发送</span>} key="3">
+                <TabPane tab={<span><Icon type="apple"/>邮件发送</span>} key="3">
                     邮件发送
                 </TabPane>
-                <TabPane tab={<span><Icon type="android" />短信发送</span>} key="4">
+                <TabPane tab={<span><Icon type="android"/>短信发送</span>} key="4">
 
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
@@ -416,15 +454,16 @@ class NewApplicationForm extends React.PureComponent {
                                 {getFieldDecorator('taskAccess', {
                                     rules: [{required: true,}],
                                 })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--" style={{width: '100%'}}>
+                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
                                         <Option value="1">全量</Option>
                                         <Option value="2">抽样</Option>
                                     </Select>
                                 )}
                             </FormItem>
                         </Col>
-                        {!this.state.accessFlag?<Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span:4}} wrapperCol={{span: 12}}>
+                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
+                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccessNum', {
                                     rules: [{required: true,}],
                                     // initialValue: 'Start',
@@ -432,7 +471,7 @@ class NewApplicationForm extends React.PureComponent {
                                     <Input/>
                                 )}
                             </FormItem>
-                        </Col>:<div></div>}
+                        </Col> : <div></div>}
                     </Row>
 
                     <Row className={'row2'}>
@@ -441,7 +480,8 @@ class NewApplicationForm extends React.PureComponent {
                                 {getFieldDecorator('messageType', {
                                     rules: [{required: true,}],
                                 })(
-                                    <Select onChange={this.messageHandleChange}multiple placeholder="--请选择--" style={{width: '100%'}}>
+                                    <Select onChange={this.messageHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
                                         <Option value="3">--请选择--</Option>
                                         <Option value="4">短信超链接</Option>
 
@@ -450,7 +490,7 @@ class NewApplicationForm extends React.PureComponent {
                             </FormItem>
                         </Col>
                     </Row>
-                    {this.state.messageFlag?
+                    {this.state.messageFlag ?
                         <div>
                             <Row className={'row2'}>
                                 <Col span='12' className={'select'}>
@@ -464,12 +504,12 @@ class NewApplicationForm extends React.PureComponent {
                                 </Col>
                                 <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
                             </Row>
-                        </div>:<div></div>}'
+                        </div> : <div></div>}'
                 </TabPane>
             </Tabs>
         </div>);
         //奖励措施
-        let measure=null;
+        let measure = null;
         if (this.state.checkedMeasure) {
             measure = (
                 <div>
@@ -501,7 +541,7 @@ class NewApplicationForm extends React.PureComponent {
                 </div>)
         }
         //常态调研
-        let research=null;
+        let research = null;
         if (this.state.checkedResearch) {
             research = (
                 <div>
@@ -645,7 +685,7 @@ class NewApplicationForm extends React.PureComponent {
                             <Upload
                                 action="//jsonplaceholder.typicode.com/posts/"
                                 beforeUpload={this.beforeUpload}
-                                >
+                            >
                                 <Button type="ghost">
                                     <Icon type="upload"/> 选择文件
                                 </Button>
@@ -671,7 +711,9 @@ class NewApplicationForm extends React.PureComponent {
         )
     }
 
-}export default NewApplicationForm;
+}
+
+export default NewApplicationForm;
 
 
 

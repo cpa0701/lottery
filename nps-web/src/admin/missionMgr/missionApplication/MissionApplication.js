@@ -19,24 +19,32 @@ class MissionApplication extends React.PureComponent {
         this.createRequisition = this.createRequisition.bind(this);
     }
 
-   componentWillMount() {
+    componentWillMount() {
         this.getMissionList()
     }
 
     // 获取申请单列表
     getMissionList = (param) => {
-        let params = {
+        let params = Object.assign({
+            taskName: "",
+            actType: "",
+            status: '',
+            taskType: '',
+            pageNum: 1,
+            pageSize: 10,
+        }, {
             taskName: this.state.taskName,
             ...param
-        };
-       this.setState({
+        });
+        this.setState({
             loading: true
         }, () => TaskResearchService.getMissionList(params).then(result => {
-            this.setState({
-                taskList: result.list,
-                total: result.totalCount,
-                loading: false
-            })
+            if (result)
+                this.setState({
+                    taskList: result.rows,
+                    total: result.totalCount,
+                    loading: false
+                })
         }))
     };
 
@@ -65,7 +73,7 @@ class MissionApplication extends React.PureComponent {
     };
 
     render() {
-        const { taskList, total } = this.state;
+        const {taskList, total} = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
@@ -73,52 +81,59 @@ class MissionApplication extends React.PureComponent {
             enterButton
         />;
         const questionLIst = <div>
-                                <Spin spinning={this.state.loading}>
-                                    {taskList.map((item, k) => {
-                                        return (<div key={k} className="sub-li">
-                                                    <Row type="flex" justify="space-between">
-                                                        <Col span={16} className="subject-name">{item.taskName}
-                                                        <br/>
-                                                        <span className="c1">测试结果:{ item.testFlag }</span>
-                                                        </Col>
-                                                        <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                                            <Button type="primary">查看</Button>
-                                                            {item.status !== '05'? '' :
-                                                                <div style={{ display: 'inline-block'}}>
-                                                                    <Button type="primary">编辑</Button>
-                                                                    <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
-                                                                        <Button type="primary">删除</Button>
-                                                                    </Popconfirm>
-                                                                </div>
-                                                            }
-                                                            <Button type="primary">预览</Button>
-                                                            {item.status !== '02'? '' :
-                                                                    <Popconfirm
-                                                                        title="该任务是否走审批流程?"
-                                                                        onCancel={() => this.delTask(item.taskId)}
-                                                                        okText={'是'}
-                                                                        cancelText={'否'}
-                                                                    >
-                                                                        <Button type="primary">审批流程</Button>
-                                                                    </Popconfirm>
-                                                            }
-                                                            {/*<Button >*/}
-                                                                {/*流程图 <Icon type="down"/>*/}
-                                                            {/*</Button>*/}
-                                                        </Col>
-                                                    </Row>
-                                                    <Row type="flex" justify="start">
-                                                        <Col span={3}><Icon type="appstore" style={{marginRight: '5px' ,color:'#88d7fd'}}/>问卷分类：{item.catalogName}</Col>
-                                                        <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}</Col>
-                                                        <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
-                                                        <Col span={5}><Icon type="clock-circle" style={{marginRight: '5px' ,color:'#fecb45'}}/>申请时间：{item.createTime}</Col>
-                                                        <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}</Col>
-                                                    </Row>
-                                                </div>)
-                                    })}
-                                </Spin>
-                                <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>
-                            </div>;
+            <Spin spinning={this.state.loading}>
+                {taskList.map((item, k) => {
+                    return (<div key={k} className="sub-li">
+                        <Row type="flex" justify="space-between">
+                            <Col span={16} className="subject-name">{item.taskName}
+                                <br/>
+                                <span className="c1">测试结果:{item.testFlag}</span>
+                            </Col>
+                            <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
+                                <Button type="primary">查看</Button>
+                                {item.status !== '05' ? '' :
+                                    <div style={{display: 'inline-block'}}>
+                                        <Button type="primary">编辑</Button>
+                                        <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
+                                            <Button type="primary">删除</Button>
+                                        </Popconfirm>
+                                    </div>
+                                }
+                                <Button type="primary">预览</Button>
+                                {item.status !== '02' ? '' :
+                                    <Popconfirm
+                                        title="该任务是否走审批流程?"
+                                        onCancel={() => this.delTask(item.taskId)}
+                                        okText={'是'}
+                                        cancelText={'否'}
+                                    >
+                                        <Button type="primary">审批流程</Button>
+                                    </Popconfirm>
+                                }
+                                {/*<Button >*/}
+                                {/*流程图 <Icon type="down"/>*/}
+                                {/*</Button>*/}
+                            </Col>
+                        </Row>
+                        <Row type="flex" justify="start">
+                            <Col span={3}><Icon type="appstore"
+                                                style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
+                            </Col>
+                            <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}
+                            </Col>
+                            <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                            <Col span={5}><Icon type="clock-circle"
+                                                style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
+                            </Col>
+                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
+                            </Col>
+                        </Row>
+                    </div>)
+                })}
+            </Spin>
+            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
+                        showQuickJumper/>
+        </div>;
         let tab1Title = "我的申请单( 共" + total + "条 )";
         let tab2Title = "审批中( 共" + total + "条 )";
         let tab3Title = "发布中( 共" + total + "条 )";
