@@ -1,18 +1,40 @@
 import React from 'react';
-import { Row, Col, Button, Input, message, Popconfirm, Checkbox } from "antd"
+import { Row, Col, Button, Input, message, Popconfirm, Checkbox, Form, TreeSelect, } from "antd";
 
-import InitQuestionList from './InitQuestionList'
-import QuestionLib from './QuestionLib'
+import InitQuestionList from './InitQuestionList';
+import QuestionLib from './QuestionLib';
 import ConnModal from './ConnModal';
 import JumpModal from './JumpModal';
 
-import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
+import QuestionApplicationService from "../../../services/question/QuestionApplicationService";
 
-import './questionApplication.less'
-import QuestionApplication from "./QuestionApplication";
+import './questionApplication.less';
 
 const { TextArea } = Input;
+const [FormItem] = [Form.Item];
 
+const treeData = [{
+            title: '终端',
+            value: '6',
+            key: '0-0',
+        }, {
+            title: '套餐',
+            value: '2',
+            key: '0-1',
+        },{
+            title: '流量',
+            value: '3',
+            key: '0-3',
+        }, {
+            title: '账单',
+            value: '4',
+            key: '0-4',
+        }, {
+            title: '其它',
+            value: '5',
+            key: '0-5',
+        }];
+@Form.create()
 class QuestionEdit extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -299,6 +321,7 @@ class QuestionEdit extends React.PureComponent {
     jumpModal = (show, props, i) => {
         if (show) {
             // 打开弹框前获取已存在的跳转逻辑关系并存入optionList
+            console.log(this.state.logic);
             let logicProp = this.state.logic.filter(item => item.setupQuestionOrder === props.questionOrder && item.logicType === '01');
             if(logicProp) {
                 logicProp.map(item => {
@@ -511,14 +534,15 @@ class QuestionEdit extends React.PureComponent {
         if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === '0') {
             belongTo += 1
         }
+        // let catalogId = Number(this.props.form.getFieldValue('catalogId'));
+        let catalogId = 1;
         let params = {
-            qstnaire: {
                 belongTo,
+                catalogId,
                 qstnaireTitle: this.state.qstnaireTitle,
                 qstnaireLeadin: this.state.qstnaireLeadin,
                 question: this.state.questionDisplayList,
                 logic: this.state.logic
-            }
         };
         console.log(params);
         if (this.state.qstnaireId) {
@@ -536,6 +560,8 @@ class QuestionEdit extends React.PureComponent {
 
     render() {
         const { qstnaireTitle, qstnaireLeadin, questionDisplayList, conn, jump, record, connList, jumpList, radioValue, logic, questions, keyS, andOr } = this.state;
+        const {getFieldDecorator} = this.props.form;
+
         // 关联弹窗
         const connModalProps = {
             conn,
@@ -629,6 +655,21 @@ class QuestionEdit extends React.PureComponent {
                             <div className={'questionAppContentTitle'}>
                                 <Input className={'questionInput'} defaultValue={qstnaireTitle} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
                                 <TextArea className={"surveyDescription"} defaultValue={qstnaireLeadin} placeholder="添加问卷说明" autosize={{ minRows: 1}} onBlur={(e) => this.qstnaireDes(e)} />
+                                <Form layout='inline' style={{marginLeft: '20px',textAlign: 'left'}}>
+                                    <FormItem label="问卷分类">
+                                        {getFieldDecorator('catalogId', {
+                                            initialValue: this.props.location.state ? this.props.location.state.record.catalogId : "",
+                                        })(
+                                            <TreeSelect
+                                                style={{width: 150}}
+                                                dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
+                                                treeData={treeData}
+                                                treeDefaultExpandAll
+                                                onChange={this.onChange}
+                                            />
+                                        )}
+                                    </FormItem>
+                                </Form>
                             </div>
                             {questionDisplayList.map((item, i) => {
                                 return (

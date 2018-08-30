@@ -35,20 +35,24 @@ class QuestionApplication extends React.PureComponent {
             qstnaireTitle: this.state.qstnaireTitle,
             status: this.state.status,
             pageNum: this.state.pageNum,
-            pagesize: this.state.pageSize,
+            pageSize: this.state.pageSize,
             ...param
         };
         this.setState({
             loading: true
         }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
             if(result) {
-                let opened = result.rows.filter(item => item.status === '已启用');
-                let draught = result.rows.filter(item => item.status === '草稿');
+                if(params.status === '') {
+                    let opened = result.rows.filter(item => item.status === '启用');
+                    let draught = result.rows.filter(item => item.status === '草稿');
+                    this.setState({
+                        total: result.totalCount,
+                        opened: opened.length,
+                        draught: draught.length
+                    })
+                }
                 this.setState({
                     qstnaireList: result.rows,
-                    total: result.totalCount,
-                    opened: opened.length,
-                    draught: draught.length,
                     loading: false
                 })
             }
@@ -175,12 +179,12 @@ class QuestionApplication extends React.PureComponent {
                 <Button type="primary" icon="plus" onClick={this.createQuestion}>
                     创建问卷
                 </Button>
-                <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab={tab1Title} key="全部问卷">{questionLIst}</TabPane>
-                    <TabPane tab={tab2Title} key="已启用">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="待审核">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="审核否决">{questionLIst}</TabPane>
-                    <TabPane tab={tab5Title} key="草稿">{questionLIst}</TabPane>
+                <Tabs tabBarExtraContent={operations} defaultActiveKey={""} onTabClick={this.onTabClick}>
+                    <TabPane tab={tab1Title} key="" >{questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="03">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="04">{questionLIst}</TabPane>
+                    <TabPane tab={tab5Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )
