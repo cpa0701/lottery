@@ -1,9 +1,9 @@
 import React, {PureComponent} from 'react';
 import {Modal} from 'antd';
-
+import {inject, observer} from "mobx-react/index";
 import TreeComponent from '../../../../common/components/tree/tree';
 import DeptService from "../../../../services/system/DeptService"
-
+@inject('stores')
 class EditAuthorityModal extends PureComponent {
     constructor(props) {
         super(props);
@@ -29,19 +29,20 @@ class EditAuthorityModal extends PureComponent {
     }
 
     render() {
+        const {dept} = this.props.stores.I18nModel.outputLocale
         const {authorityTreeAllData, modalChangeAuthorityVisible, EditAuthorityVisible,onLoadData,selectedAuthorityData} = this.props
         const {confirmLoading} = this.state;
         return (
             <Modal
-                title="更改部门"
+                title={dept.changeDepartment}
                 visible={modalChangeAuthorityVisible}
                 onOk={this.handleAddRole}
                 confirmLoading={confirmLoading}
                 onCancel={() => EditAuthorityVisible(false)}
-                okText="确认"
-                cancelText="取消"
+                okText={dept.ok}
+                cancelText={dept.cancel}
             >
-                <h6 className='departmentH6'>角色树</h6>
+                <h6 className='departmentH6'>{dept.roletTree}</h6>
                 <div>
                     <TreeComponent
                         checkable={true}

@@ -14,13 +14,16 @@ class LoginModel {
     @observable
     idcard = '';
 
+    @observable
+    id = '';
+
     @action
     login(user) {
         this.identityCard = user.identityCard;
         this.username = user.username;
         this.token = user.token;
         this.idcard = user.idcard;
-        this.uid = user.uid;
+        this.id = user.id;
 
         this.setSession('uc', user.status)
     }

@@ -44,13 +44,18 @@ public class ShortUrlFilter implements Filter {
                     || StringUtil.isNull(MapUtil.getString(resultMap,"base_url"))){
                 filterChain.doFilter(req,resp);
             }else{
-                //将当前访问提交到分析队列中
-                String serailId = MapUtil.getString(resultMap,"serial_id");
-                if(StringUtil.isNotNull(serailId)){
-                    SmsAccess smsAccess = new SmsAccess(serailId);
-                    SmsAccessQuequ.putInfo(smsAccess);
+                if(MapUtil.getInteger(resultMap,"url_flag")==0){
+                    //将当前访问信息提交到分析队列中
+                    String serailId = MapUtil.getString(resultMap,"serial_id");
+                    String taskId = MapUtil.getString(resultMap,"task_id");
+                    String channelType = MapUtil.getString(resultMap,"channel_type");
+                    String accNum = MapUtil.getString(resultMap,"target_user");
+                    if(StringUtil.isNotNull(serailId) && StringUtil.isNotNull(taskId)
+                            &&StringUtil.isNotNull(channelType) && StringUtil.isNotNull(accNum)){
+                        SmsAccess smsAccess = new SmsAccess(serailId,taskId,channelType,accNum);
+                        SmsAccessQuequ.putInfo(smsAccess);
+                    }
                 }
-
                 response.sendRedirect(MapUtil.getString(resultMap,"base_url"));
             }
 

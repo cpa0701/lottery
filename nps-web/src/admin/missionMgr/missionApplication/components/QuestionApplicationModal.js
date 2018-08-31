@@ -11,7 +11,6 @@ class QuestionApplicationModal extends React.PureComponent {
         this.state = {
             loading: false,
             qstnaireList: [],
-            qstnaireTitle: '',
             status: "",
             opened: 0,
             draught: 0,
@@ -19,6 +18,7 @@ class QuestionApplicationModal extends React.PureComponent {
             pageSize: 10,
             total: 0
         };
+        props.OnRef(this);
     }
 
     componentWillMount() {
@@ -28,10 +28,11 @@ class QuestionApplicationModal extends React.PureComponent {
     // 获取问卷列表
     getQuestionnaireList = (param) => {
         let params = {
-            qstnaireTitle: this.state.qstnaireTitle,
+            qstnaireTitle: this.props.QstnaireTitle,
             status: this.state.status,
             pageNum: this.state.pageNum,
             pageSize: this.state.pageSize,
+            createId: this.props.CreateId,
             ...param
         };
         this.setState({
@@ -89,8 +90,7 @@ class QuestionApplicationModal extends React.PureComponent {
                     )
                 })}
             </Spin>
-            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
-                        showQuickJumper/>
+            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}/>
         </div>;
 
         let tab1Title = "问卷列表( 共" + total + "条 )";

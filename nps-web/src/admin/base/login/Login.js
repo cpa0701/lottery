@@ -7,6 +7,7 @@ import {message, Form, Input, Button, Icon, Row, Col, Radio} from 'antd';
 
 import LoginService from '../../../services/login/LoginService';
 import ResetPassword from './ResetPassword';
+import './login.less'
 
 const {runInAction, autorun, configure} = mobx;
 configure({enforceActions: true});  // 不允许在动作之外进行状态修改
