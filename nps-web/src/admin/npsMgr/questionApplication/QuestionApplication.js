@@ -17,6 +17,8 @@ class QuestionApplication extends React.PureComponent {
             status: "",
             opened: 0,
             draught: 0,
+            vetoAudit: 0,
+            waitMission: 0,
             pageNum: 1,
             pageSize: 10,
             total: 0
@@ -44,10 +46,14 @@ class QuestionApplication extends React.PureComponent {
             if(result) {
                 if(params.status === '') {
                     let opened = result.rows.filter(item => item.status === '启用');
+                    let waitMission = result.rows.filter(item => item.status === '待审核');
+                    let vetoAudit = result.rows.filter(item => item.status === '审核不通过');
                     let draught = result.rows.filter(item => item.status === '草稿');
                     this.setState({
                         total: result.totalCount,
                         opened: opened.length,
+                        waitMission: waitMission.length,
+                        vetoAudit: vetoAudit.length,
                         draught: draught.length
                     })
                 }
@@ -78,18 +84,24 @@ class QuestionApplication extends React.PureComponent {
         }))
     };
     // 提交问卷
-    submitQstnaire = (id) => {
+    submitQstnaire = (id, status) => {
+        let params = {
+            qstnaireId: id,
+            actType: status,
+            actInfo: ''
+        };
+
         this.setState({
             loading: true
-        }, () => QuestionApplicationService.submitQstnaire({qstnaireId: id}).then(result => {
-            message.success('提交成功');
+        }, () => QuestionApplicationService.submitQstnaire(params).then(result => {
+            message.success('已提交审核');
             this.setState({loading: false});
             this.getQuestionnaireList();
         }))
     };
     // 查看问卷
     showQstnaire = (id) => {
-        let params = {id:id,type:'check'};
+        let params = {id: id, type: 'check'};
         params = JSON.stringify(params);
         this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
     };
@@ -116,7 +128,7 @@ class QuestionApplication extends React.PureComponent {
     };
 
     render() {
-        const { qstnaireList, total, opened, draught } = this.state;
+        const { qstnaireList, total, opened, waitMission, draught, vetoAudit } = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
@@ -136,13 +148,17 @@ class QuestionApplication extends React.PureComponent {
                                         return (<div key={item.qstnaireId} className={'sub-li'}>
                                                 <Row type="flex" justify="space-between">
                                                     <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
-                                                    <Col span={9}>
+                                                    <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
                                                         <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                                        <Button type="primary" onClick={() => this.editQstnaire(item.qstnaireId)}>编辑</Button>
-                                                        <Popconfirm title="确定删除该问卷?" onConfirm={() => this.delQstnaire(item.qstnaireId)}>
-                                                            <Button type="danger" icon="delete">删除</Button>
-                                                        </Popconfirm>
-                                                        <Button type="primary" onClick={() => this.submitQstnaire(item.qstnaireId)}>提交</Button>
+                                                        {item.status === '启用' || item.status === '待审核' ? '' :
+                                                           <div style={{display: 'inline-block'}}>
+                                                               <Button type="primary" onClick={() => this.editQstnaire(item.qstnaireId)}>编辑</Button>
+                                                               <Popconfirm title="确定删除该问卷?" onConfirm={() => this.delQstnaire(item.qstnaireId)}>
+                                                                   <Button type="danger" icon="delete">删除</Button>
+                                                               </Popconfirm>
+                                                               <Button type="primary" onClick={() => this.submitQstnaire(item.qstnaireId, '03')}>提交</Button>
+                                                           </div>
+                                                        }
                                                         {/*<Dropdown overlay={menu}>*/}
                                                             {/*<Button>*/}
                                                                 {/*审核日志 <Icon type="down"/>*/}
@@ -163,13 +179,15 @@ class QuestionApplication extends React.PureComponent {
                                         )
                                     })}
                                 </Spin>
-                                <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>
+                                {qstnaireList.length === 0 ?
+                                    <div style={{padding: '20px', textAlign: 'center'}}>暂无数据</div> :
+                                    <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>}
                             </div>;
 
         let tab1Title = "我的全部问卷( 共" + total + "条 )";
         let tab2Title = "已启用( " + opened + " )";
-        let tab3Title = "待审核( " + 0 + " )";
-        let tab4Title = "审核否决( " + 0 + " )";
+        let tab3Title = "待审核( " + waitMission + " )";
+        let tab4Title = "审核否决( " + vetoAudit + " )";
         let tab5Title = "草稿( " + draught + " )";
 
         return (
