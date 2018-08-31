@@ -81,6 +81,7 @@ class StatisticReport extends React.PureComponent {
                     </Form>
                 </Row>
                 <Row>
+                    <h4 style={{fontWeight:'bold'}}>数据报表</h4>
                     <Table columns={columnsone}>
 
                     </Table>

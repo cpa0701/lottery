@@ -41,5 +41,9 @@ public class ConstantUtils {
     public static final String SURVEY_TASK_TEST_YES = "1";  //测试数据
     public static final String SURVEY_TASK_TEST_NO = "0"; //正式数据
 
+    public static final String SURVEY_RESULT_UPDATE_TYPE_UPDATE = "update";
+    public static final String SURVEY_RESULT_UPDATE_TYPE_INSERT = "insert";
+    public static final String SURVEY_RESULT_TYPE_0 = "0";  //答题状态 开始
+    public static final String SURVEY_RESULT_TYPE_1 = "1";  //答题状态 结束
 
 }

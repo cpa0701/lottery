@@ -68,7 +68,7 @@ public class QstnaireMgrController {
     public Result<Object> qstnaireBank(@RequestBody QstnaireBankQuery qstnaireBankQuery){
         if(StringUtil.isNull(qstnaireBankQuery.getPageNum()) ||
                 StringUtil.isNull(qstnaireBankQuery.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.PAGE_PARAMS_DEFICIENCY);
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
         }
         return Result.success(qstnaireBankService.qstnaireBank(qstnaireBankQuery));
     }
