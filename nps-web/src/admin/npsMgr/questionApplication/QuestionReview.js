@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Tabs, Button, Input, Menu, Dropdown, Icon, Pagination, Spin, Popconfirm, message} from "antd"
+import {Row, Col, Tabs, Button, Input, Menu, Icon, Pagination, Spin, Popconfirm, message} from "antd"
 
 import './questionApplication.less'
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService";
@@ -15,14 +15,13 @@ class QuestionReview extends React.PureComponent {
             qstnaireList: [],
             qstnaireTitle: '',
             status: "",
-            opened: 0,
-            draught: 0,
+            waitAudit: 0,
+            passAudit: 0,
+            vetoAudit: 0,
             pageNum: 1,
             pageSize: 10,
             total: 0
         };
-        this.createQuestion = this.createQuestion.bind(this);
-        if(this.props.location.state && this.props.location.state.isFresh)   this.getQuestionnaireList();
     }
 
     componentWillMount() {
@@ -42,60 +41,56 @@ class QuestionReview extends React.PureComponent {
             loading: true
         }, () => QuestionApplicationService.getQuestionnaireList(params).then(result => {
             if(result) {
+                let waitAudit = [], passAudit = [], vetoAudit = [];
                 if(params.status === '') {
-                    let opened = result.rows.filter(item => item.status === '启用');
-                    let draught = result.rows.filter(item => item.status === '草稿');
+                    waitAudit = result.rows.filter(item => item.status === '待审核');
+                    passAudit = result.rows.filter(item => item.status === '启用');
+                    vetoAudit = result.rows.filter(item => item.status === '审核不通过');
                     this.setState({
                         total: result.totalCount,
-                        opened: opened.length,
-                        draught: draught.length
+                        waitAudit: waitAudit.length,
+                        passAudit: passAudit.length,
+                        vetoAudit: vetoAudit.length,
+                        qstnaireList: waitAudit,
+                        loading: false
+                    })
+                } else {
+                    this.setState({
+                        qstnaireList: result.rows,
+                        loading: false
                     })
                 }
-                this.setState({
-                    qstnaireList: result.rows,
-                    loading: false
-                })
             }
         }))
     };
 
-    //创建问卷
-    createQuestion = () => {
-        this.props.history.push('/npsMgr/questionMgr/questionEdit/666');
-    };
-    // 编辑问卷
-    editQstnaire = (id) => {
-        this.props.history.push('/npsMgr/questionMgr/questionEdit/'+ id)
-    };
-    // 删除问卷
-    delQstnaire = (id) => {
-        this.setState({
-            loading: true
-        }, () => QuestionApplicationService.delQstnaire({qstnaireId: id}).then(result => {
-            message.success('删除成功');
-            this.setState({loading: false});
-            this.getQuestionnaireList();
-        }))
-    };
     // 提交问卷
-    submitQstnaire = (id) => {
+    submitQstnaire = (id, status) => {
+        let params = {
+            qstnaireId: id,
+            actType: status,
+            actInfo: ''
+        };
         this.setState({
             loading: true
-        }, () => QuestionApplicationService.submitQstnaire({qstnaireId: id}).then(result => {
-            message.success('提交成功');
+        }, () => QuestionApplicationService.submitQstnaire(params).then(result => {
+            if(status === '01') {
+                message.success('已审核通过');
+            } else {
+                message.success('已审核否决');
+            }
             this.setState({loading: false});
             this.getQuestionnaireList();
         }))
-    };
-    // 查看问卷
-    showQstnaire = (id) => {
-        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${id}`);
     };
 
-    // 点击审核日志
-    handleMenuClick = (key, a, b) => {
-        console.log(key, a, b)
+    // 查看问卷
+    showQstnaire = (id) => {
+        let params = { id: id, type: 'check' };
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
     };
+
     //tab标签被点击
     onTabClick = (key) => {
         this.setState({
@@ -114,41 +109,33 @@ class QuestionReview extends React.PureComponent {
     };
 
     render() {
-        const { qstnaireList, total, opened, draught } = this.state;
+        const { qstnaireList, waitAudit, passAudit, vetoAudit } = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
             onSearch={value => this.onSearch(value)}
             enterButton
         />;
-        const menu = (
-            <Menu onClick={this.handleMenuClick}>
-                <Menu.Item key="1">1st item</Menu.Item>
-                <Menu.Item key="2">2nd item</Menu.Item>
-                <Menu.Item key="3">3rd item</Menu.Item>
-            </Menu>
-        );
         const questionLIst = <div>
                                 <Spin spinning={this.state.loading}>
                                     {qstnaireList.map(item => {
                                         return (<div key={item.qstnaireId} className={'sub-li'}>
                                                 <Row type="flex" justify="space-between">
                                                     <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
-                                                    <Col span={9}>
+                                                    <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
                                                         <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                                        <Button type="primary" onClick={() => this.editQstnaire(item.qstnaireId)}>通过</Button>
-                                                        <Popconfirm title="确定否决该问卷?" onConfirm={() => this.delQstnaire(item.qstnaireId)}>
-                                                            <Button type="danger">否决</Button>
-                                                        </Popconfirm>
-                                                        {/*<Dropdown overlay={menu}>*/}
-                                                            {/*<Button>*/}
-                                                                {/*审核日志 <Icon type="down"/>*/}
-                                                            {/*</Button>*/}
-                                                        {/*</Dropdown>*/}
+                                                        {item.status === '' || item.status === '启用' || item.status === '审核不通过' ? '' :
+                                                            <div style={{display: 'inline-block'}}>
+                                                                <Button type="primary" onClick={() => this.submitQstnaire(item.qstnaireId, '01')}>通过</Button>
+                                                                <Popconfirm title="确定否决该问卷?" onConfirm={() => this.submitQstnaire(item.qstnaireId, '04')}>
+                                                                    <Button type="danger">否决</Button>
+                                                                </Popconfirm>
+                                                            </div>
+                                                        }
                                                     </Col>
                                                 </Row>
                                                 <Row type="flex" justify="start">
-                                                    <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
+                                                    <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>问卷分类：{item.catalogName}
                                                     </Col>
                                                     <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
                                                     </Col>
@@ -160,19 +147,22 @@ class QuestionReview extends React.PureComponent {
                                         )
                                     })}
                                 </Spin>
-                                <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>
+                                {qstnaireList.length === 0 ?
+                                    <div style={{padding: '20px', textAlign: 'center'}}>暂无数据</div> :
+                                    <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>}
                             </div>;
-
-        let tab1Title = "待我审核( 共" + total + "条 )";
-        let tab2Title = "审核通过( " + opened + " )";
-        let tab3Title = "审核否决( " + 0 + " )";
+        // let tab1Title = "全部问卷( 共" + total + "条 )";
+        let tab2Title = "待我审核( 共" + waitAudit + "条 )";
+        let tab3Title = "审核通过( " + passAudit + " )";
+        let tab4Title = "审核否决( " + vetoAudit + " )";
 
         return (
             <div className={'questionnaire'}>
-                <Tabs tabBarExtraContent={operations} defaultActiveKey={""} onTabClick={this.onTabClick}>
-                    <TabPane tab={tab1Title} key="" >{questionLIst}</TabPane>
-                    <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="03">{questionLIst}</TabPane>
+                <Tabs tabBarExtraContent={operations} defaultActiveKey={"03"} onTabClick={this.onTabClick}>
+                    {/*<TabPane tab={tab1Title} key="" >{questionLIst}</TabPane>*/}
+                    <TabPane tab={tab2Title} key="03" >{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="01">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="04">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )
