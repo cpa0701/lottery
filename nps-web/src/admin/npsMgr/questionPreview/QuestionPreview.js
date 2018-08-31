@@ -25,8 +25,10 @@ class QuestionPreview extends React.PureComponent {
     }
 
     componentWillMount() {
-        let id = this.props.match ? this.props.match.params.id : window.location.hash.split('/')[1];
-        this.getQuestionData(id);
+        let params = this.props.match ? JSON.parse(this.props.match.params.data) : window.location.hash.split('/')[1];
+        let {id, type} = params;
+        this.setState({type}, () => this.getQuestionData(id));
+
     }
 
     //请求问卷数据
@@ -46,6 +48,8 @@ class QuestionPreview extends React.PureComponent {
                 let isPaging = questionList.some(item => {
                     return item.isPaging === 1;
                 });
+                if (this.state.type === 'check')
+                    questionList = this.questionLogicInfo(logicList, questionList);
                 questionList.map(item => {
                     item.isShow = false;
                     item.optionList && item.optionList.map(k => {
@@ -103,7 +107,68 @@ class QuestionPreview extends React.PureComponent {
                 });
             })
         })
-    }
+    };
+
+    // 题目逻辑提示
+    questionLogicInfo = (logic, questions) => {
+        let newArr = [];
+        questions.map(item => {
+            if (item.optionList) {
+                let obj = item.optionList.map(k => {
+                    return {...k, describe: null}
+                });
+                item.optionList = [...obj];
+            }
+            item.jumpDescribe = null;
+            item.connDescribe = null;
+            item.jumpOrder = null;
+            return '';
+        });
+
+        newArr = questions.map(k => {
+            let param = {...k};
+            logic.map(item => {
+                if (item.logicType === '01' && item.setupQuestionOrder === k.questionOrder) {
+                    if (k.questionType === '01') {
+                        let arr = item.optionOrder.split(',');
+                        if (arr.length === k.optionList.length) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            }
+                        } else {
+                            k.optionList.map(x => {
+                                if (x.optionOrder === Number(item.optionOrder)) {
+                                    x.describe = '跳转到第' + item.skiptoQuestionOrder + '题';
+                                }
+                                return '';
+                            });
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑'
+                            }
+                        }
+                    } else {
+                        param = {
+                            ...k,
+                            jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                        }
+                    }
+                } else if (item.logicType === '00' && item.skiptoQuestionOrder === k.questionOrder) {
+                    param = {
+                        ...k,
+                        connDescribe: k.connDescribe ? k.connDescribe + '，第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
+                            : '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
+                    };
+                    k.connDescribe = '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项';
+                }
+                return '';
+            });
+            return param;
+        });
+        return newArr;
+    };
+
     //单选框值改变
     onRadioChange = (e) => {
         this.over = false;//将跳转至结束变为false
@@ -249,7 +314,7 @@ class QuestionPreview extends React.PureComponent {
             return question;
         })
         this.setState({questionList: [...questionResultList]})
-    }
+    };
     //复选框值改变
     onCheckBoxChange = (questionIndex, checkList) => {
         this.over = false;
@@ -393,7 +458,7 @@ class QuestionPreview extends React.PureComponent {
             return question;
         })
         this.setState({questionList: [...questionResultList]})
-    }
+    };
     // 填空题数据变化
     onBlankChange = (e) => {
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
@@ -407,7 +472,7 @@ class QuestionPreview extends React.PureComponent {
             return question;
         })
         this.setState({questionList: [...questionResultList]})
-    }
+    };
 
     // 翻页
     changePage(type) {
@@ -430,13 +495,18 @@ class QuestionPreview extends React.PureComponent {
     //提交
     handleSubmit = () => {
         if (!this.validIsBlank()) {
-            if (this.over !== -2) {
-                let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
-                    return question.isPaging === 0 && question.value && question.display;
-                });
-                console.log(result)
+            //判断是预览还是查看还是正式问卷
+            if (this.state.type !== 'official') {//预览和查看
+                message.info('问卷作答结束')
             } else {
-                console.log('无结果')
+                if (this.over !== -2) {
+                    let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
+                        return question.isPaging === 0 && question.value && question.display;
+                    });
+                    console.log(result)
+                } else {
+                    console.log('无结果')
+                }
             }
         }
     }
@@ -470,6 +540,7 @@ class QuestionPreview extends React.PureComponent {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}
                                 key={i}
+                                infoView={this.state.type === 'check'}
                                 questionType={item.questionType}//题目类型
                                 index={item.questionOrder}//题目序号
                                 isPaging={item.isPaging}//是否为分页
@@ -479,16 +550,19 @@ class QuestionPreview extends React.PureComponent {
                                 isBlank={item.isBlank}//是否必填
                                 isShowTip={item.showTip}//是否必填
                                 display={item.display}//是否显示
+                                jumpDescribe={item.jumpDescribe}
+                                connDescribe={item.connDescribe}
                                 belongToPage={item.belongToPage}//当前题属于哪一页
                                 onRadioChange={this.onRadioChange}
                                 onCheckBoxChange={this.onCheckBoxChange}
                                 onBlankChange={this.onBlankChange}
                             />
                         }
+                        return '';
                     })
                 }
             </div>;
-        })
+        });
         return (
             <Spin spinning={this.state.loading}>
                 <Row style={{overflow: 'auto'}} className={'question-preview'}>

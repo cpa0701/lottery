@@ -89,7 +89,9 @@ class QuestionApplication extends React.PureComponent {
     };
     // 查看问卷
     showQstnaire = (id) => {
-        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${61}`);
+        let params = {id:id,type:'check'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
     };
 
     // 点击审核日志

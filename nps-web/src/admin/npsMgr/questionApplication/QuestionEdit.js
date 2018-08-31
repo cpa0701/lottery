@@ -213,17 +213,17 @@ class QuestionEdit extends React.PureComponent {
         if (this.state.qstnaireId) {
             QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
                 if(data.qstnaireId) {
-                    debugger;
-                    message.success('编辑成功');
-                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${data.qstnaireId}`);
+                    let params = {id:data.qstnaireId,type:'preview'};
+                    params = JSON.stringify(params);
+                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${params}`);
                 }
             });
         } else {
             QuestionApplicationService.addQstnaireBank(params).then(data => {
                 if (data.qstnaireId) {
-                    debugger;
-                    message.success('保存成功');
-                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${data.qstnaireId}`);
+                    let params = {id:data.qstnaireId,type:'preview'};
+                    params = JSON.stringify(params);
+                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${params}`);
                 }
             });
         }
