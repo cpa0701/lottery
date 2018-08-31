@@ -685,6 +685,7 @@ class QuestionEdit extends React.PureComponent {
                 });
             },
             changeQuestion: (arr) => {
+                console.log(arr)
                 this.setState({
                     questions: [...arr]
                 });
