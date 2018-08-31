@@ -9,6 +9,20 @@ import InitQuestionList from './InitQuestionList'
 
 import './questionPreview.less'
 
+//获取url参数
+const GetRequest = () => {
+    let url = window.location.search; //获取url中"?"符后的字串
+    let theRequest = {};
+    if (url.indexOf("?") !== -1) {
+        let str = url.substr(1);
+        let strs = str.split("&");
+        strs.map(s => {
+            theRequest[s.split("=")[0]] = unescape(s.split("=")[1]);
+        })
+    }
+    return theRequest;
+}
+
 class QuestionPreview extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -25,7 +39,7 @@ class QuestionPreview extends React.PureComponent {
     }
 
     componentWillMount() {
-        let params = this.props.match ? JSON.parse(this.props.match.params.data) : window.location.hash.split('/')[1];
+        let params = this.props.match ? JSON.parse(this.props.match.params.data) : GetRequest();
         let {id, type} = params;
         this.setState({type}, () => this.getQuestionData(id));
 
@@ -54,6 +68,7 @@ class QuestionPreview extends React.PureComponent {
                     item.isShow = false;
                     item.optionList && item.optionList.map(k => {
                         k.logicList = [];
+                        k.questionOrder = item.questionOrder;
                     });
                     item.belongToPage = page;
                     if (item.isPaging === 1) {
@@ -531,11 +546,12 @@ class QuestionPreview extends React.PureComponent {
             return <div key={page} style={{display: page === this.state.currentPage ? 'block' : 'none'}}>
                 {
                     this.state.questionList.map((item, i) => {
-                        // isSetup={item.isSetup}//是否是被关联题
-                        // isShow={item.isShow}//是否显示被关联题
+                        // 优先级
                         // jumped={item.jumped}//是否被跳过
+                        // isShow={item.isShow}//是否显示被关联题
                         // isJump={item.isJump}//是否跳转题，用于覆盖关联题的隐藏
-                        item.display = item.jumped ? false : (item.isJump ? true : (item.isShow ? true : !item.isSetup))
+                        // isSetup={item.isSetup}//是否是被关联题
+                        item.display = item.jumped ? false : (item.isShow ? (item.isJump ? true : !item.isSetup) : !item.isSetup)
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}

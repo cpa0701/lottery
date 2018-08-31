@@ -42,7 +42,7 @@ class InitQuestionList extends React.PureComponent {
                 break;
             case '03':
             case '04':
-                dom = <BlankModule questionName={questionName} index={index} isBlank={isBlank}
+                dom = <BlankModule questionName={questionName} index={index} isBlank={isBlank} questionType={questionType}
                                    onChange={onBlankChange} isView={true} infoView={infoView}
                                    connDescribe={connDescribe} jumpDescribe={jumpDescribe}/>
                 break;
