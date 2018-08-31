@@ -258,7 +258,7 @@ class NewApplicationForm extends React.PureComponent {
             <Row className={'required'}>
                 <FormItem label="调研任务名称：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('taskName', {
-                        rules: [{required: true,}],
+                        rules: [{required: true, message: '请输入调研任务名称'}],
                         initialValue: '',
                     })(
                         <Input size="default"/>
@@ -270,7 +270,7 @@ class NewApplicationForm extends React.PureComponent {
                 <Col span='12'>
                     <FormItem label="调研触发时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
                         {getFieldDecorator('surveySdate', {
-                            rules: [{type: 'object', required: true, message: 'Please select time!'}],
+                            rules: [{type: 'object', required: true, message: '请选择调研触发时间'}],
                         })(
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
@@ -285,7 +285,7 @@ class NewApplicationForm extends React.PureComponent {
                 <Col span='12'>
                     <FormItem label="调研结束时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
                         {getFieldDecorator('surveyEdate', {
-                            rules: [{type: 'object', required: true, message: 'Please select time!'}],
+                            rules: [{type: 'object', required: true, message: '请选择调研结束时间'}],
                         })(
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
@@ -303,7 +303,7 @@ class NewApplicationForm extends React.PureComponent {
             <Row>
                 <FormItem label="调研问卷：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('qstnaireId', {
-                        rules: [{required: true,}],
+                        rules: [{required: true, message: '请选择调研问卷'}],
                     })(
                         <Input placeholder='点击选择调研问卷' onClick={() => this.addQuestionaire(true)}/>
                     )}
@@ -312,7 +312,7 @@ class NewApplicationForm extends React.PureComponent {
             <Row>
                 <FormItem label="测试号码：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('testNumber', {
-                        rules: [{required: true,}],
+                        rules: [{required: true, message: '请输入测试号码'}],
                     })(
                         <Input placeholder="多个号码用英文逗号分隔"/>
                     )}
@@ -403,8 +403,37 @@ class NewApplicationForm extends React.PureComponent {
                     调研渠道
                 </Col>
             </Row>
-            <Tabs defaultActiveKey="2">
+            <Tabs defaultActiveKey="2" onChange={(activeKey) => {
+                this.props.form.setFieldsValue({
+                    taskChannel: activeKey,
+                });
+            }}>
                 <TabPane tab={<span><Icon type="qrcode"/>链接与二维码</span>} key="3">
+                    <Row className={'row2'}>
+                        <Col span='12' className={'select'}>
+                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('taskAccess', {
+                                    rules: [{required: true, message: '请选择获取样本方式'}],
+                                })(
+                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
+                                        <Option value="1">全量</Option>
+                                        <Option value="2">抽样</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
+                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('taskAccessNum', {
+                                    rules: [{required: true, message: '请输入抽样数量'}],
+                                    // initialValue: 'Start',
+                                })(
+                                    <Input/>
+                                )}
+                            </FormItem>
+                        </Col> : ''}
+                    </Row>
                     <div>
                         <QRCode size={150} value="http://www.baidu.com"/>
                     </div>
@@ -414,7 +443,7 @@ class NewApplicationForm extends React.PureComponent {
                         <Col span='12' className={'select'}>
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true,}],
+                                    rules: [{required: true, message: '请选择获取样本方式'}],
                                 })(
                                     <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -427,7 +456,7 @@ class NewApplicationForm extends React.PureComponent {
                         {!this.state.accessFlag ? <Col span='12' className={'select'}>
                             <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true,}],
+                                    rules: [{required: true, message: '请输入抽样数量'}],
                                     // initialValue: 'Start',
                                 })(
                                     <Input/>
@@ -437,14 +466,11 @@ class NewApplicationForm extends React.PureComponent {
                     </Row>
                 </TabPane>
                 <TabPane tab={<span><Icon type="mail"/>邮件发送</span>} key="4">
-                    邮件发送
-                </TabPane>
-                <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="1">
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true,}],
+                                    rules: [{required: true, message: '请选择获取样本方式'}],
                                 })(
                                     <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -457,7 +483,34 @@ class NewApplicationForm extends React.PureComponent {
                         {!this.state.accessFlag ? <Col span='12' className={'select'}>
                             <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true,}],
+                                    rules: [{required: true, message: '请输入抽样数量'}],
+                                    // initialValue: 'Start',
+                                })(
+                                    <Input/>
+                                )}
+                            </FormItem>
+                        </Col> : ''}
+                    </Row>
+                </TabPane>
+                <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="1">
+                    <Row className={'row2'}>
+                        <Col span='12' className={'select'}>
+                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('taskAccess', {
+                                    rules: [{required: true, message: '请选择获取样本方式'}],
+                                })(
+                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
+                                        <Option value="1">全量</Option>
+                                        <Option value="2">抽样</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
+                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('taskAccessNum', {
+                                    rules: [{required: true, message: '请输入抽样数量'}],
                                     // initialValue: 'Start',
                                 })(
                                     <Input/>
@@ -470,7 +523,7 @@ class NewApplicationForm extends React.PureComponent {
                         <Col span='12' className={'select'}>
                             <FormItem label="短信下发方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('messageType', {
-                                    rules: [{required: true,}],
+                                    rules: [{required: true, message: '请选择短信下发方式'}],
                                 })(
                                     <Select onChange={this.messageHandleChange} multiple placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -488,7 +541,7 @@ class NewApplicationForm extends React.PureComponent {
                                 <Col span='12' className={'select'}>
                                     <FormItem label="短信提示语：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                         {getFieldDecorator('taskMessage', {
-                                            rules: [{required: true,}],
+                                            rules: [{required: true, message: '请选择短信提示语'}],
                                         })(
                                             <TextArea placeholder="请填写短信提示语"/>
                                         )}
@@ -501,6 +554,14 @@ class NewApplicationForm extends React.PureComponent {
                         </div> : ''}
                 </TabPane>
             </Tabs>
+            <FormItem>
+                {getFieldDecorator('taskChannel', {
+                    rules: [{required: true, message: '请选择调研渠道',}],
+                    // initialValue: 'Start',
+                })(
+                    <Input type={'hidden'}/>
+                )}
+            </FormItem>
         </div>);
         //奖励措施
         let measure = null;
