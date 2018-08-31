@@ -10,6 +10,7 @@ import QuestionAddMgr from "../admin/npsMgr/questionLibMgr/QuestionAddMgr"
 import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
 import QuestionReview from "../admin/npsMgr/questionApplication/QuestionReview"
+import QuestionnaireLibrary from "../admin/npsMgr/questionApplication/QuestionnaireLibrary"
 import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
 import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
@@ -32,6 +33,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/QuestionAddMgr/:id" component={QuestionAddMgr}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
                     <Route path="/npsMgr/questionMgr/questionAudit" component={QuestionReview}/>
+                    <Route path="/npsMgr/questionMgr/questionnaireLibrary" component={QuestionnaireLibrary}/>
                     <Route path="/npsMgr/questionMgr/questionEdit/:id" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/questionPreview/:data" component={QuestionPreview}/>
                     <Route path="/npsMgr/questionMgr/qstnairePreview/:data" component={QuestionPreview}/>
