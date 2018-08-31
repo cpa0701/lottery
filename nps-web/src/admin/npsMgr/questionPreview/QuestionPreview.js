@@ -48,7 +48,7 @@ class QuestionPreview extends React.PureComponent {
                 });
                 questionList.map(item => {
                     item.isShow = false;
-                    item.optionList.length && item.optionList.map(k => {
+                    item.optionList && item.optionList.map(k => {
                         k.logicList = [];
                     });
                     item.belongToPage = page;
