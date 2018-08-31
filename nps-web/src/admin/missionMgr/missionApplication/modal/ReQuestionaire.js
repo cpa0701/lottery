@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Modal, Row, Col, Input, Form, Tabs, Pagination, Button} from 'antd';
 import QuestionApplicationModal from '../components/QuestionApplicationModal'
 
 import './ReQuestionaire.less'
+import {inject} from "mobx-react/index"
 
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
@@ -10,13 +11,16 @@ const {TextArea} = Input;
 const FormItem = Form.Item;
 
 @Form.create()
-export default class extends Component {
+@inject('stores')
+export default class extends PureComponent {
     state = {
         loading: false,
         questionList: [],
         pageNum: 1,
         total: 0,
         pageSize: 10,
+        createId: '',
+        qstnaireTitle: ''
     }
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
@@ -29,17 +33,19 @@ export default class extends Component {
     afterClose = () => {
         this.props.form.resetFields();
     };
-    //获取id
-    choseQuestion = (id) => {
-        console.log(id)
+
+    clickList = (id) => {
+        this.setState({createId: id ? id : ''}, () => {
+            this.questionApplicationList.getQuestionnaireList({pageNum: 1})
+        })
     }
-    //列表分页
-    refreshList = (page) => {
-        this.getQuestionnaireList({pageNum: page,});
+    OnRef = (ref) => {
+        this.questionApplicationList = ref;
     }
 
     render() {
-        const {add} = this.props;
+        const {add, onChoseQuestion} = this.props;
+        const createId = JSON.parse(sessionStorage.getItem('userInfo')).id
         return (
             <Modal
                 title="选择问卷"
@@ -50,6 +56,8 @@ export default class extends Component {
                 onOk={this.onSubmit}
                 onCancel={() => this.props.onClose()}
                 afterClose={this.afterClose}
+                okText="确认"
+                cancelText="取消"
             >
                 <Row className={'title'}>
                     <Col span="24">
@@ -58,18 +66,28 @@ export default class extends Component {
                 </Row>
                 <Row className={'search'}>
                     <Search
+                        placeholder="请输入问卷名称"
                         enterButton="搜索"
                         size="default"
-                        onSearch={value => console.log(value)}
+                        onSearch={value => {
+                            this.setState({qstnaireTitle: value}, () => this.questionApplicationList.getQuestionnaireList({
+                                pageNum: 1,
+                                qstnaireTitle: value
+                            }))
+
+                        }}
                     />
                 </Row>
                 <br/>
                 <Row>
                     <span style={{marginRight: '5px'}}>问卷来源：</span>
-                    <Button type="primary">问卷库</Button>
-                    <Button type="primary">我的问卷</Button>
+                    <Button style={{marginRight: '5px'}} type="primary" onClick={() => this.clickList()}>问卷库</Button>
+                    <Button style={{marginRight: '5px'}} type="primary"
+                            onClick={() => this.clickList(createId)}>我的问卷</Button>
                 </Row>
-                <QuestionApplicationModal ChoseQuestion={this.choseQuestion}/>
+                <QuestionApplicationModal QstnaireTitle={this.state.qstnaireTitle} CreateId={this.state.createId}
+                                          ChoseQuestion={onChoseQuestion}
+                                          OnRef={this.OnRef}/>
             </Modal>
         );
     }

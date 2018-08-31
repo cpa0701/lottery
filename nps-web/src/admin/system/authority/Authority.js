@@ -291,7 +291,7 @@ export default class Authority extends PureComponent {
 
         }];
         return (
-            <div>
+            <div className={'authority'}>
                 <div className="headerAuthority">
                     <Button type="primary" icon="plus-circle-o" onClick={this.handleAdd}>{authority.insert}</Button>
                     <Button type="primary" icon="edit" onClick={this.handleUpdate}>{authority.modify}</Button>

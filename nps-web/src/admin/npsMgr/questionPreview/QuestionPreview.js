@@ -18,7 +18,7 @@ class QuestionPreview extends React.PureComponent {
             pageCount: 1,
             pageList: [],
             questionList: [],
-            isPaging: false
+            isPaging: 0
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onCheckBoxChange = this.onCheckBoxChange.bind(this);
@@ -44,7 +44,7 @@ class QuestionPreview extends React.PureComponent {
                 let pageCount = 2;//由于isPaging属性是放在每页最前的一个对象中，所以从2开始
                 let pageList = [1];//页码list
                 let isPaging = questionList.some(item => {
-                    return item.isPaging === '1';
+                    return item.isPaging === 1;
                 });
                 questionList.map(item => {
                     item.isShow = false;
@@ -52,12 +52,12 @@ class QuestionPreview extends React.PureComponent {
                         k.logicList = [];
                     });
                     item.belongToPage = page;
-                    if (item.isPaging === '1') {
+                    if (item.isPaging === 1) {
                         page++;
                         pageList.push(pageCount++);
                     }
                     logicList.map(k => {
-                        if (item.isPaging !== '1') {
+                        if (item.isPaging !== 1) {
                             if (k.logicType === '00') {//关联逻辑，给关联被关联题添加逻辑
                                 if (item.questionOrder === k.skiptoQuestionOrder) {
                                     item.isSetup = true;//被关联题隐藏
@@ -81,7 +81,7 @@ class QuestionPreview extends React.PureComponent {
                     "isBlank": 0,
                     "isCommon": "",
                     "isNps": "",
-                    "isPaging": "1",//分页数据
+                    "isPaging": 1,//分页数据
                     "isSatisfied": "",
                     "lenthCheck": "",
                     "optionLayout": "",
@@ -109,7 +109,7 @@ class QuestionPreview extends React.PureComponent {
         this.over = false;//将跳转至结束变为false
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             question.optionFilteredList = [];
-            return question.isPaging === '0';
+            return question.isPaging === 0;
         });
         questionList[e.target.questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false，仅对单选
             item.checked = false;
@@ -242,7 +242,7 @@ class QuestionPreview extends React.PureComponent {
         questionList[e.target.questionIndex - 1].optionList.splice(lastOption.optionOrder - 1, 0, lastOption);
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             questionList.map(item => {
-                if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
+                if (question.questionOrder === item.questionOrder && question.isPaging !== 1) {
                     question = item
                 }
             })
@@ -255,7 +255,7 @@ class QuestionPreview extends React.PureComponent {
         this.over = false;
         let questionList = this.state.questionList.filter(question => {//去除分页数据
             question.optionFilteredList = [];
-            return question.isPaging === '0';
+            return question.isPaging === 0;
         });
         //将未填写必填的提示去除
         checkList.length ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
@@ -386,7 +386,7 @@ class QuestionPreview extends React.PureComponent {
         });
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             questionList.map(item => {
-                if (question.questionOrder === item.questionOrder && question.isPaging !== '1') {
+                if (question.questionOrder === item.questionOrder && question.isPaging !== 1) {
                     question = item
                 }
             })
@@ -397,7 +397,7 @@ class QuestionPreview extends React.PureComponent {
     // 填空题数据变化
     onBlankChange = (e) => {
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
-            if (question.questionOrder === parseInt(e.target.attributes.questionIndex.value) && question.isPaging !== '1') {
+            if (question.questionOrder === parseInt(e.target.attributes.questionIndex.value) && question.isPaging !== 1) {
                 question.value = e.target.value
                 if (question.value)//如果有值，则将未填写必填的提示去除
                     question.showTip = false;
@@ -432,7 +432,7 @@ class QuestionPreview extends React.PureComponent {
         if (!this.validIsBlank()) {
             if (this.over !== -2) {
                 let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
-                    return question.isPaging === '0' && question.value && question.display;
+                    return question.isPaging === 0 && question.value && question.display;
                 });
                 console.log(result)
             } else {
@@ -443,7 +443,7 @@ class QuestionPreview extends React.PureComponent {
     //验证必填
     validIsBlank = () => {
         let blankList = this.state.questionList.filter(question => {//去除分页数据判断必填数据是否有值
-            if (question.isPaging === '0' && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
+            if (question.isPaging === 0 && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
                 question.showTip = true;
                 return question;
             }

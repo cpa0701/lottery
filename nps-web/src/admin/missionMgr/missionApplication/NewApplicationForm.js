@@ -208,6 +208,11 @@ class NewApplicationForm extends React.PureComponent {
             onClose: () => {
                 this.addQuestionaire(false);
             },
+            onChoseQuestion: (id) => {
+                this.props.form.setFieldsValue({
+                    qstnaireId: id,
+                });
+            },
         };
         //新增标签弹窗属性传值是否显示弹窗
         const selectModalProps = {

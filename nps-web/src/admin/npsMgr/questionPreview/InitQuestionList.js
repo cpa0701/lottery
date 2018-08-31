@@ -21,7 +21,7 @@ class InitQuestionList extends React.PureComponent {
             questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange, belongToPage, pageCount
         } = this.props;
         //定义此题是否显示（分页比显示，被跳题>被跳过的题>被关联的题>首次被关联默认隐藏的题)
-        const show = isPaging === '1' ? 'block' : (display ? 'block' : 'none');
+        const show = isPaging === 1 ? 'block' : (display ? 'block' : 'none');
         let dom = '';
         switch (questionType) {
             case '00':
@@ -50,9 +50,9 @@ class InitQuestionList extends React.PureComponent {
         }
         return (<div
             style={{display: show, border: isShowTip ? "1px dashed rgb(222, 103, 82)" : 0}}
-            className={`${isPaging === '1' ? 'paging' : 'questionList'}`}>
+            className={`${isPaging === 1 ? 'paging' : 'questionList'}`}>
             {dom}
-            {isPaging === '1' ? '' : (isBlank === 1 ? <span className="req">*</span> : '')}
+            {isPaging === 1 ? '' : (isBlank === 1 ? <span className="req">*</span> : '')}
             {isShowTip ? <div className={'errorMessage'}>{tipContent}</div> : ''}
         </div>);
     }
