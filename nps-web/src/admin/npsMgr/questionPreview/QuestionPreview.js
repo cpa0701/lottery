@@ -11,7 +11,7 @@ import './questionPreview.less'
 
 //获取url参数
 const GetRequest = () => {
-    let url = window.location.search; //获取url中"?"符后的字串
+    let url = window.location.hash.substr(2); //获取url中"?"符后的字串
     let theRequest = {};
     if (url.indexOf("?") !== -1) {
         let str = url.substr(1);
