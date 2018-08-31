@@ -87,12 +87,14 @@ class QuestionEdit extends React.PureComponent {
                 if(result) {
                     let question = result.question.map(item => {
                         let param = {...item};
-                       if(String(item.isPaging) === '1') {
+                       if(item.isPaging === 1) {
                            param = {...item, pageNum: null};
                        }
+                        if(item.isPaging === 0) {
+                            param = {...item, jumpOrder: null};
+                        }
                        return param;
                     });
-                    debugger;
                     this.setState({
                         questionDisplayList: question,
                         questionDisplayList1: question,
@@ -119,16 +121,16 @@ class QuestionEdit extends React.PureComponent {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
-                this.state.questionDisplayList1.push({...questionData, questionOrder: 1, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
+                this.state.questionDisplayList1.push({...questionData, questionOrder: 1, isBlank: 0, isPaging: 0, isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                 this.orderQuestion();
             } else {
                 this.setState({
                     questionDisplayList1: [...newArr]
                 }, () => {
-                    this.state.questionDisplayList1.push({...questionData, questionOrder: null, isBlank: 0, isPaging: '0', isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
+                    this.state.questionDisplayList1.push({...questionData, questionOrder: null, isBlank: 0, isPaging: 0, isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
                     this.orderQuestion();
-                    if(this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].isPaging === '1') {
-                        this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].questionOrder = this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].questionOrder
+                    if(this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].isPaging === 1) {
+                        this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].questionOrder = this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].questionOrder;
                         this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
                     }
                 });
@@ -140,10 +142,10 @@ class QuestionEdit extends React.PureComponent {
 
     // 对获取的题进行排序
     orderQuestion = () => {
-        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === '0');
+        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 0);
         newArr.map((item, k) => {
             this.state.questionDisplayList1.map(x => {
-                if(item.questionId === x.questionId && x.isPaging === '0') {
+                if(item.questionId === x.questionId && x.isPaging === 0) {
                     x.questionOrder = k + 1;
                 }
                 return '';
@@ -154,10 +156,10 @@ class QuestionEdit extends React.PureComponent {
     };
     // 对分页栏进行排序
     orderPageNum = () => {
-        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === '1');
+        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 1);
         newArr.map((item, k) => {
             this.state.questionDisplayList1.map(x => {
-                if(item.questionOrder === x.questionOrder && x.isPaging === '1') {
+                if(item.questionOrder === x.questionOrder && x.isPaging === 1) {
                     x.pageNum = k + 1;
                 }
                 return '';
@@ -194,12 +196,37 @@ class QuestionEdit extends React.PureComponent {
 
     // 进入预览
     preview = () => {
-        let id = Math.floor(Math.random() * 100);
-        let path = {
-            pathname: '/npsMgr/questionMgr/questionPreview',
-            query: {id: id},
+        let belongTo = this.state.belongTo;
+        if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === 0) {
+            belongTo += 1
+        }
+        // let catalogId = Number(this.props.form.getFieldValue('catalogId'));
+        let catalogId = 1;
+        let params = {
+            belongTo,
+            catalogId,
+            qstnaireTitle: this.state.qstnaireTitle,
+            qstnaireLeadin: this.state.qstnaireLeadin,
+            question: this.state.questionDisplayList,
+            logic: this.state.logic
         };
-        this.props.history.push(`/npsMgr/questionMgr/questionPreview/${id}`);
+        if (this.state.qstnaireId) {
+            QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
+                if(data.qstnaireId) {
+                    debugger;
+                    message.success('编辑成功');
+                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${data.qstnaireId}`);
+                }
+            });
+        } else {
+            QuestionApplicationService.addQstnaireBank(params).then(data => {
+                if (data.qstnaireId) {
+                    debugger;
+                    message.success('保存成功');
+                    this.props.history.push(`/npsMgr/questionMgr/questionPreview/${data.qstnaireId}`);
+                }
+            });
+        }
     };
 
     // 题目逻辑提示
@@ -398,7 +425,7 @@ class QuestionEdit extends React.PureComponent {
 
             // 获取本题后面所有的题目
             let _obj=JSON.stringify(this.state.questionDisplayList);
-            let arr = JSON.parse(_obj).splice(i + 1).filter(item => item.isPaging !== '1');
+            let arr = JSON.parse(_obj).splice(i + 1).filter(item => item.isPaging !== 1);
             let jumpList = arr.map((item, k) => {
                 item.questionName = item.questionOrder + '、' + item.questionName;
                 return item;
@@ -432,22 +459,22 @@ class QuestionEdit extends React.PureComponent {
                 if (i === 1) {
                     questionDisplayList2[i].questionOrder = questionDisplayList2[i - 1].questionOrder;
                 } else {
-                    if (questionDisplayList2[i - 2].isPaging === '1') {
+                    if (questionDisplayList2[i - 2].isPaging === 1) {
                         message.info('当前页码位置不可继续上移');
                         return '';
                     }
                     questionDisplayList2[i].questionOrder = questionDisplayList2[i - 1].questionOrder;
                 }
             } else if (type === 'question') { // 上移题目
-                if (i > 0 && i < questionDisplayList2.length - 1 && questionDisplayList2[i - 1].isPaging === '1' && questionDisplayList2[i + 1].isPaging === '1') {
+                if (i > 0 && i < questionDisplayList2.length - 1 && questionDisplayList2[i - 1].isPaging === 1 && questionDisplayList2[i + 1].isPaging === 1) {
                     message.info('当前题目位置不可上移');
                     return '';
-                } else if (i > 0 && i < questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === '1') {
+                } else if (i > 0 && i < questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === 1) {
                     if (i === questionDisplayList2.length - 1) {
                         questionDisplayList2[i - 1].questionOrder = null;
                     }
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
-                } else if (i > 0  && questionDisplayList2[i - 1].isPaging === '0') { // 如果上一题是题目，将清除本题及上一题所有逻辑
+                } else if (i > 0  && questionDisplayList2[i - 1].isPaging === 0) { // 如果上一题是题目，将清除本题及上一题所有逻辑
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i - 1].questionOrder, 1);
                     this.questionLogicInfo();
@@ -467,7 +494,7 @@ class QuestionEdit extends React.PureComponent {
         } else {
             if (type === 'pageNum') { // 下移分页
                 if (i < questionDisplayList2.length - 2) {
-                    if(questionDisplayList2[i + 2].isPaging === '1') {
+                    if(questionDisplayList2[i + 2].isPaging === 1) {
                         message.info('当前页码位置不可继续下移');
                         return '';
                     }
@@ -476,15 +503,15 @@ class QuestionEdit extends React.PureComponent {
                     questionDisplayList2[i].questionOrder = null;
                 }
             } else if (type === 'question') { // 下移题目
-                if (i > 0 && questionDisplayList2[i - 1].isPaging === '1' && questionDisplayList2[i + 1].isPaging === '1') {
+                if (i > 0 && questionDisplayList2[i - 1].isPaging === 1 && questionDisplayList2[i + 1].isPaging === 1) {
                     message.info('当前题目位置不可下移');
                     return '';
-                } else if (i > 0 && questionDisplayList2[i - 1].isPaging === '1') {
+                } else if (i > 0 && questionDisplayList2[i - 1].isPaging === 1) {
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i + 1].questionOrder, 1);
                     this.questionLogicInfo();
-                } else if (questionDisplayList2[i + 1].isPaging === '1') {
+                } else if (questionDisplayList2[i + 1].isPaging === 1) {
                     questionDisplayList2[i + 1].questionOrder = questionDisplayList2[i].questionOrder;
                 }
             }
@@ -498,7 +525,7 @@ class QuestionEdit extends React.PureComponent {
     delQestion = (props, i, type) => {
         if (type === 'question') {
             if (i > 0) {
-                if(this.state.questionDisplayList1[i - 1].isPaging === '1') {
+                if(this.state.questionDisplayList1[i - 1].isPaging === 1) {
                     if (i === this.state.questionDisplayList1.length - 1) {
                         this.state.questionDisplayList1[i - 1].questionOrder = null;
                     } else {
@@ -543,7 +570,7 @@ class QuestionEdit extends React.PureComponent {
 
     // 添加分页
     addPagination = () => {
-        if (this.state.questionDisplayList1.length > 0 && this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].isPaging === '1') {
+        if (this.state.questionDisplayList1.length > 0 && this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].isPaging === 1) {
             message.info('当前不可添加分页');
             return '';
         }
@@ -553,10 +580,10 @@ class QuestionEdit extends React.PureComponent {
             "createTime": "当前时间",
             "createUid": 20,
             "isBlank": 0,
-            "isCommon": "",
-            "isNps": "",
-            "isPaging": "1",//分页数据
-            "isSatisfied": "",
+            "isCommon": 0,
+            "isNps": 0,
+            "isPaging": 1,//分页数据
+            "isSatisfied": 0,
             "lenthCheck": "",
             "optionLayout": "",
             "optionList":"",
@@ -575,7 +602,7 @@ class QuestionEdit extends React.PureComponent {
     // 完成编辑
     save =() => {
         let belongTo = this.state.belongTo;
-        if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === '0') {
+        if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === 0) {
             belongTo += 1
         }
         // let catalogId = Number(this.props.form.getFieldValue('catalogId'));
@@ -732,7 +759,7 @@ class QuestionEdit extends React.PureComponent {
                             </div>
                             {questionDisplayList.map((item, i) => {
                                 return (
-                                    String(item.isPaging) === '0' ?
+                                    item.isPaging === 0 ?
                                         <div key={i}>
                                             <InitQuestionList question={item} index={item.questionOrder} infoView={true}/>
                                             <div className="link-group">

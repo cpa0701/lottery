@@ -18,7 +18,8 @@ class InitQuestionList extends React.PureComponent {
     render() {
         const {
             questionType, index, questionName, optionList, isPaging, isBlank, display, isShowTip,
-            questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange, belongToPage, pageCount
+            questionNameBlur, optionNameBlur, onRadioChange, onCheckBoxChange, onBlankChange, belongToPage, pageCount, infoView = false,
+            connDescribe, jumpDescribe
         } = this.props;
         //定义此题是否显示（分页比显示，被跳题>被跳过的题>被关联的题>首次被关联默认隐藏的题)
         const show = isPaging === '1' ? 'block' : (display ? 'block' : 'none');
@@ -31,17 +32,19 @@ class InitQuestionList extends React.PureComponent {
                 dom = <RadioModule questionName={questionName} index={index} isBlank={isBlank}
                                    optionList={optionList} onChange={onRadioChange}
                                    questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}
-                                   isView={true}/>
+                                   isView={true} infoView={infoView} connDescribe={connDescribe} jumpDescribe={jumpDescribe}/>
                 break;
             case '02':
                 dom =<CheckboxGroupModule questionName={questionName} index={index} isBlank={isBlank}
                                       optionList={optionList} onChange={onCheckBoxChange}
-                                      questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}/>
+                                      questionNameBlur={questionNameBlur} optionNameBlur={optionNameBlur}
+                                          connDescribe={connDescribe} jumpDescribe={jumpDescribe}infoView={infoView}/>
                 break;
             case '03':
             case '04':
                 dom = <BlankModule questionName={questionName} index={index} isBlank={isBlank}
-                                   onChange={onBlankChange} isView={true}/>
+                                   onChange={onBlankChange} isView={true} infoView={infoView}
+                                   connDescribe={connDescribe} jumpDescribe={jumpDescribe}/>
                 break;
         }
         let tipContent='请选择选项';

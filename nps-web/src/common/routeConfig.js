@@ -9,8 +9,10 @@ import QuestionLibMgr from "../admin/npsMgr/questionLibMgr/QuestionLibMgr"
 import QuestionAddMgr from "../admin/npsMgr/questionLibMgr/QuestionAddMgr"
 import Authority from "../admin/system/authority/Authority"
 import QuestionApplication from "../admin/npsMgr/questionApplication/QuestionApplication"
+import QuestionReview from "../admin/npsMgr/questionApplication/QuestionReview"
 import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
+import QstnairePreview from "../admin/npsMgr/questionApplication/QstnairePreview"
 import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import NewApplicationForm from "../admin/missionMgr/missionApplication/NewApplicationForm"
 import NotFound from '../admin/base/error/NotFound';
@@ -25,8 +27,10 @@ class RouteList extends React.PureComponent {
                     <Route path="/npsMgr/questionLibMgr" component={QuestionLibMgr}/>
                     <Route path="/npsMgr/QuestionAddMgr/:id" component={QuestionAddMgr}/>
                     <Route path="/npsMgr/questionMgr/questionApplication" component={QuestionApplication}/>
+                    <Route path="/npsMgr/questionMgr/questionAudit" component={QuestionReview}/>
                     <Route path="/npsMgr/questionMgr/questionEdit/:id" component={QuestionEdit}/>
                     <Route path="/npsMgr/questionMgr/questionPreview/:id" component={QuestionPreview}/>
+                    <Route path="/npsMgr/questionMgr/qstnairePreview/:id" component={QstnairePreview}/>
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
                     <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
