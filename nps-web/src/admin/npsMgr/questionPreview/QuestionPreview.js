@@ -25,7 +25,7 @@ class QuestionPreview extends React.PureComponent {
     }
 
     componentWillMount() {
-        let id = this.props.match.params.id;
+        let id = this.props.match ? this.props.match.params.id : window.location.hash.split('/')[1];
         this.getQuestionData(id);
     }
 

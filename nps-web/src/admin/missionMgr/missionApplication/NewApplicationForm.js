@@ -404,12 +404,12 @@ class NewApplicationForm extends React.PureComponent {
                 </Col>
             </Row>
             <Tabs defaultActiveKey="2">
-                <TabPane tab={<span><Icon type="apple"/>链接与二维码</span>} key="1">
+                <TabPane tab={<span><Icon type="qrcode"/>链接与二维码</span>} key="3">
                     <div>
                         <QRCode size={150} value="http://www.baidu.com"/>
                     </div>
                 </TabPane>
-                <TabPane tab={<span><Icon type="android"/>微信发送</span>} key="2">
+                <TabPane tab={<span><Icon type="wechat"/>微信发送</span>} key="2">
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
@@ -433,26 +433,13 @@ class NewApplicationForm extends React.PureComponent {
                                     <Input/>
                                 )}
                             </FormItem>
-                        </Col> : <div></div>}
-                    </Row>
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="短信提示语：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskMessage', {
-                                    rules: [{required: true,}],
-                                })(
-                                    <TextArea placeholder="请填写短信提示语"/>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
+                        </Col> : ''}
                     </Row>
                 </TabPane>
-                <TabPane tab={<span><Icon type="apple"/>邮件发送</span>} key="3">
+                <TabPane tab={<span><Icon type="mail"/>邮件发送</span>} key="4">
                     邮件发送
                 </TabPane>
-                <TabPane tab={<span><Icon type="android"/>短信发送</span>} key="4">
-
+                <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="1">
                     <Row className={'row2'}>
                         <Col span='12' className={'select'}>
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
@@ -507,9 +494,11 @@ class NewApplicationForm extends React.PureComponent {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
+                                <Col span='12' className={'select'}>
+                                    <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
+                                </Col>
                             </Row>
-                        </div> : <div></div>}'
+                        </div> : ''}
                 </TabPane>
             </Tabs>
         </div>);
