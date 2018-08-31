@@ -29,4 +29,6 @@ public interface QstnaireLogicSetupMapper {
     int updateByPrimaryKey(QstnaireLogicSetup record);
 
     List<QstnaireLogicSetup> selectOrderByLogicOrder(String qstnaireId);
+
+    int insertByList (List<QstnaireLogicSetup> qstnaireLogicSetupList);
 }

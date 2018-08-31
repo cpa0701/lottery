@@ -42,8 +42,8 @@ public class QstnaireMgrController {
     @PostMapping("/addQstnaire")
     @ApiOperation(value = "新增问卷", notes = "新增问卷")
     public Result<Object> addQstnaire(@RequestBody AddQstnaireBankQuery addQstnaireBankQuery){
-        qstnaireBankService.addQstnaireBank(addQstnaireBankQuery);
-        return Result.success();
+
+        return Result.success(qstnaireBankService.addQstnaireBank(addQstnaireBankQuery));
     }
 
     @PostMapping("/qstnaireById")
@@ -59,8 +59,8 @@ public class QstnaireMgrController {
     @PostMapping("/eiditQstnaire")
     @ApiOperation(value = "编辑问卷", notes = "编辑问卷")
     public Result<Object> editQuestion(@RequestBody AddQstnaireBankQuery addQstnaireBankQuery){
-        qstnaireBankService.eiditQstnaire(addQstnaireBankQuery);
-        return Result.success();
+
+        return Result.success(qstnaireBankService.eiditQstnaire(addQstnaireBankQuery));
     }
 
     @PostMapping("/qstnaireBank")
@@ -68,7 +68,7 @@ public class QstnaireMgrController {
     public Result<Object> qstnaireBank(@RequestBody QstnaireBankQuery qstnaireBankQuery){
         if(StringUtil.isNull(qstnaireBankQuery.getPageNum()) ||
                 StringUtil.isNull(qstnaireBankQuery.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         return Result.success(qstnaireBankService.qstnaireBank(qstnaireBankQuery));
     }

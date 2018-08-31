@@ -153,49 +153,4 @@ public class QstnaireQuestionQuery {
         this.questionOrder = questionOrder;
     }
 
-    public QstnaireQuestionQuery QstnaireQuestionTo(QstnaireQuestion qstnaireQuestion){
-        this.questionId = qstnaireQuestion.getQuestionId();
-        this.isNps = qstnaireQuestion.getIsNps();
-        this.isSatisfied = qstnaireQuestion.getIsSatisfied();
-        this.isPaging = qstnaireQuestion.getIsPaging();
-        this.isBlank = qstnaireQuestion.getIsBlank();
-        this.questionOrder = qstnaireQuestion.getQuestionOrder();
-        return this;
-    }
-    public QstnaireQuestionQuery QuestionBankTo(QuestionBank questionBank){
-
-        this.lenthCheck = questionBank.getLenthCheck();
-        this.optionLayout = questionBank.getOptionLayout();
-        this.isCommon = questionBank.getIsCommon();
-        this.questionCategory = questionBank.getQuestionCategory();
-        this.createTime = questionBank.getCreateTime();
-        this.questionName = questionBank.getQuestionName();
-        this.questionName2 = questionBank.getQuestionName2();
-        this.contentCheck = questionBank.getContentCheck();
-        this.questionType = questionBank.getQuestionType();
-
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "QstnaireQuestionQuery{" +
-                "contentCheck=" + contentCheck +
-                ", createTime=" + createTime +
-                ", isBlank=" + isBlank +
-                ", isCommon=" + isCommon +
-                ", isNps=" + isNps +
-                ", isPaging='" + isPaging + '\'' +
-                ", isSatisfied=" + isSatisfied +
-                ", lenthCheck=" + lenthCheck +
-                ", optionLayout=" + optionLayout +
-                ", optionList=" + optionList +
-                ", questionCategory=" + questionCategory +
-                ", questionId='" + questionId + '\'' +
-                ", questionName='" + questionName + '\'' +
-                ", questionName2='" + questionName2 + '\'' +
-                ", questionType='" + questionType + '\'' +
-                ", questionOrder=" + questionOrder +
-                '}';
-    }
 }

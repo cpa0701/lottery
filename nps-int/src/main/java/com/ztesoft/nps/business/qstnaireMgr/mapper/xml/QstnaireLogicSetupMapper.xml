@@ -1,111 +1,114 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireLogicSetupMapper" >
-  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup" >
-    <id column="logic_id" property="logicId" jdbcType="VARCHAR" />
-    <result column="logic_order" property="logicOrder" jdbcType="SMALLINT" />
-    <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR" />
-    <result column="setup_question_order" property="setupQuestionOrder" jdbcType="SMALLINT" />
-    <result column="option_order" property="optionOrder" jdbcType="VARCHAR" />
-    <result column="skipto_question_order" property="skiptoQuestionOrder" jdbcType="SMALLINT" />
-    <result column="logic_type" property="logicType" jdbcType="VARCHAR" />
-    <result column="act_type" property="actType" jdbcType="DECIMAL" />
-    <result column="and_or" property="andOr" jdbcType="DECIMAL" />
-  </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+<mapper namespace="com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireLogicSetupMapper">
+    <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup">
+        <id column="logic_id" property="logicId" jdbcType="VARCHAR"/>
+        <result column="logic_order" property="logicOrder" jdbcType="SMALLINT"/>
+        <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR"/>
+        <result column="setup_question_order" property="setupQuestionOrder" jdbcType="SMALLINT"/>
+        <result column="option_order" property="optionOrder" jdbcType="VARCHAR"/>
+        <result column="skipto_question_order" property="skiptoQuestionOrder" jdbcType="SMALLINT"/>
+        <result column="logic_type" property="logicType" jdbcType="VARCHAR"/>
+        <result column="act_type" property="actType" jdbcType="DECIMAL"/>
+        <result column="and_or" property="andOr" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List" >
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
     logic_id, logic_order, qstnaire_id, setup_question_order, option_order, skipto_question_order, 
     logic_type, act_type, and_or
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    'true' as QUERYID,
-    <include refid="Base_Column_List" />
-    from qstnaire_logic_setup
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null" >
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from qstnaire_logic_setup
-    where logic_id = #{logicId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from qstnaire_logic_setup
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from qstnaire_logic_setup
+        where logic_id = #{logicId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from qstnaire_logic_setup
     where logic_id = #{logicId,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample" >
-    delete from qstnaire_logic_setup
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup" >
+    <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample">
+        delete from qstnaire_logic_setup
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup">
     insert into qstnaire_logic_setup (logic_id, logic_order, qstnaire_id, 
       setup_question_order, option_order, skipto_question_order, 
       logic_type, act_type, and_or
@@ -115,154 +118,156 @@
       #{logicType,jdbcType=VARCHAR}, #{actType,jdbcType=DECIMAL}, #{andOr,jdbcType=DECIMAL}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup" >
-    insert into qstnaire_logic_setup
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="logicId != null" >
-        logic_id,
-      </if>
-      <if test="logicOrder != null" >
-        logic_order,
-      </if>
-      <if test="qstnaireId != null" >
-        qstnaire_id,
-      </if>
-      <if test="setupQuestionOrder != null" >
-        setup_question_order,
-      </if>
-      <if test="optionOrder != null" >
-        option_order,
-      </if>
-      <if test="skiptoQuestionOrder != null" >
-        skipto_question_order,
-      </if>
-      <if test="logicType != null" >
-        logic_type,
-      </if>
-      <if test="actType != null" >
-        act_type,
-      </if>
-      <if test="andOr != null" >
-        and_or,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="logicId != null" >
-        #{logicId,jdbcType=VARCHAR},
-      </if>
-      <if test="logicOrder != null" >
-        #{logicOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="qstnaireId != null" >
-        #{qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="setupQuestionOrder != null" >
-        #{setupQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="optionOrder != null" >
-        #{optionOrder,jdbcType=VARCHAR},
-      </if>
-      <if test="skiptoQuestionOrder != null" >
-        #{skiptoQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="logicType != null" >
-        #{logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="actType != null" >
-        #{actType,jdbcType=DECIMAL},
-      </if>
-      <if test="andOr != null" >
-        #{andOr,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample" resultType="java.lang.Integer" >
-    select count(*) from qstnaire_logic_setup
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map" >
-    update qstnaire_logic_setup
-    <set >
-      <if test="record.logicId != null" >
-        logic_id = #{record.logicId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.logicOrder != null" >
+    <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup">
+        insert into qstnaire_logic_setup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logicId != null">
+                logic_id,
+            </if>
+            <if test="logicOrder != null">
+                logic_order,
+            </if>
+            <if test="qstnaireId != null">
+                qstnaire_id,
+            </if>
+            <if test="setupQuestionOrder != null">
+                setup_question_order,
+            </if>
+            <if test="optionOrder != null">
+                option_order,
+            </if>
+            <if test="skiptoQuestionOrder != null">
+                skipto_question_order,
+            </if>
+            <if test="logicType != null">
+                logic_type,
+            </if>
+            <if test="actType != null">
+                act_type,
+            </if>
+            <if test="andOr != null">
+                and_or,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logicId != null">
+                #{logicId,jdbcType=VARCHAR},
+            </if>
+            <if test="logicOrder != null">
+                #{logicOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="qstnaireId != null">
+                #{qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="setupQuestionOrder != null">
+                #{setupQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="optionOrder != null">
+                #{optionOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="skiptoQuestionOrder != null">
+                #{skiptoQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="logicType != null">
+                #{logicType,jdbcType=VARCHAR},
+            </if>
+            <if test="actType != null">
+                #{actType,jdbcType=DECIMAL},
+            </if>
+            <if test="andOr != null">
+                #{andOr,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetupExample"
+            resultType="java.lang.Integer">
+        select count(*) from qstnaire_logic_setup
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update qstnaire_logic_setup
+        <set>
+            <if test="record.logicId != null">
+                logic_id = #{record.logicId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.logicOrder != null">
+                logic_order = #{record.logicOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="record.qstnaireId != null">
+                qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.setupQuestionOrder != null">
+                setup_question_order = #{record.setupQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="record.optionOrder != null">
+                option_order = #{record.optionOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="record.skiptoQuestionOrder != null">
+                skipto_question_order = #{record.skiptoQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="record.logicType != null">
+                logic_type = #{record.logicType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.actType != null">
+                act_type = #{record.actType,jdbcType=DECIMAL},
+            </if>
+            <if test="record.andOr != null">
+                and_or = #{record.andOr,jdbcType=DECIMAL},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update qstnaire_logic_setup
+        set logic_id = #{record.logicId,jdbcType=VARCHAR},
         logic_order = #{record.logicOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="record.qstnaireId != null" >
         qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.setupQuestionOrder != null" >
         setup_question_order = #{record.setupQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="record.optionOrder != null" >
         option_order = #{record.optionOrder,jdbcType=VARCHAR},
-      </if>
-      <if test="record.skiptoQuestionOrder != null" >
         skipto_question_order = #{record.skiptoQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="record.logicType != null" >
         logic_type = #{record.logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.actType != null" >
         act_type = #{record.actType,jdbcType=DECIMAL},
-      </if>
-      <if test="record.andOr != null" >
-        and_or = #{record.andOr,jdbcType=DECIMAL},
-      </if>
-    </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map" >
-    update qstnaire_logic_setup
-    set logic_id = #{record.logicId,jdbcType=VARCHAR},
-      logic_order = #{record.logicOrder,jdbcType=SMALLINT},
-      qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
-      setup_question_order = #{record.setupQuestionOrder,jdbcType=SMALLINT},
-      option_order = #{record.optionOrder,jdbcType=VARCHAR},
-      skipto_question_order = #{record.skiptoQuestionOrder,jdbcType=SMALLINT},
-      logic_type = #{record.logicType,jdbcType=VARCHAR},
-      act_type = #{record.actType,jdbcType=DECIMAL},
-      and_or = #{record.andOr,jdbcType=DECIMAL}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup" >
-    update qstnaire_logic_setup
-    <set >
-      <if test="logicOrder != null" >
-        logic_order = #{logicOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="qstnaireId != null" >
-        qstnaire_id = #{qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="setupQuestionOrder != null" >
-        setup_question_order = #{setupQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="optionOrder != null" >
-        option_order = #{optionOrder,jdbcType=VARCHAR},
-      </if>
-      <if test="skiptoQuestionOrder != null" >
-        skipto_question_order = #{skiptoQuestionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="logicType != null" >
-        logic_type = #{logicType,jdbcType=VARCHAR},
-      </if>
-      <if test="actType != null" >
-        act_type = #{actType,jdbcType=DECIMAL},
-      </if>
-      <if test="andOr != null" >
-        and_or = #{andOr,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where logic_id = #{logicId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup" >
+        and_or = #{record.andOr,jdbcType=DECIMAL}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup">
+        update qstnaire_logic_setup
+        <set>
+            <if test="logicOrder != null">
+                logic_order = #{logicOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="qstnaireId != null">
+                qstnaire_id = #{qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="setupQuestionOrder != null">
+                setup_question_order = #{setupQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="optionOrder != null">
+                option_order = #{optionOrder,jdbcType=VARCHAR},
+            </if>
+            <if test="skiptoQuestionOrder != null">
+                skipto_question_order = #{skiptoQuestionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="logicType != null">
+                logic_type = #{logicType,jdbcType=VARCHAR},
+            </if>
+            <if test="actType != null">
+                act_type = #{actType,jdbcType=DECIMAL},
+            </if>
+            <if test="andOr != null">
+                and_or = #{andOr,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where logic_id = #{logicId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireLogicSetup">
     update qstnaire_logic_setup
     set logic_order = #{logicOrder,jdbcType=SMALLINT},
       qstnaire_id = #{qstnaireId,jdbcType=VARCHAR},
@@ -274,7 +279,39 @@
       and_or = #{andOr,jdbcType=DECIMAL}
     where logic_id = #{logicId,jdbcType=VARCHAR}
   </update>
-  <select id="selectOrderByLogicOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
+
+    <select id="selectOrderByLogicOrder" resultMap="BaseResultMap" parameterType="java.lang.String">
     select * from qstnaire_logic_setup where qstnaire_id=#{qstnaireId,jdbcType=VARCHAR} order by logic_order
   </select>
+
+    <insert id="insertByList" parameterType="java.util.List">
+        insert into qstnaire_logic_setup
+        (
+        logic_id ,
+        logic_order ,
+        qstnaire_id ,
+        setup_question_order ,
+        option_order ,
+        skipto_question_order ,
+        logic_type ,
+        act_type ,
+        and_or
+        )
+        values
+        <foreach collection="list" item="qstnaireLogicSetup" index="index" separator=",">
+            (
+            #{qstnaireLogicSetup.logicId},
+            #{qstnaireLogicSetup.logicOrder},
+            #{qstnaireLogicSetup.qstnaireId},
+            #{qstnaireLogicSetup.setupQuestionOrder},
+            #{qstnaireLogicSetup.optionOrder},
+            #{qstnaireLogicSetup.skiptoQuestionOrder},
+            #{qstnaireLogicSetup.logicType},
+            #{qstnaireLogicSetup.actType},
+            #{qstnaireLogicSetup.andOr}
+            )
+        </foreach>
+    </insert>
+
+
 </mapper>

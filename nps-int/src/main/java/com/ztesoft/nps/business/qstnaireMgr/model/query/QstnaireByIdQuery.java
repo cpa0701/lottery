@@ -15,7 +15,7 @@ public class QstnaireByIdQuery {
     private String catalogId;
     @ApiModelProperty("逻辑列表")
     private List<QstnaireLogicSetup> logic;
-    @ApiModelProperty("问卷标题")
+    @ApiModelProperty("问卷ID")
     private String qstnaireId;
     @ApiModelProperty("问卷欢迎语")
     private String qstnaireLeadin;

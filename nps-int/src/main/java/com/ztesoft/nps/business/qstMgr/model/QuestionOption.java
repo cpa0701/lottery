@@ -52,4 +52,5 @@ public class QuestionOption implements Serializable {
     public void setIsOther(Integer isOther) {
         this.isOther = isOther;
     }
+
 }
