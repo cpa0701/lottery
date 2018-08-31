@@ -46,4 +46,19 @@ public class ConstantUtils {
     public static final String SURVEY_RESULT_TYPE_0 = "0";  //答题状态 开始
     public static final String SURVEY_RESULT_TYPE_1 = "1";  //答题状态 结束
 
+    public static final String QSTNAIRE_STATUS_00_CHM = "停用";//00 停用
+    public static final String QSTNAIRE_STATUS_01_CHM = "启用";//01 启用
+    public static final String QSTNAIRE_STATUS_02_CHM = "草稿";//02 草稿
+    public static final String QSTNAIRE_STATUS_03_CHM = "待审核";//03 待审核
+    public static final String QSTNAIRE_STATUS_04_CHM = "审核不通过";//04 审核不通过
+
+    public static final String QSTNAIRE_STATUS_00 = "00";//00 停用
+    public static final String QSTNAIRE_STATUS_01 = "01";//01 启用
+    public static final String QSTNAIRE_STATUS_02 = "02";//02 草稿
+    public static final String QSTNAIRE_STATUS_03 = "03";//03 待审核
+    public static final String QSTNAIRE_STATUS_04 = "04";//04 审核不通过
+
+    public static final String PAGE_QUESTION_ID = "cf7a7a35dec14c4bab5fa6a9b8bf3009";//分页题目ID
+
+
 }

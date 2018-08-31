@@ -1,100 +1,104 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper" >
-  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion" >
-    <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR" />
-    <result column="question_id" property="questionId" jdbcType="VARCHAR" />
-    <result column="question_order" property="questionOrder" jdbcType="SMALLINT" />
-    <result column="is_blank" property="isBlank" jdbcType="DECIMAL" />
-    <result column="is_paging" property="isPaging" jdbcType="DECIMAL" />
-    <result column="page_txt" property="pageTxt" jdbcType="VARCHAR" />
-    <result column="is_nps" property="isNps" jdbcType="DECIMAL" />
-    <result column="is_satisfied" property="isSatisfied" jdbcType="DECIMAL" />
-  </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+<mapper namespace="com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper">
+    <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion">
+        <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR"/>
+        <result column="question_id" property="questionId" jdbcType="VARCHAR"/>
+        <result column="question_order" property="questionOrder" jdbcType="SMALLINT"/>
+        <result column="is_blank" property="isBlank" jdbcType="DECIMAL"/>
+        <result column="is_paging" property="isPaging" jdbcType="DECIMAL"/>
+        <result column="page_txt" property="pageTxt" jdbcType="VARCHAR"/>
+        <result column="is_nps" property="isNps" jdbcType="DECIMAL"/>
+        <result column="is_satisfied" property="isSatisfied" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List" >
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
     qstnaire_id, question_id, question_order, is_blank, is_paging, page_txt, is_nps, 
     is_satisfied
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    'true' as QUERYID,
-    <include refid="Base_Column_List" />
-    from qstnaire_question
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null" >
-      order by ${orderByClause}
-    </if>
-  </select>
-  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample" >
-    delete from qstnaire_question
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion" >
+    <select id="selectByExample" resultMap="BaseResultMap"
+            parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from qstnaire_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample">
+        delete from qstnaire_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion">
     insert into qstnaire_question (qstnaire_id, question_id, question_order, 
       is_blank, is_paging, page_txt, 
       is_nps, is_satisfied)
@@ -102,168 +106,220 @@
       #{isBlank,jdbcType=DECIMAL}, #{isPaging,jdbcType=DECIMAL}, #{pageTxt,jdbcType=VARCHAR}, 
       #{isNps,jdbcType=DECIMAL}, #{isSatisfied,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion" >
-    insert into qstnaire_question
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="qstnaireId != null" >
-        qstnaire_id,
-      </if>
-      <if test="questionId != null" >
-        question_id,
-      </if>
-      <if test="questionOrder != null" >
-        question_order,
-      </if>
-      <if test="isBlank != null" >
-        is_blank,
-      </if>
-      <if test="isPaging != null" >
-        is_paging,
-      </if>
-      <if test="pageTxt != null" >
-        page_txt,
-      </if>
-      <if test="isNps != null" >
-        is_nps,
-      </if>
-      <if test="isSatisfied != null" >
-        is_satisfied,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="qstnaireId != null" >
-        #{qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="questionId != null" >
-        #{questionId,jdbcType=VARCHAR},
-      </if>
-      <if test="questionOrder != null" >
-        #{questionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="isBlank != null" >
-        #{isBlank,jdbcType=DECIMAL},
-      </if>
-      <if test="isPaging != null" >
-        #{isPaging,jdbcType=DECIMAL},
-      </if>
-      <if test="pageTxt != null" >
-        #{pageTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="isNps != null" >
-        #{isNps,jdbcType=DECIMAL},
-      </if>
-      <if test="isSatisfied != null" >
-        #{isSatisfied,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample" resultType="java.lang.Integer" >
-    select count(*) from qstnaire_question
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map" >
-    update qstnaire_question
-    <set >
-      <if test="record.qstnaireId != null" >
-        qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.questionId != null" >
+    <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion">
+        insert into qstnaire_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="qstnaireId != null">
+                qstnaire_id,
+            </if>
+            <if test="questionId != null">
+                question_id,
+            </if>
+            <if test="questionOrder != null">
+                question_order,
+            </if>
+            <if test="isBlank != null">
+                is_blank,
+            </if>
+            <if test="isPaging != null">
+                is_paging,
+            </if>
+            <if test="pageTxt != null">
+                page_txt,
+            </if>
+            <if test="isNps != null">
+                is_nps,
+            </if>
+            <if test="isSatisfied != null">
+                is_satisfied,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="qstnaireId != null">
+                #{qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionId != null">
+                #{questionId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionOrder != null">
+                #{questionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="isBlank != null">
+                #{isBlank,jdbcType=DECIMAL},
+            </if>
+            <if test="isPaging != null">
+                #{isPaging,jdbcType=DECIMAL},
+            </if>
+            <if test="pageTxt != null">
+                #{pageTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="isNps != null">
+                #{isNps,jdbcType=DECIMAL},
+            </if>
+            <if test="isSatisfied != null">
+                #{isSatisfied,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample"
+            resultType="java.lang.Integer">
+        select count(*) from qstnaire_question
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update qstnaire_question
+        <set>
+            <if test="record.qstnaireId != null">
+                qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionId != null">
+                question_id = #{record.questionId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionOrder != null">
+                question_order = #{record.questionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="record.isBlank != null">
+                is_blank = #{record.isBlank,jdbcType=DECIMAL},
+            </if>
+            <if test="record.isPaging != null">
+                is_paging = #{record.isPaging,jdbcType=DECIMAL},
+            </if>
+            <if test="record.pageTxt != null">
+                page_txt = #{record.pageTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="record.isNps != null">
+                is_nps = #{record.isNps,jdbcType=DECIMAL},
+            </if>
+            <if test="record.isSatisfied != null">
+                is_satisfied = #{record.isSatisfied,jdbcType=DECIMAL},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update qstnaire_question
+        set qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
         question_id = #{record.questionId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.questionOrder != null" >
         question_order = #{record.questionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="record.isBlank != null" >
         is_blank = #{record.isBlank,jdbcType=DECIMAL},
-      </if>
-      <if test="record.isPaging != null" >
         is_paging = #{record.isPaging,jdbcType=DECIMAL},
-      </if>
-      <if test="record.pageTxt != null" >
         page_txt = #{record.pageTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="record.isNps != null" >
         is_nps = #{record.isNps,jdbcType=DECIMAL},
-      </if>
-      <if test="record.isSatisfied != null" >
-        is_satisfied = #{record.isSatisfied,jdbcType=DECIMAL},
-      </if>
-    </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map" >
-    update qstnaire_question
-    set qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
-      question_id = #{record.questionId,jdbcType=VARCHAR},
-      question_order = #{record.questionOrder,jdbcType=SMALLINT},
-      is_blank = #{record.isBlank,jdbcType=DECIMAL},
-      is_paging = #{record.isPaging,jdbcType=DECIMAL},
-      page_txt = #{record.pageTxt,jdbcType=VARCHAR},
-      is_nps = #{record.isNps,jdbcType=DECIMAL},
-      is_satisfied = #{record.isSatisfied,jdbcType=DECIMAL}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
+        is_satisfied = #{record.isSatisfied,jdbcType=DECIMAL}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
 
-  <insert id="insertSelectiveList" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion" >
-    insert into qstnaire_question
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="qstnaireId != null" >
+    <insert id="insertSelectiveList" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion">
+        insert into qstnaire_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="qstnaireId != null">
+                qstnaire_id,
+            </if>
+            <if test="questionId != null">
+                question_id,
+            </if>
+            <if test="questionOrder != null">
+                question_order,
+            </if>
+            <if test="isBlank != null">
+                is_blank,
+            </if>
+            <if test="isPaging != null">
+                is_paging,
+            </if>
+            <if test="pageTxt != null">
+                page_txt,
+            </if>
+            <if test="isNps != null">
+                is_nps,
+            </if>
+            <if test="isSatisfied != null">
+                is_satisfied,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="qstnaireId != null">
+                #{qstnaireId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionId != null">
+                #{questionId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionOrder != null">
+                #{questionOrder,jdbcType=SMALLINT},
+            </if>
+            <if test="isBlank != null">
+                #{isBlank,jdbcType=DECIMAL},
+            </if>
+            <if test="isPaging != null">
+                #{isPaging,jdbcType=DECIMAL},
+            </if>
+            <if test="pageTxt != null">
+                #{pageTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="isNps != null">
+                #{isNps,jdbcType=DECIMAL},
+            </if>
+            <if test="isSatisfied != null">
+                #{isSatisfied,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <select id="selectQstnaireQuestionById"
+            resultType="com.ztesoft.nps.business.qstnaireMgr.model.query.QstnaireQuestionQuery"
+            parameterType="java.lang.String">
+      select
+          qq.question_id as questionId,
+          qq.question_order as questionOrder,
+          qq.is_blank as isBank,
+          qq.is_paging as idPaging,
+          qq.is_nps as isNps,
+          qq.is_satisfied as isSatisfied,
+          qb.question_name as questionName,
+          qb.question_name2 as questionName2,
+          qb.content_check as content_check,
+          qb.create_time as createTime,
+          qb.is_common as isCommon,
+          qb.lenth_check as lenthCheck,
+          qb.question_type as questionType,
+          qb.option_layout as optionLayout,
+          qb.question_category as questionCategory
+      from qstnaire_question qq
+      LEFT JOIN question_bank qb on qb.question_id = qq.question_id
+      where qq.qstnaire_id = #{qstnaireId,jdbcType=VARCHAR}
+  </select>
+
+    <insert id="insertByList" parameterType="java.util.List">
+        insert into qstnaire_question
+        (
         qstnaire_id,
-      </if>
-      <if test="questionId != null" >
         question_id,
-      </if>
-      <if test="questionOrder != null" >
         question_order,
-      </if>
-      <if test="isBlank != null" >
         is_blank,
-      </if>
-      <if test="isPaging != null" >
         is_paging,
-      </if>
-      <if test="pageTxt != null" >
         page_txt,
-      </if>
-      <if test="isNps != null" >
         is_nps,
-      </if>
-      <if test="isSatisfied != null" >
-        is_satisfied,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="qstnaireId != null" >
-        #{qstnaireId,jdbcType=VARCHAR},
-      </if>
-      <if test="questionId != null" >
-        #{questionId,jdbcType=VARCHAR},
-      </if>
-      <if test="questionOrder != null" >
-        #{questionOrder,jdbcType=SMALLINT},
-      </if>
-      <if test="isBlank != null" >
-        #{isBlank,jdbcType=DECIMAL},
-      </if>
-      <if test="isPaging != null" >
-        #{isPaging,jdbcType=DECIMAL},
-      </if>
-      <if test="pageTxt != null" >
-        #{pageTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="isNps != null" >
-        #{isNps,jdbcType=DECIMAL},
-      </if>
-      <if test="isSatisfied != null" >
-        #{isSatisfied,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
+        is_satisfied
+        )
+        values
+        <foreach collection="list" item="qstnaireQuestion" index="index" separator=",">
+            (
+            #{qstnaireQuestion.qstnaireId},
+            #{qstnaireQuestion.questionId},
+            #{qstnaireQuestion.questionOrder},
+            #{qstnaireQuestion.isBlank},
+            #{qstnaireQuestion.isPaging},
+            #{qstnaireQuestion.pageTxt},
+            #{qstnaireQuestion.isNps},
+            #{qstnaireQuestion.isSatisfied}
+            )
+        </foreach>
+    </insert>
+
 
 </mapper>

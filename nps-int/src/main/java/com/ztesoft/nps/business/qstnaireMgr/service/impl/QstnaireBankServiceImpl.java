@@ -13,6 +13,7 @@ import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper;
 import com.ztesoft.nps.business.qstnaireMgr.model.*;
 import com.ztesoft.nps.business.qstnaireMgr.model.query.*;
 import com.ztesoft.nps.business.qstnaireMgr.service.QstnaireBankService;
+import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.safe.mapper.UserMapper;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
@@ -24,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 @Service("qstnaireBankServiceImpl")
 
@@ -79,40 +78,53 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         if("add".equals(action)){
             qstnaireId = StringUtil.getRandom32PK(); //生成问卷ID
         }else if ("eidit".equals(action)){
-            qstnaireId = addQstnaireBankQuery.getQstnaireId();//生成问卷ID
+            qstnaireId = addQstnaireBankQuery.getQstnaireId();//查找问卷ID
         }
-        List<QstnaireQuestion> questionList = addQstnaireBankQuery.getQuestion();
-        List<QstnaireLogicSetup> logicList = addQstnaireBankQuery.getLogic();
+
+
+
+        //插入问卷表
         QstnaireBank qstnaireBank = addQstnaireBankQuery.toQstnaireBank();//转化
         qstnaireBank.setQstnaireId(qstnaireId);
         qstnaireBank.setCreateUid(1L);//用户
-        qstnaireBank.setStatus("02");
+        qstnaireBank.setStatus(ConstantUtils.QSTNAIRE_STATUS_02);
         qstnaireBank.setCreateTime(new Date());
         qstnaireBank.setUpdateTime(new Date());
         qstnaireBankMapper.insertSelective(qstnaireBank);
-        for(QstnaireQuestion qstnaireQuestion : questionList){
+
+        //批量插入问卷-问题表
+        List<QstnaireQuestion> questionList = addQstnaireBankQuery.getQuestion();
+        for(QstnaireQuestion  qstnaireQuestion:questionList){
             qstnaireQuestion.setQstnaireId(qstnaireId);
         }
+        qstnaireQuestionMapper.insertByList(questionList);
 
-        Short i = 0;
-        for(QstnaireLogicSetup qstnaireLogicSetup:logicList){
-            qstnaireLogicSetup.setQstnaireId(qstnaireId);
-            qstnaireLogicSetup.setLogicId(StringUtil.getRandom32PK());//生成逻辑id并插入
-            qstnaireLogicSetup.setLogicOrder(i++);//逻辑序号(取出时按照序号排序)
-            qstnaireLogicSetupMapper.insertSelective(qstnaireLogicSetup);//插入逻辑表
+        //批量插入逻辑表
+        short logicOrder = 0;
+        List<QstnaireLogicSetup> logicList = addQstnaireBankQuery.getLogic();
+        for(QstnaireLogicSetup   logicSetup :logicList){
+            logicSetup.setQstnaireId(qstnaireId);
+            logicSetup.setLogicId(StringUtil.getRandom32PK());
+            logicSetup.setLogicOrder(logicOrder++);
         }
+        qstnaireLogicSetupMapper.insertByList(logicList);
+
         return qstnaireId;
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteQstnaire(QstnaireIdQuery qstnaireIdQuery){
+        //获取问卷ID
         String qstnaireId = qstnaireIdQuery.getQstnaireId();
+        //删除逻辑表数据
         QstnaireLogicSetupExample qstnaireLogicSetupExample = new QstnaireLogicSetupExample();
         qstnaireLogicSetupExample.createCriteria().andQstnaireIdEqualTo(qstnaireId);
+        qstnaireLogicSetupMapper.deleteByExample(qstnaireLogicSetupExample);
+        //删除问卷问题表内数据
         QstnaireQuestionExample qstnaireQuestionExample = new QstnaireQuestionExample();
         qstnaireQuestionExample.createCriteria().andQstnaireIdEqualTo(qstnaireId);
-        qstnaireLogicSetupMapper.deleteByExample(qstnaireLogicSetupExample);
         qstnaireQuestionMapper.deleteByExample(qstnaireQuestionExample);
+        //删除主表数据
         qstnaireBankMapper.deleteByPrimaryKey(qstnaireId);
         return 0;
     }
@@ -121,12 +133,11 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
     public QstnaireByIdQuery qstnaireById(QstnaireIdQuery qstnaireIdQuery){
         QstnaireByIdQuery qstnaireByIdQuery = new QstnaireByIdQuery();
         String qstnaireId = qstnaireIdQuery.getQstnaireId();
-
         //查询问卷信息
         QstnaireBank qstnaireBank = qstnaireBankMapper.selectByPrimaryKey(qstnaireId);
+        String catalogName = qstnaireCatalogMapper.selectByPrimaryKey(qstnaireBank.getCatalogId()).getCatalogName();//根据目录ID查询目录名
         qstnaireByIdQuery.setBelongTo(qstnaireBank.getBelongTo());
         qstnaireByIdQuery.setCatalogId(qstnaireBank.getCatalogId());
-        String catalogName = qstnaireCatalogMapper.selectByPrimaryKey(qstnaireBank.getCatalogId()).getCatalogName();//根据目录ID查询目录名
         qstnaireByIdQuery.setCatalogName(catalogName);
         qstnaireByIdQuery.setQstnaireLeadin(qstnaireBank.getQstnaireLeadin());
         qstnaireByIdQuery.setQstnaireTitle(qstnaireBank.getQstnaireTitle());
@@ -134,46 +145,43 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         //查询逻辑
         List<QstnaireLogicSetup> qstnaireLogicSetupList = qstnaireLogicSetupMapper.selectOrderByLogicOrder(qstnaireId);
         qstnaireByIdQuery.setLogic(qstnaireLogicSetupList);
-        //查询问题ID列表
-        QstnaireQuestionExample qstnaireQuestionExample = new QstnaireQuestionExample();
-        qstnaireQuestionExample.createCriteria().andQstnaireIdEqualTo(qstnaireId);
+
+        //查询问题信息
+        //根据ID查询问卷基础信息
+        List<QstnaireQuestionQuery> qstnaireQuestionQueryList = qstnaireQuestionMapper.selectQstnaireQuestionById(qstnaireId);
         List<String> questionIdList = new ArrayList<String>();
-        List<QstnaireQuestion> qstnaireQuestionsList = qstnaireQuestionMapper.selectByExample(qstnaireQuestionExample);
-        for( QstnaireQuestion qq : qstnaireQuestionsList ){
-            questionIdList.add(qq.getQuestionId());
+        //问题ID List
+        for(QstnaireQuestionQuery qqq : qstnaireQuestionQueryList){
+            questionIdList.add(qqq.getQuestionId());
         }
-        //根据问题ID查找问题
-        List<QstnaireQuestionQuery> qstnaireQuestionQueryList = new ArrayList<QstnaireQuestionQuery>();
-//        QstnaireQuestionQuery qstnaireQuestionQuery = new QstnaireQuestionQuery();
-//        QuestionOptionExample questionOptionExample = new QuestionOptionExample();
-//        QuestionBank questionBank ;
-        String questionId = null;
-        for (QstnaireQuestion qq : qstnaireQuestionsList){
-            QstnaireQuestionQuery qstnaireQuestionQuery = new QstnaireQuestionQuery();
-            QuestionOptionExample questionOptionExample = new QuestionOptionExample();
-            QuestionBank questionBank ;
-            qstnaireQuestionQuery.QstnaireQuestionTo(qq);
 
-            questionId = qq.getQuestionId();
+        Map<String,List<QuestionOption>>questionOptionMap = new HashMap<String, List<QuestionOption>>();
 
-            questionBank = questionBankMapper.selectByPrimaryKey(questionId);
-
-            qstnaireQuestionQuery.QuestionBankTo(questionBank);
-
-            questionOptionExample.createCriteria().andQuestionIdEqualTo(questionId);
-
-            List<QuestionOption> questionOptionList = questionOptionMapper.selectByExample(questionOptionExample);
-
-            if(ListUtil.isNull(questionOptionList)){
-                qstnaireQuestionQuery.setOptionList(null);
+        //查询所有问题选项
+        QuestionOptionExample questionOptionExample = new QuestionOptionExample();
+        questionOptionExample.createCriteria().andQuestionIdIn(questionIdList);
+        //查询问卷所有问题
+        List<QuestionOption> questionOptionList = questionOptionMapper.selectByExample(questionOptionExample);
+        //问题选项Map<问卷id，选项List>
+        for(QuestionOption qo : questionOptionList){
+            if(questionOptionMap.containsKey(qo.getQuestionId())){
+                questionOptionMap.get(qo.getQuestionId()).add(qo);
             }else{
-                qstnaireQuestionQuery.setOptionList(questionOptionList);
+                questionOptionMap.put(qo.getQuestionId(),new ArrayList<QuestionOption>(){{add(qo);}});
             }
-
-            qstnaireQuestionQueryList.add(qstnaireQuestionQuery);
         }
+        //选项List插入问卷
+        for(QstnaireQuestionQuery qqq : qstnaireQuestionQueryList){
+            if(questionOptionMap.containsKey(qqq.getQuestionId())){
+                qqq.setOptionList(questionOptionMap.get(qqq.getQuestionId()));
+            }
+            //如果是分页题，设置isPaging为1
+            if(ConstantUtils.PAGE_QUESTION_ID.equals(qqq.getQuestionId())){
+                qqq.setIsPaging(1);
+            }
+        }
+        //问卷问题插入
         qstnaireByIdQuery.setQuestion(qstnaireQuestionQueryList);
-
         return qstnaireByIdQuery;
     }
     @Override
@@ -187,39 +195,28 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
 
     @Override
     public LPageHelper qstnaireBank(QstnaireBankQuery qstnaireBankQuery){
-
+        //获得qstnaireBank的查询sql语句
         StringBuilder qstnaireBankSql = getQstnaireBankSql();
         String qstnaireTitle = qstnaireBankQuery.getQstnaireTitle();
         String status = qstnaireBankQuery.getStatus();
+        //增加查询条件 qb.
         if(StringUtil.isNotNull(qstnaireTitle)){
-            qstnaireBankSql.append(" and qstnaire_title like '%"+qstnaireTitle+"%'");
+            qstnaireBankSql.append(" and qb.qstnaire_title like '%"+qstnaireTitle+"%'");
         }
         if (StringUtil.isNotNull(status)){
-            qstnaireBankSql.append(" and status = '"+status+"'");
+            qstnaireBankSql.append(" and qb.status = '"+status+"'");
         }
+        //查询
         LPageHelper bankResult = DatabaseUtil.queryForPageResult(qstnaireBankSql.toString(),
                 Integer.valueOf(qstnaireBankQuery.getPageNum()),Integer.valueOf(qstnaireBankQuery.getPageSize()));
+        //对status进行修改，改为汉字
         List<Map<String,Object>> row = bankResult.getRows();
         List<String> catalogIdlist = new ArrayList<String>();
-        String catalogId = null;
-        String createUid = null;
         if(ListUtil.isNotNull(row)){
             for(Map<String,Object> map : row ){
-                catalogId = MapUtil.getString(map,"catalogId");
-                if(StringUtil.isNotNull(catalogId)){
-                    QstnaireCatalog qstnaireCatalog = qstnaireCatalogMapper.selectByPrimaryKey(catalogId);
-                    map.put("catalogName",qstnaireCatalog.getCatalogName());
-                }
-                createUid = MapUtil.getString(map,"createUid");
-                if(StringUtil.isNotNull(createUid)&&StringUtil.isInteger(createUid)){
-                    User u = userMapper.findById(Long.valueOf(createUid));
-                    map.put("createUname",u.getName());
-                }
                 status = MapUtil.getString(map,"status");
                 //(00 停用/01 启用/02 草稿/03 待审核/04 审核不通过)
-
-                map.put("status",status);
-
+                map.put("status",statusToString(status));
             }
         }
         return bankResult;
@@ -227,28 +224,30 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
 
     private StringBuilder getQstnaireBankSql(){
         StringBuilder qstnaireBankSql = new StringBuilder();
-        qstnaireBankSql.append(" select qstnaire_id as qstnaireId,qstnaire_title as qstnaireTitle, ");
-        qstnaireBankSql.append(" qstnaire_leadin as qstnaireLeadin ,catalog_id as catalogId ,belong_to as belongTo, ");
-        qstnaireBankSql.append(" create_uid as createUid ,create_time as createTime ,status as status ,is_inst as isInst,update_time as updateTime ");
-        qstnaireBankSql.append(" from qstnaire_bank where 1=1 ");
+        qstnaireBankSql.append(" select qb.qstnaire_id as qstnaireId, qb.qstnaire_title as qstnaireTitle,  ");
+        qstnaireBankSql.append(" qb.qstnaire_leadin as qstnaireLeadin ,qb.catalog_id as catalogId ,qb.belong_to as belongTo, ");
+        qstnaireBankSql.append(" qb.create_uid as createUid ,qb.create_time as createTime ,qb.status as status ,qb.is_inst as isInst, ");
+        qstnaireBankSql.append(" qb.update_time as updateTime,u.name as createUname,qc.catalog_name as catalogName ");
+        qstnaireBankSql.append(" from qstnaire_bank qb LEFT JOIN  Users u ON u.id = qb.create_uid ");
+        qstnaireBankSql.append(" Left Join  qstnaire_catalog qc On qc.catalog_id = qb.catalog_id where 1=1 ");
         return qstnaireBankSql;
     }
     private String statusToString(String status){
         switch(status){
             case "00":
-                status = "停用";
+                status = ConstantUtils.QSTNAIRE_STATUS_00_CHM;
                 break;
             case "01":
-                status = "启用";
+                status = ConstantUtils.QSTNAIRE_STATUS_01_CHM;
                 break;
             case "02":
-                status = "草稿";
+                status = ConstantUtils.QSTNAIRE_STATUS_02_CHM;
                 break;
             case "03":
-                status = "待审核";
+                status = ConstantUtils.QSTNAIRE_STATUS_03_CHM;
                 break;
             case "04":
-                status = "审核不通过";
+                status = ConstantUtils.QSTNAIRE_STATUS_04_CHM;
                 break;
         }
         return status;

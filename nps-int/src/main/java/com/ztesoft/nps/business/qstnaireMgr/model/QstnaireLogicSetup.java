@@ -90,4 +90,6 @@ public class QstnaireLogicSetup {
     public void setAndOr(Short andOr) {
         this.andOr = andOr;
     }
+
+
 }
