@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col,} from "antd"
+import {Row, Col,Button} from "antd"
 const echarts = require('echarts');
 class ResourceMap extends React.PureComponent {
     constructor(props) {
@@ -15,6 +15,7 @@ class ResourceMap extends React.PureComponent {
         var optionone = {
             title : {
                 text: '全年调研资源统计图(短信类)',
+                left:'center',
                 textStyle:{
                     align:'center',
                 }
@@ -64,10 +65,7 @@ class ResourceMap extends React.PureComponent {
         var optiontwo = {
             title : {
                 text: '全年调研资源统计图(赠费类)',
-                textStyle:{
-                    align:'right',
-                    verticalAlign:'middle',
-                }
+                left:'center',
 
             },
             tooltip : {
@@ -111,6 +109,14 @@ class ResourceMap extends React.PureComponent {
     render() {
         return(
             <div>
+                <Row>
+                年份：
+                <Button>今年</Button>
+                    <Button>2016</Button>
+                    <Button>2017</Button>
+                    <Button>2018</Button>
+                    <Button>2019</Button>
+                </Row>
                <Row id='exampleone' style={{height:400}}/>
                 <Row id='exampletwo' style={{height:400}}/>
             </div>
