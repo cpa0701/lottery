@@ -7,7 +7,7 @@ import QuestionApplicationService from "../../../services/question/QuestionAppli
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
 
-class QuestionApplication extends React.PureComponent {
+class QuestionReview extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -89,7 +89,7 @@ class QuestionApplication extends React.PureComponent {
     };
     // 查看问卷
     showQstnaire = (id) => {
-        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${61}`);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${id}`);
     };
 
     // 点击审核日志
@@ -136,11 +136,10 @@ class QuestionApplication extends React.PureComponent {
                                                     <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
                                                     <Col span={9}>
                                                         <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                                        <Button type="primary" onClick={() => this.editQstnaire(item.qstnaireId)}>编辑</Button>
-                                                        <Popconfirm title="确定删除该问卷?" onConfirm={() => this.delQstnaire(item.qstnaireId)}>
-                                                            <Button type="danger" icon="delete">删除</Button>
+                                                        <Button type="primary" onClick={() => this.editQstnaire(item.qstnaireId)}>通过</Button>
+                                                        <Popconfirm title="确定否决该问卷?" onConfirm={() => this.delQstnaire(item.qstnaireId)}>
+                                                            <Button type="danger">否决</Button>
                                                         </Popconfirm>
-                                                        <Button type="primary" onClick={() => this.submitQstnaire(item.qstnaireId)}>提交</Button>
                                                         {/*<Dropdown overlay={menu}>*/}
                                                             {/*<Button>*/}
                                                                 {/*审核日志 <Icon type="down"/>*/}
@@ -154,7 +153,7 @@ class QuestionApplication extends React.PureComponent {
                                                     <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
                                                     </Col>
                                                     <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
-                                                    <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>编辑时间： {item.updateTime}
+                                                    <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>创建时间： {item.updateTime}
                                                     </Col>
                                                 </Row>
                                             </div>
@@ -164,27 +163,20 @@ class QuestionApplication extends React.PureComponent {
                                 <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total} showQuickJumper/>
                             </div>;
 
-        let tab1Title = "我的全部问卷( 共" + total + "条 )";
-        let tab2Title = "已启用( " + opened + " )";
-        let tab3Title = "待审核( " + 0 + " )";
-        let tab4Title = "审核否决( " + 0 + " )";
-        let tab5Title = "草稿( " + draught + " )";
+        let tab1Title = "待我审核( 共" + total + "条 )";
+        let tab2Title = "审核通过( " + opened + " )";
+        let tab3Title = "审核否决( " + 0 + " )";
 
         return (
             <div className={'questionnaire'}>
-                <Button type="primary" icon="plus" onClick={this.createQuestion}>
-                    创建问卷
-                </Button>
                 <Tabs tabBarExtraContent={operations} defaultActiveKey={""} onTabClick={this.onTabClick}>
                     <TabPane tab={tab1Title} key="" >{questionLIst}</TabPane>
                     <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
                     <TabPane tab={tab3Title} key="03">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="04">{questionLIst}</TabPane>
-                    <TabPane tab={tab5Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )
     }
 }
 
-export default QuestionApplication;
+export default QuestionReview;

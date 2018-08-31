@@ -1,10 +1,5 @@
-/**
- * Create by chenpengan on 2018/8/14
- */
 import React from 'react';
-import {Row, Col, Radio, Checkbox, Input} from "antd"
 
-import QuestionApplicationService from "../../../services/question/QuestionApplicationService"
 import {RadioModule} from "../questionModule/QuestionModules"
 import {CheckboxModule} from "../questionModule/QuestionModules"
 import {BlankModule} from "../questionModule/QuestionModules"
@@ -21,7 +16,7 @@ class InitQuestionList extends React.PureComponent {
         e.stopPropagation();
         if (this.props.getDom)
             this.props.getDom(this.props)
-    }
+    };
 
     render() {
         const { index, isLib, onRadioChange, onCheckBoxChange, question, infoView = false } = this.props;

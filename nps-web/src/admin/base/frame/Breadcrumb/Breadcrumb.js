@@ -21,6 +21,7 @@ class Bread extends React.Component {
         let menuMaps = stores.MenuModel.menuMaps;
         let otherPage = {
             '/npsMgr/questionMgr/questionPreview': '问卷预览',
+            '/npsMgr/questionMgr/qstnairePreview': '问卷查看',
             '/npsMgr/questionMgr/questionEdit': '问卷编辑',
             '/npsMgr/questionAddMgr': '题目编辑',
             '/missionMgr/newApplicationForm': '新建申请单'
