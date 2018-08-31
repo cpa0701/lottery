@@ -117,7 +117,7 @@ class QuestionEdit extends React.PureComponent {
     // 获取题库具体题目
     getDom = (data) => {
         let questionData = data.question;
-        // if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
+        if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
             let arr = JSON.stringify(this.state.questionDisplayList1);
             let newArr = JSON.parse(arr);
             if(newArr.length === 0) {
@@ -135,9 +135,9 @@ class QuestionEdit extends React.PureComponent {
                     }
                 });
             }
-        // } else {
-        //     message.info('该题已存在问卷中，且不可重复');
-        // }
+        } else {
+            message.info('该题已存在问卷中，且不可重复');
+        }
     };
 
     // 对获取的题进行排序
@@ -280,7 +280,8 @@ class QuestionEdit extends React.PureComponent {
                         connDescribe: k.connDescribe ? k.connDescribe + '，第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
                             : '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
                     };
-                    k.connDescribe = '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项';
+                    k.connDescribe = k.connDescribe ? k.connDescribe + '，第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项'
+                        : '依赖于第' + item.setupQuestionOrder + '题的第' + item.optionOrder + '个选项';
                 }
                 return '';
             });
@@ -299,7 +300,6 @@ class QuestionEdit extends React.PureComponent {
             return '';
         }
         if (show) {
-            console.log('111', props);
             // 打开弹框前获取已存在的关联逻辑关系并存入questions
             let questions = [], arr = [], keyS = [], andOr = 0;
 
