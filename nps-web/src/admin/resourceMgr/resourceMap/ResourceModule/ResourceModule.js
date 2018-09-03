@@ -1,13 +1,7 @@
+import {PureComponent} from "react";
 import React from 'react';
-import {Row, Col,Button} from "antd"
 const echarts = require('echarts');
-class ResourceMap extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        }
-    }
+export default class ResourceModule extends PureComponent {
     componentDidMount(){
         // 基于准备好的dom，初始化echarts实例
         var myChart1 = echarts.init(document.getElementById('exampleone'));
@@ -115,23 +109,4 @@ class ResourceMap extends React.PureComponent {
         // 使用刚指定的配置项和数据显示图表。
         myChart2.setOption(optiontwo);
     }
-    render() {
-        return(
-            <div>
-                <Row>
-                年份：
-                    <Button style={{marginLeft:'10px'}}>今年</Button>
-                    <Button style={{marginLeft:'10px'}}>2016</Button>
-                    <Button style={{marginLeft:'10px'}}>2017</Button>
-                    <Button style={{marginLeft:'10px'}}>2018</Button>
-                    <Button style={{marginLeft:'10px'}}>2019</Button>
-                </Row>
-               <Row id='exampleone' style={{height:400}}/>
-                <Row id='exampletwo' style={{height:400}}/>
-            </div>
-
-        );
-    }
 }
-
-export default ResourceMap;

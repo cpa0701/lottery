@@ -15,6 +15,7 @@ import QuestionEdit from "../admin/npsMgr/questionApplication/QuestionEdit"
 import QuestionPreview from "../admin/npsMgr/questionPreview/QuestionPreview"
 import MissionApplication from "../admin/missionMgr/missionApplication/MissionApplication"
 import ResourceMap from "../admin/resourceMgr/resourceMap/ResourceMap"
+import AnalysisResult from "../admin/satisfactionOperation/analysisResult/AnalysisResult"
 import PerceptionView from "../admin/customerPerception/perceptionView/PerceptionView"
 import BrandView from "../admin/customerPerception/brandView/BrandView"
 import UseView from "../admin/customerPerception/useView/UseView"
@@ -41,6 +42,7 @@ class RouteList extends React.PureComponent {
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
                     <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
                     <Route path="/resourceMgr/resourceMap" component={ResourceMap}/>
+                    <Route path="/satisfactionOperation/analysisResult" component={AnalysisResult}/>
                     <Route path="/customerPerception/perceptionView" component={PerceptionView}/>
                     <Route path="/customerPerception/brandView" component={BrandView}/>
                     <Route path="/customerPerception/useView" component={UseView}/>

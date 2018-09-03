@@ -128,12 +128,12 @@ Mock.mock('mock/menuInfoController/qryMenu', {
         {
             menuName: '满意度运营分析',
             icon: 'check-circle-o',
-            menuUrl: 'result',
+            menuUrl: '/satisfactionOperation',
             menuId: 5,
             children: [
                 {
                     menuName: '调研结果分析',
-                    menuUrl: 'success',
+                    menuUrl: '/satisfactionOperation/analysisResult',
                     menuId: 51,
                 }
             ]
