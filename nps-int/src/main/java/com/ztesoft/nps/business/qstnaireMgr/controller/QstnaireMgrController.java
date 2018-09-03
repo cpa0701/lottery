@@ -1,5 +1,6 @@
 package com.ztesoft.nps.business.qstnaireMgr.controller;
 
+import com.ztesoft.nps.business.qstMgr.model.QuestionResult;
 import com.ztesoft.nps.business.qstnaireMgr.model.query.ActionQstnaireQuery;
 import com.ztesoft.nps.business.qstnaireMgr.model.query.AddQstnaireBankQuery;
 import com.ztesoft.nps.business.qstnaireMgr.model.query.QstnaireBankQuery;
@@ -81,5 +82,12 @@ public class QstnaireMgrController {
             throw new NpsObjectNotFoundException(qstnaireId);
         }
         return Result.success(qstnaireBankService.actionQstnaire(actionQstnaireQuery));
+    }
+
+    @PostMapping("/submitQstnaire")
+    @ApiOperation(value = "问卷提交", notes = "问卷提交")
+    public Result<Object> submitQstnaire(@RequestBody QuestionResult questionResult){
+        qstnaireBankService.submitQstnaire(questionResult);
+        return Result.success();
     }
 }

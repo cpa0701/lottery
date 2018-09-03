@@ -2,9 +2,10 @@ package com.ztesoft.nps.business.qstnaireMgr.service.impl;
 
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionBankMapper;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionOptionMapper;
-import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
+import com.ztesoft.nps.business.qstMgr.mapper.QuestionResultMapper;
 import com.ztesoft.nps.business.qstMgr.model.QuestionOption;
 import com.ztesoft.nps.business.qstMgr.model.QuestionOptionExample;
+import com.ztesoft.nps.business.qstMgr.model.QuestionResult;
 import com.ztesoft.nps.business.qstMgr.service.QuestionMgrService;
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireBankMapper;
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireCatalogMapper;
@@ -13,9 +14,11 @@ import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper;
 import com.ztesoft.nps.business.qstnaireMgr.model.*;
 import com.ztesoft.nps.business.qstnaireMgr.model.query.*;
 import com.ztesoft.nps.business.qstnaireMgr.service.QstnaireBankService;
+import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyResultMapper;
+import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult;
+import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.safe.mapper.UserMapper;
-import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
@@ -25,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.*;
 
 @Service("qstnaireBankServiceImpl")
@@ -33,27 +35,25 @@ import java.util.*;
 public class QstnaireBankServiceImpl implements QstnaireBankService {
     @Autowired
     private QstnaireBankMapper qstnaireBankMapper;
-
     @Autowired
     private QstnaireLogicSetupMapper qstnaireLogicSetupMapper;
-
     @Autowired
     private QstnaireQuestionMapper qstnaireQuestionMapper;
-
     @Autowired
     private QuestionBankMapper questionBankMapper;
-
     @Autowired
     private QstnaireCatalogMapper qstnaireCatalogMapper;
-
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private QuestionMgrService questionMgrService;
-
     @Autowired
     private QuestionOptionMapper questionOptionMapper;
+    @Autowired
+    private QuestionResultMapper questionResultMapper;
+    @Autowired
+    private SurveyResultMapper surveyResultMapper;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -80,8 +80,6 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         }else if ("eidit".equals(action)){
             qstnaireId = addQstnaireBankQuery.getQstnaireId();//查找问卷ID
         }
-
-
 
         //插入问卷表
         QstnaireBank qstnaireBank = addQstnaireBankQuery.toQstnaireBank();//转化
@@ -220,6 +218,23 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
             }
         }
         return bankResult;
+    }
+
+    @Override
+    public int submitQstnaire(QuestionResult questionResult) {
+        //插入questionResult 表
+        questionResultMapper.insertSelective(questionResult);
+        //更新 surveyResult 表 更改状态，更改完成时间
+        SurveyResult surveyResult = new SurveyResult();
+        //更新完成时间
+        surveyResult.setFinishTime(new Date());
+        //更改状态为完成 1
+        surveyResult.setStatus(new Short("1"));
+        //根据resultId 更新数据
+        SurveyResultExample surveyResultExample = new SurveyResultExample();
+        surveyResultExample.createCriteria().andResultIdEqualTo(questionResult.getSurveyResultNo());
+        surveyResultMapper.updateByExampleSelective(surveyResult,surveyResultExample);
+        return 0;
     }
 
     private StringBuilder getQstnaireBankSql(){
