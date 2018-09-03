@@ -3,6 +3,7 @@
 <mapper namespace="com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper" >
   <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
     <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
     <result column="task_name" property="taskName" jdbcType="VARCHAR" />
     <result column="qstnaire_id" property="qstnaireId" jdbcType="VARCHAR" />
     <result column="task_count" property="taskCount" jdbcType="BIGINT" />
@@ -72,8 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    task_id, task_name, qstnaire_id, task_count, partake_count, finish_count, partake_ratio, 
-    finish_ratio, task_type, create_date
+    task_id, area_id, task_name, qstnaire_id, task_count, partake_count, finish_count, 
+    partake_ratio, finish_ratio, task_type, create_date
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfoExample" >
     select
@@ -97,20 +98,23 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
-    insert into survey_user_info (task_id, task_name, qstnaire_id, 
-      task_count, partake_count, finish_count, 
-      partake_ratio, finish_ratio, task_type, 
-      create_date)
-    values (#{taskId,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{qstnaireId,jdbcType=VARCHAR}, 
-      #{taskCount,jdbcType=BIGINT}, #{partakeCount,jdbcType=BIGINT}, #{finishCount,jdbcType=BIGINT}, 
-      #{partakeRatio,jdbcType=DECIMAL}, #{finishRatio,jdbcType=DECIMAL}, #{taskType,jdbcType=DECIMAL}, 
-      #{createDate,jdbcType=DATE})
+    insert into survey_user_info (task_id, area_id, task_name, 
+      qstnaire_id, task_count, partake_count, 
+      finish_count, partake_ratio, finish_ratio, 
+      task_type, create_date)
+    values (#{taskId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
+      #{qstnaireId,jdbcType=VARCHAR}, #{taskCount,jdbcType=BIGINT}, #{partakeCount,jdbcType=BIGINT}, 
+      #{finishCount,jdbcType=BIGINT}, #{partakeRatio,jdbcType=DECIMAL}, #{finishRatio,jdbcType=DECIMAL}, 
+      #{taskType,jdbcType=DECIMAL}, #{createDate,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyUserInfo" >
     insert into survey_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="taskId != null" >
         task_id,
+      </if>
+      <if test="areaId != null" >
+        area_id,
       </if>
       <if test="taskName != null" >
         task_name,
@@ -143,6 +147,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="taskId != null" >
         #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null" >
+        #{areaId,jdbcType=VARCHAR},
       </if>
       <if test="taskName != null" >
         #{taskName,jdbcType=VARCHAR},
@@ -185,6 +192,9 @@
       <if test="record.taskId != null" >
         task_id = #{record.taskId,jdbcType=VARCHAR},
       </if>
+      <if test="record.areaId != null" >
+        area_id = #{record.areaId,jdbcType=VARCHAR},
+      </if>
       <if test="record.taskName != null" >
         task_name = #{record.taskName,jdbcType=VARCHAR},
       </if>
@@ -220,6 +230,7 @@
   <update id="updateByExample" parameterType="map" >
     update survey_user_info
     set task_id = #{record.taskId,jdbcType=VARCHAR},
+      area_id = #{record.areaId,jdbcType=VARCHAR},
       task_name = #{record.taskName,jdbcType=VARCHAR},
       qstnaire_id = #{record.qstnaireId,jdbcType=VARCHAR},
       task_count = #{record.taskCount,jdbcType=BIGINT},

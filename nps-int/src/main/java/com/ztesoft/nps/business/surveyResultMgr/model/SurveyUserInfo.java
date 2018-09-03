@@ -6,6 +6,8 @@ import java.util.Date;
 public class SurveyUserInfo {
     private String taskId;
 
+    private String areaId;
+
     private String taskName;
 
     private String qstnaireId;
@@ -30,6 +32,14 @@ public class SurveyUserInfo {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId == null ? null : taskId.trim();
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId == null ? null : areaId.trim();
     }
 
     public String getTaskName() {

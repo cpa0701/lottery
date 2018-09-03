@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyResultMapper" >
+  <resultMap id="BaseResultMap" type="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult" >
+    <id column="result_id" property="resultId" jdbcType="BIGINT" />
+    <result column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="channel_type" property="channelType" jdbcType="SMALLINT" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="DECIMAL" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    result_id, area_id, task_id, channel_type, user_account, status, start_time, finish_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from survey_result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from survey_result
+    where result_id = #{resultId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from survey_result
+    where result_id = #{resultId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample" >
+    delete from survey_result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult" >
+    insert into survey_result (result_id, area_id, task_id, 
+      channel_type, user_account, status, 
+      start_time, finish_time)
+    values (#{resultId,jdbcType=BIGINT}, #{areaId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, 
+      #{channelType,jdbcType=SMALLINT}, #{userAccount,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{finishTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult" >
+    insert into survey_result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resultId != null" >
+        result_id,
+      </if>
+      <if test="areaId != null" >
+        area_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="channelType != null" >
+        channel_type,
+      </if>
+      <if test="userAccount != null" >
+        user_account,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="finishTime != null" >
+        finish_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resultId != null" >
+        #{resultId,jdbcType=BIGINT},
+      </if>
+      <if test="areaId != null" >
+        #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="userAccount != null" >
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null" >
+        #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample" resultType="java.lang.Integer" >
+    select count(*) from survey_result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update survey_result
+    <set >
+      <if test="record.resultId != null" >
+        result_id = #{record.resultId,jdbcType=BIGINT},
+      </if>
+      <if test="record.areaId != null" >
+        area_id = #{record.areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelType != null" >
+        channel_type = #{record.channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.userAccount != null" >
+        user_account = #{record.userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.finishTime != null" >
+        finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update survey_result
+    set result_id = #{record.resultId,jdbcType=BIGINT},
+      area_id = #{record.areaId,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=VARCHAR},
+      channel_type = #{record.channelType,jdbcType=SMALLINT},
+      user_account = #{record.userAccount,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=DECIMAL},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      finish_time = #{record.finishTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult" >
+    update survey_result
+    <set >
+      <if test="areaId != null" >
+        area_id = #{areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        channel_type = #{channelType,jdbcType=SMALLINT},
+      </if>
+      <if test="userAccount != null" >
+        user_account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null" >
+        finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where result_id = #{resultId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult" >
+    update survey_result
+    set area_id = #{areaId,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=VARCHAR},
+      channel_type = #{channelType,jdbcType=SMALLINT},
+      user_account = #{userAccount,jdbcType=VARCHAR},
+      status = #{status,jdbcType=DECIMAL},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP}
+    where result_id = #{resultId,jdbcType=BIGINT}
+  </update>
+</mapper>
