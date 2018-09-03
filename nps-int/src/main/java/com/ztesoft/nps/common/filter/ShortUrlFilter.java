@@ -34,12 +34,12 @@ public class ShortUrlFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         String requestURI = request.getRequestURI() ;
+        System.out.println("shortUrl请求地址："+requestURI);
         if(requestURI.endsWith(ConstantUtils.RES_SYSTEM_NAME)){
             int endIndex = requestURI.lastIndexOf("/") ;
             String shortUrl = requestURI.substring(endIndex+1) ;
 
-            SmsBussinessBo service = new SmsBussinessBo();
-            Map<String,Object> resultMap = service.getBaseUrlFromShortUrl(shortUrl);;
+            Map<String,Object> resultMap = SmsBussinessBo.getBaseUrlFromShortUrl(shortUrl);;
             if(StringUtil.isNull(MapUtil.getString(resultMap,"short_url"))
                     || StringUtil.isNull(MapUtil.getString(resultMap,"base_url"))){
                 filterChain.doFilter(req,resp);
@@ -63,10 +63,10 @@ public class ShortUrlFilter implements Filter {
 //            String baseUrl = "http://localhost:18088/swagger-ui.html";
 //            if(shortUrl.equals("Uzii6nNPS")){
 //                //将当前访问提交到分析队列中
-//                SmsAccess smsAccess = new SmsAccess("9999999");
-//                SmsAccessQuequ.putInfo(smsAccess);
-//
-//                response.sendRedirect(baseUrl);
+////                SmsAccess smsAccess = new SmsAccess("9999999");
+////                SmsAccessQuequ.putInfo(smsAccess);
+//                response.sendRedirect("https://www.baidu.com");
+//                return;
 //            }else{
 //                filterChain.doFilter(req,resp);
 //            }

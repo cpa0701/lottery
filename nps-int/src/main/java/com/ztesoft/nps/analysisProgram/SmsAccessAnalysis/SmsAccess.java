@@ -34,21 +34,16 @@ public class SmsAccess {
     public String invokeAnalysis(){
         String result = "NO";
         try{
-            //对问卷初始化访问、提交答卷统一管理
-            if(StringUtil.isNotNull(taskId)&&StringUtil.isNotNull(channelType)&&StringUtil.isNotNull(accNum)){
-                SmsBussinessBo service = new SmsBussinessBo();
-                Map<String,Object> resultMap = service.getSurveyResultInfo(taskId,channelType,accNum);
-                if(MapUtil.isNull(resultMap)){
-                    //处理问卷初始化队列信息
-                    service.updateAccessRecord(taskId,channelType,accNum,ConstantUtils.SURVEY_RESULT_UPDATE_TYPE_INSERT);
-                }else{
-                    //处理提交答卷队列信息
-                    if(ConstantUtils.SURVEY_RESULT_TYPE_1.equals(MapUtil.getString(resultMap,"status"))){
-                        service.updateAccessRecord(taskId,channelType,accNum,ConstantUtils.SURVEY_RESULT_UPDATE_TYPE_UPDATE);
-                    }
-                }
+            //对问卷初始化访问、提交答卷的人数统一管理
+            Map<String,Object> resultMap = SmsBussinessBo.getSurveyResultInfo(taskId,channelType,accNum);
+            if(MapUtil.isNull(resultMap)){
+                //处理问卷初始化队列信息
+                SmsBussinessBo.updateAccessRecord(taskId,channelType,accNum,ConstantUtils.SURVEY_RESULT_UPDATE_TYPE_INSERT);
             }else{
-                LogUtil.error(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+                //处理提交答卷队列信息
+                if(ConstantUtils.SURVEY_RESULT_TYPE_1.equals(MapUtil.getString(resultMap,"status"))){
+                    SmsBussinessBo.updateAccessRecord(taskId,channelType,accNum,ConstantUtils.SURVEY_RESULT_UPDATE_TYPE_UPDATE);
+                }
             }
             result = "OK";
         }catch(Exception e){
@@ -63,23 +58,12 @@ public class SmsAccess {
         return taskId;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
     public String getChannelType() {
         return channelType;
-    }
-
-    public void setChannelType(String channelType) {
-        this.channelType = channelType;
     }
 
     public String getAccNum() {
         return accNum;
     }
 
-    public void setAccNum(String accNum) {
-        this.accNum = accNum;
-    }
 }
