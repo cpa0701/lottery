@@ -28,6 +28,9 @@ public class SmsAccessQuequ extends ArrayBlockingQueue<SmsAccess>{
 
     public static SmsAccess takeInfo(){
         try{
+            if(isNull()){
+                return null;
+            }
             return queue.take();
         }catch (InterruptedException e) {
             e.printStackTrace();

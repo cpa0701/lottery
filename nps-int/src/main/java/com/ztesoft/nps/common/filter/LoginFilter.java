@@ -36,6 +36,7 @@ public class LoginFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse)resp;
 
 		String url = request.getRequestURI();
+		System.out.println("loginFilter请求地址："+url);
 		String contextPath = request.getContextPath();
 		// 登录、注销、静态资源、swagger-ui不用过滤
 		if (url.equals(contextPath + "/login")

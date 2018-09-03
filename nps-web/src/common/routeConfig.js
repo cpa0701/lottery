@@ -21,8 +21,10 @@ import BrandView from "../admin/customerPerception/brandView/BrandView"
 import UseView from "../admin/customerPerception/useView/UseView"
 import StatisticReport from "../admin/customerPerception/statisticReport/StatisticReport"
 import NewApplicationForm from "../admin/missionMgr/missionApplication/NewApplicationForm"
-import NotFound from '../admin/base/error/NotFound';
 import ReviewApplication from "../admin/missionMgr/reviewApplication/ReviewApplication";
+import MissionTermination from "../admin/missionMgr/missionTermination/MissionTermination";
+import MissionPeriodic from "../admin/missionMgr/missionPeriodic/MissionPeriodic";
+import NotFound from '../admin/base/error/NotFound';
 
 class RouteList extends React.PureComponent {
     render() {
@@ -41,6 +43,8 @@ class RouteList extends React.PureComponent {
                     <Route path="/missionMgr/missionApplication" component={MissionApplication}/>
                     <Route path="/missionMgr/newApplicationForm" component={NewApplicationForm}/>
                     <Route path="/missionMgr/reviewApplication" component={ReviewApplication}/>
+                    <Route path="/missionMgr/missionTermination" component={MissionTermination}/>
+                    <Route path="/missionMgr/missionPeriodic" component={MissionPeriodic}/>
                     <Route path="/resourceMgr/resourceMap" component={ResourceMap}/>
                     <Route path="/satisfactionOperation/analysisResult" component={AnalysisResult}/>
                     <Route path="/customerPerception/perceptionView" component={PerceptionView}/>
