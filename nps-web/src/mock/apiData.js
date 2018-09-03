@@ -1145,3 +1145,14 @@ Mock.mock('mock/missionMgr/getMissionList', (params) => {
         totalCount: '@integer(10,50)'
     })
 });
+
+//结束调研
+Mock.mock('mock/missionMgr/stopMission', (params) => {
+    let params1 = JSON.parse(params.body);
+    console.log(params1);
+    return Mock.mock({
+        'result': {
+            'code': 0
+        }
+    })
+});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination } from 'antd';
+import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination, Popconfirm, message } from 'antd';
 
 import TaskResearchService from "../../../services/research/TaskResearchService";
 
@@ -117,6 +117,31 @@ class ReviewApplication extends React.PureComponent{
         });
     }
 
+    // 通过审批
+    auditPass = (id) => {
+        this.setState({
+            loading: true
+        }, () => TaskResearchService.auditPass({id}).then(result => {
+            if(result) {
+                message.success('已审核通过');
+                this.setState({loading: false});
+                this.getMissionList();
+            }
+        }))
+    };
+    // 否决审批
+    auditNoPass = (id) => {
+        this.setState({
+            loading: true
+        }, () => TaskResearchService.auditNoPass({id}).then(result => {
+            if(result) {
+                message.success('已审核否决');
+                this.setState({loading: false});
+                this.getMissionList();
+            }
+        }))
+    };
+
     //tab标签被点击
     onTabClick = (key) => {
         this.setState({
@@ -143,7 +168,6 @@ class ReviewApplication extends React.PureComponent{
             enterButton
         />;
 
-        // let tab1Title = "全部任务( 共" + total + "条 )";
         let tab2Title = "待我审核( 共" + waitAudit + "条 )";
         let tab3Title = "审核通过( " + passAudit + " )";
         let tab4Title = "审核否决( " + vetoAudit + " )";
@@ -168,21 +192,33 @@ class ReviewApplication extends React.PureComponent{
                             </Row>;
         const questionLIst = <div>
             <Spin spinning={this.state.loading}>
-                {taskList.map(item => {
-                    return (<div key={item.qstnaireId} className={'sub-li'}>
+                {taskList.map((item ,k) => {
+                    return (<div key={k} className={'sub-li'}>
                             <Row type="flex" justify="space-between">
-                                <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
+                                <Col span={15} className={'subject-name'}>{item.taskName}</Col>
                                 <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                    <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
+                                    <Button type="primary" onClick={() => this.showQstnaire(item.taskId)}>查看</Button>
+                                    {item.status === '审核中' ?
+                                        <div style={{display: 'inline-block'}}>
+                                            <Button type="primary" onClick={() => this.auditPass(item.taskId)}>通过</Button>
+                                            <Popconfirm title="确定否决该任务?" onConfirm={() => this.auditNoPass(item.taskId)}>
+                                                <Button type="danger">否决</Button>
+                                            </Popconfirm>
+                                        </div> : ''
+                                    }
                                 </Col>
                             </Row>
                             <Row type="flex" justify="start">
-                                <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
+                                <Col span={3}>
+                                    <Icon type="appstore" style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                                 </Col>
-                                <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
+                                <Col span={3}>
+                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                                <Col span={5}>
+                                    <Icon type="clock-circle" style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                                 </Col>
-                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
-                                <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>编辑时间： {item.updateTime}
+                                <Col span={5}>
+                                    <Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
                                 </Col>
                             </Row>
                         </div>
@@ -197,11 +233,11 @@ class ReviewApplication extends React.PureComponent{
         return(
             <div>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab={tab2Title} key="1">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="2">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="3">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab5Title} key="4">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab6Title} key="5">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="01">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="02">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="03">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab5Title} key="04">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab6Title} key="02">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>
             </div>
         );

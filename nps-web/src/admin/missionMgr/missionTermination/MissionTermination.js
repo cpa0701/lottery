@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination } from 'antd';
+import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination, message } from 'antd';
 
 import TaskResearchService from "../../../services/research/TaskResearchService";
 
@@ -113,11 +113,11 @@ class MissionTermination extends React.PureComponent{
             loading: true
         }, () => TaskResearchService.stopMission({id}).then(result => {
             if (result){
+                message.info("结束成功");
                 this.setState({
-                    total: result.totalCount,
-                    taskList: result.rows,
                     loading: false
-                })
+                });
+                this.getMissionList();
             }
         }))
     };
@@ -162,26 +162,30 @@ class MissionTermination extends React.PureComponent{
         </Row>;
         const questionLIst = <div>
             <Spin spinning={this.state.loading}>
-                {taskList.map(item => {
-                    return (<div key={item.qstnaireId} className={'sub-li'}>
+                {taskList.map((item ,k) => {
+                    return (<div key={k} className={'sub-li'}>
                             <Row type="flex" justify="space-between">
-                                <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
+                                <Col span={15} className={'subject-name'}>{item.taskName}</Col>
                                 <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                    <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                    <Button type="primary" onClick={() => this.preview(item.qstnaireId)}>预览</Button>
+                                    <Button type="primary" onClick={() => this.showQstnaire(item.taskId)}>查看</Button>
+                                    <Button type="primary" onClick={() => this.preview(item.taskId)}>预览</Button>
                                     {item.status === '执行中' ?
-                                        <Button type="primary" onClick={() => this.stopMission(item.qstnaireId)}>结束调研</Button>
+                                        <Button type="primary" onClick={() => this.stopMission(item.taskId)}>结束调研</Button>
                                         : ''
                                     }
                                 </Col>
                             </Row>
                             <Row type="flex" justify="start">
-                                <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
+                                <Col span={3}>
+                                    <Icon type="appstore" style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                                 </Col>
-                                <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}
+                                <Col span={3}>
+                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                                <Col span={5}>
+                                    <Icon type="clock-circle" style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                                 </Col>
-                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
-                                <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>编辑时间： {item.updateTime}
+                                <Col span={5}>
+                                    <Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
                                 </Col>
                             </Row>
                         </div>
@@ -196,7 +200,7 @@ class MissionTermination extends React.PureComponent{
         return(
             <div>
                 <Tabs tabBarExtraContent={operations}>
-                    <TabPane tab={tabTitle} key="1">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tabTitle} key="00">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>
             </div>
         );
