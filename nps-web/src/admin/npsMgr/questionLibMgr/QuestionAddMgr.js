@@ -620,7 +620,7 @@ export default class QuestionAddMgr extends PureComponent {
         return (
             <div className="questionLibMgr">
                 <Row>
-                    <Col span={5}>
+                    <Col span={4}>
                         <Card title="新增题目" className="leftSelectType">
                             <Menu onClick={this.selectQuestionType} mode="vertical">
                                 <Menu.Item key="01"><Icon type='check-circle-o'/><span>单选题</span></Menu.Item>
@@ -636,7 +636,7 @@ export default class QuestionAddMgr extends PureComponent {
                             </Menu>
                         </Card>
                     </Col>
-                    <Col span={19}>
+                    <Col span={20}>
                         <div className="questionContent">
                             {questionListDom}
                             {questionList.length ?

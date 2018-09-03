@@ -107,7 +107,7 @@ class QuestionLibMgr extends React.PureComponent {
                     return (<div key={item.questionId} className={'sub-li'}>
                             <Row type="flex" justify="space-between" className='titleStyle'>
                                 <Col span={18} className={'subject-name'}>{item.questionName}</Col>
-                                <Col span={6}>
+                                <Col span={6} style={{textAlign: 'right', paddingRight: '40px'}}>
                                     <Button type="primary" onClick={() => this.showQuestion(true, item)}
                                             icon="eye-o">查看</Button>
                                     <Button type="primary" onClick={() => this.editQuestion(item)}
@@ -127,26 +127,26 @@ class QuestionLibMgr extends React.PureComponent {
                                 <Col span={3}><Icon type="appstore-o"
                                                     style={{marginRight: '5px'}}/>
                                     分类:
-                                    {item.questionCategory == '1' ? '终端' :
-                                        item.questionCategory == '2' ? '套餐' :
-                                            item.questionCategory == '3' ? '流量' :
-                                                item.questionCategory == '4' ? '账单' : '其它'}</Col>
+                                    {item.questionCategory === '1' ? '终端' :
+                                        item.questionCategory === '2' ? '套餐' :
+                                            item.questionCategory === '3' ? '流量' :
+                                                item.questionCategory === '4' ? '账单' : '其它'}</Col>
                                 <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
                                     NPS评分题：{item.isNps === 0 ? '否' : item.isNps === 1 ? '是' : ''}
                                 </Col>
                                 <Col span={3}><Icon type="like-o" style={{marginRight: '5px'}}/>
                                     满意度评分题：{item.isSatisfied === 0 ? '否' : item.isSatisfied === 1 ? '是' : ''}
                                 </Col>
-                                <Col span={5}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
+                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
                                 <Col span={5}><Icon type="clock-circle-o"
                                                     style={{marginRight: '5px'}}/>创建时间： {item.create_time}
                                 </Col>
                             </Row>
                         </div>
                     )
-                }) : '暂无数据'}
+                }) : <div style={{padding: '20px', textAlign: 'center'}}>暂无数据</div>}
             </Spin>
-            <Pagination current={pageNum} onChange={this.onPageChange} total={total} pageSize={pageSize}/>
+            <Pagination current={pageNum} onChange={this.onPageChange} total={total} pageSize={pageSize} showQuickJumper/>
         </div>;
         const operations = <Search
             placeholder="在结果中查询"

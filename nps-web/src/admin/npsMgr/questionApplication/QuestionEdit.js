@@ -196,6 +196,13 @@ class QuestionEdit extends React.PureComponent {
 
     // 进入预览
     preview = () => {
+        if(this.state.questionDisplayList.length === 0 ||
+            this.state.qstnaireTitle === '' ||
+            this.state.qstnaireLeadin === '' ||
+            this.state.catalogId === null) {
+            message.info("请优先完善问卷内容");
+            return '';
+        }
         let belongTo = this.state.belongTo;
         if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === 0) {
             belongTo += 1
@@ -601,6 +608,13 @@ class QuestionEdit extends React.PureComponent {
 
     // 完成编辑
     save =() => {
+        if(this.state.questionDisplayList.length === 0 ||
+            this.state.qstnaireTitle === '' ||
+            this.state.qstnaireLeadin === '' ||
+            this.state.catalogId === null) {
+                message.info("请优先完善问卷内容");
+                return '';
+        }
         let belongTo = this.state.belongTo;
         if (this.state.questionDisplayList[this.state.questionDisplayList.length - 1].isPaging === 0) {
             belongTo += 1
@@ -615,7 +629,6 @@ class QuestionEdit extends React.PureComponent {
                 question: this.state.questionDisplayList,
                 logic: this.state.logic
         };
-        console.log(params);
         if (this.state.qstnaireId) {
             QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
                 message.success('编辑成功');
@@ -723,23 +736,21 @@ class QuestionEdit extends React.PureComponent {
 
         return (
             <div className={'questionApplication'}>
-                <Row className={'questionAppHead'}>
-                    <Col span={12} offset={8}>
-                        <Button type="primary" onClick={this.save}>完成编辑</Button>
-                        <Button type="primary" icon="eye-o" onClick={this.preview} style={{marginLeft: '16px'}}>预览</Button>
-                        <Button style={{float: 'right'}} onClick={() => this.addPagination()}>分页</Button>
-                    </Col>
-                </Row>
+                {/*<Row className={'questionAppHead'}>*/}
+                    {/*<Col span={12} offset={8}>*/}
+                        {/*<Button type="primary" onClick={this.save}>完成编辑</Button>*/}
+                        {/*<Button type="primary" icon="eye-o" onClick={this.preview} style={{marginLeft: '16px'}}>预览</Button>*/}
+                        {/*<Button style={{float: 'right'}} onClick={() => this.addPagination()}>分页</Button>*/}
+                    {/*</Col>*/}
+                {/*</Row>*/}
                 <Row className={'height'}>
-                    <Col style={{height: "100%", overflow: "auto"}} span={8}>
+                    <Col style={{height: "100%", minHeight: "480px"}} span={8}>
                         <QuestionLib getDom={this.getDom}/>
                     </Col>
                     <Col span={15} offset={1} style={{ height: '100%' }}>
-                        <div className={'questionAppContent'}>
-                            <div className={'questionAppContentTitle'}>
-                                <Input className={'questionInput'} defaultValue={qstnaireTitle} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
-                                <TextArea className={"surveyDescription"} defaultValue={qstnaireLeadin} placeholder="添加问卷说明" autosize={{ minRows: 1}} onBlur={(e) => this.qstnaireDes(e)} />
-                                <Form layout='inline' style={{marginLeft: '20px',textAlign: 'left'}}>
+                        <Row className={'questionAppHead'}>
+                            <Col span={22} offset={1}>
+                                <Form layout='inline' style={{textAlign: 'left', display: 'inline'}}>
                                     <FormItem label="问卷分类">
                                         {getFieldDecorator('catalogId', {
                                             initialValue: catalogId,
@@ -757,8 +768,19 @@ class QuestionEdit extends React.PureComponent {
                                         )}
                                     </FormItem>
                                 </Form>
+                                <Button type="primary" onClick={this.save}>完成编辑</Button>
+                                <Popconfirm title="预览前将保存对当前问卷的所有操作，确定预览该问卷?" onConfirm={this.preview}>
+                                    <Button type="primary">预览</Button>
+                                </Popconfirm>
+                                <Button style={{marginRight: '100px', marginLeft: '0'}} onClick={() => this.addPagination()}>分页</Button>
+                            </Col>
+                        </Row>
+                        <div className={'questionAppContent'}>
+                            <div className={'questionAppContentTitle'}>
+                                <Input className={'questionInput'} defaultValue={qstnaireTitle} onBlur={(e) => this.qstnaireTitle(e)} placeholder="标题"/>
+                                <Input className={"surveyDescription"} defaultValue={qstnaireLeadin} placeholder="添加问卷说明" onBlur={(e) => this.qstnaireDes(e)} />
                             </div>
-                            {questionDisplayList.map((item, i) => {
+                            { questionDisplayList.map((item, i) => {
                                 return (
                                     item.isPaging === 0 ?
                                         <div key={i}>
@@ -798,7 +820,6 @@ class QuestionEdit extends React.PureComponent {
                                 )
                             })}
                         </div>
-
                     </Col>
                 </Row>
                 <ConnModal {...connModalProps}/>

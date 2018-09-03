@@ -32,14 +32,16 @@ export default class QuestionShow extends PureComponent {
                 return (
                     <div className="list">
                         <BlankModule {...items}/>
-                        <span className="span">注：字数控制在100字以内</span>
+                        <span style={{position: 'relative',top: '-12px',color: '#e4393c',marginLeft: '24px'}}>
+                            注：字数控制在100字以内
+                        </span>
                     </div>
                 );
             case '04':
                 return (
                     <div className="list">
                         <BlankModule {...items}/>
-                        <span className="span">注：字数控制在200字以内</span>
+                        <span style={{position: 'relative',top: '-12px',color: '#e4393c',marginLeft: '24px'}}>注：字数控制在200字以内</span>
                     </div>
                 );
             default :
@@ -51,7 +53,6 @@ export default class QuestionShow extends PureComponent {
 
     render() {
         const { show, questionList = [] } = this.props;
-        console.log(questionList);
         const QuestionType = ({type}) => {
             return this.QuestionType(type)
         };
