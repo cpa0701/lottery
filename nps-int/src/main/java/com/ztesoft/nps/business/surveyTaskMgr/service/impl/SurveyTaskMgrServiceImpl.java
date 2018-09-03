@@ -84,7 +84,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         String channelType = bo.getChannelType();
 
         Map<String, String> accNbrMap = new HashMap<String, String>(); // key:用户号码 | value : 区域id
-        int allCount = 0; //保存总数
+        int allCount = 0; //导入总数
         int blackCount = 0; //黑名单剔除数
         int repeatCount = 0; //重复剔除数
         int limitCount = 0;  //不符合规格剔除数(电话号码and区域id)
@@ -134,10 +134,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             sqlParamList.clear();
         }
 
-        result.put("allCount", allCount);
-        result.put("blackCount", blackCount);
-        result.put("repeatCount", repeatCount);
-        result.put("limitCount", limitCount);
+        result.put("allCount", allCount);  //导入总数
+        result.put("blackCount", blackCount);  //黑名单剔除数
+        result.put("repeatCount", repeatCount);  //重复剔除数
+        result.put("limitCount", limitCount);  //不符合规格剔除数(电话号码and区域id)
+        result.put("sumCount","");//数据库统计条数
         return result;
     }
 
