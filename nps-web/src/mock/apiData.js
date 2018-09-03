@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import MissionTermination from "../admin/missionMgr/missionTermination/MissionTermination";
 
 const Random = Mock.Random;
 
@@ -96,12 +97,12 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                 },
                 {
                     menuName: '调研任务终止',
-                    menuUrl: 'basic-list',
+                    menuUrl: '/missionMgr/missionTermination',
                     menuId: 34,
                 },
                 {
                     menuName: '周期性调研',
-                    menuUrl: '',
+                    menuUrl: '/missionMgr/missionPeriodic',
                     menuId: 35,
                 }
             ],
