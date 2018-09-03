@@ -30,7 +30,7 @@ public class SurveyTaskMgrController {
 
     @ApiOperation(value = "任务列表", notes = "任务列表")
     @PostMapping("/surveyTaskList")
-    public Result<Object> surveyTaskList(SurveyTaskQuery condition){
+    public Result<Object> surveyTaskList(@RequestBody SurveyTaskQuery condition){
         return Result.success(surveyTaskMgrService.surveyTaskList(condition));
     }
 

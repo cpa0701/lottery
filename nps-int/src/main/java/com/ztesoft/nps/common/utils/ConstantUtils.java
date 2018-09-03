@@ -60,5 +60,15 @@ public class ConstantUtils {
 
     public static final String PAGE_QUESTION_ID = "cf7a7a35dec14c4bab5fa6a9b8bf3009";//分页题目ID
 
+    public static final String NPS_RESULT_OPTION_1 = "1"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_2 = "2"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_3 = "3"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_4 = "4"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_5 = "5"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_6 = "6"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_7 = "7"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_8 = "8"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_9 = "9"; //nps题目选项
+    public static final String NPS_RESULT_OPTION_10 = "10"; //nps题目选项
 
 }
