@@ -237,7 +237,7 @@ class ReviewApplication extends React.PureComponent{
                     <TabPane tab={tab3Title} key="02">{checkableTag} {questionLIst}</TabPane>
                     <TabPane tab={tab4Title} key="03">{checkableTag} {questionLIst}</TabPane>
                     <TabPane tab={tab5Title} key="04">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab6Title} key="02">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab6Title} key="05">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>
             </div>
         );
