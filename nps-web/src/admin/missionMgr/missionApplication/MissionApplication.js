@@ -50,7 +50,11 @@ class MissionApplication extends React.PureComponent {
 
     //新建申请单
     createRequisition = () => {
-        this.props.history.push('/missionMgr/newApplicationForm');
+        TaskResearchService.getNewTaskId().then((result)=>{
+            if(result){
+                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
+            }
+        })
     };
 
     //tab标签被点击
