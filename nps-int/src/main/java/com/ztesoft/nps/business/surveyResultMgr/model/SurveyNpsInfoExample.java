@@ -203,6 +203,76 @@ public class SurveyNpsInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andAreaIdIsNull() {
+            addCriterion("area_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdIsNotNull() {
+            addCriterion("area_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdEqualTo(String value) {
+            addCriterion("area_id =", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdNotEqualTo(String value) {
+            addCriterion("area_id <>", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdGreaterThan(String value) {
+            addCriterion("area_id >", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdGreaterThanOrEqualTo(String value) {
+            addCriterion("area_id >=", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdLessThan(String value) {
+            addCriterion("area_id <", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdLessThanOrEqualTo(String value) {
+            addCriterion("area_id <=", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdLike(String value) {
+            addCriterion("area_id like", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdNotLike(String value) {
+            addCriterion("area_id not like", value, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdIn(List<String> values) {
+            addCriterion("area_id in", values, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdNotIn(List<String> values) {
+            addCriterion("area_id not in", values, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdBetween(String value1, String value2) {
+            addCriterion("area_id between", value1, value2, "areaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAreaIdNotBetween(String value1, String value2) {
+            addCriterion("area_id not between", value1, value2, "areaId");
+            return (Criteria) this;
+        }
+
         public Criteria andTaskNameIsNull() {
             addCriterion("task_name is null");
             return (Criteria) this;
@@ -843,52 +913,52 @@ public class SurveyNpsInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeEqualTo(Short value) {
+        public Criteria andTaskTypeEqualTo(int value) {
             addCriterion("task_type =", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeNotEqualTo(Short value) {
+        public Criteria andTaskTypeNotEqualTo(int value) {
             addCriterion("task_type <>", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeGreaterThan(Short value) {
+        public Criteria andTaskTypeGreaterThan(int value) {
             addCriterion("task_type >", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeGreaterThanOrEqualTo(Short value) {
+        public Criteria andTaskTypeGreaterThanOrEqualTo(int value) {
             addCriterion("task_type >=", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeLessThan(Short value) {
+        public Criteria andTaskTypeLessThan(int value) {
             addCriterion("task_type <", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeLessThanOrEqualTo(Short value) {
+        public Criteria andTaskTypeLessThanOrEqualTo(int value) {
             addCriterion("task_type <=", value, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeIn(List<Short> values) {
+        public Criteria andTaskTypeIn(List<Integer> values) {
             addCriterion("task_type in", values, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeNotIn(List<Short> values) {
+        public Criteria andTaskTypeNotIn(List<Integer> values) {
             addCriterion("task_type not in", values, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeBetween(Short value1, Short value2) {
+        public Criteria andTaskTypeBetween(int value1, int value2) {
             addCriterion("task_type between", value1, value2, "taskType");
             return (Criteria) this;
         }
 
-        public Criteria andTaskTypeNotBetween(Short value1, Short value2) {
+        public Criteria andTaskTypeNotBetween(int value1, int value2) {
             addCriterion("task_type not between", value1, value2, "taskType");
             return (Criteria) this;
         }

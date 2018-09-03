@@ -103,19 +103,4 @@ public class QstnaireBank {
         this.updateTime = updateTime;
     }
 
-    @Override
-    public String toString() {
-        return "QstnaireBank{" +
-                "qstnaireId='" + qstnaireId + '\'' +
-                ", qstnaireTitle='" + qstnaireTitle + '\'' +
-                ", qstnaireLeadin='" + qstnaireLeadin + '\'' +
-                ", catalogId='" + catalogId + '\'' +
-                ", belongTo=" + belongTo +
-                ", createUid=" + createUid +
-                ", createTime=" + createTime +
-                ", status='" + status + '\'' +
-                ", isInst=" + isInst +
-                ", updateTime=" + updateTime +
-                '}';
-    }
 }

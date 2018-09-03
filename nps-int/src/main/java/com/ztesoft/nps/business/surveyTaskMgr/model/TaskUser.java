@@ -11,7 +11,7 @@ public class TaskUser {
 
     private String userAccount;
 
-    private Date creatTime;
+    private Date createTime;
 
     private String areaId;
 
@@ -54,11 +54,11 @@ public class TaskUser {
     }
 
     public Date getCreatTime() {
-        return creatTime;
+        return createTime;
     }
 
-    public void setCreatTime(Date creatTime) {
-        this.creatTime = creatTime;
+    public void setCreatTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getAreaId() {

@@ -104,4 +104,10 @@ public class SurveyTaskMgrController {
         surveyTaskMgrService.testPublishSurvetTask(bo);
         return Result.success();
     }
+
+    @ApiOperation(value = "获取任务id", notes = "获取任务id")
+    @PostMapping("/getNewTaskId")
+    public Result<Object> getNewTaskId(){
+        return Result.success(StringUtil.getRandom32PK());
+    }
 }

@@ -114,7 +114,9 @@ class QuestionLib extends React.PureComponent {
                             return <InitQuestionList key={i} getDom={this.props.getDom} question={question} index={i} isLib={true}/>
                         })}
                     </div>
-                    <Pagination current={this.state.pageNum} onChange={this.onPageChange} total={this.state.total} pageSize={this.state.pageSize}/>
+                    {this.state.questionList.length === 0 ? '' :
+                        <Pagination current={this.state.pageNum} onChange={this.onPageChange} total={this.state.total} pageSize={this.state.pageSize} showQuickJumper/>
+                    }
                 </div>
             </Spin>)
     }
