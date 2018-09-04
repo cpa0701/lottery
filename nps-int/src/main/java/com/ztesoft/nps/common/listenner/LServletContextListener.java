@@ -15,8 +15,8 @@ public class LServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        //SmsAccessStarter.start();
-        //SmsResultStarter.start();
+        SmsAccessStarter.start();
+        SmsResultStarter.start();
     }
 
     @Override
