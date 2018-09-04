@@ -1,6 +1,6 @@
 import React from 'react';
-import {Row, Col,Button} from "antd"
-const echarts = require('echarts');
+import {Row,Button} from "antd"
+ const echarts = require('echarts');
 class ResourceMap extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -10,9 +10,9 @@ class ResourceMap extends React.PureComponent {
     }
     componentDidMount(){
         // 基于准备好的dom，初始化echarts实例
-        var myChart1 = echarts.init(document.getElementById('exampleone'));
+        let myChartone = echarts.init(document.getElementById('exampleone'));
         // 指定图表的配置项和数据
-        var optionone = {
+        let optionone = {
             title : {
                 text: '全年调研资源统计图(短信类)',
                 left:'center',
@@ -62,11 +62,11 @@ class ResourceMap extends React.PureComponent {
         };
 
         // 使用刚指定的配置项和数据显示图表。
-        myChart1.setOption(optionone);
+        myChartone.setOption(optionone);
         // 基于准备好的dom，初始化echarts实例
-        var myChart2 = echarts.init(document.getElementById('exampletwo'));
+        let myCharttwo = echarts.init(document.getElementById('exampletwo'));
         // 指定图表的配置项和数据
-        var optiontwo = {
+        let optiontwo = {
             title : {
                 text: '全年调研资源统计图(赠费类)',
                 left:'center',
@@ -113,7 +113,7 @@ class ResourceMap extends React.PureComponent {
         };
 
         // 使用刚指定的配置项和数据显示图表。
-        myChart2.setOption(optiontwo);
+        myCharttwo.setOption(optiontwo);
     }
     render() {
         return(

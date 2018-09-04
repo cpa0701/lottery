@@ -17,7 +17,6 @@ import com.ztesoft.nps.common.utils.Md5Tool;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.constance.DateFormatConst;
 import com.ztesoft.utils.sys.util.*;
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -51,6 +50,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     @Autowired
     private SurveyNpsInfoMapper surveyNpsInfoMapper;
 
+
+
     @Override
     public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
         if(StringUtil.isNull(condition.getPageNum())){
@@ -65,6 +66,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     }
 
     @Override
+    @Transactional
     public void addSurveyTask(SurveyTaskAddBo bo) {
         addSurveyMethod(bo, "add");
     }
@@ -88,6 +90,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         int blackCount = 0; //黑名单剔除数
         int repeatCount = 0; //重复剔除数
         int limitCount = 0;  //不符合规格剔除数(电话号码and区域id)
+        int dataCount = 0; //数据库剔重
 
         Map<String, Object> initData = initExcelImportData(workbook);
         Map<String, String> userMap = (Map<String, String>) initData.get("userMap");
@@ -95,9 +98,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         allCount = MapUtil.getInteger(initData, "allCount");
         repeatCount = allCount - userMap.size();
 
+        //数据库去重
+        String Datasql = "select user_account from task_user where task_id = '"+taskId+"' and channel_type = "+channelType+"";
+        List<Map<String,Object>> userAccountList = DatabaseUtil.queryForList(Datasql);
+        //转化为List
+        List<String> userAccount = new ArrayList<String>();
+        for (Map<String,Object> map : userAccountList){
+            userAccount.add(MapUtil.getString(map,"user_account"));
+        }
         //查询区域信息
         Set<String> areaSet = new HashSet<String>();
-
         String regexPhone = "^(1[0-9])\\d{9}$";
 
         String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
@@ -106,13 +116,19 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         for (Map.Entry<String, String> entry : userMap.entrySet()) {
             String accNum = entry.getKey();
             String areaId = entry.getValue();
-            if (accNum.matches(regexPhone) && !areaSet.contains(areaId)) {
-                sqlParamList.add(
-                        new String[]{StringUtil.getRandom32PK(), channelType, taskId, accNum,
-                                DateUtil.getFormat(new Date(), DateFormatConst.YMDHM_), areaId, "1", "1", ConstantUtils.RES_SYSTEM_NAME});
-                saveFlag++;
-            } else {
-                limitCount++;
+            //如果在数据库中包含该数据则dataCount++
+            if(ListUtil.isNotNull(userAccount)&&userAccount.contains(accNum)){
+                dataCount++;//数据库重复+1
+            }
+            else{
+                if (accNum.matches(regexPhone) && !areaSet.contains(areaId)) {
+                    sqlParamList.add(
+                            new String[]{StringUtil.getRandom32PK(), channelType, taskId, accNum,
+                                    DateUtil.getFormat(new Date(), DateFormatConst.YMDHM_), areaId, "1", "1", ConstantUtils.RES_SYSTEM_NAME});
+                    saveFlag++;
+                } else {
+                    limitCount++;
+                }
             }
 
             if (saveFlag != 0 && saveFlag % 20000 == 0) {//20000上传一次
@@ -138,9 +154,24 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         result.put("blackCount", blackCount);  //黑名单剔除数
         result.put("repeatCount", repeatCount);  //重复剔除数
         result.put("limitCount", limitCount);  //不符合规格剔除数(电话号码and区域id)
-        result.put("sumCount","");//数据库统计条数
+        result.put("dataCount",dataCount);//数据库剔重（与数据库中重复）
+        result.put("sumCount",counttaskUser(channelType,taskId));//数据库统计条数
         return result;
     }
+
+    /**
+     * 根据channalType查询总数
+     * @param channalType
+     * @return
+     */
+    private int counttaskUser(String channalType,String taskId){
+        TaskUserExample taskUserExample = new TaskUserExample();
+        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId);
+        int sumCount = taskUserMapper.countByExample(taskUserExample);
+        return sumCount;
+    }
+
+
 
     @Override
     public int userTargetDelete(SurveyTaskDelBo bo) {
@@ -194,6 +225,25 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     @Override
     public void testPublishSurvetTask(SurveyTaskPublishBo bo) {
         createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_YES);
+    }
+
+    @Override
+    public SurveyTaskByIdQuery selectSurveyTaskById(SurveyTaskIdQuery bo) {
+        //获得ID
+        String taskId = bo.getTaskId();
+        SurveyTaskByIdQuery surveyTaskById = new SurveyTaskByIdQuery();
+        //获得surveyTask基础信息
+        SurveyTask surveyTask = surveyTaskMapper.selectByPrimaryKey(taskId);
+        //将bean填入query
+        surveyTaskById.beanToQuery(surveyTask);
+        //根据taskId查询taskChannel表数据，获得各个渠道及其总数。
+        TaskChannelExample taskChannelExample = new TaskChannelExample();
+        taskChannelExample.createCriteria().andTaskIdEqualTo(taskId);
+        List<TaskChannel> taskChannel = taskChannelMapper.selectByExample(taskChannelExample);
+
+        surveyTaskById.setTaskChannel(taskChannel);
+
+        return surveyTaskById;
     }
 
     /**
@@ -338,6 +388,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             //插入任务数据
             surveyTaskMapper.insertSelective(caseBo2Bean(bo, type));
         }
+
         //插入任务渠道信息
         taskChannelMapper.insertSelective(bo.getTaskChannel());
 
