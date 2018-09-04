@@ -550,9 +550,9 @@ class QuestionPreview extends React.PureComponent {
                         // 优先级
                         // jumped={item.jumped}//是否被跳过
                         // isShow={item.isShow}//是否显示被关联题
-                        // isJump={item.isJump}//是否跳转题，用于覆盖关联题的隐藏
+                        // isJump={item.isJump}//是否跳转题
                         // isSetup={item.isSetup}//是否是被关联题
-                        item.display = item.jumped ? false : (item.isShow ? (item.isJump ? true : !item.isSetup) : !item.isSetup)
+                        item.display = item.jumped ? false : (item.isShow ? true:!item.isSetup)
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}
