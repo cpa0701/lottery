@@ -31,7 +31,6 @@ class AnalysisResult extends React.PureComponent {
     //城市
     handleChange=(value)=> {
         // value1:value,
-        debugger;
        this.setState(
            {
                value:value,
@@ -226,7 +225,6 @@ class AnalysisResult extends React.PureComponent {
                 this.selectQuestion(false);
             },
         };
-        debugger;
          const map={
              city:this.state.value,
              questionName:'问卷名称',
