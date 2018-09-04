@@ -88,7 +88,7 @@ class MissionApplication extends React.PureComponent {
     createRequisition = () => {
         TaskResearchService.getNewTaskId().then((result) => {
             if (result) {
-                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
+                this.props.history.push(`/missionMgr/newApplicationForm/${result}&byAdd`);
             }
         })
     };
@@ -124,14 +124,14 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                             <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
                                 <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                {item.status !== '05' ? '' :
+                                {/*{item.status !== '05' ? '' :*/}
                                     <div style={{display: 'inline-block'}}>
                                         <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
                                         <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
                                             <Button type="primary">删除</Button>
                                         </Popconfirm>
                                     </div>
-                                }
+                                {/*}*/}
                                 <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
                                 {item.status !== '02' ? '' :
                                     <Popconfirm
