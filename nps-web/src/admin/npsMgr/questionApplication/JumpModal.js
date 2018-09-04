@@ -83,8 +83,6 @@ export default class extends Component {
 
     render() {
         const {jump, jumpList = [], radioValue = 0, record = {}, form: {getFieldDecorator}} = this.props;
-        console.log('a',jumpList)
-        console.log('b',record)
         const optionHtml = jumpList.map((item, k) => {
             return <Option key={k} value={item.questionOrder}>{item.questionName}</Option>;
         });

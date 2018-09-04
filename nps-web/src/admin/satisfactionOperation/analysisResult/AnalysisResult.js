@@ -7,7 +7,6 @@ import moment from 'moment';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const echarts = require('echarts');
-const {MonthPicker,} = DatePicker;
 const monthFormat = 'YYYY/MM';
 
 class AnalysisResult extends React.PureComponent {
