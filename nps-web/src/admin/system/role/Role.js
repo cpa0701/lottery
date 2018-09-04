@@ -439,7 +439,7 @@ export default class Role extends PureComponent {
     };
 
     render() {
-        const {role} = this.props.stores.I18nModel.outputLocale
+        const { role } = this.props.stores.I18nModel.outputLocale;
         const {
             pagination,
             loading,
@@ -696,16 +696,17 @@ export default class Role extends PureComponent {
             onCreate: (values) => {
                 let params = {
                     ...values,
-                    roleId: checkedKeys[0]
+                    roleId: Number(checkedKeys[0])
                 };
                 SysRoleMgService.addRoleUserDate(params).then((data) => {
-                    debugger;
-                        this.setState({addUser: false}, () => {
-                            message.success(role.newRecruitSuccess);
-                            if (checkedKeys.length  === 1) {
-                                this.getUserData({id: checkedKeys[0]});
-                            }
-                        });
+                   if(data) {
+                       this.setState({addUser: false}, () => {
+                           message.success(role.newRecruitSuccess);
+                           if (checkedKeys.length  === 1) {
+                               this.getUserData({id: checkedKeys[0]});
+                           }
+                       });
+                   }
                 });
             }
         };
@@ -732,9 +733,9 @@ export default class Role extends PureComponent {
                     </header>
                     <div className="btnGroup">
                         <Button type="primary" icon="plus-circle-o" onClick={() => this.addRoleModal(true)}>{role.insert}</Button>
-                        <div className="divider"></div>
+                        <div className="divider"/>
                         <Button type="primary" icon="edit" onClick={() => this.editRoleModal(true, record, checkedKeys, 0)}>{role.modify}</Button>
-                        <div className="divider"></div>
+                        <div className="divider"/>
                         <Popconfirm
                             onConfirm={() => this.delRoles()}
                             title={<span>{role.deleteSelectRole}</span>}
@@ -743,8 +744,8 @@ export default class Role extends PureComponent {
                         >
                             <Button type="danger" icon="delete">{role.delete}</Button>
                         </Popconfirm>
-                        <div className="divider"></div>
-                        <Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>{role.copy}</Button>
+                        {/*<div className="divider"/>*/}
+                        {/*<Button type="primary" icon="copy" onClick={() => this.copyRoleModal(true, record, checkedKeys, 0)}>{role.copy}</Button>*/}
                     </div>
                     <div className="treeStyle">
                         <Tree {...roleProps} onLoadData={this.loadRoleData}/>
@@ -755,9 +756,9 @@ export default class Role extends PureComponent {
                         <div>
                             <Tabs type="card">
                                 <TabPane tab={role.Authority} key="1">
-                                    <div className="btnGroup" style={{width: '18%', padding: '5px 0'}}>
+                                    <div className="btnGroup" style={{width: '24%', padding: '5px 0'}}>
                                         <Button type="primary" icon="edit" style={{width: '42%'}} onClick={() => this.editAuthModal(true, this.state.checkedKeys, 0)}>{role.modifyAuthority}</Button>
-                                        <div className="divider"></div>
+                                        <div className="divider"/>
                                         <Button type="danger" icon="delete" style={{width: '42%'}} onClick={() => this.delAuths()}>{role.batchdeletion}</Button>
                                         {/*<div className="divider"></div>*/}
                                         {/*<Button type="primary" icon="edit">修改个性域</Button>*/}
@@ -826,11 +827,11 @@ export default class Role extends PureComponent {
                                             </FormItem>
                                         </Form>
                                     </div>
-                                    <div className="btnGroup" style={{width: '20%', padding: '5px 2px'}}>
+                                    <div className="btnGroup" style={{width: '24%', padding: '5px 2px'}}>
                                         <Button type="primary" onClick={this.handleSearch} icon="search" className="btnThre">{role.select}</Button>
-                                        <div className="divider"></div>
-                                        <Button type="primary" icon="plus-circle-o" className="btnThre"onClick={() => this.addUsers(this.state.checkedKeys, 0)}>{role.insert}</Button>
-                                        <div className="divider"></div>
+                                        <div className="divider"/>
+                                        <Button type="primary" icon="plus-circle-o" className="btnThre" onClick={() => this.addUsers(this.state.checkedKeys, 0)}>{role.insert}</Button>
+                                        <div className="divider"/>
                                         <Popconfirm
                                             onConfirm={() => this.delUsers()}
                                             title={<span>{role.deleteSelectRole}</span>}
