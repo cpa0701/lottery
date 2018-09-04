@@ -370,7 +370,6 @@ class NewApplicationForm extends React.PureComponent {
                                 onOpenChange={this.handleEndOpenChange}
                             />
                         )}
-
                     </FormItem>
                 </Col>
             </Row>
