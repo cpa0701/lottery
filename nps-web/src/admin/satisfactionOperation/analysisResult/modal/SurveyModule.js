@@ -194,7 +194,6 @@ export default class SurveyModule extends PureComponent {
     }
     render() {
         const {params}=this.props;
-        debugger;
         console.log(params)
         return(
             <div>
