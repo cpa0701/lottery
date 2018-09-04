@@ -48,7 +48,7 @@ public class SmsBussinessBo {
             sql.append(" '").append(accNum).append("', ");
             sql.append(" '").append(ConstantUtils.SURVEY_RESULT_TYPE_0).append("', ");
             sql.append(" '").append(DateUtil.getFormat(new Date(), DateFormatConst.YMDHMS_)).append("' ");
-            DatabaseUtil.updateDateBase(sql.toString());
+            DatabaseUtil.updateByPrepareStatement(sql.toString(),null,"");
 
             //同时更新统计结果 参与人+1 参与率更新
             sql.setLength(0);
@@ -56,7 +56,7 @@ public class SmsBussinessBo {
             sql.append(" partake_count = partake_count + 1, ");
             sql.append(" partake_ratio = convert(partake_count/task_count,decimal(4,2)) ");
             sql.append(" where task_id = '").append(taskId).append("' ");
-            DatabaseUtil.updateDateBase(sql.toString());
+            DatabaseUtil.updateByPrepareStatement(sql.toString(),null,"");
         }else{
             //更新统计结果 完成人+1 完成率更新
             sql.setLength(0);
@@ -64,7 +64,7 @@ public class SmsBussinessBo {
             sql.append(" finish_count = finish_count + 1, ");
             sql.append(" finish_ratio = convert(finish_count/partake_count,decimel(4,2)) ");
             sql.append(" where task_id = '").append(taskId).append("' ");
-            DatabaseUtil.updateDateBase(sql.toString());
+            DatabaseUtil.updateByPrepareStatement(sql.toString(),null,"");
             sql.setLength(0);
         }
     }
@@ -85,7 +85,7 @@ public class SmsBussinessBo {
                 updateSql.append(" nps_ratio1 = convert(nps_count1/").append(finishCount).append(",decimel(4,2) )");
             }
             updateSql.append(" where task_id = '").append(taskId).append("' ");
-            DatabaseUtil.updateDateBase(updateSql.toString());
+            DatabaseUtil.updateByPrepareStatement(updateSql.toString(),null,"");
             updateSql.setLength(0);
         }
     }

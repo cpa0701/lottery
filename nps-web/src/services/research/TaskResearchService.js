@@ -1,8 +1,33 @@
 import Http from '../../common/Http';
+
 class TaskResearchService {
+    //新增任务（提交审核）
+    addSurveyTask = async (param) => {
+        const url = 'surveyTaskMgr/addSurveyTask';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
+    //新增任务获取任务id
+    getNewTaskId = async (param) => {
+        const url = 'surveyTaskMgr/getNewTaskId';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
+    //任务保存草稿
+    addSurveyTaskToDraft = async (param) => {
+        const url = 'surveyTaskMgr/addSurveyTaskToDraft';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
     //获取调研任务列表
     getMissionList = async (param) => {
-        let url = 'surveyTaskMgr/surveyTaskList';
+        const url = 'surveyTaskMgr/surveyTaskList';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
+    //用户上传号码
+    userTargetImport = async (param) => {
+        const url = 'surveyTaskMgr/userTargetImport';
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     };

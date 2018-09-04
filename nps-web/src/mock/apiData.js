@@ -107,25 +107,25 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                 }
             ],
         },
-        {
-            menuName: '调研资源管理',
-            icon: 'profile',
-            menuUrl: '/resourceMgr',
-            menuId: 4,
-            children: [
-                {
-                    menuName: '调研资源规划',
-                    menuUrl: 'basic',
-                    menuId: 41,
-                },
-                {
-                    menuName: '调研资源统计图',
-                    menuUrl: '/resourceMgr/resourceMap',
-                    authority: 'admin',
-                    menuId: 42,
-                },
-            ],
-        },
+        // {
+        //     menuName: '调研资源管理',
+        //     icon: 'profile',
+        //     menuUrl: '/resourceMgr',
+        //     menuId: 4,
+        //     children: [
+        //         {
+        //             menuName: '调研资源规划',
+        //             menuUrl: 'basic',
+        //             menuId: 41,
+        //         },
+        //         {
+        //             menuName: '调研资源统计图',
+        //             menuUrl: '/resourceMgr/resourceMap',
+        //             authority: 'admin',
+        //             menuId: 42,
+        //         },
+        //     ],
+        // },
         {
             menuName: '满意度运营分析',
             icon: 'check-circle-o',

@@ -19,6 +19,7 @@ import {
     message
 } from 'antd';
 import reqwest from 'reqwest';
+import moment from 'moment';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -38,14 +39,15 @@ class NewApplicationForm extends React.PureComponent {
             checkedMeasure: false,
             checkedResearch: false,
             rsFlag: true,
-            accessFlag: true,
-            messageFlag: false,
-            taskType: false,
+            accessFlag: false,
+            taskType: 1,
             add: false,
             selecttabs: false,
             path: null,
             fileList: [],
             uploading: false,
+            taskId: this.props.match.params.id,
+            resultDescripe: '共导入0条数据'
         }
     }
 
@@ -105,15 +107,8 @@ class NewApplicationForm extends React.PureComponent {
         this.setState({endOpen: open});
     }
     accessHandleChange = (value) => {
-        if (value == 1) this.setState({accessFlag: true})
+        if (value === '2') this.setState({accessFlag: true})
         else this.setState({accessFlag: false})
-        console.log('1', this.state.accessFlag)
-
-    }
-    messageHandleChange = (value) => {
-        if (value == 4) this.setState({messageFlag: true})
-        else this.setState({messageFlag: false})
-        console.log('2', this.state.messageFlag)
 
     }
     onMeasure = (e) => {
@@ -126,7 +121,7 @@ class NewApplicationForm extends React.PureComponent {
         this.setState({taskType: e.target.checked ? 2 : 1})
     }
     handleChange = (value) => {
-        if (value == 2) this.setState({rsFlag: false})
+        if (value === 2) this.setState({rsFlag: false})
         else this.setState({rsFlag: true})
 
     }
@@ -146,31 +141,37 @@ class NewApplicationForm extends React.PureComponent {
         const {fileList} = this.state;
         const formData = new FormData();
         fileList.forEach((file) => {
-            formData.append('files[]', file);
+            formData.append('file', file);
         });
-
+        let channelType = this.props.form.getFieldValue('taskChannel');
+        if (!channelType)
+            return message.warn("请选择渠道");
+        else
+            formData.append('channelType', channelType);
+        formData.append('taskId', this.state.taskId);
         this.setState({
             uploading: true,
         });
 
         // You can use any AJAX library you like
         reqwest({
-            url: '',
+            url: 'surveyTaskMgr/userTargetImport',
             method: 'post',
             processData: false,
             data: formData,
-            success: () => {
+            success: (result) => {
                 this.setState({
                     fileList: [],
                     uploading: false,
+                    resultDescripe: `共导入${result.data.sumCount}条数据`
                 });
-                message.success('upload successfully.');
+                message.success('上传成功');
             },
             error: () => {
                 this.setState({
                     uploading: false,
                 });
-                message.error('upload failed.');
+                message.error('上传失败');
             },
         });
     }
@@ -187,13 +188,59 @@ class NewApplicationForm extends React.PureComponent {
         }
         return isType && isLt5M;
     }
+    //提交审核
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
+        let isValidate = true;
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                isValidate = false;
             }
         });
+        if (isValidate) {
+            let formData = this.props.form.getFieldsValue();
+            let channelType = this.props.form.getFieldValue('taskChannel');
+            formData.testNumberList = formData.testNumberList.split(',');
+            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.taskId = this.state.taskId;
+            formData.taskChannel = {
+                channelType: channelType,
+                sampleSum: formData.sampleSum,
+                sampleType: formData.sampleType,
+                smsContent: formData.smsContent,
+                smsWay: formData.smsWay,
+                taskId: this.state.taskId,
+            };
+            console.log(formData);
+        }
+    }
+    //保存草稿
+    handleSave = (e) => {
+        e.preventDefault();
+        let isValidate = true;
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (err) {
+                isValidate = false;
+            }
+        });
+        if (isValidate) {
+            let formData = this.props.form.getFieldsValue();
+            let channelType = this.props.form.getFieldValue('taskChannel');
+            formData.testNumberList = formData.testNumberList.split(',');
+            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.taskId = this.state.taskId;
+            formData.taskChannel = {
+                channelType: channelType,
+                sampleSum: formData.sampleSum,
+                sampleType: formData.sampleType,
+                smsContent: formData.smsContent,
+                smsWay: formData.smsWay,
+                taskId: this.state.taskId,
+            };
+            console.log(formData);
+        }
     }
     handleReset = () => {
         this.props.history.push('/missionMgr/missionApplication');
@@ -212,6 +259,7 @@ class NewApplicationForm extends React.PureComponent {
                 this.props.form.setFieldsValue({
                     qstnaireId: id,
                 });
+                this.setState({add: false})
             },
         };
         //新增标签弹窗属性传值是否显示弹窗
@@ -222,7 +270,7 @@ class NewApplicationForm extends React.PureComponent {
             },
         };
         const uploadProps = {
-            action: '',
+            action: 'surveyTaskMgr/userTargetImport',
             onRemove: (file) => {
                 this.setState(({fileList}) => {
                     const index = fileList.indexOf(file);
@@ -244,7 +292,7 @@ class NewApplicationForm extends React.PureComponent {
 
         //触发式调研任务
         const TriggerTask = <div style={{position: 'absolute', right: '20px', top: '-10px'}}>
-            <Checkbox onChange={this.onTrigger} checked={this.state.taskType}
+            <Checkbox onChange={this.onTrigger} checked={this.state.taskType !== 1}
                       style={{display: 'inline'}}>是否触发式任务</Checkbox>
         </div>
         //调研基本信息
@@ -311,7 +359,7 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
             <Row>
                 <FormItem label="测试号码：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
-                    {getFieldDecorator('testNumber', {
+                    {getFieldDecorator('testNumberList', {
                         rules: [{required: true, message: '请输入测试号码'}],
                     })(
                         <Input placeholder="多个号码用英文逗号分隔"/>
@@ -320,81 +368,15 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
         </div>);
         //调研对象
-        let object = (<div className='object'>
-            <Row style={{background: '#ECECEC', padding: '5px'}}>
-                <Col span="24">
-                    <span className={'spantitle'}>*</span>
-                    调研对象
-                </Col>
-            </Row>
-            <Row>
-                <RadioGroup>
-                    <Row>
-                        <Col span={1} offset={1}>
-                            <FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>
-                                {getFieldDecorator('tagName', {
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择调研对象',
-                                    }],
-                                    initialValue: '',
-                                })(
-                                    <Radio/>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span='20'>
-                            <FormItem label="选择标签对象：" labelCol={{span: 2}} wrapperCol={{span: 20}}>
-                                {getFieldDecorator('tagName', {
-                                    rules: [],
-                                    initialValue: '',
-                                })(
-                                    <Input placeholder="点击选择标签" onClick={() => this.selectTab(true)}/>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={1} offset={1}>
-                            <FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>
-                                {getFieldDecorator('tagName', {
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择调研对象',
-                                    }],
-                                    initialValue: '',
-                                })(
-                                    <Radio/>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span='10'>
-                            <FormItem label="手工导入数据:" labelCol={{span: 4}} wrapperCol={{span: 20}}>
-                                {getFieldDecorator('DataName', {
-                                    rules: [],
-                                    initialValue: '',
-                                })(
-                                    <Upload {...uploadProps}>
-                                        <Button type="ghost">
-                                            <Icon type="upload"/> 选择文件
-                                        </Button>
-                                    </Upload>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span='2'>
-                            <Button onClick={this.handleUpload}>上传</Button>
-                        </Col>
-                        <Col span='2'>
-                            <Button>删除目标号码</Button>
-                        </Col>
-                        <Col span='5' offset={2}>
-                            <Button>下载批量导入模板</Button>
-                        </Col>
-                    </Row>
-                </RadioGroup>
-            </Row>
-        </div>);
+        // let object = (<div className='object'>
+        //     <Row style={{background: '#ECECEC', padding: '5px'}}>
+        //         <Col span="24">
+        //             <span className={'spantitle'}>*</span>
+        //             调研对象
+        //         </Col>
+        //     </Row>
+        //
+        // </div>);
         //调研渠道
         let channel = (<div>
             <Row style={{background: '#ECECEC', padding: '5px'}}>
@@ -403,161 +385,225 @@ class NewApplicationForm extends React.PureComponent {
                     调研渠道
                 </Col>
             </Row>
-            <Tabs defaultActiveKey="2" onChange={(activeKey) => {
+            <Tabs activeKey={'3'} defaultActiveKey="3" onChange={(activeKey) => {
+                if (activeKey !== '1')
+                    return message.info('待开发')
                 this.props.form.setFieldsValue({
                     taskChannel: activeKey,
                 });
             }}>
-                <TabPane tab={<span><Icon type="qrcode"/>链接与二维码</span>} key="3">
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true, message: '请选择获取样本方式'}],
-                                })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
-                                            style={{width: '100%'}}>
-                                        <Option value="1">全量</Option>
-                                        <Option value="2">抽样</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true, message: '请输入抽样数量'}],
-                                    // initialValue: 'Start',
-                                })(
-                                    <Input/>
-                                )}
-                            </FormItem>
-                        </Col> : ''}
-                    </Row>
-                    <div>
-                        <QRCode size={150} value="http://www.baidu.com"/>
-                    </div>
+                <TabPane tab={<span><Icon type="qrcode"/>链接与二维码</span>} key="0">
+                    {/*<Row className={'row2'}>*/}
+                    {/*<Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleType', {*/}
+                    {/*rules: [{required: true, message: '请选择获取样本方式'}],*/}
+                    {/*initialValue: '1',*/}
+                    {/*})(*/}
+                    {/*<Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"*/}
+                    {/*style={{width: '100%'}}>*/}
+                    {/*<Option value="1">全量</Option>*/}
+                    {/*<Option value="2">抽样</Option>*/}
+                    {/*</Select>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col>*/}
+                    {/*{!this.state.accessFlag ? <Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleSum', {*/}
+                    {/*rules: [{required: true, message: '请输入抽样数量'}],*/}
+                    {/*// initialValue: 'Start',*/}
+                    {/*})(*/}
+                    {/*<Input/>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col> : ''}*/}
+                    {/*</Row>*/}
+                    {/*<div>*/}
+                    {/*<QRCode size={150} value="http://www.baidu.com"/>*/}
+                    {/*</div>*/}
                 </TabPane>
-                <TabPane tab={<span><Icon type="wechat"/>微信发送</span>} key="2">
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true, message: '请选择获取样本方式'}],
-                                })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
-                                            style={{width: '100%'}}>
-                                        <Option value="1">全量</Option>
-                                        <Option value="2">抽样</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true, message: '请输入抽样数量'}],
-                                    // initialValue: 'Start',
-                                })(
-                                    <Input/>
-                                )}
-                            </FormItem>
-                        </Col> : ''}
-                    </Row>
+                <TabPane tab={<span><Icon type="wechat"/>微信发送</span>} key="1">
+                    {/*<Row className={'row2'}>*/}
+                    {/*<Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleType', {*/}
+                    {/*rules: [{required: true, message: '请选择获取样本方式'}],*/}
+                    {/*})(*/}
+                    {/*<Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"*/}
+                    {/*style={{width: '100%'}}>*/}
+                    {/*<Option value="1">全量</Option>*/}
+                    {/*<Option value="2">抽样</Option>*/}
+                    {/*</Select>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col>*/}
+                    {/*{!this.state.accessFlag ? <Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleSum', {*/}
+                    {/*rules: [{required: true, message: '请输入抽样数量'}],*/}
+                    {/*// initialValue: 'Start',*/}
+                    {/*})(*/}
+                    {/*<Input/>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col> : ''}*/}
+                    {/*</Row>*/}
                 </TabPane>
-                <TabPane tab={<span><Icon type="mail"/>邮件发送</span>} key="4">
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true, message: '请选择获取样本方式'}],
-                                })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
-                                            style={{width: '100%'}}>
-                                        <Option value="1">全量</Option>
-                                        <Option value="2">抽样</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true, message: '请输入抽样数量'}],
-                                    // initialValue: 'Start',
-                                })(
-                                    <Input/>
-                                )}
-                            </FormItem>
-                        </Col> : ''}
-                    </Row>
+                <TabPane tab={<span><Icon type="mail"/>邮件发送</span>} key="2">
+                    {/*<Row className={'row2'}>*/}
+                    {/*<Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleType', {*/}
+                    {/*rules: [{required: true, message: '请选择获取样本方式'}],*/}
+                    {/*})(*/}
+                    {/*<Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"*/}
+                    {/*style={{width: '100%'}}>*/}
+                    {/*<Option value="1">全量</Option>*/}
+                    {/*<Option value="2">抽样</Option>*/}
+                    {/*</Select>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col>*/}
+                    {/*{!this.state.accessFlag ? <Col span='12' className={'select'}>*/}
+                    {/*<FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>*/}
+                    {/*{getFieldDecorator('sampleSum', {*/}
+                    {/*rules: [{required: true, message: '请输入抽样数量'}],*/}
+                    {/*// initialValue: 'Start',*/}
+                    {/*})(*/}
+                    {/*<Input/>*/}
+                    {/*)}*/}
+                    {/*</FormItem>*/}
+                    {/*</Col> : ''}*/}
+                    {/*</Row>*/}
                 </TabPane>
-                <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="1">
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccess', {
-                                    rules: [{required: true, message: '请选择获取样本方式'}],
-                                })(
-                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
-                                            style={{width: '100%'}}>
-                                        <Option value="1">全量</Option>
-                                        <Option value="2">抽样</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        {!this.state.accessFlag ? <Col span='12' className={'select'}>
-                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('taskAccessNum', {
-                                    rules: [{required: true, message: '请输入抽样数量'}],
-                                    // initialValue: 'Start',
-                                })(
-                                    <Input/>
-                                )}
-                            </FormItem>
-                        </Col> : <div></div>}
-                    </Row>
-
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="短信下发方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('messageType', {
-                                    rules: [{required: true, message: '请选择短信下发方式'}],
-                                })(
-                                    <Select onChange={this.messageHandleChange} multiple placeholder="--请选择--"
-                                            style={{width: '100%'}}>
-                                        <Option value="3">--请选择--</Option>
-                                        <Option value="4">短信超链接</Option>
-
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    {this.state.messageFlag ?
-                        <div>
-                            <Row className={'row2'}>
-                                <Col span='12' className={'select'}>
-                                    <FormItem label="短信提示语：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                        {getFieldDecorator('taskMessage', {
-                                            rules: [{required: true, message: '请选择短信提示语'}],
-                                        })(
-                                            <TextArea placeholder="请填写短信提示语"/>
+                <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="3">
+                    <Row>
+                        <RadioGroup name="radiogroup">
+                            {/*<Row>*/}
+                            {/*<Col span={1} offset={1}>*/}
+                            {/*<FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>*/}
+                            {/*{getFieldDecorator('tagName543', {*/}
+                            {/*rules: [{*/}
+                            {/*required: true,*/}
+                            {/*message: '请选择调研对象',*/}
+                            {/*}],*/}
+                            {/*initialValue: '',*/}
+                            {/*})(*/}
+                            {/*<Radio/>*/}
+                            {/*)}*/}
+                            {/*</FormItem>*/}
+                            {/*</Col>*/}
+                            {/*<Col span='20'>*/}
+                            {/*<FormItem label="选择标签对象：" labelCol={{span: 2}} wrapperCol={{span: 20}}>*/}
+                            {/*{getFieldDecorator('tagName1111', {*/}
+                            {/*rules: [],*/}
+                            {/*initialValue: '',*/}
+                            {/*})(*/}
+                            {/*<Input placeholder="点击选择标签" onClick={() => this.selectTab(true)}/>*/}
+                            {/*)}*/}
+                            {/*</FormItem>*/}
+                            {/*</Col>*/}
+                            {/*</Row>*/}
+                            <Row>
+                                {/*<Col span={1} offset={1}>*/}
+                                {/*<FormItem label="" labelCol={{span: 4}} wrapperCol={{span: 20}}>*/}
+                                {/*{getFieldDecorator('tagName', {*/}
+                                {/*rules: [{*/}
+                                {/*required: true,*/}
+                                {/*message: '请选择调研对象',*/}
+                                {/*}],*/}
+                                {/*initialValue: '',*/}
+                                {/*})(*/}
+                                {/*<Radio/>*/}
+                                {/*)}*/}
+                                {/*</FormItem>*/}
+                                {/*</Col>*/}
+                                <Col span='10' offset={1}>
+                                    <FormItem label="手工导入数据:" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+                                        {getFieldDecorator('DataName', {})(
+                                            <Upload {...uploadProps}>
+                                                <Button type="ghost">
+                                                    <Icon type="upload"/> 选择文件
+                                                </Button>
+                                            </Upload>
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span='12' className={'select'}>
-                                    <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
+                                <Col span='2'>
+                                    <Button disabled={this.state.fileList.length === 0} loading={uploading}
+                                            onClick={this.handleUpload}>{uploading ? '上传中' : '上传'}</Button>
+                                </Col>
+                                <Col span='2'>
+                                    <Button onClick={() => {
+                                        this.setState({
+                                            fileList: [],
+                                        });
+                                    }}>删除目标号码</Button>
+                                </Col>
+                                <Col span='5' offset={2}>
+                                    <a href="../download/whitelist/nps-batch-insert-template-1.xlsx"
+                                       target="_blank">下载批量导入模板</a>
                                 </Col>
                             </Row>
-                        </div> : ''}
+                            <div className={'ant-col-offset-1'}>{uploading ? '' : this.state.resultDescripe}</div>
+                        </RadioGroup>
+                    </Row>
+                    <Row className={'row2'}>
+                        <Col span='12' className={'select'}>
+                            <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('sampleType', {
+                                    rules: [{required: true, message: '请选择获取样本方式'}],
+                                })(
+                                    <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
+                                            style={{width: '100%'}}>
+                                        <Option value="1">全量</Option>
+                                        <Option value="2">抽样</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                        {this.state.accessFlag ? <Col span='12' className={'select'}>
+                            <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('sampleSum', {
+                                    rules: [{required: true, message: '请输入抽样数量'}],
+                                })(
+                                    <Input/>
+                                )}
+                            </FormItem>
+                        </Col> : ''}
+                        <Col span='12' className={'select'}>
+                            <FormItem label="短信下发方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('smsWay', {
+                                    rules: [{required: true, message: '请选择短信下发方式'}],
+                                })(
+                                    <Select placeholder="--请选择--"
+                                            style={{width: '100%'}}>
+                                        <Option value="">--请选择--</Option>
+                                        <Option value="1">短信超链接</Option>
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span='12' className={'select'}>
+                            <FormItem label="短信提示语：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+                                {getFieldDecorator('smsContent', {
+                                    rules: [{required: true, message: '请选择短信提示语'}],
+                                })(
+                                    <TextArea placeholder="请填写短信提示语"/>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span='12' className={'select'}>
+                            <Button onClick={this.info}>查看短信提示语模板（短信链接请使用{'{'}{'url'}{'}'}代替）</Button>
+                        </Col>
+                    </Row>
                 </TabPane>
             </Tabs>
             <FormItem>
                 {getFieldDecorator('taskChannel', {
                     rules: [{required: true, message: '请选择调研渠道',}],
-                    // initialValue: 'Start',
+                    initialValue: '3',
                 })(
                     <Input type={'hidden'}/>
                 )}
@@ -715,7 +761,7 @@ class NewApplicationForm extends React.PureComponent {
             <div className={'newApplicationForm'}>
                 <Form layout={'horizontal'} className="ant-advanced-search-form">
                     {baseInfo}
-                    {object}
+                    {/*{object}*/}
                     {channel}
                     <Row style={{background: '#ECECEC', padding: '5px'}}>
                         <Col span="24">
@@ -729,28 +775,28 @@ class NewApplicationForm extends React.PureComponent {
                         </Col>
                     </Row>
                     {research}
-                    <Row style={{background: '#ECECEC', padding: '5px', marginTop: '20px'}}>
-                        <Col span="24">
-                            <span className={'spantitle'}>*</span>
-                            上传客服文档
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span='24' style={{paddingTop: '20px', paddingLeft: '50px'}}>
-                            <Upload
-                                action="//jsonplaceholder.typicode.com/posts/"
-                                beforeUpload={this.beforeUpload}
-                            >
-                                <Button type="ghost">
-                                    <Icon type="upload"/> 选择文件
-                                </Button>
-                            </Upload>
-                            （文档类型仅支持doc、docx、txt、xls、xlsx、pdf格式，且大小不能超过5M）
-                        </Col>
-                    </Row>
+                    {/*<Row style={{background: '#ECECEC', padding: '5px', marginTop: '20px'}}>*/}
+                    {/*<Col span="24">*/}
+                    {/*<span className={'spantitle'}>*</span>*/}
+                    {/*上传客服文档*/}
+                    {/*</Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*<Col span='24' style={{paddingTop: '20px', paddingLeft: '50px'}}>*/}
+                    {/*<Upload*/}
+                    {/*action="//jsonplaceholder.typicode.com/posts/"*/}
+                    {/*beforeUpload={this.beforeUpload}*/}
+                    {/*>*/}
+                    {/*<Button type="ghost">*/}
+                    {/*<Icon type="upload"/> 选择文件*/}
+                    {/*</Button>*/}
+                    {/*</Upload>*/}
+                    {/*（文档类型仅支持doc、docx、txt、xls、xlsx、pdf格式，且大小不能超过5M）*/}
+                    {/*</Col>*/}
+                    {/*</Row>*/}
                     <Row style={{paddingTop: '10px'}}>
                         <FormItem wrapperCol={{span: 12, offset: 6}}>
-                            <Button type="primary" onClick={this.handleSubmit}>保存草稿(save)</Button>
+                            <Button type="primary" onClick={this.handleSave}>保存草稿(save)</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="primary" onClick={this.handleSubmit}>提交审核(save)</Button>
                             &nbsp;&nbsp;&nbsp;
