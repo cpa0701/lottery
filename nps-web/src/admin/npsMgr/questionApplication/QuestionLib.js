@@ -17,6 +17,7 @@ class QuestionLib extends React.PureComponent {
             questionType: '',
             questionBusiness: undefined,
             pageNum: 1,
+            total: 0,
             pageSize: 10,
             loading: false,
             isNps: '',
@@ -70,8 +71,7 @@ class QuestionLib extends React.PureComponent {
     onPageChange = (page) => {
         this.setState({
             pageNum: page,
-        });
-        this.refreshLib();
+        }, () => this.refreshLib());
     };
 
     render() {
@@ -93,6 +93,7 @@ class QuestionLib extends React.PureComponent {
                                         onChange={(e) => {
                                             this.setState({questionType: e}, () => this.refreshLib())
                                         }}>
+                                    <Option value={''}>请选择题型</Option>
                                     <Option value={'01'}>单选</Option>
                                     <Option value={'02'}>多选</Option>
                                     <Option value={'03'}>填空</Option>

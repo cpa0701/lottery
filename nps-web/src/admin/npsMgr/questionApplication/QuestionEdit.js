@@ -7,10 +7,8 @@ import ConnModal from './ConnModal';
 import JumpModal from './JumpModal';
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService";
-
 import './questionApplication.less';
 
-const { TextArea } = Input;
 const [FormItem] = [Form.Item];
 
 const treeData = [
@@ -154,7 +152,6 @@ class QuestionEdit extends React.PureComponent {
                 }
             }
             qstList.push(params);
-            console.log(qstList);
             this.setState({
                 questionDisplayList: [...qstList]
             })
@@ -200,7 +197,6 @@ class QuestionEdit extends React.PureComponent {
             });
         }
         newArr = [...new Set(qstNewArr)];
-        console.log('qwer', newArr)
         this.setState({
             questionDisplayList: [...newArr],
             questionDisplayList1: [...newArr]
@@ -314,14 +310,32 @@ class QuestionEdit extends React.PureComponent {
                     if (k.questionType === '01') {
                         let arr = item.optionOrder.split(',');
                         if (arr.length === k.optionList.length) {
-                            param = {
-                                ...k,
-                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            if(item.skiptoQuestionOrder === -1) {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(跳转到问卷末尾结束作答)'
+                                }
+                            } else if (item.skiptoQuestionOrder === -2) {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(直接提交为无效答卷)'
+                                }
+                            } else {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                                }
                             }
                         } else {
                             k.optionList.map(x => {
                                if(x.optionOrder === Number(item.optionOrder)) {
-                                   x.describe =  '跳转到第' + item.skiptoQuestionOrder + '题';
+                                   if(item.skiptoQuestionOrder === -1) {
+                                       x.describe =  '跳转到问卷末尾结束作答';
+                                   } else if (item.skiptoQuestionOrder === -2) {
+                                       x.describe =  '直接提交为无效答卷';
+                                   } else {
+                                       x.describe =  '跳转到第' + item.skiptoQuestionOrder + '题';
+                                   }
                                }
                                return '';
                             });
@@ -331,9 +345,21 @@ class QuestionEdit extends React.PureComponent {
                             }
                         }
                     } else {
-                        param = {
-                            ...k,
-                            jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                        if(item.skiptoQuestionOrder === -1) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到问卷末尾结束作答)'
+                            }
+                        } else if (item.skiptoQuestionOrder === -2) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(直接提交为无效答卷)'
+                            }
+                        } else {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            }
                         }
                     }
                 } else if (item.logicType === '00' && item.skiptoQuestionOrder === k.questionOrder) {
@@ -692,12 +718,12 @@ class QuestionEdit extends React.PureComponent {
         if (this.state.qstnaireId) {
             QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
                 message.success('编辑成功');
-            this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+            this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication'})
             });
         } else {
             QuestionApplicationService.addQstnaireBank(params).then(data => {
                 message.success('保存成功');
-                this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+                this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication'})
             });
         }
     };
