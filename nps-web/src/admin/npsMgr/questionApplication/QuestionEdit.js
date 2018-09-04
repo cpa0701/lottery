@@ -532,10 +532,11 @@ class QuestionEdit extends React.PureComponent {
                     message.info('当前题目位置不可上移');
                     return '';
                 } else if (i > 0 && i <= questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === 1) {
-                    // if (i === questionDisplayList2.length - 1) {
+                    if (i === questionDisplayList2.length - 1) {
                         questionDisplayList2[i - 1].questionOrder = null;
-                    // }
-                    // questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                    }else{
+                        questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
+                    }
                 } else if (i > 0  && questionDisplayList2[i - 1].isPaging === 0) { // 如果上一题是题目，将清除本题及上一题所有逻辑
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i - 1].questionOrder, 1);
