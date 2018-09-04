@@ -7,10 +7,8 @@ import ConnModal from './ConnModal';
 import JumpModal from './JumpModal';
 
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService";
-
 import './questionApplication.less';
 
-const { TextArea } = Input;
 const [FormItem] = [Form.Item];
 
 const treeData = [
@@ -154,7 +152,6 @@ class QuestionEdit extends React.PureComponent {
                 }
             }
             qstList.push(params);
-            console.log(qstList);
             this.setState({
                 questionDisplayList: [...qstList]
             })
@@ -200,7 +197,6 @@ class QuestionEdit extends React.PureComponent {
             });
         }
         newArr = [...new Set(qstNewArr)];
-        console.log('qwer', newArr)
         this.setState({
             questionDisplayList: [...newArr],
             questionDisplayList1: [...newArr]
@@ -722,12 +718,12 @@ class QuestionEdit extends React.PureComponent {
         if (this.state.qstnaireId) {
             QuestionApplicationService.editQstnaire({...params, qstnaireId: this.state.qstnaireId}).then(data => {
                 message.success('编辑成功');
-            this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+            this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication'})
             });
         } else {
             QuestionApplicationService.addQstnaireBank(params).then(data => {
                 message.success('保存成功');
-                this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication', state: {isFresh:true}})
+                this.props.history.push({pathname:'/npsMgr/questionMgr/questionApplication'})
             });
         }
     };
