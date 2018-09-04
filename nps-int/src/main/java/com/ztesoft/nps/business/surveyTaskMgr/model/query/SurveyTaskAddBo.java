@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +40,9 @@ public class SurveyTaskAddBo implements Serializable{
 
     @ApiModelProperty("调研渠道")
     private TaskChannel taskChannel;
+
+    @ApiModelProperty("更新时间")
+    private Date updateTime;
 
     public String getTaskId() {
         return taskId;
@@ -110,5 +114,13 @@ public class SurveyTaskAddBo implements Serializable{
 
     public void setTaskChannel(TaskChannel taskChannel) {
         this.taskChannel = taskChannel;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

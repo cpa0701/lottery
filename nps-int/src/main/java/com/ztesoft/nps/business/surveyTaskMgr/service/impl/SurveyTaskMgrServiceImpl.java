@@ -17,7 +17,6 @@ import com.ztesoft.nps.common.utils.Md5Tool;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.constance.DateFormatConst;
 import com.ztesoft.utils.sys.util.*;
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -51,6 +50,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     @Autowired
     private SurveyNpsInfoMapper surveyNpsInfoMapper;
 
+
+
     @Override
     public LPageHelper surveyTaskList(SurveyTaskQuery condition) {
         if(StringUtil.isNull(condition.getPageNum())){
@@ -65,6 +66,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     }
 
     @Override
+    @Transactional
     public void addSurveyTask(SurveyTaskAddBo bo) {
         addSurveyMethod(bo, "add");
     }
@@ -88,6 +90,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         int blackCount = 0; //黑名单剔除数
         int repeatCount = 0; //重复剔除数
         int limitCount = 0;  //不符合规格剔除数(电话号码and区域id)
+        int dataCount = 0; //数据库剔重
 
         Map<String, Object> initData = initExcelImportData(workbook);
         Map<String, String> userMap = (Map<String, String>) initData.get("userMap");
@@ -95,9 +98,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         allCount = MapUtil.getInteger(initData, "allCount");
         repeatCount = allCount - userMap.size();
 
+        //数据库去重
+        String Datasql = "select user_account from task_user where task_id = '"+taskId+"' and channel_type = "+channelType+"";
+        List<Map<String,Object>> userAccountList = DatabaseUtil.queryForList(Datasql);
+        //转化为List
+        List<String> userAccount = new ArrayList<String>();
+        for (Map<String,Object> map : userAccountList){
+            userAccount.add(MapUtil.getString(map,"user_account"));
+        }
         //查询区域信息
         Set<String> areaSet = new HashSet<String>();
-
         String regexPhone = "^(1[0-9])\\d{9}$";
 
         String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
@@ -106,13 +116,19 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         for (Map.Entry<String, String> entry : userMap.entrySet()) {
             String accNum = entry.getKey();
             String areaId = entry.getValue();
-            if (accNum.matches(regexPhone) && !areaSet.contains(areaId)) {
-                sqlParamList.add(
-                        new String[]{StringUtil.getRandom32PK(), channelType, taskId, accNum,
-                                DateUtil.getFormat(new Date(), DateFormatConst.YMDHM_), areaId, "1", "1", ConstantUtils.RES_SYSTEM_NAME});
-                saveFlag++;
-            } else {
-                limitCount++;
+            //如果在数据库中包含该数据则dataCount++
+            if(ListUtil.isNotNull(userAccount)&&userAccount.contains(accNum)){
+                dataCount++;//数据库重复+1
+            }
+            else{
+                if (accNum.matches(regexPhone) && !areaSet.contains(areaId)) {
+                    sqlParamList.add(
+                            new String[]{StringUtil.getRandom32PK(), channelType, taskId, accNum,
+                                    DateUtil.getFormat(new Date(), DateFormatConst.YMDHM_), areaId, "1", "1", ConstantUtils.RES_SYSTEM_NAME});
+                    saveFlag++;
+                } else {
+                    limitCount++;
+                }
             }
 
             if (saveFlag != 0 && saveFlag % 20000 == 0) {//20000上传一次
@@ -138,9 +154,24 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         result.put("blackCount", blackCount);  //黑名单剔除数
         result.put("repeatCount", repeatCount);  //重复剔除数
         result.put("limitCount", limitCount);  //不符合规格剔除数(电话号码and区域id)
-        result.put("sumCount","");//数据库统计条数
+        result.put("dataCount",dataCount);//数据库剔重（与数据库中重复）
+        result.put("sumCount",counttaskUser(channelType,taskId));//数据库统计条数
         return result;
     }
+
+    /**
+     * 根据channalType查询总数
+     * @param channalType
+     * @return
+     */
+    private int counttaskUser(String channalType,String taskId){
+        TaskUserExample taskUserExample = new TaskUserExample();
+        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId);
+        int sumCount = taskUserMapper.countByExample(taskUserExample);
+        return sumCount;
+    }
+
+
 
     @Override
     public int userTargetDelete(SurveyTaskDelBo bo) {
@@ -178,11 +209,10 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
 
-        //删除任务
-        surveyTaskMapper.deleteByPrimaryKey(taskId);
+        //更新任务信息
+        surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"edit"));
 
-        //新增任务信息
-        addSurveyMethod(bo, "add");
+        addSurveyMethod(bo,"edit");
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -195,6 +225,25 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     @Override
     public void testPublishSurvetTask(SurveyTaskPublishBo bo) {
         createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_YES);
+    }
+
+    @Override
+    public SurveyTaskByIdQuery selectSurveyTaskById(SurveyTaskIdQuery bo) {
+        //获得ID
+        String taskId = bo.getTaskId();
+        SurveyTaskByIdQuery surveyTaskById = new SurveyTaskByIdQuery();
+        //获得surveyTask基础信息
+        SurveyTask surveyTask = surveyTaskMapper.selectByPrimaryKey(taskId);
+        //将bean填入query
+        surveyTaskById.beanToQuery(surveyTask);
+        //根据taskId查询taskChannel表数据，获得各个渠道及其总数。
+        TaskChannelExample taskChannelExample = new TaskChannelExample();
+        taskChannelExample.createCriteria().andTaskIdEqualTo(taskId);
+        List<TaskChannel> taskChannel = taskChannelMapper.selectByExample(taskChannelExample);
+
+        surveyTaskById.setTaskChannel(taskChannel);
+
+        return surveyTaskById;
     }
 
     /**
@@ -335,8 +384,10 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      * @param type
      */
     private void addSurveyMethod(SurveyTaskAddBo bo, String type) {
-        //插入任务数据
-        surveyTaskMapper.insertSelective(caseBo2Bean(bo, type));
+        if(!type.equals("edit")){
+            //插入任务数据
+            surveyTaskMapper.insertSelective(caseBo2Bean(bo, type));
+        }
 
         //插入任务渠道信息
         taskChannelMapper.insertSelective(bo.getTaskChannel());
@@ -345,9 +396,9 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskUser taskUser = new TaskUser();
         List<String> accNumList = bo.getTestNumberList();
         List<String[]> sqlParamList = new ArrayList<String[]>();
-        String batchSaveSql = "insert into task_user(task_user_id,channel_id,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
+        String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
         for (String accNum: accNumList) {
-            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelId().toString(),bo.getTaskId(),accNum,
+            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelType().toString(),bo.getTaskId(),accNum,
                 DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),"","0","1",ConstantUtils.RES_SYSTEM_NAME});
         }
 
@@ -419,14 +470,17 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTask.setTaskType(StringUtil.getShort(bo.getTaskType()));
         if (type.equals("add")) {
             surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
-        } else {
+        } else if (type.equals("draft")){
             surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_02);  //草稿
         }
         surveyTask.setSurveySdate(DateUtil.getDate(bo.getSurveySdate(), DateFormatConst.YMD));
         surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
         surveyTask.setQstnaireId(bo.getQstnaireId());
-        surveyTask.setCreateUid(1L);  //这里需要根据当前用户设置
-        surveyTask.setCreateTime(new Date());
+        if(!type.equals("edit")){
+            surveyTask.setCreateUid(1L);  //这里需要根据当前用户设置
+            surveyTask.setCreateTime(new Date());
+        }
+        surveyTask.setUpdateTime(new Date());
 
         return surveyTask;
     }
@@ -438,7 +492,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, ");
+        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
@@ -456,7 +510,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTaskQuerySql.append(" left join task_channel tc on st.task_id = tc.task_id ");
         surveyTaskQuerySql.append(" where 1=1 ");
         surveyTaskQuerySql.append(" and qc.status = '00A' ");
-        surveyTaskQuerySql.append(" and tc.channel_type = '2' ");
+        surveyTaskQuerySql.append(" and tc.channel_type = '3' ");
         if(StringUtil.isNotNull(condition.getTaskName())){
             surveyTaskQuerySql.append(" and st.task_name like '%").append(condition.getTaskName()).append("%'");
         }
@@ -466,6 +520,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(StringUtil.isNotNull(condition.getStatus())){
             surveyTaskQuerySql.append(" and st.status = '").append(condition.getStatus()).append("'");
         }
+        surveyTaskQuerySql.append(" order by st.update_time desc ");
         return  surveyTaskQuerySql.toString();
     }
 

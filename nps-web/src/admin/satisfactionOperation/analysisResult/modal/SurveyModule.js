@@ -1,53 +1,35 @@
+import {PureComponent} from "react";
 import React from 'react';
-import ReQuestionaire from '../../missionMgr/missionApplication/modal/ReQuestionaire';
-import {Row, Col,Form, Select, Input, Button, DatePicker} from "antd"
-import SurveyModule from './modal/SurveyModule';
-import moment from 'moment';
-const FormItem = Form.Item;
-const Option = Select.Option;
+import {Row,Col} from "antd";
+import ResultService from "../../../../services/analysisResult/ResultService"
+import TaskResearchService from "../../../../services/research/TaskResearchService"
+
 const echarts = require('echarts');
-const { MonthPicker, } = DatePicker;
-const monthFormat = 'YYYY/MM';
-class AnalysisResult extends React.PureComponent {
+export default class SurveyModule extends PureComponent {
     constructor(props){
         super(props);
-        this.state={
-            selecttabs: false,
-            add:false,
-            value:'city',
-            triggerTask:'all',
-
-        }
-        this.search=this.search.bind(this);
+        this.props.OnRef(this);
     }
-    //点击选择问卷弹框
-    selectQuestion = (show) => {
-        if (show) {
-            this.setState({add: true});
-        } else {
-            this.setState({add: false});
-        }
+    componentWillMount(){
+        // const {params}=this.props;
+        // debugger;
+        // console.log(params)
+        // TaskResearchService.getMissionList(params).then(result=>{
+        //     if(result){
+        //
+        //     }
+        // })
     }
-    //城市
-    handleChange=(value)=> {
-        // value1:value,
-        debugger;
-       this.setState(
-           {
-               value:value,
-           }
-       )}
-       //触发式调研任务
-      handleChangeTask=(value)=>{
-       this.setState(
-           {
-               triggerTask:value,
-           }
-       )
-
+    getData=()=>{
+        console.log('我是getdata方法');
+        // const {params}=this.props;
+        // ResultService.getTargetshow(params).then(result=>{
+        //     if(result){
+        //
+        //     }
+        // })
     }
-
-    componentDidMount() {
+    componentDidMount(){
         var myChart = echarts.init(document.getElementById("barChartone"));
         var app = {};
         var posList = [
@@ -87,10 +69,10 @@ class AnalysisResult extends React.PureComponent {
 
         var labelOption = { };
 
-       var option = {
-           title: {
-               text: '调研对象分析'
-           },
+        var option = {
+            title: {
+                text: '调研对象分析'
+            },
             color: ['#4A86E8', '#E5323E', '#4DB24D'],
             tooltip: {
                 trigger: 'axis',
@@ -147,10 +129,10 @@ class AnalysisResult extends React.PureComponent {
 
         //调研NPS值分布
         var chartTwo = echarts.init(document.getElementById("barCharttwo"));
-       var  optionone = {
-           title: {
-               text: '调研NPS值分布'
-           },
+        var  optionone = {
+            title: {
+                text: '调研NPS值分布'
+            },
             tooltip : {
                 trigger: 'axis',
             },
@@ -210,72 +192,21 @@ class AnalysisResult extends React.PureComponent {
             chartTwo.setOption(optionone, true);
         }
     }
-    OnRef1=(ref)=>{
-        this.chart=ref;
-    }
-
-    search=()=>{
-         this.chart.getData()
-
-    }
     render() {
-        //是否显示新增问卷弹框
-        const selectModalProps = {
-            add: this.state.add,
-            onClose: () => {
-                this.selectQuestion(false);
-            },
-        };
+        const {params}=this.props;
         debugger;
-         const map={
-             city:this.state.value,
-             questionName:'问卷名称',
-             triggerTask:this.state.triggerTask,
-         }
+        console.log(params)
         return(
             <div>
                 <Row>
-                    <Form>
-                        <Col span='4'>
-                            <FormItem  label="调研地市" labelCol={{ span: 6 }} wrapperCol={{ span: 16}}>
-                                <Select  defaultValue="全部" onChange={this.handleChange} >
-                                    <Option value="city">全市</Option>
-                                    <Option value="yubei">渝北</Option>
-                                </Select>
-                            </FormItem>
-                        </Col>
-                        <Col span='6'>
-                            <FormItem  label="问卷名称" labelCol={{ span: 4 }} wrapperCol={{ span: 18}}>
-                                <Input placeholder='点击选择调研问卷' onClick={() => this.selectQuestion(true)}/>
-                            </FormItem>
-                        </Col>
-                        <Col span='6'>
-                            <FormItem  label="任务类型" labelCol={{ span: 4 }} wrapperCol={{ span: 20}}>
-                                <Select defaultValue="全部"   onChange={this.handleChangeTask} >
-                                    <Option value="all">全部</Option>
-                                    <Option value="research">调研任务</Option>
-                                    <Option value="trigger">触发式调研任务</Option>
-                                </Select>
-                            </FormItem>
-                        </Col>
-                        <Col span='3' offset='1'>
-                            <FormItem>
-                                <Button type="primary" htmlType="submit" onClick={this.search}>
-                                    查询
-                                </Button>
-                                <Button htmlType="submit" style={{marginLeft:'10px'}}>
-                                    导出
-                                </Button>
-                            </FormItem>
-                        </Col>
-                    </Form>
-                </Row>
-                <SurveyModule OnRef={this.OnRef1} {...map}/>
-                <ReQuestionaire {...selectModalProps}/>
-            </div>
+                <Col span='24' id="barChartone"  style={{height:500}}>
 
-        );
+                </Col>
+                <Col span='24' id="barCharttwo"  style={{height:500}}>
+
+                </Col>
+                </Row>
+            </div>
+        )
     }
 }
-
-export default AnalysisResult;

@@ -65,6 +65,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public QstnaireIdQuery eiditQstnaire(AddQstnaireBankQuery addQstnaireBankQuery) {
         QstnaireIdQuery qstnaireIdQuery = new QstnaireIdQuery();
         qstnaireIdQuery.setQstnaireId(addQstnaireBankQuery.getQstnaireId());
@@ -95,20 +96,21 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         List<QstnaireQuestion> questionList = addQstnaireBankQuery.getQuestion();
         for(QstnaireQuestion  qstnaireQuestion:questionList){
             qstnaireQuestion.setQstnaireId(qstnaireId);
-            qstnaireQuestion.setQuestionOrder(questionOrder++);
         }
         qstnaireQuestionMapper.insertByList(questionList);
 
         //批量插入逻辑表
         short logicOrder = 0;
         List<QstnaireLogicSetup> logicList = addQstnaireBankQuery.getLogic();
-        for(QstnaireLogicSetup   logicSetup :logicList){
-            logicSetup.setQstnaireId(qstnaireId);
-            logicSetup.setLogicId(StringUtil.getRandom32PK());
-            logicSetup.setLogicOrder(logicOrder++);
+        //如果逻辑表非空则进行插入
+        if(ListUtil.isNotNull(logicList)){
+            for(QstnaireLogicSetup   logicSetup :logicList){
+                logicSetup.setQstnaireId(qstnaireId);
+                logicSetup.setLogicId(StringUtil.getRandom32PK());
+                logicSetup.setLogicOrder(logicOrder++);
+            }
+            qstnaireLogicSetupMapper.insertByList(logicList);
         }
-        qstnaireLogicSetupMapper.insertByList(logicList);
-
         return qstnaireId;
     }
     @Override
@@ -216,7 +218,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
             for(Map<String,Object> map : row ){
                 status = MapUtil.getString(map,"status");
                 //(00 停用/01 启用/02 草稿/03 待审核/04 审核不通过)
-                map.put("status",statusToString(status));
+                map.put("status",status);
             }
         }
         return bankResult;
@@ -248,25 +250,5 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         qstnaireBankSql.append(" from qstnaire_bank qb LEFT JOIN  Users u ON u.id = qb.create_uid ");
         qstnaireBankSql.append(" Left Join  qstnaire_catalog qc On qc.catalog_id = qb.catalog_id where 1=1 ");
         return qstnaireBankSql;
-    }
-    private String statusToString(String status){
-        switch(status){
-            case "00":
-                status = ConstantUtils.QSTNAIRE_STATUS_00_CHM;
-                break;
-            case "01":
-                status = ConstantUtils.QSTNAIRE_STATUS_01_CHM;
-                break;
-            case "02":
-                status = ConstantUtils.QSTNAIRE_STATUS_02_CHM;
-                break;
-            case "03":
-                status = ConstantUtils.QSTNAIRE_STATUS_03_CHM;
-                break;
-            case "04":
-                status = ConstantUtils.QSTNAIRE_STATUS_04_CHM;
-                break;
-        }
-        return status;
     }
 }

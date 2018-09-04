@@ -69,6 +69,18 @@ public class SurveyTaskMgrController {
         return Result.success();
     }
 
+    @ApiOperation(value = "根据ID查询任务", notes = "根据ID查询任务")
+    @PostMapping("/selectSurveyTaskById")
+    public Result<Object> selectSurveyTaskById(@RequestBody SurveyTaskIdQuery surveyTaskIdQuery){
+        String taskId = surveyTaskIdQuery.getTaskId();
+        if(StringUtil.isNull(taskId)){
+            throw new NpsObjectNotFoundException(taskId);
+        }
+        surveyTaskMgrService.selectSurveyTaskById(surveyTaskIdQuery);
+        return Result.success();
+    }
+
+
     @ApiOperation(value = "删除目标用户", notes = "删除目标用户")
     @PostMapping("/userTargetDelete")
     public Result<Object> userTargetDelete(@RequestBody SurveyTaskDelBo condition){

@@ -117,43 +117,98 @@ class QuestionEdit extends React.PureComponent {
     // 获取题库具体题目
     getDom = (data) => {
         let questionData = data.question;
-        if(this.state.questionDisplayList.filter(item => item.questionId === questionData.questionId).length === 0) {
-            let arr = JSON.stringify(this.state.questionDisplayList1);
-            let newArr = JSON.parse(arr);
-            if(newArr.length === 0) {
-                this.state.questionDisplayList1.push({...questionData, questionOrder: 1, isBlank: 0, isPaging: 0, isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
-                this.orderQuestion();
+        let qstList = this.state.questionDisplayList1;
+        let params = {
+            ...questionData,
+            questionOrder: 1,
+            isBlank: 0,
+            isPaging: 0,
+            isCommon: 0,
+            createUid: 200,
+            createTime: '',
+            jumpOrder: null
+        };
+
+        // if(qstList.filter(item => item.questionId === questionData.questionId).length === 0) {
+            if(qstList.length === 0) {
+                params = {...params};
+            } else if(qstList.length === 1) {
+                if(qstList[0].isPaging === 1) {
+                    qstList[0].questionOrder = 1;
+                    params = {...params};
+                } else {
+                    params = {...params, questionOrder: 2};
+                }
             } else {
-                this.setState({
-                    questionDisplayList1: [...newArr]
-                }, () => {
-                    this.state.questionDisplayList1.push({...questionData, questionOrder: null, isBlank: 0, isPaging: 0, isCommon: 0, createUid: 200, createTime: '', jumpOrder: null});
-                    this.orderQuestion();
-                    if(this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].isPaging === 1) {
-                        this.state.questionDisplayList1[this.state.questionDisplayList1.length - 2].questionOrder = this.state.questionDisplayList1[this.state.questionDisplayList1.length - 1].questionOrder;
-                        this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
-                    }
-                });
+                if(qstList[qstList.length - 1].isPaging === 1) {
+                    qstList[qstList.length - 1].questionOrder = qstList[qstList.length - 2].questionOrder + 1;
+                    params = {
+                        ...params,
+                        questionOrder: qstList[qstList.length - 2].questionOrder + 1
+                    };
+                } else {
+                    params = {
+                        ...params,
+                        questionOrder: qstList[qstList.length - 1].questionOrder + 1
+                    };
+                }
             }
-        } else {
-            message.info('该题已存在问卷中，且不可重复');
-        }
+            qstList.push(params);
+            console.log(qstList);
+            this.setState({
+                questionDisplayList: [...qstList]
+            })
+        // } else {
+        //     message.info('该题已存在问卷中，且不可重复');
+        // }
     };
 
     // 对获取的题进行排序
+    // orderQuestion = () => {
+    //     let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 0);
+    //     newArr.map((item, k) => {
+    //         this.state.questionDisplayList1.map(x => {
+    //             if(item.questionId === x.questionId && x.isPaging === 0) {
+    //                 x.questionOrder = k + 1;
+    //             }
+    //             return '';
+    //         });
+    //         return '';
+    //     });
+    //     this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+    // };
+
     orderQuestion = () => {
-        let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 0);
-        newArr.map((item, k) => {
-            this.state.questionDisplayList1.map(x => {
-                if(item.questionId === x.questionId && x.isPaging === 0) {
-                    x.questionOrder = k + 1;
-                }
-                return '';
-            });
+        let qstNewArr = this.state.questionDisplayList1.filter(item => item.isPaging === 0);
+        let pageNewArr = this.state.questionDisplayList1.filter(item => item.isPaging === 1);
+        let newArr = [];
+        qstNewArr.map((item, k) => {
+            item.questionOrder = k + 1;
             return '';
         });
-        this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+        newArr.push(...qstNewArr);
+        console.log('3',newArr)
+        if(pageNewArr.length > 0) {
+            pageNewArr.map(item => {
+                qstNewArr.map((x, k) => {
+                    if(item.questionOrder === x.questionOrder) {
+                        newArr.splice(k - 1, 0, item);
+                    }
+                    return '';
+                });
+                if(item.questionOrder === null) newArr.push(item);
+                return '';
+            });
+        }
+
+        console.log('4',newArr)
+        this.setState({
+            questionDisplayList: [...newArr],
+            questionDisplayList1: [...newArr]
+        });
+
     };
+
     // 对分页栏进行排序
     orderPageNum = () => {
         let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 1);
@@ -198,8 +253,9 @@ class QuestionEdit extends React.PureComponent {
     preview = () => {
         if(this.state.questionDisplayList.length === 0 ||
             this.state.qstnaireTitle === '' ||
-            this.state.qstnaireLeadin === '' ||
-            this.state.catalogId === null) {
+            this.state.qstnaireLeadin === ''
+            // || this.state.catalogId === null
+           ) {
             message.info("请优先完善问卷内容");
             return '';
         }
@@ -530,17 +586,20 @@ class QuestionEdit extends React.PureComponent {
 
     // 删除题目
     delQestion = (props, i, type) => {
-        if (type === 'question') {
-            if (i > 0) {
+        if (type === 'question' && this.state.questionDisplayList1.length > 1) {
+            if(i === this.state.questionDisplayList1.length - 1) {
                 if(this.state.questionDisplayList1[i - 1].isPaging === 1) {
-                    if (i === this.state.questionDisplayList1.length - 1) {
-                        this.state.questionDisplayList1[i - 1].questionOrder = null;
-                    } else {
-                        this.state.questionDisplayList1[i - 1].questionOrder = this.state.questionDisplayList1[i + 1].questionOrder;
-                    }
-                    this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+                    this.state.questionDisplayList1[i - 1].questionOrder = null;
                 }
+            } else {
+                this.state.questionDisplayList1.map((item, k) => {
+                    if(item.isPaging === 1 && k > i) {
+                        item.questionOrder = item.questionOrder - 1;
+                    }
+                    return '';
+                })
             }
+            this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
         }
 
         this.state.questionDisplayList1.splice(i, 1);
@@ -610,8 +669,9 @@ class QuestionEdit extends React.PureComponent {
     save =() => {
         if(this.state.questionDisplayList.length === 0 ||
             this.state.qstnaireTitle === '' ||
-            this.state.qstnaireLeadin === '' ||
-            this.state.catalogId === null) {
+            this.state.qstnaireLeadin === ''
+            // || this.state.catalogId === null
+        ) {
                 message.info("请优先完善问卷内容");
                 return '';
         }
@@ -698,7 +758,6 @@ class QuestionEdit extends React.PureComponent {
                 });
             },
             changeQuestion: (arr) => {
-                console.log(arr)
                 this.setState({
                     questions: [...arr]
                 });
