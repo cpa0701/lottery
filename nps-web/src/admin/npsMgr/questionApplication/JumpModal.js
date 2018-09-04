@@ -83,6 +83,8 @@ export default class extends Component {
 
     render() {
         const {jump, jumpList = [], radioValue = 0, record = {}, form: {getFieldDecorator}} = this.props;
+        console.log('a',jumpList)
+        console.log('b',record)
         const optionHtml = jumpList.map((item, k) => {
             return <Option key={k} value={item.questionOrder}>{item.questionName}</Option>;
         });
@@ -105,7 +107,7 @@ export default class extends Component {
                 <Col span={11} offset={2}>
                     <FormItem labelCol={{span: 0}} wrapperCol={{span: 10}}>
                         {getFieldDecorator(`question${item.optionOrder}`, {
-                            initialValue: item.questionOrder ? item.questionOrder : '0',
+                            initialValue: item.questionOrder ? String(item.questionOrder) : '0',
                             rules: [
                                 {required: false},
                             ],
@@ -167,7 +169,7 @@ export default class extends Component {
                                     <Form>
                                         <FormItem label="填写此题后跳转到" labelCol={{span: 7}} wrapperCol={{span: 14}}>
                                             {getFieldDecorator('unconditional', {
-                                                initialValue: record.jumpOrder ? record.jumpOrder : '0',
+                                                initialValue: record.jumpOrder ? String(record.jumpOrder) : '0',
                                                 rules: [
                                                     {required: false},
                                                 ],
