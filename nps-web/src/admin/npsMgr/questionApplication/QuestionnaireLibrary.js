@@ -149,7 +149,12 @@ class QuestionnaireLibrary extends React.PureComponent {
                                                 <Row type="flex" justify="start">
                                                     <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
                                                     </Col>
-                                                    <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
+                                                    <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>
+                                                        状态：{item.status === '00' ? '停用' :
+                                                                item.status === '01' ? '启用' :
+                                                                    item.status === '02' ? '草稿' :
+                                                                        item.status === '03' ? '待审核' :
+                                                                            item.status === '04' ? '审核不通过' : '未知状态'}
                                                     </Col>
                                                     <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
                                                     <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>编辑时间： {item.updateTime}

@@ -154,6 +154,36 @@ class QuestionEdit extends React.PureComponent {
         });
         this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
     };
+
+    // orderQuestion = () => {
+    //     let qstNewArr = this.state.questionDisplayList1.filter(item => item.isPaging === 0);
+    //     let pageNewArr = this.state.questionDisplayList1.filter(item => item.isPaging === 1);
+    //     console.log('1',qstNewArr)
+    //     console.log('2',pageNewArr)
+    //     qstNewArr.map((item, k) => {
+    //         item.questionOrder = k + 1;
+    //         return '';
+    //     });
+    //     console.log('3',qstNewArr)
+    //     pageNewArr.map(item => {
+    //         qstNewArr.map((x, k) => {
+    //             if(item.questionOrder === x.questionOrder) {
+    //                 qstNewArr.splice(k - 1, 0, item);
+    //                 debugger;
+    //             }
+    //             return '';
+    //         });
+    //         if(item.questionOrder === null) qstNewArr.push(item);
+    //         return '';
+    //     });
+    //     console.log('4',qstNewArr)
+    //     this.setState({
+    //         questionDisplayList: [...qstNewArr],
+    //         questionDisplayList1: [...qstNewArr]
+    //     });
+    //
+    // };
+
     // 对分页栏进行排序
     orderPageNum = () => {
         let newArr = this.state.questionDisplayList1.filter(item => item.isPaging === 1);
@@ -198,8 +228,9 @@ class QuestionEdit extends React.PureComponent {
     preview = () => {
         if(this.state.questionDisplayList.length === 0 ||
             this.state.qstnaireTitle === '' ||
-            this.state.qstnaireLeadin === '' ||
-            this.state.catalogId === null) {
+            this.state.qstnaireLeadin === ''
+            // || this.state.catalogId === null
+           ) {
             message.info("请优先完善问卷内容");
             return '';
         }
@@ -530,17 +561,17 @@ class QuestionEdit extends React.PureComponent {
 
     // 删除题目
     delQestion = (props, i, type) => {
-        if (type === 'question') {
-            if (i > 0) {
+        if (type === 'question' && this.state.questionDisplayList1.length > 1) {
+            if(i === this.state.questionDisplayList1.length - 1) {
                 if(this.state.questionDisplayList1[i - 1].isPaging === 1) {
-                    if (i === this.state.questionDisplayList1.length - 1) {
-                        this.state.questionDisplayList1[i - 1].questionOrder = null;
-                    } else {
-                        this.state.questionDisplayList1[i - 1].questionOrder = this.state.questionDisplayList1[i + 1].questionOrder;
-                    }
-                    this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
+                    this.state.questionDisplayList1[i - 1].questionOrder = null;
+                }
+            } else {
+                if(this.state.questionDisplayList1[i + 1].isPaging === 1) {
+                    this.state.questionDisplayList1[i + 1].questionOrder = this.state.questionDisplayList1[i].questionOrder;
                 }
             }
+            this.setState({questionDisplayList: [...this.state.questionDisplayList1]});
         }
 
         this.state.questionDisplayList1.splice(i, 1);
@@ -610,8 +641,9 @@ class QuestionEdit extends React.PureComponent {
     save =() => {
         if(this.state.questionDisplayList.length === 0 ||
             this.state.qstnaireTitle === '' ||
-            this.state.qstnaireLeadin === '' ||
-            this.state.catalogId === null) {
+            this.state.qstnaireLeadin === ''
+            // || this.state.catalogId === null
+        ) {
                 message.info("请优先完善问卷内容");
                 return '';
         }
@@ -698,7 +730,6 @@ class QuestionEdit extends React.PureComponent {
                 });
             },
             changeQuestion: (arr) => {
-                console.log(arr)
                 this.setState({
                     questions: [...arr]
                 });

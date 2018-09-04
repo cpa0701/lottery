@@ -195,9 +195,6 @@ export default class extends PureComponent {
         });
         getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
-        console.log('111',keyS)
-        console.log('222',keys)
-        console.log('333',questions)
         const formItems = keys.map((index, k) => {
             return (
                 <div key={k}>

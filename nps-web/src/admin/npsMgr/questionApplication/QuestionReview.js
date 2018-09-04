@@ -43,9 +43,9 @@ class QuestionReview extends React.PureComponent {
             if(result) {
                 let waitAudit = [], passAudit = [], vetoAudit = [];
                 if(params.status === '') {
-                    waitAudit = result.rows.filter(item => item.status === '待审核');
-                    passAudit = result.rows.filter(item => item.status === '启用');
-                    vetoAudit = result.rows.filter(item => item.status === '审核不通过');
+                    waitAudit = result.rows.filter(item => item.status === '03');
+                    passAudit = result.rows.filter(item => item.status === '01');
+                    vetoAudit = result.rows.filter(item => item.status === '04');
                     this.setState({
                         total: result.totalCount,
                         waitAudit: waitAudit.length,
@@ -124,7 +124,7 @@ class QuestionReview extends React.PureComponent {
                                                     <Col span={15} className={'subject-name'}>{item.qstnaireTitle}</Col>
                                                     <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
                                                         <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                                        {item.status === '' || item.status === '启用' || item.status === '审核不通过' ? '' :
+                                                        {item.status === '' || item.status === '01' || item.status === '04' ? '' :
                                                             <div style={{display: 'inline-block'}}>
                                                                 <Button type="primary" onClick={() => this.submitQstnaire(item.qstnaireId, '01')}>通过</Button>
                                                                 <Popconfirm title="确定否决该问卷?" onConfirm={() => this.submitQstnaire(item.qstnaireId, '04')}>
@@ -137,7 +137,12 @@ class QuestionReview extends React.PureComponent {
                                                 <Row type="flex" justify="start">
                                                     <Col span={3}><Icon type="appstore" style={{marginRight: '5px'}}/>问卷分类：{item.catalogName}
                                                     </Col>
-                                                    <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>状态：{item.status}
+                                                    <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>
+                                                        状态：{item.status === '00' ? '停用' :
+                                                                item.status === '01' ? '启用' :
+                                                                    item.status === '02' ? '草稿' :
+                                                                        item.status === '03' ? '待审核' :
+                                                                            item.status === '04' ? '审核不通过' : '未知状态'}
                                                     </Col>
                                                     <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
                                                     <Col span={6}><Icon type="clock-circle" style={{marginRight: '5px'}}/>创建时间： {item.updateTime}
