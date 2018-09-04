@@ -441,7 +441,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, ");
+        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
