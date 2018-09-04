@@ -19,7 +19,7 @@ import {
     message
 } from 'antd';
 import reqwest from 'reqwest';
-import moment from 'moment';
+import TaskResearchService from "../../../services/research/TaskResearchService"
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -46,6 +46,7 @@ class NewApplicationForm extends React.PureComponent {
             path: null,
             fileList: [],
             uploading: false,
+            userSum: 0,
             taskId: this.props.match.params.id,
             resultDescripe: '共导入0条数据'
         }
@@ -163,7 +164,8 @@ class NewApplicationForm extends React.PureComponent {
                 this.setState({
                     fileList: [],
                     uploading: false,
-                    resultDescripe: `共导入${result.data.sumCount}条数据`
+                    resultDescripe: `共导入${result.data.sumCount}条数据`,
+                    userSum: result.data.sumCount ? result.data.sumCount : 100
                 });
                 message.success('上传成功');
             },
@@ -192,6 +194,10 @@ class NewApplicationForm extends React.PureComponent {
     handleSubmit = (e) => {
         e.preventDefault();
         let isValidate = true;
+        if (this.state.taskType!==2&&this.state.userSum === 0) {
+            isValidate = false;
+            return message.info('请先上传用户号码')
+        }
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 isValidate = false;
@@ -204,6 +210,7 @@ class NewApplicationForm extends React.PureComponent {
             formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
             formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
             formData.taskId = this.state.taskId;
+            formData.taskType = this.state.taskType;
             formData.taskChannel = {
                 channelType: channelType,
                 sampleSum: formData.sampleSum,
@@ -211,14 +218,25 @@ class NewApplicationForm extends React.PureComponent {
                 smsContent: formData.smsContent,
                 smsWay: formData.smsWay,
                 taskId: this.state.taskId,
+                userSum: this.state.userSum,
+                userType: 0,
             };
-            console.log(formData);
+            TaskResearchService.addSurveyTask(formData).then(result => {
+                if(result){
+                    message.success('新增成功');
+                    this.props.history.push('/missionMgr/missionApplication')
+                }
+            })
         }
     }
     //保存草稿
     handleSave = (e) => {
         e.preventDefault();
         let isValidate = true;
+        if (this.state.taskType!==2&&this.state.userSum === 0) {
+            isValidate = false;
+            return message.info('请先上传用户号码')
+        }
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 isValidate = false;
@@ -231,6 +249,7 @@ class NewApplicationForm extends React.PureComponent {
             formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
             formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
             formData.taskId = this.state.taskId;
+            formData.taskType = this.state.taskType;
             formData.taskChannel = {
                 channelType: channelType,
                 sampleSum: formData.sampleSum,
@@ -238,8 +257,15 @@ class NewApplicationForm extends React.PureComponent {
                 smsContent: formData.smsContent,
                 smsWay: formData.smsWay,
                 taskId: this.state.taskId,
+                userSum: this.state.userSum,
+                userType: 0,
             };
-            console.log(formData);
+            TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
+                if(result){
+                    message.success('新增成功');
+                    this.props.history.push('/missionMgr/missionApplication')
+                }
+            })
         }
     }
     handleReset = () => {
@@ -478,7 +504,7 @@ class NewApplicationForm extends React.PureComponent {
                     {/*</Row>*/}
                 </TabPane>
                 <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="3">
-                    <Row>
+                    <Row style={{display:this.state.taskType!==2?'block':'none'}}>
                         <RadioGroup name="radiogroup">
                             {/*<Row>*/}
                             {/*<Col span={1} offset={1}>*/}
@@ -554,6 +580,7 @@ class NewApplicationForm extends React.PureComponent {
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('sampleType', {
                                     rules: [{required: true, message: '请选择获取样本方式'}],
+                                    initialValue: '1',
                                 })(
                                     <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -763,18 +790,18 @@ class NewApplicationForm extends React.PureComponent {
                     {baseInfo}
                     {/*{object}*/}
                     {channel}
-                    <Row style={{background: '#ECECEC', padding: '5px'}}>
-                        <Col span="24">
-                            <Checkbox onChange={this.onMeasure} checked={this.state.checkedMeasure}>奖励措施</Checkbox>
-                        </Col>
-                    </Row>
-                    {measure}
-                    <Row style={{background: '#ECECEC', padding: '5px', marginTop: '20px'}}>
-                        <Col span="24">
-                            <Checkbox onChange={this.onResearch} checked={this.state.checkedResearch}>常态调研</Checkbox>
-                        </Col>
-                    </Row>
-                    {research}
+                    {/*<Row style={{background: '#ECECEC', padding: '5px'}}>*/}
+                    {/*<Col span="24">*/}
+                    {/*<Checkbox onChange={this.onMeasure} checked={this.state.checkedMeasure}>奖励措施</Checkbox>*/}
+                    {/*</Col>*/}
+                    {/*</Row>*/}
+                    {/*{measure}*/}
+                    {/*<Row style={{background: '#ECECEC', padding: '5px', marginTop: '20px'}}>*/}
+                    {/*<Col span="24">*/}
+                    {/*<Checkbox onChange={this.onResearch} checked={this.state.checkedResearch}>常态调研</Checkbox>*/}
+                    {/*</Col>*/}
+                    {/*</Row>*/}
+                    {/*{research}*/}
                     {/*<Row style={{background: '#ECECEC', padding: '5px', marginTop: '20px'}}>*/}
                     {/*<Col span="24">*/}
                     {/*<span className={'spantitle'}>*</span>*/}
@@ -795,7 +822,7 @@ class NewApplicationForm extends React.PureComponent {
                     {/*</Col>*/}
                     {/*</Row>*/}
                     <Row style={{paddingTop: '10px'}}>
-                        <FormItem wrapperCol={{span: 12, offset: 6}}>
+                        <FormItem wrapperCol={{span: 12, offset: 6}} style={{textAlign: 'center'}}>
                             <Button type="primary" onClick={this.handleSave}>保存草稿(save)</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="primary" onClick={this.handleSubmit}>提交审核(save)</Button>
