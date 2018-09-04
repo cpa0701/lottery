@@ -7,9 +7,27 @@ class TaskResearchService {
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     }
+    //新编辑任务
+    editSurveyTask = async (param) => {
+        const url = 'surveyTaskMgr/editSurveyTask';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
     //新增任务获取任务id
     getNewTaskId = async (param) => {
         const url = 'surveyTaskMgr/getNewTaskId';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
+    //根据id获取任务数据
+    selectSurveyTaskById = async (param) => {
+        const url = 'surveyTaskMgr/selectSurveyTaskById';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
+    //删除任务
+    deleteSurveyTask = async (param) => {
+        const url = '/surveyTaskMgr/deleteSurveyTask';
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     }
@@ -28,6 +46,12 @@ class TaskResearchService {
     //用户上传号码
     userTargetImport = async (param) => {
         const url = 'surveyTaskMgr/userTargetImport';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    };
+    //用户删除上传号码
+    userTargetDelete = async (param) => {
+        const url = '/surveyTaskMgr/userTargetDelete';
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     };

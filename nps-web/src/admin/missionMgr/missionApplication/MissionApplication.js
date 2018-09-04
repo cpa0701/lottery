@@ -48,15 +48,6 @@ class MissionApplication extends React.PureComponent {
         }))
     };
 
-    //新建申请单
-    createRequisition = () => {
-        TaskResearchService.getNewTaskId().then((result)=>{
-            if(result){
-                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
-            }
-        })
-    };
-
     //tab标签被点击
     onTabClick = (key) => {
         this.setState({
@@ -76,6 +67,72 @@ class MissionApplication extends React.PureComponent {
         this.getMissionList({pageNum: page,});
     };
 
+    // 查看问卷
+    showQstnaire = (id) => {
+        let params = {id: id, type: 'check'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
+    };
+    // 预览问卷
+    previewQstnaire = (id) => {
+        let params = {id: id, type: 'preview'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/questionPreview/${params}`);
+    };
+    //新建任务
+    createRequisition = () => {
+        TaskResearchService.getNewTaskId().then((result) => {
+            if (result) {
+                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
+            }
+        })
+    };
+    // 编辑任务
+    editTask = (id) => {
+        this.props.history.push(`/missionMgr/newApplicationForm/${id}`);
+    };
+    // 删除任务
+    delTask = (id) => {
+        TaskResearchService.deleteSurveyTask({taskId: id}).then(result => {
+            if (result) {
+                alert('删除成功')
+            }
+        })
+    };
+    //翻译审核状态
+    filterStatus = (statu) => {
+        let status = '';
+        switch (statu) {
+            case '00':
+                status = '正常结束';
+                break;
+            case '01':
+                status = '执行中';
+                break;
+            case '02':
+                status = '草稿';
+                break;
+            case '03':
+                status = '审批中';
+                break;
+            case '04':
+                status = '审核退单';
+                break;
+            case '05':
+                status = '审核作废';
+                break;
+            case '06':
+                status = '发布中';
+                break;
+            case '10':
+                status = '人工终止';
+                break;
+            default:
+                status = ''
+        }
+        return status;
+    }
+
     render() {
         const {taskList, total} = this.state;
 
@@ -94,26 +151,26 @@ class MissionApplication extends React.PureComponent {
                                 <span className="c1">测试结果:{item.testFlag}</span>
                             </Col>
                             <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                <Button type="primary">查看</Button>
-                                {item.status !== '05' ? '' :
-                                    <div style={{display: 'inline-block'}}>
-                                        <Button type="primary">编辑</Button>
-                                        <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
-                                            <Button type="primary">删除</Button>
-                                        </Popconfirm>
-                                    </div>
-                                }
-                                <Button type="primary">预览</Button>
-                                {item.status !== '02' ? '' :
-                                    <Popconfirm
-                                        title="该任务是否走审批流程?"
-                                        onCancel={() => this.delTask(item.taskId)}
-                                        okText={'是'}
-                                        cancelText={'否'}
-                                    >
-                                        <Button type="primary">审批流程</Button>
+                                <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
+                                {/*{item.status !== '05' ? '' :*/}
+                                <div style={{display: 'inline-block'}}>
+                                    <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
+                                    <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
+                                        <Button type="primary">删除</Button>
                                     </Popconfirm>
-                                }
+                                </div>
+                                {/*}*/}
+                                <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
+                                {/*{item.status !== '02' ? '' :*/}
+                                <Popconfirm
+                                    title="该任务是否走审批流程?"
+                                    onCancel={() => this.delTask(item.taskId)}
+                                    okText={'是'}
+                                    cancelText={'否'}
+                                >
+                                    <Button type="primary">审批流程</Button>
+                                </Popconfirm>
+                                {/*}*/}
                                 {/*<Button >*/}
                                 {/*流程图 <Icon type="down"/>*/}
                                 {/*</Button>*/}
@@ -125,7 +182,7 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                             <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}
                             </Col>
-                            <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                            <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{this.filterStatus(item.status)}</Col>
                             <Col span={5}><Icon type="clock-circle"
                                                 style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                             </Col>
