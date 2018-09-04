@@ -26,7 +26,6 @@ public class SurveyResultServiceImpl implements SurveyResultService {
 
     @Override
     public List<SurveyUserInfo> surveyTargetShow(SurveyResultQuery surveyResultQuery) {
-        System.out.println(surveyResultQuery.toString());
         SurveyUserInfoExample userInfoExample = new SurveyUserInfoExample();
         SurveyUserInfoExample.Criteria criteria =  userInfoExample.createCriteria();
         //根据前端传值确定参数

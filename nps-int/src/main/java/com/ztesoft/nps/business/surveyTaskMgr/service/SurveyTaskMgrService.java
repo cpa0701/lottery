@@ -28,4 +28,6 @@ public interface SurveyTaskMgrService {
 
     void testPublishSurvetTask(SurveyTaskPublishBo bo);
 
+    SurveyTaskByIdQuery selectSurveyTaskById(SurveyTaskIdQuery bo);
+
 }

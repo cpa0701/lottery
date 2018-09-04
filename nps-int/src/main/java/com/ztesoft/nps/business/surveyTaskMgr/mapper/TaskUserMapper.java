@@ -27,4 +27,6 @@ public interface TaskUserMapper {
     int updateByPrimaryKeySelective(TaskUser record);
 
     int updateByPrimaryKey(TaskUser record);
+
+    List queryUseAcc(String taskId,short channelType);
 }
