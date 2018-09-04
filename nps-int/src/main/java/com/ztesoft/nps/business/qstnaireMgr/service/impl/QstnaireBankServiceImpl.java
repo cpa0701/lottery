@@ -91,9 +91,11 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         qstnaireBankMapper.insertSelective(qstnaireBank);
 
         //批量插入问卷-问题表
+        Short questionOrder = 1;
         List<QstnaireQuestion> questionList = addQstnaireBankQuery.getQuestion();
         for(QstnaireQuestion  qstnaireQuestion:questionList){
             qstnaireQuestion.setQstnaireId(qstnaireId);
+            qstnaireQuestion.setQuestionOrder(questionOrder++);
         }
         qstnaireQuestionMapper.insertByList(questionList);
 

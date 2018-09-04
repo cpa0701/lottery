@@ -57,8 +57,7 @@ export default class extends Component {
     }
 
     onSubmit = () => {
-        console.log(this.state.checkedId);
-        this.props.onCreate({userId: String(this.state.checkedId[0])});
+        this.props.onCreate({userId: Number(this.state.checkedId[0])});
     };
     afterClose = () => {
       this.props.form.resetFields();
