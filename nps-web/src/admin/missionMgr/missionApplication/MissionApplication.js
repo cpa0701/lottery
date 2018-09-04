@@ -51,6 +51,10 @@ class MissionApplication extends React.PureComponent {
 
     //tab标签被点击
     onTabClick = (key) => {
+        // let params={status: key};
+        // if(key==='00'){
+        //     params={status: '03',uid:''}
+        // }
         this.setState({
             taskList: []
         }, () => this.getMissionList({status: key}))
@@ -145,10 +149,11 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                         </Row>
                         <Row type="flex" justify="start">
-                            <Col span={3}><Icon type="appstore"
+                            <Col span={5}><Icon type="appstore"
                                                 style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                             </Col>
-                            <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}
+                            <Col span={3}><Icon type="retweet"
+                                                style={{marginRight: '5px'}}/>适用渠道：{FilterTool.filterChannel(item.channelName)}
                             </Col>
                             <Col span={3}><Icon type="ant-design"
                                                 style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}
@@ -156,7 +161,7 @@ class MissionApplication extends React.PureComponent {
                             <Col span={5}><Icon type="clock-circle"
                                                 style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                             </Col>
-                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
+                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.userSum}
                             </Col>
                         </Row>
                     </div>)
@@ -179,11 +184,11 @@ class MissionApplication extends React.PureComponent {
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
                     <TabPane tab={tab1Title} key="00">{questionLIst}</TabPane>
-                    <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="02">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决(0)" key="03">{questionLIst}</TabPane>
-                    <TabPane tab="审核作废(0)" key="04">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="03">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="06">{questionLIst}</TabPane>
+                    <TabPane tab="审核否决(0)" key="04">{questionLIst}</TabPane>
+                    <TabPane tab="审核作废(0)" key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )

@@ -1,4 +1,3 @@
-
 class FilterTool {
     //翻译审核状态
     filterStatus = (statu) => {
@@ -33,5 +32,27 @@ class FilterTool {
         }
         return status;
     }
+    //翻译审核状态
+    filterChannel = (chan) => {
+        let channel = '';
+        switch (chan) {
+            case '1':
+                channel = '链接与二维码';
+                break;
+            case '2':
+                channel = '微信发送';
+                break;
+            case '3':
+                channel = '邮件发送';
+                break;
+            case '4':
+                channel = '短信发送';
+                break;
+            default:
+                channel = ''
+        }
+        return channel;
+    }
 }
+
 export default new FilterTool();
