@@ -187,12 +187,11 @@ class QuestionEdit extends React.PureComponent {
             return '';
         });
         newArr.push(...qstNewArr);
-        console.log('3',newArr)
         if(pageNewArr.length > 0) {
             pageNewArr.map(item => {
                 qstNewArr.map((x, k) => {
                     if(item.questionOrder === x.questionOrder) {
-                        newArr.splice(k - 1, 0, item);
+                        qstNewArr.splice(k, 0, item);
                     }
                     return '';
                 });
@@ -200,8 +199,8 @@ class QuestionEdit extends React.PureComponent {
                 return '';
             });
         }
-
-        console.log('4',newArr)
+        newArr = [...new Set(qstNewArr)];
+        console.log('qwer', newArr)
         this.setState({
             questionDisplayList: [...newArr],
             questionDisplayList1: [...newArr]
@@ -315,14 +314,32 @@ class QuestionEdit extends React.PureComponent {
                     if (k.questionType === '01') {
                         let arr = item.optionOrder.split(',');
                         if (arr.length === k.optionList.length) {
-                            param = {
-                                ...k,
-                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            if(item.skiptoQuestionOrder === -1) {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(跳转到问卷末尾结束作答)'
+                                }
+                            } else if (item.skiptoQuestionOrder === -2) {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(直接提交为无效答卷)'
+                                }
+                            } else {
+                                param = {
+                                    ...k,
+                                    jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                                }
                             }
                         } else {
                             k.optionList.map(x => {
                                if(x.optionOrder === Number(item.optionOrder)) {
-                                   x.describe =  '跳转到第' + item.skiptoQuestionOrder + '题';
+                                   if(item.skiptoQuestionOrder === -1) {
+                                       x.describe =  '跳转到问卷末尾结束作答';
+                                   } else if (item.skiptoQuestionOrder === -2) {
+                                       x.describe =  '直接提交为无效答卷';
+                                   } else {
+                                       x.describe =  '跳转到第' + item.skiptoQuestionOrder + '题';
+                                   }
                                }
                                return '';
                             });
@@ -332,9 +349,21 @@ class QuestionEdit extends React.PureComponent {
                             }
                         }
                     } else {
-                        param = {
-                            ...k,
-                            jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                        if(item.skiptoQuestionOrder === -1) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到问卷末尾结束作答)'
+                            }
+                        } else if (item.skiptoQuestionOrder === -2) {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(直接提交为无效答卷)'
+                            }
+                        } else {
+                            param = {
+                                ...k,
+                                jumpDescribe: '此题设置了跳转逻辑(跳转到第' + item.skiptoQuestionOrder + '题)'
+                            }
                         }
                     }
                 } else if (item.logicType === '00' && item.skiptoQuestionOrder === k.questionOrder) {
@@ -532,11 +561,12 @@ class QuestionEdit extends React.PureComponent {
                 if (i > 0 && i < questionDisplayList2.length - 1 && questionDisplayList2[i - 1].isPaging === 1 && questionDisplayList2[i + 1].isPaging === 1) {
                     message.info('当前题目位置不可上移');
                     return '';
-                } else if (i > 0 && i < questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === 1) {
+                } else if (i > 0 && i <= questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === 1) {
                     if (i === questionDisplayList2.length - 1) {
                         questionDisplayList2[i - 1].questionOrder = null;
+                    }else{
+                        questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                     }
-                    questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                 } else if (i > 0  && questionDisplayList2[i - 1].isPaging === 0) { // 如果上一题是题目，将清除本题及上一题所有逻辑
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i - 1].questionOrder, 1);

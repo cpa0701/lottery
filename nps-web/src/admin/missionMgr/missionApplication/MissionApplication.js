@@ -1,5 +1,6 @@
 import React from 'react';
 import {Row, Col, Tabs, Button, Input, Popconfirm, Icon, Pagination, Spin} from "antd"
+import FilterTool from "../../../../src/common/utils/FilterTool.js"
 import TaskResearchService from "../../../services/research/TaskResearchService"
 import './missionApplication.less'
 
@@ -48,17 +49,12 @@ class MissionApplication extends React.PureComponent {
         }))
     };
 
-    //新建申请单
-    createRequisition = () => {
-        TaskResearchService.getNewTaskId().then((result)=>{
-            if(result){
-                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
-            }
-        })
-    };
-
     //tab标签被点击
     onTabClick = (key) => {
+        // let params={status: key};
+        // if(key==='00'){
+        //     params={status: '03',uid:''}
+        // }
         this.setState({
             taskList: []
         }, () => this.getMissionList({status: key}))
@@ -74,6 +70,39 @@ class MissionApplication extends React.PureComponent {
     //列表分页
     refreshList = (page) => {
         this.getMissionList({pageNum: page,});
+    };
+
+    // 查看问卷
+    showQstnaire = (id) => {
+        let params = {id: id, type: 'check'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
+    };
+    // 预览问卷
+    previewQstnaire = (id) => {
+        let params = {id: id, type: 'preview'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/questionPreview/${params}`);
+    };
+    //新建任务
+    createRequisition = () => {
+        TaskResearchService.getNewTaskId().then((result) => {
+            if (result) {
+                this.props.history.push(`/missionMgr/newApplicationForm/${result}`);
+            }
+        })
+    };
+    // 编辑任务
+    editTask = (id) => {
+        this.props.history.push(`/missionMgr/newApplicationForm/${id}`);
+    };
+    // 删除任务
+    delTask = (id) => {
+        TaskResearchService.deleteSurveyTask({taskId: id}).then(result => {
+            if (result) {
+                alert('删除成功')
+            }
+        })
     };
 
     render() {
@@ -94,16 +123,16 @@ class MissionApplication extends React.PureComponent {
                                 <span className="c1">测试结果:{item.testFlag}</span>
                             </Col>
                             <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                <Button type="primary">查看</Button>
+                                <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
                                 {item.status !== '05' ? '' :
                                     <div style={{display: 'inline-block'}}>
-                                        <Button type="primary">编辑</Button>
+                                        <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
                                         <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
                                             <Button type="primary">删除</Button>
                                         </Popconfirm>
                                     </div>
                                 }
-                                <Button type="primary">预览</Button>
+                                <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
                                 {item.status !== '02' ? '' :
                                     <Popconfirm
                                         title="该任务是否走审批流程?"
@@ -120,23 +149,28 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                         </Row>
                         <Row type="flex" justify="start">
-                            <Col span={3}><Icon type="appstore"
+                            <Col span={5}><Icon type="appstore"
                                                 style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                             </Col>
-                            <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}
+                            <Col span={3}><Icon type="retweet"
+                                                style={{marginRight: '5px'}}/>适用渠道：{FilterTool.filterChannel(item.channelName)}
                             </Col>
-                            <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                            <Col span={3}><Icon type="ant-design"
+                                                style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}
+                            </Col>
                             <Col span={5}><Icon type="clock-circle"
                                                 style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                             </Col>
-                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
+                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.userSum}
                             </Col>
                         </Row>
                     </div>)
                 })}
             </Spin>
-            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
-                        showQuickJumper/>
+            {taskList.length === 0 ?
+                <div style={{padding: '20px', textAlign: 'center'}}>暂无数据</div> :
+                <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
+                            showQuickJumper/>}
         </div>;
         let tab1Title = "我的申请单( 共" + total + "条 )";
         let tab2Title = "审批中( 共" + total + "条 )";
@@ -150,11 +184,11 @@ class MissionApplication extends React.PureComponent {
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
                     <TabPane tab={tab1Title} key="00">{questionLIst}</TabPane>
-                    <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="02">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决(0)" key="03">{questionLIst}</TabPane>
-                    <TabPane tab="审核作废(0)" key="04">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="03">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="06">{questionLIst}</TabPane>
+                    <TabPane tab="审核否决(0)" key="04">{questionLIst}</TabPane>
+                    <TabPane tab="审核作废(0)" key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )

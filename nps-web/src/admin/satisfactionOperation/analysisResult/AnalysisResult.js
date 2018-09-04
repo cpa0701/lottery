@@ -1,25 +1,27 @@
 import React from 'react';
 import ReQuestionaire from '../../missionMgr/missionApplication/modal/ReQuestionaire';
-import {Row, Col,Form, Select, Input, Button, DatePicker} from "antd"
+import {Row, Col, Form, Select, Input, Button, DatePicker} from "antd"
 import SurveyModule from './modal/SurveyModule';
 import moment from 'moment';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const echarts = require('echarts');
-const { MonthPicker, } = DatePicker;
 const monthFormat = 'YYYY/MM';
+
 class AnalysisResult extends React.PureComponent {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             selecttabs: false,
-            add:false,
-            value:'city',
-            triggerTask:'all',
+            add: false,
+            value: 'city',
+            triggerTask: 'all',
 
         }
-        this.search=this.search.bind(this);
+        this.search = this.search.bind(this);
     }
+
     //点击选择问卷弹框
     selectQuestion = (show) => {
         if (show) {
@@ -29,21 +31,21 @@ class AnalysisResult extends React.PureComponent {
         }
     }
     //城市
-    handleChange=(value)=> {
+    handleChange = (value) => {
         // value1:value,
-        debugger;
-       this.setState(
-           {
-               value:value,
-           }
-       )}
-       //触发式调研任务
-      handleChangeTask=(value)=>{
-       this.setState(
-           {
-               triggerTask:value,
-           }
-       )
+        this.setState(
+            {
+                value: value,
+            }
+        )
+    }
+    //触发式调研任务
+    handleChangeTask = (value) => {
+        this.setState(
+            {
+                triggerTask: value,
+            }
+        )
 
     }
 
@@ -85,12 +87,12 @@ class AnalysisResult extends React.PureComponent {
         };
 
 
-        var labelOption = { };
+        var labelOption = {};
 
-       var option = {
-           title: {
-               text: '调研对象分析'
-           },
+        var option = {
+            title: {
+                text: '调研对象分析'
+            },
             color: ['#4A86E8', '#E5323E', '#4DB24D'],
             tooltip: {
                 trigger: 'axis',
@@ -122,24 +124,25 @@ class AnalysisResult extends React.PureComponent {
                     barGap: 0,
                     label: labelOption,
                     data: [320, 332, 301, 334, 390],
-                    barMaxWidth:20,//最大宽度
+                    barMaxWidth: 20,//最大宽度
                 },
                 {
                     name: '参与人数',
                     type: 'bar',
                     label: labelOption,
                     data: [220, 182, 191, 234, 290],
-                    barMaxWidth:20,//最大宽度
+                    barMaxWidth: 20,//最大宽度
                 },
                 {
                     name: '完成人数',
                     type: 'bar',
                     label: labelOption,
                     data: [150, 232, 201, 154, 190],
-                    barMaxWidth:20,//最大宽度
+                    barMaxWidth: 20,//最大宽度
                 },
             ]
-        };;
+        };
+        ;
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
         }
@@ -147,15 +150,15 @@ class AnalysisResult extends React.PureComponent {
 
         //调研NPS值分布
         var chartTwo = echarts.init(document.getElementById("barCharttwo"));
-       var  optionone = {
-           title: {
-               text: '调研NPS值分布'
-           },
-            tooltip : {
+        var optionone = {
+            title: {
+                text: '调研NPS值分布'
+            },
+            tooltip: {
                 trigger: 'axis',
             },
             legend: {
-                data:['推荐者','被动者','贬损者',]
+                data: ['推荐者', '被动者', '贬损者',]
             },
             grid: {
                 left: '3%',
@@ -163,44 +166,44 @@ class AnalysisResult extends React.PureComponent {
                 bottom: '3%',
                 containLabel: true
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : ['周一','周二','周三','周四','周五','周六','周日']
+                    type: 'category',
+                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value'
+                    type: 'value'
                 }
             ],
-            series : [
+            series: [
                 {
-                    name:'推荐者',
-                    type:'bar',
+                    name: '推荐者',
+                    type: 'bar',
                     stack: '人',
-                    data:[120, 132, 101, 134, 90, 230, 210],
-                    itemStyle:{
-                        color:'#F3E309'
+                    data: [120, 132, 101, 134, 90, 230, 210],
+                    itemStyle: {
+                        color: '#F3E309'
                     },
-                    barMaxWidth:20,//最大宽度
+                    barMaxWidth: 20,//最大宽度
                 },
                 {
-                    name:'被动者',
-                    type:'bar',
+                    name: '被动者',
+                    type: 'bar',
                     stack: '人',
-                    data:[220, 182, 191, 234, 290, 330, 310],
-                    itemStyle:{
-                        color:'#FF4400'
+                    data: [220, 182, 191, 234, 290, 330, 310],
+                    itemStyle: {
+                        color: '#FF4400'
                     }
                 },
                 {
-                    name:'贬损者',
-                    type:'bar',
+                    name: '贬损者',
+                    type: 'bar',
                     stack: '人',
-                    data:[150, 232, 201, 154, 190, 330, 410],
-                    itemStyle:{
-                        color:'#87CEFA'
+                    data: [150, 232, 201, 154, 190, 330, 410],
+                    itemStyle: {
+                        color: '#87CEFA'
                     }
                 },
             ]
@@ -210,14 +213,16 @@ class AnalysisResult extends React.PureComponent {
             chartTwo.setOption(optionone, true);
         }
     }
-    OnRef1=(ref)=>{
-        this.chart=ref;
+
+    OnRef1 = (ref) => {
+        this.chart = ref;
     }
 
-    search=()=>{
-         this.chart.getData()
+    search = () => {
+        this.chart.getData()
 
     }
+
     render() {
         //是否显示新增问卷弹框
         const selectModalProps = {
@@ -226,32 +231,32 @@ class AnalysisResult extends React.PureComponent {
                 this.selectQuestion(false);
             },
         };
-        debugger;
-         const map={
-             city:this.state.value,
-             questionName:'问卷名称',
-             triggerTask:this.state.triggerTask,
-         }
-        return(
+        const map = {
+            city: this.state.value,
+            questionName: '问卷名称',
+            triggerTask: this.state.triggerTask,
+            height: 500,
+        }
+        return (
             <div>
                 <Row>
                     <Form>
                         <Col span='4'>
-                            <FormItem  label="调研地市" labelCol={{ span: 6 }} wrapperCol={{ span: 16}}>
-                                <Select  defaultValue="全部" onChange={this.handleChange} >
+                            <FormItem label="调研地市" labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                                <Select defaultValue="全部" onChange={this.handleChange}>
                                     <Option value="city">全市</Option>
                                     <Option value="yubei">渝北</Option>
                                 </Select>
                             </FormItem>
                         </Col>
                         <Col span='6'>
-                            <FormItem  label="问卷名称" labelCol={{ span: 4 }} wrapperCol={{ span: 18}}>
+                            <FormItem label="问卷名称" labelCol={{span: 4}} wrapperCol={{span: 18}}>
                                 <Input placeholder='点击选择调研问卷' onClick={() => this.selectQuestion(true)}/>
                             </FormItem>
                         </Col>
                         <Col span='6'>
-                            <FormItem  label="任务类型" labelCol={{ span: 4 }} wrapperCol={{ span: 20}}>
-                                <Select defaultValue="全部"   onChange={this.handleChangeTask} >
+                            <FormItem label="任务类型" labelCol={{span: 4}} wrapperCol={{span: 20}}>
+                                <Select defaultValue="全部" onChange={this.handleChangeTask}>
                                     <Option value="all">全部</Option>
                                     <Option value="research">调研任务</Option>
                                     <Option value="trigger">触发式调研任务</Option>
@@ -263,7 +268,7 @@ class AnalysisResult extends React.PureComponent {
                                 <Button type="primary" htmlType="submit" onClick={this.search}>
                                     查询
                                 </Button>
-                                <Button htmlType="submit" style={{marginLeft:'10px'}}>
+                                <Button htmlType="submit" style={{marginLeft: '10px'}}>
                                     导出
                                 </Button>
                             </FormItem>

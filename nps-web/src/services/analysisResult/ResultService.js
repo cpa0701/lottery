@@ -1,6 +1,6 @@
 import Http from '../../common/Http';
 class ResultService {
-    //分页列表查询
+    //NPS值分布
     getTargetshow = async (param)=>{
         //var url = 'protal/protalMenuController/qryMenuPage';
         var url = ' npsResultMgr/surveyTargetShow';
