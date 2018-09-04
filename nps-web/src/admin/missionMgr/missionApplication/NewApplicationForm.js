@@ -50,6 +50,16 @@ class NewApplicationForm extends React.PureComponent {
             taskId: this.props.match.params.id,
             resultDescripe: '共导入0条数据'
         }
+        this.delUpload = this.delUpload.bind(this);
+        this.handleUpload = this.handleUpload.bind(this);
+    }
+
+    componentWillMount() {
+        TaskResearchService.selectSurveyTaskById({taskId: this.props.match.params.id}).then(result=>{
+            if(result){
+
+            }
+        })
     }
 
     // 新增问卷弹框
@@ -138,6 +148,19 @@ class NewApplicationForm extends React.PureComponent {
             },
         });
     }
+    //删除目标号码
+    delUpload = () => {
+        TaskResearchService.userTargetDelete({
+            "channelType": this.props.form.getFieldValue('taskChannel'),
+            "taskId": this.state.taskId
+        }).then(result => {
+            if (result) {
+                this.setState({
+                    fileList: [],
+                });
+            }
+        })
+    }
     handleUpload = () => {
         const {fileList} = this.state;
         const formData = new FormData();
@@ -165,7 +188,7 @@ class NewApplicationForm extends React.PureComponent {
                     fileList: [],
                     uploading: false,
                     resultDescripe: `共导入${result.data.sumCount}条数据`,
-                    userSum: result.data.sumCount ? result.data.sumCount : 100
+                    userSum: result.data.sumCount
                 });
                 message.success('上传成功');
             },
@@ -194,7 +217,7 @@ class NewApplicationForm extends React.PureComponent {
     handleSubmit = (e) => {
         e.preventDefault();
         let isValidate = true;
-        if (this.state.taskType!==2&&this.state.userSum === 0) {
+        if (this.state.taskType !== 2 && this.state.userSum === 0) {
             isValidate = false;
             return message.info('请先上传用户号码')
         }
@@ -222,7 +245,7 @@ class NewApplicationForm extends React.PureComponent {
                 userType: 0,
             };
             TaskResearchService.addSurveyTask(formData).then(result => {
-                if(result){
+                if (result) {
                     message.success('新增成功');
                     this.props.history.push('/missionMgr/missionApplication')
                 }
@@ -233,7 +256,7 @@ class NewApplicationForm extends React.PureComponent {
     handleSave = (e) => {
         e.preventDefault();
         let isValidate = true;
-        if (this.state.taskType!==2&&this.state.userSum === 0) {
+        if (this.state.taskType !== 2 && this.state.userSum === 0) {
             isValidate = false;
             return message.info('请先上传用户号码')
         }
@@ -261,7 +284,7 @@ class NewApplicationForm extends React.PureComponent {
                 userType: 0,
             };
             TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
-                if(result){
+                if (result) {
                     message.success('新增成功');
                     this.props.history.push('/missionMgr/missionApplication')
                 }
@@ -503,7 +526,7 @@ class NewApplicationForm extends React.PureComponent {
                     {/*</Row>*/}
                 </TabPane>
                 <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="3">
-                    <Row style={{display:this.state.taskType!==2?'block':'none'}}>
+                    <Row style={{display: this.state.taskType !== 2 ? 'block' : 'none'}}>
                         <RadioGroup name="radiogroup">
                             {/*<Row>*/}
                             {/*<Col span={1} offset={1}>*/}
@@ -560,11 +583,7 @@ class NewApplicationForm extends React.PureComponent {
                                             onClick={this.handleUpload}>{uploading ? '上传中' : '上传'}</Button>
                                 </Col>
                                 <Col span='2'>
-                                    <Button onClick={() => {
-                                        this.setState({
-                                            fileList: [],
-                                        });
-                                    }}>删除目标号码</Button>
+                                    <Button onClick={this.delUpload}>删除目标号码</Button>
                                 </Col>
                                 <Col span='5' offset={2}>
                                     <a href="../download/whitelist/nps-batch-insert-template-1.xlsx"
