@@ -20,9 +20,9 @@ class CheckRule {
 
 	//判断json格式
 	isJSON = (str) => {
-		if (typeof str === 'string') {
+		if (typeof str == 'string') {
 	        try {
-	        	if (typeof JSON.parse(str) === "object") {
+	        	if (typeof JSON.parse(str) == "object") {
 	                return true;
 	            }
 	        } catch(e) {
@@ -78,7 +78,7 @@ class CheckRule {
                 isNumFlage=1;
             }
             for(let j=0;j<otherChar.length;j++){
-                if(otherChar[j]===value.charAt(i)){
+                if(otherChar[j]==value.charAt(i)){
                     isOtherFlage=1;
                 }
             }

@@ -339,7 +339,7 @@ class QuestionPreview extends React.PureComponent {
             return question.isPaging === 0;
         });
         //将未填写必填的提示去除
-        checkList.length ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
+        checkList.length||questionList[questionIndex - 1].isBlank===0 ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
 
         questionList[questionIndex - 1].value = checkList.join(',');//给questionList对应题目赋值所选值
 
@@ -480,7 +480,7 @@ class QuestionPreview extends React.PureComponent {
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             if (question.questionOrder === parseInt(e.target.attributes.questionIndex.value) && question.isPaging !== 1) {
                 question.value = e.target.value
-                if (question.value)//如果有值，则将未填写必填的提示去除
+                if (question.value||question.isBlank===0)//如果有值，则将未填写必填的提示去除
                     question.showTip = false;
                 else
                     question.showTip = true;
@@ -532,6 +532,8 @@ class QuestionPreview extends React.PureComponent {
             if (question.isPaging === 0 && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
                 question.showTip = true;
                 return question;
+            }else{
+                question.showTip = false;
             }
         });
         if (blankList.length) {
@@ -550,9 +552,9 @@ class QuestionPreview extends React.PureComponent {
                         // 优先级
                         // jumped={item.jumped}//是否被跳过
                         // isShow={item.isShow}//是否显示被关联题
-                        // isJump={item.isJump}//是否跳转题，用于覆盖关联题的隐藏
+                        // isJump={item.isJump}//是否跳转题
                         // isSetup={item.isSetup}//是否是被关联题
-                        item.display = item.jumped ? false : (item.isShow ? (item.isJump ? true : !item.isSetup) : !item.isSetup)
+                        item.display = item.jumped ? false : (item.isShow ? true:!item.isSetup)
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}

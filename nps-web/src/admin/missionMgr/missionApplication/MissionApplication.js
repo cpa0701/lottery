@@ -1,5 +1,6 @@
 import React from 'react';
 import {Row, Col, Tabs, Button, Input, Popconfirm, Icon, Pagination, Spin} from "antd"
+import FilterTool from "../../../../src/common/utils/FilterTool.js"
 import TaskResearchService from "../../../services/research/TaskResearchService"
 import './missionApplication.less'
 
@@ -50,6 +51,10 @@ class MissionApplication extends React.PureComponent {
 
     //tab标签被点击
     onTabClick = (key) => {
+        // let params={status: key};
+        // if(key==='00'){
+        //     params={status: '03',uid:''}
+        // }
         this.setState({
             taskList: []
         }, () => this.getMissionList({status: key}))
@@ -99,39 +104,6 @@ class MissionApplication extends React.PureComponent {
             }
         })
     };
-    //翻译审核状态
-    filterStatus = (statu) => {
-        let status = '';
-        switch (statu) {
-            case '00':
-                status = '正常结束';
-                break;
-            case '01':
-                status = '执行中';
-                break;
-            case '02':
-                status = '草稿';
-                break;
-            case '03':
-                status = '审批中';
-                break;
-            case '04':
-                status = '审核退单';
-                break;
-            case '05':
-                status = '审核作废';
-                break;
-            case '06':
-                status = '发布中';
-                break;
-            case '10':
-                status = '人工终止';
-                break;
-            default:
-                status = ''
-        }
-        return status;
-    }
 
     render() {
         const {taskList, total} = this.state;
@@ -152,48 +124,53 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                             <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
                                 <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                {/*{item.status !== '05' ? '' :*/}
-                                <div style={{display: 'inline-block'}}>
-                                    <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
-                                    <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
-                                        <Button type="primary">删除</Button>
-                                    </Popconfirm>
-                                </div>
-                                {/*}*/}
+                                {item.status !== '05' ? '' :
+                                    <div style={{display: 'inline-block'}}>
+                                        <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
+                                        <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
+                                            <Button type="primary">删除</Button>
+                                        </Popconfirm>
+                                    </div>
+                                }
                                 <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
-                                {/*{item.status !== '02' ? '' :*/}
-                                <Popconfirm
-                                    title="该任务是否走审批流程?"
-                                    onCancel={() => this.delTask(item.taskId)}
-                                    okText={'是'}
-                                    cancelText={'否'}
-                                >
-                                    <Button type="primary">审批流程</Button>
-                                </Popconfirm>
-                                {/*}*/}
+                                {item.status !== '02' ? '' :
+                                    <Popconfirm
+                                        title="该任务是否走审批流程?"
+                                        onCancel={() => this.delTask(item.taskId)}
+                                        okText={'是'}
+                                        cancelText={'否'}
+                                    >
+                                        <Button type="primary">审批流程</Button>
+                                    </Popconfirm>
+                                }
                                 {/*<Button >*/}
                                 {/*流程图 <Icon type="down"/>*/}
                                 {/*</Button>*/}
                             </Col>
                         </Row>
                         <Row type="flex" justify="start">
-                            <Col span={3}><Icon type="appstore"
+                            <Col span={5}><Icon type="appstore"
                                                 style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                             </Col>
-                            <Col span={3}><Icon type="retweet" style={{marginRight: '5px'}}/>适用渠道：{item.channelName}
+                            <Col span={3}><Icon type="retweet"
+                                                style={{marginRight: '5px'}}/>适用渠道：{FilterTool.filterChannel(item.channelName)}
                             </Col>
-                            <Col span={3}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{this.filterStatus(item.status)}</Col>
+                            <Col span={3}><Icon type="ant-design"
+                                                style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}
+                            </Col>
                             <Col span={5}><Icon type="clock-circle"
                                                 style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                             </Col>
-                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
+                            <Col span={5}><Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.userSum}
                             </Col>
                         </Row>
                     </div>)
                 })}
             </Spin>
-            <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
-                        showQuickJumper/>
+            {taskList.length === 0 ?
+                <div style={{padding: '20px', textAlign: 'center'}}>暂无数据</div> :
+                <Pagination current={this.state.pageNum} onChange={this.refreshList} total={this.state.total}
+                            showQuickJumper/>}
         </div>;
         let tab1Title = "我的申请单( 共" + total + "条 )";
         let tab2Title = "审批中( 共" + total + "条 )";
@@ -207,11 +184,11 @@ class MissionApplication extends React.PureComponent {
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
                     <TabPane tab={tab1Title} key="00">{questionLIst}</TabPane>
-                    <TabPane tab={tab2Title} key="01">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="02">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决(0)" key="03">{questionLIst}</TabPane>
-                    <TabPane tab="审核作废(0)" key="04">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="03">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="06">{questionLIst}</TabPane>
+                    <TabPane tab="审核否决(0)" key="04">{questionLIst}</TabPane>
+                    <TabPane tab="审核作废(0)" key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )
