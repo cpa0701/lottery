@@ -54,7 +54,6 @@ class QuestionPreview extends React.PureComponent {
                 if (result.qstnaireLeadin)
                     message.info(result.qstnaireLeadin);
                 let logicList = result.logic;
-                this.state.logicList = result.logic;
                 let questionList = result.question;
                 let page = 1;//页码
                 let pageCount = 2;//由于isPaging属性是放在每页最前的一个对象中，所以从2开始
@@ -87,6 +86,7 @@ class QuestionPreview extends React.PureComponent {
                                 optionList.map(option => {
                                     let optionIndex = option - 1//有逻辑的选项索引
                                     item.optionList[optionIndex].logicList.push(k);
+                                    return '';
                                 })
                             }
                         }
@@ -116,6 +116,7 @@ class QuestionPreview extends React.PureComponent {
                     loading: false,
                     isPaging: isPaging,
                     pageCount: pageCount - 1,
+                    logicList: result.logic,
                     pageList: [...pageList],
                     questionList: questionList,
                     qstnaireTitle: result.qstnaireTitle
@@ -589,7 +590,7 @@ class QuestionPreview extends React.PureComponent {
                         {questionnaireBlock}
                     </Col>
                     <Col span={12} offset={6} className={'paging'}
-                         style={{display: this.state.isPaging ? 'block' : 'none', marginTop: '10px'}}>
+                         style={{marginTop: '10px'}}>
                         <Button
                             style={{display: this.over ? 'none' : (this.state.currentPage === 1 ? 'none' : 'inline-block')}}
                             onClick={this.changePage.bind(this, 'pre')}>上一页</Button>
@@ -597,7 +598,7 @@ class QuestionPreview extends React.PureComponent {
                             style={{display: this.state.currentPage === this.state.pageCount ? 'none' : 'inline-block'}}
                             onClick={this.changePage.bind(this, 'next')}>下一页</Button>
                         <Button
-                            style={{display: this.state.currentPage === this.state.pageCount ? 'inline-block' : 'none'}}
+                            style={{display: this.state.isPaging ? (this.state.currentPage === this.state.pageCount ? 'inline-block' : 'none') : 'inline-block'}}
                             type="primary" onClick={this.handleSubmit}>提交</Button>
                     </Col>
                 </Row>
