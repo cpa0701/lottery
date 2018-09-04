@@ -187,12 +187,11 @@ class QuestionEdit extends React.PureComponent {
             return '';
         });
         newArr.push(...qstNewArr);
-        console.log('3',newArr)
         if(pageNewArr.length > 0) {
             pageNewArr.map(item => {
                 qstNewArr.map((x, k) => {
                     if(item.questionOrder === x.questionOrder) {
-                        newArr.splice(k - 1, 0, item);
+                        qstNewArr.splice(k, 0, item);
                     }
                     return '';
                 });
@@ -200,8 +199,8 @@ class QuestionEdit extends React.PureComponent {
                 return '';
             });
         }
-
-        console.log('4',newArr)
+        newArr = [...new Set(qstNewArr)];
+        console.log('qwer', newArr)
         this.setState({
             questionDisplayList: [...newArr],
             questionDisplayList1: [...newArr]
