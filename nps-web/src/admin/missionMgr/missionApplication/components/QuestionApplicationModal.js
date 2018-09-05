@@ -70,6 +70,7 @@ class QuestionApplicationModal extends React.PureComponent {
                             <Row type="flex" justify="space-between">
                                 <Col span={20} className={'subject-name'}>{item.qstnaireTitle}</Col>
                                 <Col span={4}>
+
                                     <Button type="primary" onClick={() => {
                                         ChoseQuestion(item.qstnaireId)
                                     }}>选择</Button>
