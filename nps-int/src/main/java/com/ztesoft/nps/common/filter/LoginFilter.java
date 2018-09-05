@@ -2,8 +2,10 @@ package com.ztesoft.nps.common.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ztesoft.nps.common.utils.SystemUtils;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.views.ResultCodeEnum;
+import com.ztesoft.utils.sys.util.SystemUtil;
 import org.apache.http.HttpStatus;
 
 import javax.servlet.*;
@@ -28,7 +30,7 @@ public class LoginFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse)resp;
 
 		String url = request.getRequestURI();
-		System.out.println("{ client :"+ request.getRemoteAddr()+" uri : "+url+" }");
+		System.out.println("{ client :"+ SystemUtils.getRemoteHost(request)+" uri : "+url+" }");
 		String contextPath = request.getContextPath();
 		// 登录、注销、静态资源、swagger-ui不用过滤
 		if (url.equals(contextPath + "/login")
