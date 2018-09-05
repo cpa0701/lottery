@@ -24,7 +24,6 @@ class QuestionApplication extends React.PureComponent {
             total: 0
         };
         this.createQuestion = this.createQuestion.bind(this);
-        if(this.props.location.state && this.props.location.state.isFresh)   this.getQuestionnaireList();
     }
 
     componentWillMount() {

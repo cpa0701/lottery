@@ -120,26 +120,24 @@ class QuestionLibMgr extends React.PureComponent {
                             <Row type="flex" justify="start">
                                 <Col span={3}><Icon type="info-circle-o" style={{marginRight: '5px'}}/>
                                     题型：{item.questionType === '01' ? '单选题' :
-                                        item.questionType === '02' ? '多选题' :
-                                            item.questionType === '03' ? '单项填空' :
-                                                item.questionType === '04' ? '多项填空' : '其他类型'}
+                                            item.questionType === '02' ? '多选题' :
+                                                item.questionType === '03' ? '单项填空' :
+                                                    item.questionType === '04' ? '多项填空' : '其他类型'}
                                 </Col>
-                                <Col span={3}><Icon type="appstore-o"
-                                                    style={{marginRight: '5px'}}/>
-                                    分类:
-                                    {item.questionCategory === '1' ? '终端' :
-                                        item.questionCategory === '2' ? '套餐' :
-                                            item.questionCategory === '3' ? '流量' :
-                                                item.questionCategory === '4' ? '账单' : '其它'}</Col>
+                                <Col span={3}><Icon type="appstore-o" style={{marginRight: '5px'}}/>
+                                    分类：{item.questionCategory === 1 ? '终端' :
+                                            item.questionCategory === 2 ? '套餐' :
+                                                item.questionCategory === 3 ? '流量' :
+                                                    item.questionCategory === 4 ? '账单' : '未知分类'}
+                                </Col>
                                 <Col span={3}><Icon type="check-square-o" style={{marginRight: '5px'}}/>
                                     NPS评分题：{item.isNps === 0 ? '否' : item.isNps === 1 ? '是' : ''}
                                 </Col>
                                 <Col span={3}><Icon type="like-o" style={{marginRight: '5px'}}/>
                                     满意度评分题：{item.isSatisfied === 0 ? '否' : item.isSatisfied === 1 ? '是' : ''}
                                 </Col>
-                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUid}</Col>
-                                <Col span={5}><Icon type="clock-circle-o"
-                                                    style={{marginRight: '5px'}}/>创建时间： {item.create_time}
+                                <Col span={3}><Icon type="user" style={{marginRight: '5px'}}/>创建人：{item.createUname}</Col>
+                                <Col span={5}><Icon type="clock-circle-o" style={{marginRight: '5px'}}/>创建时间： {item.create_time}
                                 </Col>
                             </Row>
                         </div>

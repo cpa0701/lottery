@@ -18,6 +18,8 @@ import {
     Modal,
     message
 } from 'antd';
+import moment from 'moment';
+
 import reqwest from 'reqwest';
 import TaskResearchService from "../../../services/research/TaskResearchService"
 
@@ -32,6 +34,7 @@ const QRCode = require('qrcode.react');
 class NewApplicationForm extends React.PureComponent {
     constructor(props) {
         super(props);
+        const taskId = this.props.match.params.id.split("&")[0];
         this.state = {
             startValue: null,
             endValue: null,
@@ -40,6 +43,16 @@ class NewApplicationForm extends React.PureComponent {
             checkedResearch: false,
             rsFlag: true,
             accessFlag: false,
+            taskName: '',
+            surveySdate: '',
+            surveyEdate: '',
+            qstnaireId: '',
+            testNumberList: '',
+            channelName: '3',
+            sampleType: '1',
+            sampleSum: '',
+            smsWay: '',
+            smsContent: '',
             taskType: 1,
             add: false,
             selecttabs: false,
@@ -47,7 +60,7 @@ class NewApplicationForm extends React.PureComponent {
             fileList: [],
             uploading: false,
             userSum: 0,
-            taskId: this.props.match.params.id,
+            taskId: taskId,
             resultDescripe: '共导入0条数据'
         }
         this.delUpload = this.delUpload.bind(this);
@@ -55,11 +68,29 @@ class NewApplicationForm extends React.PureComponent {
     }
 
     componentWillMount() {
-        TaskResearchService.selectSurveyTaskById({taskId: this.props.match.params.id}).then(result=>{
-            if(result){
-
-            }
-        })
+        const taskId = this.props.match.params.id.split("&")[0];
+        const isAdd = this.props.match.params.id.split("&")[1];
+        if (!isAdd)
+            TaskResearchService.selectSurveyTaskById({taskId: taskId}).then(result => {
+                if (result) {
+                    result.taskChannel = result.taskChannel[0];
+                    this.setState({
+                        taskName: result.taskName,
+                        taskType: result.taskType,
+                        surveySdate: result.surveySdate,
+                        surveyEdate: result.surveyEdate,
+                        qstnaireId: result.qstnaireId,
+                        testNumberList: result.testNumberList.join(','),
+                        channelName: result.taskChannel.channelType,
+                        sampleType: result.taskChannel.sampleType,
+                        sampleSum: result.taskChannel.sampleSum,
+                        smsWay: result.taskChannel.smsWay,
+                        userSum: result.taskChannel.userSum,
+                        resultDescripe: `共导入${result.taskChannel.userSum}条数据`,
+                        smsContent: result.taskChannel.smsContent,
+                    })
+                }
+            })
     }
 
     // 新增问卷弹框
@@ -201,7 +232,6 @@ class NewApplicationForm extends React.PureComponent {
         });
     }
     beforeUpload = (file) => {
-        console.log(file.type)
         // const isType = (file.type === 'doc/docx/txt/xls/xlsx/pdf');
         const isType = ((file.type === 'application/msword') || (file.type === 'text/plain') || (file.type === 'application/vnd.ms-excel') || (file.type === 'application/pdf'));
         if (!isType) {
@@ -283,12 +313,21 @@ class NewApplicationForm extends React.PureComponent {
                 userSum: this.state.userSum,
                 userType: 0,
             };
-            TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
-                if (result) {
-                    message.success('新增成功');
-                    this.props.history.push('/missionMgr/missionApplication')
-                }
-            })
+            const isAdd = this.props.match.params.id.split("&")[1];
+            if (!isAdd) {//编辑
+                TaskResearchService.editSurveyTask(formData).then(result => {
+                    if (result) {
+                        message.success('编辑成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
+            } else//新增
+                TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
+                    if (result) {
+                        message.success('新增成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
         }
     }
     handleReset = () => {
@@ -297,6 +336,7 @@ class NewApplicationForm extends React.PureComponent {
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        const isAdd = this.props.match.params.id.split("&")[1];
         const {uploading} = this.state;
         //新增问卷弹框属性传值是否显示弹窗
         const addModalProps = {
@@ -356,7 +396,7 @@ class NewApplicationForm extends React.PureComponent {
                 <FormItem label="调研任务名称：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('taskName', {
                         rules: [{required: true, message: '请输入调研任务名称'}],
-                        initialValue: '',
+                        initialValue: this.state.taskName,
                     })(
                         <Input size="default"/>
                     )}
@@ -368,6 +408,7 @@ class NewApplicationForm extends React.PureComponent {
                     <FormItem label="调研触发时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
                         {getFieldDecorator('surveySdate', {
                             rules: [{type: 'object', required: true, message: '请选择调研触发时间'}],
+                            initialValue: moment(this.state.surveySdate)
                         })(
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
@@ -383,6 +424,7 @@ class NewApplicationForm extends React.PureComponent {
                     <FormItem label="调研结束时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
                         {getFieldDecorator('surveyEdate', {
                             rules: [{type: 'object', required: true, message: '请选择调研结束时间'}],
+                            initialValue: moment(this.state.surveyEdate)
                         })(
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
@@ -400,6 +442,7 @@ class NewApplicationForm extends React.PureComponent {
                 <FormItem label="调研问卷：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('qstnaireId', {
                         rules: [{required: true, message: '请选择调研问卷'}],
+                        initialValue: this.state.qstnaireId
                     })(
                         <Input placeholder='点击选择调研问卷' onClick={() => this.addQuestionaire(true)}/>
                     )}
@@ -409,6 +452,7 @@ class NewApplicationForm extends React.PureComponent {
                 <FormItem label="测试号码：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
                     {getFieldDecorator('testNumberList', {
                         rules: [{required: true, message: '请输入测试号码'}],
+                        initialValue: this.state.testNumberList
                     })(
                         <Input placeholder="多个号码用英文逗号分隔"/>
                     )}
@@ -433,7 +477,7 @@ class NewApplicationForm extends React.PureComponent {
                     调研渠道
                 </Col>
             </Row>
-            <Tabs activeKey={'3'} defaultActiveKey="3" onChange={(activeKey) => {
+            <Tabs activeKey={'3'} defaultActiveKey={this.state.channelName} onChange={(activeKey) => {
                 if (activeKey !== '1')
                     return message.info('待开发')
                 this.props.form.setFieldsValue({
@@ -598,7 +642,7 @@ class NewApplicationForm extends React.PureComponent {
                             <FormItem label="获取样本方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('sampleType', {
                                     rules: [{required: true, message: '请选择获取样本方式'}],
-                                    initialValue: '1',
+                                    initialValue: this.state.sampleType,
                                 })(
                                     <Select onChange={this.accessHandleChange} multiple placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -612,6 +656,7 @@ class NewApplicationForm extends React.PureComponent {
                             <FormItem label="抽样数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('sampleSum', {
                                     rules: [{required: true, message: '请输入抽样数量'}],
+                                    initialValue: this.state.sampleSum,
                                 })(
                                     <Input/>
                                 )}
@@ -621,6 +666,7 @@ class NewApplicationForm extends React.PureComponent {
                             <FormItem label="短信下发方式：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('smsWay', {
                                     rules: [{required: true, message: '请选择短信下发方式'}],
+                                    initialValue: this.state.smsWay,
                                 })(
                                     <Select placeholder="--请选择--"
                                             style={{width: '100%'}}>
@@ -634,6 +680,7 @@ class NewApplicationForm extends React.PureComponent {
                             <FormItem label="短信提示语：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                                 {getFieldDecorator('smsContent', {
                                     rules: [{required: true, message: '请选择短信提示语'}],
+                                    initialValue: this.state.smsContent,
                                 })(
                                     <TextArea placeholder="请填写短信提示语"/>
                                 )}
@@ -648,7 +695,7 @@ class NewApplicationForm extends React.PureComponent {
             <FormItem>
                 {getFieldDecorator('taskChannel', {
                     rules: [{required: true, message: '请选择调研渠道',}],
-                    initialValue: '3',
+                    initialValue: this.state.channelName,
                 })(
                     <Input type={'hidden'}/>
                 )}
@@ -843,7 +890,7 @@ class NewApplicationForm extends React.PureComponent {
                         <FormItem wrapperCol={{span: 12, offset: 6}} style={{textAlign: 'center'}}>
                             <Button type="primary" onClick={this.handleSave}>保存草稿(save)</Button>
                             &nbsp;&nbsp;&nbsp;
-                            <Button type="primary" onClick={this.handleSubmit}>提交审核(save)</Button>
+                            {isAdd ? <Button type="primary" onClick={this.handleSubmit}>提交审核(save)</Button> : ''}
                             &nbsp;&nbsp;&nbsp;
                             <Button type="ghost" onClick={this.handleReset}>取消</Button>
                         </FormItem>

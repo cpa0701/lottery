@@ -339,24 +339,24 @@ class QuestionPreview extends React.PureComponent {
             return question.isPaging === 0;
         });
         //将未填写必填的提示去除
-        checkList.length ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
+        checkList.length || questionList[questionIndex - 1].isBlank === 0 ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
 
         questionList[questionIndex - 1].value = checkList.join(',');//给questionList对应题目赋值所选值
 
-        questionList[questionIndex - 1].optionList.forEach(item => {//将当前所选选项的题目的选项值全部变为false，仅对单选
-            item.checked = false;
-        });
-        checkList.map(optionIndex => {
-            questionList[questionIndex - 1].optionList[optionIndex - 1].logicList.length && questionList[questionIndex - 1].optionList[optionIndex - 1].logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
-                if (k.optionOrder.includes(optionIndex)) {//如果该逻辑所关联的选项包含该选项，是则将此optionList的每个checked改为true,因为多选选项间是或的关系
-                    k.optionOrder.split(',').map(i => {
-                        questionList[questionIndex - 1].optionList[i - 1].checked = true;
-                    })
-                }
-            })
-        });
         questionList[questionIndex - 1].optionList.map(item => {//遍历当前题所有选项的逻辑
             item.logicList.length && item.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
+                questionList[questionIndex - 1].optionList.forEach(item => {//每遍历一个选项的逻辑时将所有选项check变为false
+                    item.checked = false;
+                });
+                checkList.map(optionIndex => {
+                    if (k.optionOrder.includes(optionIndex)) {//如果该逻辑所关联的选项包含该选项，是则将此optionList的每个checked改为true,因为多选选项间是或的关系
+                        k.optionOrder.split(',').map(i => {
+                            questionList[questionIndex - 1].optionList[i - 1].checked = true;
+                            return '';
+                        })
+                    }
+                    return '';
+                });
                 let skiptoQuestionOrder = k.skiptoQuestionOrder;//找到当前逻辑被相关的题目序号
                 let relatedLogicList = this.state.logicList.filter(logic => {
                     return logic.skiptoQuestionOrder === skiptoQuestionOrder//根据题目序号找到所有和此题目有关的所有逻辑
@@ -463,7 +463,9 @@ class QuestionPreview extends React.PureComponent {
                             })
                     }
                 }
+                return '';
             })
+            return '';
         });
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             questionList.map(item => {
@@ -480,7 +482,7 @@ class QuestionPreview extends React.PureComponent {
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             if (question.questionOrder === parseInt(e.target.attributes.questionIndex.value) && question.isPaging !== 1) {
                 question.value = e.target.value
-                if (question.value)//如果有值，则将未填写必填的提示去除
+                if (question.value || question.isBlank === 0)//如果有值，则将未填写必填的提示去除
                     question.showTip = false;
                 else
                     question.showTip = true;
@@ -532,6 +534,8 @@ class QuestionPreview extends React.PureComponent {
             if (question.isPaging === 0 && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
                 question.showTip = true;
                 return question;
+            } else {
+                question.showTip = false;
             }
         });
         if (blankList.length) {
@@ -552,7 +556,7 @@ class QuestionPreview extends React.PureComponent {
                         // isShow={item.isShow}//是否显示被关联题
                         // isJump={item.isJump}//是否跳转题
                         // isSetup={item.isSetup}//是否是被关联题
-                        item.display = item.jumped ? false : (item.isShow ? true:!item.isSetup)
+                        item.display = item.jumped ? false : (item.isShow ? true : !item.isSetup)
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}
