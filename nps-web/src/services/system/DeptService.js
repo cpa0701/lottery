@@ -3,14 +3,14 @@ import Http from '../../common/Http';
 class DeptService {
     //获取区域树
     getDomainTree = async (param) => {
-        var url = 'regions';
-        return await Http.get(url, param);
+        var url = 'regionMgr/regionList';
+        return await Http.post(url, param);
     }
     // 获取部门树
     getDeptTree = async (param) => {
         // var url = 'mock/dept/getDeptTree';
-        var url = 'departments';
-        return await Http.get(url, param);
+        var url = 'deptMgr/deptList';
+        return await Http.post(url, param);
     }
     //校验部门名唯一性
     checkDeptName = async (param) => {
@@ -19,7 +19,7 @@ class DeptService {
     }
     // 新增部门
     addDept = async (param) => {
-        var url = 'departments';
+        var url = 'deptMgr/addDept';
         return await Http.post(url, param);
     }
     //修改部门
@@ -39,7 +39,7 @@ class DeptService {
     }
     // 新增员工
     addStaff = async (param) => {
-        var url = 'users';
+        var url = 'userMgr/addUser';
         return await Http.post(url, param);
     }
     //修改员工

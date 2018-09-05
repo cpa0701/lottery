@@ -66,7 +66,7 @@ class PerceptionView extends React.PureComponent {
         console.log(myChart);
         myChart.setOption({
             title: {
-                text: '香港18区人口密度 （2011）',
+                text: '',
                 subtext: '人口密度数据来自Wikipedia',
                 sublink: 'http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12'
             },
@@ -97,7 +97,7 @@ class PerceptionView extends React.PureComponent {
             },
             series: [
                 {
-                   name: '香港18区人口密度',
+                   name: '',
                     type: 'map',
                     mapType: 'HK', // 自定义扩展图表类型
                     itemStyle: {

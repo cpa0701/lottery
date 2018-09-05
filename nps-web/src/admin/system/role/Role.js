@@ -128,7 +128,7 @@ export default class Role extends PureComponent {
             record
         });
         if (selectedKeys.length  === 1) {
-            this.authQuery(selectedKeys);
+            this.authQuery({id: Number(selectedKeys[0])});
             this.getUserData({id: selectedKeys[0]});
         }
     };
@@ -396,9 +396,11 @@ export default class Role extends PureComponent {
             }
             let params = {
                 ...values,
-                id: this.state.checkedKeys[0]
+                pageNum:this.state.pagination.current,
+                pageSize:this.state.pagination.pageSize,
+                id: Number(this.state.checkedKeys[0]),
             };
-            this.getUserData(params);
+            this.getUserData( params);
         });
     };
     // 获取勾选用户表格id
@@ -562,6 +564,7 @@ export default class Role extends PureComponent {
                 this.editRoleModal(false, {}, {}, 1);
                 },
             onCreate: (values) => {
+                debugger;
                 console.log(values);
                 SysRoleMgService.editRoles({...values}).then((data) => {
                     message.success(role.editSuccess);
@@ -696,7 +699,8 @@ export default class Role extends PureComponent {
             onCreate: (values) => {
                 let params = {
                     ...values,
-                    roleId: Number(checkedKeys[0])
+                    roleId: Number(checkedKeys[0]),
+                    uid: selRowKeys,
                 };
                 SysRoleMgService.addRoleUserDate(params).then((data) => {
                    if(data) {

@@ -128,6 +128,7 @@ export default class Domain extends PureComponent {
                     });
                 }
                 let data=[];
+                debugger;
                     result.map(item=>{
                         if(item.parentId===0){
                             data.push(item);

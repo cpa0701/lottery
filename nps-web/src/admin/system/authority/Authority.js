@@ -563,7 +563,6 @@ export default class Authority extends PureComponent {
                     >
                         <Form>
                             <Row>
-
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionIdentify}

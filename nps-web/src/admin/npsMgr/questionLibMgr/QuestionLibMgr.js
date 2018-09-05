@@ -66,6 +66,7 @@ class QuestionLibMgr extends React.PureComponent {
         this.setState({
             loading: true
         }, () => QuestionLibMgrService.delQuestion({questionId: id}).then(result => {
+
             message.success('删除成功');
             this.setState({loading: false});
             this.refreshLib();

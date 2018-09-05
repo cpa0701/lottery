@@ -493,8 +493,10 @@ export default class QuestionAddMgr extends PureComponent {
             };
             if (value.questionId) {
                 QuestionLibMgrService.editQuestion(value).then(data => {
+                    if(data){
                     message.success('编辑成功');
                     this.props.history.push({pathname: '/npsMgr/questionLibMgr'})
+                       }
                 });
             } else {
                 QuestionLibMgrService.addQuestion(value).then(data => {

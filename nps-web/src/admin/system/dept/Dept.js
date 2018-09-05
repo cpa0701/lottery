@@ -56,7 +56,7 @@ export default class Dept extends PureComponent {
         selectedStaffIds: [],
         editAuthorityParams: [],
         selectedAuthorityData: [],
-        departmentEditData: null,
+        departmentEditData: [],
         modalStaffVisible: false,
         modalDeptVisible: false,
         modalChangeDeptVisible: false,
