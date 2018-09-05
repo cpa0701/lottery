@@ -1,6 +1,7 @@
 import React from 'react';
 import ReQuestionaire from './modal/ReQuestionaire';
 import SelectTabs from './modal/SelectTabs';
+import moment from 'moment';
 import './NewApplicationForm.less'
 import {
     Form,
@@ -27,6 +28,20 @@ const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const {TextArea} = Input;
 const QRCode = require('qrcode.react');
+//获取url参数
+const GetRequest = () => {
+    let url = window.location.hash.substr(2); //获取url中"?"符后的字串
+    let theRequest = {};
+    if (url.indexOf("?") !== -1) {
+        let str = url.substr(1);
+        let strs = str.split("&");
+        strs.map(s => {
+            theRequest[s.split("=")[0]] = unescape(s.split("=")[1]);
+            return '';
+        })
+    }
+    return theRequest;
+};
 
 @Form.create({})
 class NewApplicationForm extends React.PureComponent {
@@ -47,7 +62,7 @@ class NewApplicationForm extends React.PureComponent {
             fileList: [],
             uploading: false,
             userSum: 0,
-            taskId: this.props.match.params.id,
+            taskId: JSON.parse(this.props.match.params.id).id,
             resultDescripe: '共导入0条数据'
         }
         this.delUpload = this.delUpload.bind(this);
@@ -55,11 +70,29 @@ class NewApplicationForm extends React.PureComponent {
     }
 
     componentWillMount() {
-        TaskResearchService.selectSurveyTaskById({taskId: this.props.match.params.id}).then(result=>{
-            if(result){
-
-            }
-        })
+        let params = this.props.match ? JSON.parse(this.props.match.params.id) : GetRequest();
+        let {id, type} = params;
+        if(type === 'edit') {
+            TaskResearchService.selectSurveyTaskById({taskId: id}).then(result=>{
+                if(result){
+                    this.setState({
+                        taskType: result.taskType,
+                        accessFlag: String(result.taskChannel[0].sampleType) === '2',
+                    });
+                    this.props.form.setFieldsValue({
+                        taskName: result.taskName,
+                        surveySdate: moment(result.surveySdate, "YYYY-MM-DD HH:mm:ss"),
+                        surveyEdate: moment(result.surveyEdate, "YYYY-MM-DD HH:mm:ss"),
+                        qstnaireId: result.qstnaireId,
+                        testNumberList: result.testNumberList.join(','),
+                        sampleType: String(result.taskChannel[0].sampleType),
+                        sampleSum: result.taskChannel[0].sampleSum,
+                        smsWay: String(result.taskChannel[0].smsWay),
+                        smsContent: result.taskChannel[0].smsContent,
+                    });
+                }
+            })
+        }
     }
 
     // 新增问卷弹框
@@ -199,7 +232,7 @@ class NewApplicationForm extends React.PureComponent {
                 message.error('上传失败');
             },
         });
-    }
+    };
     beforeUpload = (file) => {
         console.log(file.type)
         // const isType = (file.type === 'doc/docx/txt/xls/xlsx/pdf');
@@ -244,12 +277,22 @@ class NewApplicationForm extends React.PureComponent {
                 userSum: this.state.userSum,
                 userType: 0,
             };
-            TaskResearchService.addSurveyTask(formData).then(result => {
-                if (result) {
-                    message.success('新增成功');
-                    this.props.history.push('/missionMgr/missionApplication')
-                }
-            })
+            let params = this.props.match ? JSON.parse(this.props.match.params.id) : GetRequest();
+            if(params.type === 'edit') {
+                TaskResearchService.editSurveyTask(formData).then(result => {
+                    if (result) {
+                        message.success('编辑成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
+            } else {
+                TaskResearchService.addSurveyTask(formData).then(result => {
+                    if (result) {
+                        message.success('新增成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
+            }
         }
     }
     //保存草稿
@@ -283,12 +326,22 @@ class NewApplicationForm extends React.PureComponent {
                 userSum: this.state.userSum,
                 userType: 0,
             };
-            TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
-                if (result) {
-                    message.success('新增成功');
-                    this.props.history.push('/missionMgr/missionApplication')
-                }
-            })
+            let params = this.props.match ? JSON.parse(this.props.match.params.id) : GetRequest();
+            if(params.type === 'edit') {
+                TaskResearchService.editSurveyTaskToDraft(formData).then(result => {
+                    if (result) {
+                        message.success('编辑成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
+            } else {
+                TaskResearchService.addSurveyTaskToDraft(formData).then(result => {
+                    if (result) {
+                        message.success('新增成功');
+                        this.props.history.push('/missionMgr/missionApplication')
+                    }
+                })
+            }
         }
     }
     handleReset = () => {
@@ -304,9 +357,10 @@ class NewApplicationForm extends React.PureComponent {
             onClose: () => {
                 this.addQuestionaire(false);
             },
-            onChoseQuestion: (id) => {
+            onChoseQuestion: (id, qstnaireTitle) => {
                 this.props.form.setFieldsValue({
                     qstnaireId: id,
+                    qstnaireTitle,
                 });
                 this.setState({add: false})
             },
@@ -365,7 +419,7 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
             <Row className={'row2'}>
                 <Col span='12'>
-                    <FormItem label="调研触发时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
+                    <FormItem label="调研触发时间：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                         {getFieldDecorator('surveySdate', {
                             rules: [{type: 'object', required: true, message: '请选择调研触发时间'}],
                         })(
@@ -380,7 +434,7 @@ class NewApplicationForm extends React.PureComponent {
                     </FormItem>
                 </Col>
                 <Col span='12'>
-                    <FormItem label="调研结束时间：" labelCol={{span: 4}} wrapperCol={{span: 8}}>
+                    <FormItem label="调研结束时间：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
                         {getFieldDecorator('surveyEdate', {
                             rules: [{type: 'object', required: true, message: '请选择调研结束时间'}],
                         })(
@@ -398,10 +452,13 @@ class NewApplicationForm extends React.PureComponent {
             </Row>
             <Row>
                 <FormItem label="调研问卷：" labelCol={{span: 2}} wrapperCol={{span: 22}}>
-                    {getFieldDecorator('qstnaireId', {
+                    {getFieldDecorator('qstnaireTitle', {
                         rules: [{required: true, message: '请选择调研问卷'}],
                     })(
                         <Input placeholder='点击选择调研问卷' onClick={() => this.addQuestionaire(true)}/>
+                    )}
+                    {getFieldDecorator('qstnaireId')(
+                        <Input hidden/>
                     )}
                 </FormItem>
             </Row>

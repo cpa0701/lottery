@@ -19,6 +19,10 @@ export class Http {
                 prefix = '';
                 break;
             }
+            case 'product1': {
+                prefix = 'http://10.45.49.87:18088/';
+                break;
+            }
             case 'product': {
                 if (!url.includes('rapapi'))
                     prefix = 'http://'+window.location.host+':18088/';
@@ -60,6 +64,7 @@ export class Http {
         api = this.getUrl(api);
         if (api.includes('mock')) {
             return await new Promise(function (resolve, reject) {
+                api = 'mock/menuInfoController/qryMenu';
                 $.ajax({
                     url: api, data: JSON.stringify(data), type: "post", datatype: "json",contentType: "application/json;charset=utf-8",
                     success: (res) => {
@@ -122,6 +127,8 @@ export class Http {
                     window.location.href = '#/login'
                 } else if (error.response.data.code === 500)
                     message.error('请求超时');
+                else if (error.response.data.code === 403)
+                    message.error(error.response.data.description);
                 else
                     message.error(error.response.data.description);
                 return false

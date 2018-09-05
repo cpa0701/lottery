@@ -71,7 +71,7 @@ class QuestionApplicationModal extends React.PureComponent {
                                 <Col span={20} className={'subject-name'}>{item.qstnaireTitle}</Col>
                                 <Col span={4}>
                                     <Button type="primary" onClick={() => {
-                                        ChoseQuestion(item.qstnaireId)
+                                        ChoseQuestion(item.qstnaireId, item.qstnaireTitle)
                                     }}>选择</Button>
                                 </Col>
                             </Row>

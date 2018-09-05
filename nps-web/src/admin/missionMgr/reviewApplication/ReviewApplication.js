@@ -2,45 +2,47 @@ import React from 'react';
 import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination, Popconfirm, message } from 'antd';
 
 import TaskResearchService from "../../../services/research/TaskResearchService";
+import '../missionApplication/missionApplication.less'
+import FilterTool from "../../../common/utils/FilterTool";
 
 const [Search, TabPane, CheckableTag] = [Input.Search, Tabs.TabPane, Tag.CheckableTag];
 
 const auditTags = [
     {
         title: '全部',
-        value: '0'
+        value: ''
     },
     {
         title: '正常结束',
-        value: '1'
+        value: '00'
     },
     {
         title: '执行中',
-        value: '2'
+        value: '01'
     },
     {
         title: '草稿',
-        value: '3'
+        value: '02'
     },
     {
-        title: '审批',
-        value: '4'
+        title: '审批中',
+        value: '03'
     },
     {
         title: '否决',
-        value: '5'
+        value: '04'
     },
     {
         title: '作废',
-        value: '6'
+        value: '05'
     },
     {
         title: '发布',
-        value: '7'
+        value: '06'
     },
     {
         title: '人工终止',
-        value: '8'
+        value: '10'
     }
 ];
 
@@ -50,13 +52,14 @@ class ReviewApplication extends React.PureComponent{
         this.state = {
             loading: false,
             taskList: [],
-            auditTag: ['0'],
+            auditTag: [''],
+            actType: "03",
             taskName: '',
-            status: "01",
             waitAudit: 0,
             passAudit: 0,
             vetoAudit: 0,
             invalAudit: 0,
+            publicTask: 0,
             pageNum: 1,
             pageSize: 10,
             total: 0
@@ -68,42 +71,29 @@ class ReviewApplication extends React.PureComponent{
 
     // 获取申请单列表
     getMissionList = (param) => {
-        let params = Object.assign({
-            taskName: "",
-            actType: "",
-            status: '',
+        let params = {
+            taskName: this.state.taskName,
+            actType: this.state.actType,
+            status: this.state.auditTag[0],
             taskType: '',
             pageNum: 1,
             pageSize: 10,
-        }, {
-            taskName: this.state.taskName,
             ...param
-        });
+        };
         this.setState({
             loading: true
         }, () => TaskResearchService.getMissionList(params).then(result => {
             if (result){
-                let waitAudit = [], passAudit = [], vetoAudit = [], invalAudit = [];
-                if(params.status === '') {
-                    waitAudit = result.rows.filter(item => item.status === '待审核');
-                    passAudit = result.rows.filter(item => item.status === '审核通过');
-                    vetoAudit = result.rows.filter(item => item.status === '审核否决');
-                    invalAudit = result.rows.filter(item => item.status === '审核作废');
-                    this.setState({
-                        total: result.totalCount,
-                        waitAudit: waitAudit.length,
-                        passAudit: passAudit.length,
-                        vetoAudit: vetoAudit.length,
-                        invalAudit: invalAudit.length,
-                        taskList: waitAudit,
-                        loading: false
-                    })
-                } else {
-                    this.setState({
-                        taskList: result.rows,
-                        loading: false
-                    })
-                }
+                this.setState({
+                    total: result.totalCount,
+                    taskList: result.rows,
+                    waitAudit: result.other.status03,
+                    passAudit: result.other.status06,
+                    vetoAudit: result.other.status04,
+                    invalAudit: result.other.status05,
+                    publicTask: result.other.status01,
+                    loading: false,
+                })
             }
         }))
     };
@@ -121,7 +111,7 @@ class ReviewApplication extends React.PureComponent{
     auditPass = (id) => {
         this.setState({
             loading: true
-        }, () => TaskResearchService.auditPass({id}).then(result => {
+        }, () => TaskResearchService.auditPass({taskId: id}).then(result => {
             if(result) {
                 message.success('已审核通过');
                 this.setState({loading: false});
@@ -133,9 +123,26 @@ class ReviewApplication extends React.PureComponent{
     auditNoPass = (id) => {
         this.setState({
             loading: true
-        }, () => TaskResearchService.auditNoPass({id}).then(result => {
+        }, () => TaskResearchService.auditNoPass({taskId: id}).then(result => {
             if(result) {
                 message.success('已审核否决');
+                this.setState({loading: false});
+                this.getMissionList();
+            }
+        }))
+    };
+
+    // 内测并发布
+    publicTask = (id, type) => {
+        let params = {
+            channelType: String(type),
+            taskId: id
+        };
+        this.setState({
+            loading: true
+        }, () => TaskResearchService.publicTask(params).then(result => {
+            if(result) {
+                message.success('已内测发布完成');
                 this.setState({loading: false});
                 this.getMissionList();
             }
@@ -145,8 +152,9 @@ class ReviewApplication extends React.PureComponent{
     //tab标签被点击
     onTabClick = (key) => {
         this.setState({
-            taskList: []
-        }, () => this.getMissionList({status: key}))
+            taskList: [],
+            actType: key
+        }, () => this.getMissionList())
     };
     //输入框输入
     onSearch = (value) => {
@@ -160,7 +168,7 @@ class ReviewApplication extends React.PureComponent{
     };
 
     render(){
-        const { taskList, waitAudit, passAudit, vetoAudit, invalAudit, auditTag } = this.state;
+        const { taskList, waitAudit, passAudit, vetoAudit, invalAudit, auditTag, publicTask } = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
@@ -172,7 +180,7 @@ class ReviewApplication extends React.PureComponent{
         let tab3Title = "审核通过( " + passAudit + " )";
         let tab4Title = "审核否决( " + vetoAudit + " )";
         let tab5Title = "审核作废( " + invalAudit + " )";
-        let tab6Title = "已发布( " + passAudit + " )";
+        let tab6Title = "已发布( " + publicTask + " )";
 
         const checkableTag = <Row style={{padding: '10px'}}>
                                 <Col span={24}>
@@ -198,11 +206,18 @@ class ReviewApplication extends React.PureComponent{
                                 <Col span={15} className={'subject-name'}>{item.taskName}</Col>
                                 <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
                                     <Button type="primary" onClick={() => this.showQstnaire(item.taskId)}>查看</Button>
-                                    {item.status === '审核中' ?
+                                    {item.status === '03' ?
                                         <div style={{display: 'inline-block'}}>
                                             <Button type="primary" onClick={() => this.auditPass(item.taskId)}>通过</Button>
                                             <Popconfirm title="确定否决该任务?" onConfirm={() => this.auditNoPass(item.taskId)}>
                                                 <Button type="danger">否决</Button>
+                                            </Popconfirm>
+                                        </div> : ''
+                                    }
+                                    {item.status === '06' ?
+                                        <div style={{display: 'inline-block'}}>
+                                            <Popconfirm title="确定发布该任务?" onConfirm={() => this.publicTask(item.taskId, item.channelType)}>
+                                                <Button type="primary">内测发布</Button>
                                             </Popconfirm>
                                         </div> : ''
                                     }
@@ -213,12 +228,12 @@ class ReviewApplication extends React.PureComponent{
                                     <Icon type="appstore" style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                                 </Col>
                                 <Col span={3}>
-                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}</Col>
                                 <Col span={5}>
                                     <Icon type="clock-circle" style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                                 </Col>
                                 <Col span={5}>
-                                    <Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.survey_count}
+                                    <Icon type="eye-o" style={{marginRight: '5px'}}/>调研数： {item.userSum}
                                 </Col>
                             </Row>
                         </div>
@@ -231,13 +246,13 @@ class ReviewApplication extends React.PureComponent{
         </div>;
 
         return(
-            <div>
+            <div className='missionApplication '>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab={tab2Title} key="01">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="02">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="03">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab5Title} key="04">{checkableTag} {questionLIst}</TabPane>
-                    <TabPane tab={tab6Title} key="05">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab2Title} key="03">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="06">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="04">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab5Title} key="05">{checkableTag} {questionLIst}</TabPane>
+                    <TabPane tab={tab6Title} key="01">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>
             </div>
         );

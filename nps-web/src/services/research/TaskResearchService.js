@@ -7,9 +7,9 @@ class TaskResearchService {
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     }
-    //新编辑任务
+    //新编辑任务（提交审核）
     editSurveyTask = async (param) => {
-        const url = 'surveyTaskMgr/editSurveyTask';
+        const url = 'surveyTaskMgr/eiditSurveyTask';
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     }
@@ -37,6 +37,12 @@ class TaskResearchService {
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     }
+    //任务编辑保存草稿
+    editSurveyTaskToDraft = async (param) => {
+        const url = 'surveyTaskMgr/eiditSurveyTaskDraft';
+        // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    }
     //获取调研任务列表
     getMissionList = async (param) => {
         const url = 'surveyTaskMgr/surveyTaskList';
@@ -53,6 +59,11 @@ class TaskResearchService {
     userTargetDelete = async (param) => {
         const url = '/surveyTaskMgr/userTargetDelete';
         // let url = 'mock/missionMgr/getMissionList';
+        return await Http.post(url, param);
+    };
+    // 内测并发布
+    publicTask = async (param) => {
+        let url = 'surveyTaskMgr/publishSurveyTask';
         return await Http.post(url, param);
     };
     // 审核通过

@@ -424,16 +424,16 @@ class Home extends React.PureComponent {
             pageNum: 1,
             pageSize: 10,
         };
-        this.setState({
-            loadingMission: true
-        }, () => TaskResearchService.getMissionList(params).then(result => {
-            if (result) {
-                this.setState({
-                    taskList: result.rows,
-                    loadingMission: false
-                })
-            }
-        }))
+        // this.setState({
+        //     loadingMission: true
+        // }, () => TaskResearchService.getMissionList(params).then(result => {
+        //     if (result) {
+        //         this.setState({
+        //             taskList: result.rows,
+        //             loadingMission: false
+        //         })
+        //     }
+        // }))
     };
     //翻译审核状态
     filterStatus = (statu) => {
