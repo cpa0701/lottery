@@ -3,6 +3,8 @@ package com.ztesoft.nps.business.surveyTaskMgr.mapper;
 import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTask;
 import com.ztesoft.nps.business.surveyTaskMgr.model.SurveyTaskExample;
 import java.util.List;
+
+import com.ztesoft.nps.business.surveyTaskMgr.model.query.SurveyTaskByIdQuery;
 import org.apache.ibatis.annotations.Param;
 
 public interface SurveyTaskMapper {
@@ -19,6 +21,7 @@ public interface SurveyTaskMapper {
     List<SurveyTask> selectByExample(SurveyTaskExample example);
 
     SurveyTask selectByPrimaryKey(String taskId);
+
 
     int updateByExampleSelective(@Param("record") SurveyTask record, @Param("example") SurveyTaskExample example);
 

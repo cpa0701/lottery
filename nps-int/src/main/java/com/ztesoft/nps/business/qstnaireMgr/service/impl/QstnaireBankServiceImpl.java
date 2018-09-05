@@ -1,5 +1,9 @@
 package com.ztesoft.nps.business.qstnaireMgr.service.impl;
 
+import com.ztesoft.nps.analysisProgram.SmsAccessAnalysis.SmsAccess;
+import com.ztesoft.nps.analysisProgram.SmsAccessAnalysis.SmsAccessQuequ;
+import com.ztesoft.nps.analysisProgram.SmsResultAnalsis.SmsResult;
+import com.ztesoft.nps.analysisProgram.SmsResultAnalsis.SmsResultQuequ;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionBankMapper;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionOptionMapper;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionResultMapper;
@@ -226,9 +230,32 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
     }
 
     @Override
-    public int submitQstnaire(QuestionResult questionResult) {
-        //插入questionResult 表
-        questionResultMapper.insertSelective(questionResult);
+    public int submitQstnaire(QuestionResultQuery questionResultQuery) {
+        //获得结果LIST
+        List<QuestionResult> questionResultlist = questionResultQuery.getQuestionResultList();
+        //批量插入结果
+        questionResultMapper.insertByList(questionResultlist);
+        //所有题目的ID
+        List<String> questionIdList = new ArrayList<>();
+        for(QuestionResult questionResult : questionResultlist){
+            questionIdList.add(questionResult.getQuestionId());
+        }
+        //获得nps题目ID
+        QstnaireQuestionExample qstnaireQuestionExample = new QstnaireQuestionExample();
+        qstnaireQuestionExample.createCriteria().andIsNpsEqualTo(new Short("1")).andQuestionIdIn(questionIdList);
+        List<QstnaireQuestion> qstnaireQuestionList = qstnaireQuestionMapper.selectByExample(qstnaireQuestionExample);
+        String npsQuestionId = null;
+        for(QstnaireQuestion qstnaireQuestion : qstnaireQuestionList){
+            npsQuestionId = qstnaireQuestion.getQuestionId();
+        }
+        //获得nps题目答案
+        int  option = 0;
+        for(QuestionResult questionResult :questionResultlist){
+            if(questionResult.getQuestionId().equals(npsQuestionId)){
+                option =Integer.valueOf(questionResult.getQuestionResult());
+            }
+        }
+
         //更新 surveyResult 表 更改状态，更改完成时间
         SurveyResult surveyResult = new SurveyResult();
         //更新完成时间
@@ -237,8 +264,15 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         surveyResult.setStatus(new Short("1"));
         //根据resultId 更新数据
         SurveyResultExample surveyResultExample = new SurveyResultExample();
-        surveyResultExample.createCriteria().andResultIdEqualTo(questionResult.getSurveyResultNo());
+        surveyResultExample.createCriteria().andResultIdEqualTo(Long.valueOf(questionResultQuery.getSurveyResultNo()));
         surveyResultMapper.updateByExampleSelective(surveyResult,surveyResultExample);
+
+        String resultId = surveyResult.getResultId().toString();
+        String taskId = surveyResult.getTaskId();
+        if(StringUtil.isNotNull(resultId)&&StringUtil.isNotNull(taskId)&&option!=0){
+            SmsResult smsResult = new SmsResult(resultId,taskId,option);
+            SmsResultQuequ.putInfo(smsResult);
+        }
         return 0;
     }
 

@@ -15,5 +15,5 @@ public interface QstnaireBankService {
 
     public LPageHelper qstnaireBank(QstnaireBankQuery qstnaireBankQuery);
 
-    public int submitQstnaire(QuestionResult questionResult);
+    public int submitQstnaire(QuestionResultQuery questionResultQuery);
 }
