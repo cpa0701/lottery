@@ -17,6 +17,7 @@ import com.ztesoft.nps.business.qstnaireMgr.service.QstnaireBankService;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyResultMapper;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample;
+import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.safe.mapper.UserMapper;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
@@ -65,7 +66,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = NpsDeleteException.class)
     public QstnaireIdQuery eiditQstnaire(AddQstnaireBankQuery addQstnaireBankQuery) {
         QstnaireIdQuery qstnaireIdQuery = new QstnaireIdQuery();
         qstnaireIdQuery.setQstnaireId(addQstnaireBankQuery.getQstnaireId());
@@ -114,7 +115,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         return qstnaireId;
     }
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = NpsDeleteException.class)
     public int deleteQstnaire(QstnaireIdQuery qstnaireIdQuery){
         //获取问卷ID
         String qstnaireId = qstnaireIdQuery.getQstnaireId();

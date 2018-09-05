@@ -21,6 +21,7 @@ import org.springframework.core.ExceptionDepthComparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,9 +39,9 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
     @Autowired
     private QuestionOptionMapper questionOptionMapper;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = NpsDeleteException.class)
     @Override
-    public int deleteQuestion(String id) {
+    public int deleteQuestion(String id){
         //删除题目选项
         QuestionOptionExample optExample = new QuestionOptionExample();
         optExample.createCriteria().andQuestionIdEqualTo(id);
@@ -48,7 +49,13 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
 
         QuestionBankExample example = new QuestionBankExample();
         example.createCriteria().andQuestionIdEqualTo(id);
-        return questionBankMapper.deleteByExample(example);
+        int status = 0;
+        try {
+            status = questionBankMapper.deleteByExample(example);
+        } catch (Exception e) {
+            throw new NpsDeleteException("问题已使用");
+        }
+        return status;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -83,7 +90,12 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         //删除题目信息
         QuestionBankExample qstExample = new QuestionBankExample();
         qstExample.createCriteria().andQuestionIdEqualTo(questionId);
-        questionBankMapper.deleteByExample(qstExample);
+
+        try {
+            questionBankMapper.deleteByExample(qstExample);
+        } catch (Exception e) {
+            throw new NpsDeleteException("问题已使用，无法编辑");
+        }
 
         updateQuestionByParam(bank, "edit");
 

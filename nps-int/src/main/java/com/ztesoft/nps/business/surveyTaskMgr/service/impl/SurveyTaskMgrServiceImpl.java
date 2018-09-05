@@ -624,7 +624,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         statusSql.append(" sum(case when status='04' then 1 else 0 end ) as status04, ");
         statusSql.append(" sum(case when status='05' then 1 else 0 end ) as status05, ");
         statusSql.append(" sum(case when status='06' then 1 else 0 end ) as status06, ");
-        statusSql.append(" sum(case when status='10' then 1 else 0 end ) as status10  ");
+        statusSql.append(" sum(case when status='10' then 1 else 0 end ) as status10,  ");
+        statusSql.append(" count(*) as statusAll ");
         statusSql.append(" FROM  survey_task  where 1=1 ");
 
         if(StringUtil.isNotNull(surveyTaskQuery.getTaskName())){
