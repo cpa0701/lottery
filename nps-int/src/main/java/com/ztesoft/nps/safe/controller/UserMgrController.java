@@ -3,6 +3,7 @@ package com.ztesoft.nps.safe.controller;
 import com.ztesoft.nps.common.exception.NpsRequestParamException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.safe.model.query.DeleteUserRoleBo;
+import com.ztesoft.nps.safe.model.query.UserIdQuery;
 import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,10 +89,10 @@ public class UserMgrController {
 
 	@PostMapping("/findUserById")
 	@ApiOperation(value = "根据ID查询用户", notes = "根据ID查询用户")
-	public Result<User> findUserById(@RequestBody Long id) {
-		User user = userService.findById(id);
+	public Result<User> findUserById(@RequestBody UserIdQuery condition) {
+		User user = userService.findById(condition.getId());
 		if (user == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 
 		// 清空密码和盐值
@@ -135,13 +136,13 @@ public class UserMgrController {
 
 	@PostMapping("/findUserRole")
 	@ApiOperation(value = "查询用户的角色", notes = "查询用户的角色")
-	public Result<List<Role>> findUserRole(@RequestBody Long id) {
-		User user = userService.findById(id);
+	public Result<List<Role>> findUserRole(@RequestBody UserIdQuery condition) {
+		User user = userService.findById(condition.getId());
 		if (user == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 
-		List<Role> roles = roleService.findByUserId(id);
+		List<Role> roles = roleService.findByUserId(condition.getId());
 		return Result.success(roles);
 	}
 
@@ -182,13 +183,13 @@ public class UserMgrController {
 
 	@PostMapping("/findUserPermission")
 	@ApiOperation(value = "查询用户的权限", notes = "查询用户的权限")
-	public Result<List<Permission>> findUserPermission(@RequestBody Long id) {
-		User user = userService.findById(id);
+	public Result<List<Permission>> findUserPermission(@RequestBody UserIdQuery condition) {
+		User user = userService.findById(condition.getId());
 		if (user == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 
-		List<Permission> permissions = permissionService.findByUserId(id);
+		List<Permission> permissions = permissionService.findByUserId(condition.getId());
 		return Result.success(permissions);
 	}
 }
