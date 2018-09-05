@@ -2,7 +2,6 @@ package com.ztesoft.nps.common.utils;
 
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 
-import java.util.List;
 import java.util.Map;
 
 public class LPageHelperExtra extends LPageHelper {
