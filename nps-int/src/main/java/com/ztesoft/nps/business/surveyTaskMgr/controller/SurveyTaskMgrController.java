@@ -59,7 +59,7 @@ public class SurveyTaskMgrController {
     }
 
     @ApiOperation(value = "编辑任务", notes = "编辑任务")
-    @PostMapping("/editSurveyTask")
+    @PostMapping("/eiditSurveyTask")
     public Result<Object> editSurveyTask(@RequestBody SurveyTaskAddBo bo){
         String taskId = bo.getTaskId();
         if(StringUtil.isNull(taskId)){
@@ -76,8 +76,7 @@ public class SurveyTaskMgrController {
         if(StringUtil.isNull(taskId)){
             throw new NpsObjectNotFoundException(taskId);
         }
-        surveyTaskMgrService.selectSurveyTaskById(surveyTaskIdQuery);
-        return Result.success();
+        return Result.success(surveyTaskMgrService.selectSurveyTaskById(surveyTaskIdQuery));
     }
 
 

@@ -13,6 +13,7 @@ import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.common.utils.ExcelUtils;
+import com.ztesoft.nps.common.utils.LPageHelperExtra;
 import com.ztesoft.nps.common.utils.Md5Tool;
 import com.ztesoft.utils.plugin.jdbc.source.LPageHelper;
 import com.ztesoft.utils.sys.constance.DateFormatConst;
@@ -60,10 +61,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(StringUtil.isNull(condition.getPageSize())){
             condition.setPageSize(ConstantUtils.PAGE_SIZE_DEFAULT);
         }
-        return DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
+
+        LPageHelper req = new LPageHelperExtra(DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
                 StringUtil.getInteger(condition.getPageNum()),
-                StringUtil.getInteger(condition.getPageSize()));
+                StringUtil.getInteger(condition.getPageSize())));
+        Map<String,Object> map = surveyBankStatusCount(condition);
+
+        ((LPageHelperExtra) req).setOther(map);
+        return req;
     }
+
 
     @Override
     @Transactional
@@ -241,8 +248,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         taskChannelExample.createCriteria().andTaskIdEqualTo(taskId);
         List<TaskChannel> taskChannel = taskChannelMapper.selectByExample(taskChannelExample);
 
-        surveyTaskById.setTaskChannel(taskChannel);
+        TaskUserExample taskUserExample = new TaskUserExample();
+        taskUserExample.createCriteria().andTaskIdEqualTo(taskId).andIsTestEqualTo(new Short("0"));
 
+        List<TaskUser> taskUserList = taskUserMapper.selectByExample(taskUserExample);
+        List<String> testNumberList = new ArrayList<String>();
+        for(TaskUser tu : taskUserList){
+            testNumberList.add(tu.getUserAccount());
+        }
+        surveyTaskById.setTaskChannel(taskChannel);
+        surveyTaskById.setTestNumberList(testNumberList);
         return surveyTaskById;
     }
 
@@ -333,7 +348,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
         //生成消息数据
         String insertTaskExeSql = "insert into task_exe(serial_id,task_id,channel_type,send_user,target_user," +
-                "is_test,sm_content,creat_time,base_url,short_url)valus(?,?,?,?,?,?,?,?,?,?)";
+                "is_test,sm_content,create_time,base_url,short_url)valus(?,?,?,?,?,?,?,?,?,?)";
         long startTime1 = System.currentTimeMillis();
         try {
             DatabaseUtil.excuteBatch(insertTaskExeSql, smsList,batchSave);
@@ -492,7 +507,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
+        surveyTaskQuerySql.append(" select st.task_name as taskName, st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
@@ -502,7 +517,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTaskQuerySql.append("         WHEN '04' then '").append(ConstantUtils.SURVEY_TASK_STATUS_04).append("' ");
         surveyTaskQuerySql.append("         WHEN '05' then '").append(ConstantUtils.SURVEY_TASK_STATUS_05).append("' ");
         surveyTaskQuerySql.append("         WHEN '06' then '").append(ConstantUtils.SURVEY_TASK_STATUS_06).append("' ");
-        surveyTaskQuerySql.append("     END '").append(ConstantUtils.SURVEY_TASK_STATUS_10).append("', ");
+        surveyTaskQuerySql.append("         WHEN '10' then '").append(ConstantUtils.SURVEY_TASK_STATUS_10).append("' ");
+        surveyTaskQuerySql.append("     END 'status'").append(", ");
         surveyTaskQuerySql.append("     st.create_time as createTime, tc.user_sum as userSum ");
         surveyTaskQuerySql.append(" from survey_task st ");
         surveyTaskQuerySql.append(" left join qstnaire_bank qb on st.qstnaire_id = qb.qstnaire_id ");
@@ -593,5 +609,35 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         String accessToken = Md5Tool.getHashString(reqVo.toString()).toUpperCase();
         authTokenInsertSqlList.add(new String[]{ DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),accessToken,uid });
         return accessToken;
+    }
+
+    /**
+     * 获取surveyTask列表不同状态的count值
+     * @param surveyTaskQuery
+     * @return
+     */
+    Map<String,Object> surveyBankStatusCount(SurveyTaskQuery surveyTaskQuery){
+        StringBuilder statusSql = new StringBuilder();
+        statusSql.append("SELECT sum(case when status='01' then 1 else 0 end ) as status01, ");
+        statusSql.append(" sum(case when status='02' then 1 else 0 end ) as status02, ");
+        statusSql.append(" sum(case when status='03' then 1 else 0 end ) as status03, ");
+        statusSql.append(" sum(case when status='04' then 1 else 0 end ) as status04, ");
+        statusSql.append(" sum(case when status='05' then 1 else 0 end ) as status05, ");
+        statusSql.append(" sum(case when status='06' then 1 else 0 end ) as status06, ");
+        statusSql.append(" sum(case when status='10' then 1 else 0 end ) as status10  ");
+        statusSql.append(" FROM  survey_task  where 1=1 ");
+
+        if(StringUtil.isNotNull(surveyTaskQuery.getTaskName())){
+            statusSql.append(" and task_name like '%").append(surveyTaskQuery.getTaskName()).append("%'");
+        }
+        if(StringUtil.isNotNull(surveyTaskQuery.getTaskType())){
+            statusSql.append(" and task_type = '").append(surveyTaskQuery.getTaskType()).append("'");
+        }
+        if(StringUtil.isNotNull(surveyTaskQuery.getStatus())){
+            statusSql.append(" and status = '").append(surveyTaskQuery.getStatus()).append("'");
+        }
+        return DatabaseUtil.queryForMap(statusSql.toString());
+
+
     }
 }

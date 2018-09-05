@@ -39,6 +39,16 @@ public class SurveyTaskByIdQuery {
 
     private List<TaskChannel> taskChannel;
 
+    private List<String> testNumberList;
+
+    public List<String> getTestNumberList() {
+        return testNumberList;
+    }
+
+    public void setTestNumberList(List<String> testNumberList) {
+        this.testNumberList = testNumberList;
+    }
+
     public String getTaskId() {
         return taskId;
     }
