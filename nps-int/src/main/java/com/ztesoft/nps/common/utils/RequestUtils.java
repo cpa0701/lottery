@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by 64671 on 2018/9/5.
  */
-public class SystemUtils {
+public class RequestUtils {
 
     public static String getRemoteHost(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
