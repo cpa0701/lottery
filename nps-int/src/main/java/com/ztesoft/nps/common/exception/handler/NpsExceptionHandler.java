@@ -1,5 +1,6 @@
 package com.ztesoft.nps.common.exception.handler;
 
+import com.ztesoft.nps.common.exception.NpsRequestParamException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,5 +43,13 @@ public class NpsExceptionHandler {
 	public Result<Object> innerException(Exception e) {
 		e.printStackTrace();
 		return Result.failed(ResultCodeEnum.INNER_ERROR, e.getMessage());
+	}
+
+	@ExceptionHandler(NpsRequestParamException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public Result<Object> requestParamNotFound(NpsRequestParamException e) {
+		e.printStackTrace();
+		return Result.failed(ResultCodeEnum.PARAM_NOT_FOUND);
 	}
 }

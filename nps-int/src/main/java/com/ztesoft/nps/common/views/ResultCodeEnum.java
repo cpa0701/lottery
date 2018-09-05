@@ -6,7 +6,8 @@ public enum ResultCodeEnum {
 	UNAUTHORIZED(401, "用户未登录"),
 	FORBIDDEN(403, "存在子节点"),
 	NOT_FOUND(404, "对象不存在"),
-	INNER_ERROR(500, "服务器内部错误");
+	INNER_ERROR(500, "服务器内部错误"),
+	PARAM_NOT_FOUND(400,"请求参数缺失");
 	
 	private int code;
 	

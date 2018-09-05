@@ -3,7 +3,7 @@ package com.ztesoft.nps.safe.mapper;
 import java.util.List;
 
 import com.ztesoft.nps.safe.model.Permission;
-import com.ztesoft.nps.safe.query.PermissionQuery;
+import com.ztesoft.nps.safe.model.query.PermissionQuery;
 
 public interface PermissionMapper {
 	int add(Permission permission);

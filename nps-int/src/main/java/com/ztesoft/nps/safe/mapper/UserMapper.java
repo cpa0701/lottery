@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ztesoft.nps.safe.model.User;
-import com.ztesoft.nps.safe.query.UserQuery;
+import com.ztesoft.nps.safe.model.query.UserQuery;
 
 public interface UserMapper {
 	int add(User user);

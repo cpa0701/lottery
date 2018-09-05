@@ -5,7 +5,7 @@ import java.util.List;
 import com.ztesoft.nps.safe.model.Role;
 import com.ztesoft.nps.safe.model.RolePermission;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.query.RoleQuery;
+import com.ztesoft.nps.safe.model.query.RoleQuery;
 
 public interface RoleService {
 	Role add(Role role);

@@ -8,6 +8,7 @@ import com.ztesoft.nps.business.qstnaireMgr.model.query.QstnaireIdQuery;
 import com.ztesoft.nps.business.qstnaireMgr.service.QstnaireBankService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.common.exception.NpsRequestParamException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.utils.sys.util.StringUtil;
@@ -69,7 +70,7 @@ public class QstnaireMgrController {
     public Result<Object> qstnaireBank(@RequestBody QstnaireBankQuery qstnaireBankQuery){
         if(StringUtil.isNull(qstnaireBankQuery.getPageNum()) ||
                 StringUtil.isNull(qstnaireBankQuery.getPageSize())){
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
+            throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         return Result.success(qstnaireBankService.qstnaireBank(qstnaireBankQuery));
     }

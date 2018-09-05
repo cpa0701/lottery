@@ -21,6 +21,7 @@ import org.springframework.core.ExceptionDepthComparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,9 +39,9 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
     @Autowired
     private QuestionOptionMapper questionOptionMapper;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = NpsDeleteException.class)
     @Override
-    public int deleteQuestion(String id) {
+    public int deleteQuestion(String id){
         //删除题目选项
         QuestionOptionExample optExample = new QuestionOptionExample();
         optExample.createCriteria().andQuestionIdEqualTo(id);
@@ -48,7 +49,13 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
 
         QuestionBankExample example = new QuestionBankExample();
         example.createCriteria().andQuestionIdEqualTo(id);
-        return questionBankMapper.deleteByExample(example);
+        int status = 0;
+        try {
+            status = questionBankMapper.deleteByExample(example);
+        } catch (Exception e) {
+            throw new NpsDeleteException("问题已使用");
+        }
+        return status;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -83,7 +90,12 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         //删除题目信息
         QuestionBankExample qstExample = new QuestionBankExample();
         qstExample.createCriteria().andQuestionIdEqualTo(questionId);
-        questionBankMapper.deleteByExample(qstExample);
+
+        try {
+            questionBankMapper.deleteByExample(qstExample);
+        } catch (Exception e) {
+            throw new NpsDeleteException("问题已使用，无法编辑");
+        }
 
         updateQuestionByParam(bank, "edit");
 
@@ -158,15 +170,15 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
 
     private StringBuilder getQuestionBankQuerySql(QuestionQuery condition){
         StringBuilder qstBankQuerySql = new StringBuilder();
-        qstBankQuerySql.append(" select question_id as questionId, question_name as questionName, ");
-        qstBankQuerySql.append(" question_type as questionType, question_category as questionCategory, ");
-        qstBankQuerySql.append(" is_common as isCommon, is_nps as isNps, ");
-        qstBankQuerySql.append(" is_satisfied as isSatisfied, option_layout as optionLayout, ");
-        qstBankQuerySql.append(" content_check as contentCheck, lenth_check as lenthCheck, ");
-        qstBankQuerySql.append(" create_uid as createUid, create_time as create_time, ");
-        qstBankQuerySql.append(" status, question_tags as questionTags ");
-        qstBankQuerySql.append(" from question_bank where 1=1 ");
-
+        qstBankQuerySql.append(" select qb.question_id as questionId, qb.question_name as questionName, ");
+        qstBankQuerySql.append(" qb.question_type as questionType, qb.question_category as questionCategory, ");
+        qstBankQuerySql.append(" qb.is_common as isCommon, qb.is_nps as isNps, ");
+        qstBankQuerySql.append(" qb.is_satisfied as isSatisfied, qb.option_layout as optionLayout, ");
+        qstBankQuerySql.append(" qb.content_check as contentCheck, qb.lenth_check as lenthCheck, ");
+        qstBankQuerySql.append(" qb.create_uid as createUid,u.name as createUname, qb.create_time as create_time, ");
+        qstBankQuerySql.append(" qb.status, qb.question_tags as questionTags ");
+        qstBankQuerySql.append(" from question_bank qb left join users u on u.id = qb.create_uid where 1=1 ");
+        qstBankQuerySql.append(" and qb.question_id <>  '").append(ConstantUtils.PAGE_QUESTION_ID).append("' ");
         if (StringUtil.isNotNull(condition.getQuestionCategory())) {
             qstBankQuerySql.append(" and question_category = '").append(condition.getQuestionCategory()).append("' ");
         }
@@ -174,7 +186,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
             qstBankQuerySql.append(" and question_name like '%").append(condition.getQuestionName()).append("%' ");
         }
         if (StringUtil.isNotNull(condition.getIsNps())) {
-            qstBankQuerySql.append(" and isNps = '").append(condition.getIsNps()).append("' ");
+            qstBankQuerySql.append(" and is_nps = '").append(condition.getIsNps()).append("' ");
         }
         if (StringUtil.isNotNull(condition.getQuestionType())) {
             qstBankQuerySql.append(" and question_type = '").append(condition.getQuestionType()).append("' ");

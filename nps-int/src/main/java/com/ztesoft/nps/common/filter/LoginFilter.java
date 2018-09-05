@@ -1,25 +1,18 @@
 package com.ztesoft.nps.common.filter;
 
-import java.io.IOException;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ztesoft.nps.common.utils.RequestUtils;
+import com.ztesoft.nps.common.views.Result;
+import com.ztesoft.nps.common.views.ResultCodeEnum;
+import org.apache.http.HttpStatus;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.http.HttpStatus;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.ztesoft.nps.common.views.Result;
-import com.ztesoft.nps.common.views.ResultCodeEnum;
-import org.apache.log4j.Logger;
+import java.io.IOException;
 
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
@@ -36,7 +29,7 @@ public class LoginFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse)resp;
 
 		String url = request.getRequestURI();
-		System.out.println("loginFilter请求地址："+url);
+		System.out.println("{ client :"+ RequestUtils.getRemoteHost(request)+" uri : "+url+" }");
 		String contextPath = request.getContextPath();
 		// 登录、注销、静态资源、swagger-ui不用过滤
 		if (url.equals(contextPath + "/login")
@@ -52,19 +45,19 @@ public class LoginFilter implements Filter {
 				|| url.contains(".bmp")) {
 			chain.doFilter(req, resp);
 		} else {
-//			HttpSession session = request.getSession(false);
-//			// 没有登录
-//			if (session == null || session.getAttribute("user") == null) {
-//				Result<Object> result = Result
-//						.failed(ResultCodeEnum.UNAUTHORIZED);
-//				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-//				response.setCharacterEncoding("UTF-8");
-//				response.setContentType("application/json; charset=utf-8");
-//				response.getWriter().write(
-//						JSON.toJSONString(result,
-//								SerializerFeature.WriteMapNullValue));
-//				return;
-//			}
+			HttpSession session = request.getSession();
+			// 没有登录
+			if (session == null) {
+				Result<Object> result = Result
+						.failed(ResultCodeEnum.UNAUTHORIZED);
+				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=utf-8");
+				response.getWriter().write(
+						JSON.toJSONString(result,
+								SerializerFeature.WriteMapNullValue));
+				return;
+			}
 
 			// 已经登录
 			chain.doFilter(req, resp);

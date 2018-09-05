@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const echarts = require('echarts');
 const monthFormat = 'YYYY/MM';
-
+@Form.create({})
 class AnalysisResult extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -224,16 +224,23 @@ class AnalysisResult extends React.PureComponent {
     }
 
     render() {
+        const {getFieldDecorator} = this.props.form;
         //是否显示新增问卷弹框
         const selectModalProps = {
             add: this.state.add,
             onClose: () => {
                 this.selectQuestion(false);
             },
+            onChoseQuestion: (id) => {
+                this.props.form.setFieldsValue({
+                    qstnaireId: id,
+                });
+                this.setState({add: false})
+            },
         };
         const map = {
             city: this.state.value,
-            questionName: '问卷名称',
+            questionName: '',
             triggerTask: this.state.triggerTask,
             height: 500,
         }
@@ -243,15 +250,19 @@ class AnalysisResult extends React.PureComponent {
                     <Form>
                         <Col span='4'>
                             <FormItem label="调研地市" labelCol={{span: 6}} wrapperCol={{span: 16}}>
-                                <Select defaultValue="全部" onChange={this.handleChange}>
+                                <Select defaultValue="全市" onChange={this.handleChange}>
                                     <Option value="city">全市</Option>
                                     <Option value="yubei">渝北</Option>
                                 </Select>
                             </FormItem>
                         </Col>
                         <Col span='6'>
-                            <FormItem label="问卷名称" labelCol={{span: 4}} wrapperCol={{span: 18}}>
+                            <FormItem label="问卷名称" labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                                {getFieldDecorator('qstnaireId', {
+                                    rules: [{required: true, message: '请选择调研问卷'}],
+                                })(
                                 <Input placeholder='点击选择调研问卷' onClick={() => this.selectQuestion(true)}/>
+                                )}
                             </FormItem>
                         </Col>
                         <Col span='6'>

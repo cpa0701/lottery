@@ -1,5 +1,7 @@
 package com.ztesoft.nps.safe.controller;
 
+import com.ztesoft.nps.safe.model.query.DeletePermissionRoleBo;
+import com.ztesoft.nps.safe.model.query.DeleteUserRoleBo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,16 +31,16 @@ import com.ztesoft.nps.safe.model.Role;
 import com.ztesoft.nps.safe.model.RolePermission;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.query.RoleQuery;
+import com.ztesoft.nps.safe.model.query.RoleQuery;
 import com.ztesoft.nps.safe.service.PermissionService;
 import com.ztesoft.nps.safe.service.RoleService;
 import com.ztesoft.nps.safe.service.UserService;
 import com.ztesoft.nps.common.utils.UserUtils;
 
 @RestController
-@RequestMapping(value = "/roles")
+@RequestMapping(value = "/roleMgr")
 @Api(value = "角色管理", description = "角色管理")
-public class RoleController {
+public class RoleMgrController {
 	@Autowired
 	private RoleService roleService;
 
@@ -51,17 +53,17 @@ public class RoleController {
 	@Autowired
 	private HttpSession session;
 
-	@GetMapping
+	@PostMapping("/roleList")
 	@ApiOperation(value = "查询角色列表", notes = "查询角色列表")
-	public Result<List<Role>> findByCondition(RoleQuery condition) {
+	public Result<List<Role>> roleList(RoleQuery condition) {
 		List<Role> roles = roleService.findByCondition(condition);
 
 		return Result.success(roles);
 	}
 
-	@PostMapping
+	@PostMapping("/addRole")
 	@ApiOperation(value = "新增角色", notes = "新增角色")
-	public Result<Role> add(@RequestBody Role role) {
+	public Result<Role> addRole(@RequestBody Role role) {
 		User currentUser = UserUtils.getUser(session);
 		role.setCreatedBy(currentUser.getAccount());
 		role.setModifiedBy(currentUser.getAccount());
@@ -71,10 +73,9 @@ public class RoleController {
 		return Result.success(r);
 	}
 
-	@GetMapping(value = "/{id}")
+	@PostMapping("/findRoleById")
 	@ApiOperation(value = "根据ID查询角色", notes = "根据ID查询角色")
-	public Result<Role> findById(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+	public Result<Role> findRoleById(@RequestBody Long id) {
 		Role role = roleService.findById(id);
 		if (role == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -82,14 +83,12 @@ public class RoleController {
 		return Result.success(role);
 	}
 
-	@PutMapping(value = "/{id}")
+	@PostMapping("/updateRole")
 	@ApiOperation(value = "更新角色信息", notes = "更新角色信息")
-	public Result<Role> update(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
-			@RequestBody Role role) {
-		Role oldRole = roleService.findById(id);
+	public Result<Role> updateRole(@RequestBody Role role) {
+		Role oldRole = roleService.findById(role.getId());
 		if (oldRole == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(role.getId());
 		}
 
 		oldRole.setName(role.getName());
@@ -104,10 +103,9 @@ public class RoleController {
 		return Result.success(r);
 	}
 
-	@GetMapping(value = "/{id}/permissions")
+	@PostMapping("/findRolePermissionById")
 	@ApiOperation(value = "查询角色的权限", notes = "查询角色的权限")
-	public Result<List<Permission>> findRolePermission(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+	public Result<List<Permission>> findRolePermissionById(@RequestBody Long id) {
 		Role role = roleService.findById(id);
 		if (role == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -117,14 +115,12 @@ public class RoleController {
 		return Result.success(permissions);
 	}
 
-	@PostMapping(value = "/{id}/permissions")
+	@PostMapping("/addRolePermission")
 	@ApiOperation(value = "为角色增加权限", notes = "为角色增加权限")
-	public Result<Object> addPermission(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
-			@RequestBody RolePermission rolePermission) {
-		Role role = roleService.findById(id);
+	public Result<Object> addRolePermission(@RequestBody RolePermission rolePermission) {
+		Role role = roleService.findById(rolePermission.getRoleId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(rolePermission.getRoleId());
 		}
 
 		Permission permission = permissionService.findById(rolePermission
@@ -138,31 +134,27 @@ public class RoleController {
 		rolePermission.setCreatedBy(currentUser.getAccount());
 		rolePermission.setModifiedBy(currentUser.getAccount());
 
-		rolePermission.setRoleId(id);
-
 		roleService.addPermission(rolePermission);
 
 		return Result.success();
 	}
 
-	@DeleteMapping(value = "/{rid}/permissions/{pid}")
+	@PostMapping("/deleteRolePermission")
 	@ApiOperation(value = "删除角色的权限", notes = "删除角色的权限")
-	public Result<Object> deletePermission(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long pid) {
-		RolePermission rp = new RolePermission(rid, pid);
+	public Result<Object> deleteRolePermission(@RequestBody DeletePermissionRoleBo bo) {
+		RolePermission rp = new RolePermission(bo.getRid(), bo.getPid());
 
 		roleService.deletePermission(rp);
 
 		return Result.success();
 	}
 
-	@GetMapping(value = "/{id}/users")
+	@PostMapping("/roleUserList")
 	@ApiOperation(value = "查询角色关联的用户", notes = "查询角色关联的用户")
-	public Result<PageInfo<User>> findRoleUser(
+	public Result<PageInfo<User>> roleUserList(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
 			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+			@RequestBody Long id) {
 		Role role = roleService.findById(id);
 		if (role == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -180,14 +172,12 @@ public class RoleController {
 		return Result.success(page);
 	}
 
-	@PostMapping(value = "/{id}/users")
+	@PostMapping("/addRoleUser")
 	@ApiOperation(value = "为角色关联用户", notes = "为角色关联用户")
-	public Result<Object> addUser(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id,
-			@RequestBody UserRole userRole) {
-		Role role = roleService.findById(id);
+	public Result<Object> addRoleUser(@RequestBody UserRole userRole) {
+		Role role = roleService.findById(userRole.getRoleId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(userRole.getRoleId());
 		}
 
 		User user = userService.findById(userRole.getUserId());
@@ -199,29 +189,26 @@ public class RoleController {
 		userRole.setCreatedBy(currentUser.getAccount());
 		userRole.setModifiedBy(currentUser.getAccount());
 
-		userRole.setRoleId(id);
+		userRole.setRoleId(userRole.getRoleId());
 
 		roleService.addUser(userRole);
 
 		return Result.success();
 	}
 
-	@DeleteMapping(value = "/{rid}/users/{uid}")
+	@PostMapping("/deleteRoleUser")
 	@ApiOperation(value = "删除角色关联的用户", notes = "删除角色关联的用户")
-	public Result<Object> deleteUser(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
-			@ApiParam(value = "用户ID", required = true) @PathVariable Long uid) {
-		UserRole ur = new UserRole(uid, rid);
+	public Result<Object> deleteRoleUser(@RequestBody DeleteUserRoleBo bo) {
+		UserRole ur = new UserRole(bo.getUid(), bo.getRid());
 
 		roleService.deleteUser(ur);
 
 		return Result.success();
 	}
 
-	@DeleteMapping(value = "/{id}")
+	@PostMapping("/deleteRole")
 	@ApiOperation(value = "删除角色", notes = "删除角色")
-	public Result<Object> delete(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long id) {
+	public Result<Object> deleteRole(@RequestBody Long id) {
 		Role role = roleService.findById(id);
 		if (role == null) {
 			throw new NpsObjectNotFoundException(id);

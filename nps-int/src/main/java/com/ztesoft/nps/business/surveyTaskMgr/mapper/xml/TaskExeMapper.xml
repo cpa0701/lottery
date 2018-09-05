@@ -9,7 +9,7 @@
     <result column="target_user" property="targetUser" jdbcType="VARCHAR" />
     <result column="is_test" property="isTest" jdbcType="DECIMAL" />
     <result column="sm_content" property="smContent" jdbcType="VARCHAR" />
-    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="creatTime" jdbcType="TIMESTAMP" />
     <result column="base_url" property="baseUrl" jdbcType="VARCHAR" />
     <result column="short_url" property="shortUrl" jdbcType="VARCHAR" />
     <result column="is_exe" property="isExe" jdbcType="DECIMAL" />
@@ -76,7 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    serial_id, task_id, channel_type, send_user, target_user, is_test, sm_content, creat_time, 
+    serial_id, task_id, channel_type, send_user, target_user, is_test, sm_content, create_time,
     base_url, short_url, is_exe, exe_time, test_uid, url_flag
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample" >
@@ -113,7 +113,7 @@
   <insert id="insert" parameterType="com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe" >
     insert into task_exe (serial_id, task_id, channel_type, 
       send_user, target_user, is_test, 
-      sm_content, creat_time, base_url, 
+      sm_content, create_time, base_url,
       short_url, is_exe, exe_time, 
       test_uid, url_flag)
     values (#{serialId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{channelType,jdbcType=SMALLINT}, 
@@ -147,7 +147,7 @@
         sm_content,
       </if>
       <if test="creatTime != null" >
-        creat_time,
+        create_time,
       </if>
       <if test="baseUrl != null" >
         base_url,
@@ -244,7 +244,7 @@
         sm_content = #{record.smContent,jdbcType=VARCHAR},
       </if>
       <if test="record.creatTime != null" >
-        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+        create_time = #{record.creatTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.baseUrl != null" >
         base_url = #{record.baseUrl,jdbcType=VARCHAR},
@@ -278,7 +278,7 @@
       target_user = #{record.targetUser,jdbcType=VARCHAR},
       is_test = #{record.isTest,jdbcType=DECIMAL},
       sm_content = #{record.smContent,jdbcType=VARCHAR},
-      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      create_time = #{record.creatTime,jdbcType=TIMESTAMP},
       base_url = #{record.baseUrl,jdbcType=VARCHAR},
       short_url = #{record.shortUrl,jdbcType=VARCHAR},
       is_exe = #{record.isExe,jdbcType=DECIMAL},
@@ -311,7 +311,7 @@
         sm_content = #{smContent,jdbcType=VARCHAR},
       </if>
       <if test="creatTime != null" >
-        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+        create_time = #{creatTime,jdbcType=TIMESTAMP},
       </if>
       <if test="baseUrl != null" >
         base_url = #{baseUrl,jdbcType=VARCHAR},
@@ -342,7 +342,7 @@
       target_user = #{targetUser,jdbcType=VARCHAR},
       is_test = #{isTest,jdbcType=DECIMAL},
       sm_content = #{smContent,jdbcType=VARCHAR},
-      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      create_time = #{creatTime,jdbcType=TIMESTAMP},
       base_url = #{baseUrl,jdbcType=VARCHAR},
       short_url = #{shortUrl,jdbcType=VARCHAR},
       is_exe = #{isExe,jdbcType=DECIMAL},

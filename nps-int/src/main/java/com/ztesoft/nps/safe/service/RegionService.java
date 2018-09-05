@@ -3,7 +3,7 @@ package com.ztesoft.nps.safe.service;
 import java.util.List;
 
 import com.ztesoft.nps.safe.model.Region;
-import com.ztesoft.nps.safe.query.RegionQuery;
+import com.ztesoft.nps.safe.model.query.RegionQuery;
 
 public interface RegionService {
 	Region add(Region region);

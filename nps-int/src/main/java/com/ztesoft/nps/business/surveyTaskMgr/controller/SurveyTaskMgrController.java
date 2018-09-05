@@ -5,6 +5,7 @@ import com.ztesoft.nps.business.surveyTaskMgr.service.SurveyTaskMgrService;
 import com.ztesoft.nps.common.exception.NpsBusinessException;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
+import com.ztesoft.nps.common.exception.NpsRequestParamException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.utils.sys.util.StringUtil;
@@ -59,7 +60,7 @@ public class SurveyTaskMgrController {
     }
 
     @ApiOperation(value = "编辑任务", notes = "编辑任务")
-    @PostMapping("/editSurveyTask")
+    @PostMapping("/eiditSurveyTask")
     public Result<Object> editSurveyTask(@RequestBody SurveyTaskAddBo bo){
         String taskId = bo.getTaskId();
         if(StringUtil.isNull(taskId)){
@@ -76,8 +77,7 @@ public class SurveyTaskMgrController {
         if(StringUtil.isNull(taskId)){
             throw new NpsObjectNotFoundException(taskId);
         }
-        surveyTaskMgrService.selectSurveyTaskById(surveyTaskIdQuery);
-        return Result.success();
+        return Result.success(surveyTaskMgrService.selectSurveyTaskById(surveyTaskIdQuery));
     }
 
 
@@ -101,7 +101,7 @@ public class SurveyTaskMgrController {
     @PostMapping("/publishSurveyTask")
     public Result<Object> publishSurveyTask(@RequestBody SurveyTaskPublishBo bo){
         if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
+            throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         surveyTaskMgrService.publishSurvetTask(bo);
         return Result.success();
@@ -111,7 +111,7 @@ public class SurveyTaskMgrController {
     @PostMapping("/testPublishSurveyTask")
     public Result<Object> testPublishSurveyTask(@RequestBody SurveyTaskPublishBo bo){
         if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
+            throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         surveyTaskMgrService.testPublishSurvetTask(bo);
         return Result.success();

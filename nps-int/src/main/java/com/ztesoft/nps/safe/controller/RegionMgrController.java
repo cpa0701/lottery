@@ -25,15 +25,15 @@ import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.safe.model.Department;
 import com.ztesoft.nps.safe.model.Region;
 import com.ztesoft.nps.safe.model.User;
-import com.ztesoft.nps.safe.query.RegionQuery;
+import com.ztesoft.nps.safe.model.query.RegionQuery;
 import com.ztesoft.nps.safe.service.DepartmentService;
 import com.ztesoft.nps.safe.service.RegionService;
 import com.ztesoft.nps.common.utils.UserUtils;
 
 @RestController
-@RequestMapping(value = "/regions")
+@RequestMapping(value = "/regionMgr")
 @Api(value = "区域管理", description = "区域管理")
-public class RegionController {
+public class RegionMgrController {
 	@Autowired
 	private RegionService regionService;
 
@@ -43,9 +43,9 @@ public class RegionController {
 	@Autowired
 	private HttpSession session;
 
-	@PostMapping
+	@PostMapping("/addRegion")
 	@ApiOperation(value = "新增区域", notes = "新增区域")
-	public Result<Region> add(@RequestBody Region region) {
+	public Result<Region> addRegion(@RequestBody Region region) {
 		User currentUser = UserUtils.getUser(session);
 		region.setCreatedBy(currentUser.getAccount());
 		region.setModifiedBy(currentUser.getAccount());
@@ -55,18 +55,17 @@ public class RegionController {
 		return Result.success(r);
 	}
 
-	@GetMapping
+	@PostMapping("/regionList")
 	@ApiOperation(value = "查询区域列表", notes = "查询区域列表")
-	public Result<List<Region>> findByCondition(RegionQuery condition) {
+	public Result<List<Region>> regionList(RegionQuery condition) {
 		List<Region> regions = regionService.findByCondition(condition);
 
 		return Result.success(regions);
 	}
 
-	@GetMapping(value = "/{id}")
+	@PostMapping("/findRegionById")
 	@ApiOperation(value = "根据ID查询区域", notes = "根据ID查询区域")
-	public Result<Region> findById(
-			@ApiParam(value = "区域ID", required = true) @PathVariable Long id) {
+	public Result<Region> findRegionById(@RequestBody Long id) {
 		Region region = regionService.findById(id);
 		if (region == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -74,14 +73,12 @@ public class RegionController {
 		return Result.success(region);
 	}
 
-	@PutMapping(value = "/{id}")
+	@PostMapping("/updateRegion")
 	@ApiOperation(value = "更新区域信息", notes = "更新区域信息")
-	public Result<Region> update(
-			@ApiParam(value = "区域ID", required = true) @PathVariable Long id,
-			@RequestBody Region region) {
-		Region oldRegion = regionService.findById(id);
+	public Result<Region> updateRegion(@RequestBody Region region) {
+		Region oldRegion = regionService.findById(region.getId());
 		if (oldRegion == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(region.getId());
 		}
 
 		oldRegion.setAreaId(region.getAreaId());
@@ -99,10 +96,9 @@ public class RegionController {
 		return Result.success(r);
 	}
 
-	@DeleteMapping(value = "/{id}")
+	@PostMapping("/deleteRegion")
 	@ApiOperation(value = "删除区域", notes = "删除区域")
-	public Result<Object> delete(
-			@ApiParam(value = "区域ID", required = true) @PathVariable Long id) {
+	public Result<Object> deleteRegion(@RequestBody Long id) {
 		Region region = regionService.findById(id);
 		if (region == null) {
 			throw new NpsObjectNotFoundException(id);
