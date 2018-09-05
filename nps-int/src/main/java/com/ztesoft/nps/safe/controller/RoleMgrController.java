@@ -2,6 +2,8 @@ package com.ztesoft.nps.safe.controller;
 
 import com.ztesoft.nps.safe.model.query.DeletePermissionRoleBo;
 import com.ztesoft.nps.safe.model.query.DeleteUserRoleBo;
+import com.ztesoft.nps.safe.model.query.RoleUserListBo;
+import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -151,16 +153,14 @@ public class RoleMgrController {
 
 	@PostMapping("/roleUserList")
 	@ApiOperation(value = "查询角色关联的用户", notes = "查询角色关联的用户")
-	public Result<PageInfo<User>> roleUserList(
-			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
-			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@RequestBody Long id) {
-		Role role = roleService.findById(id);
+	public Result<PageInfo<User>> roleUserList(@RequestBody RoleUserListBo bo) {
+		Role role = roleService.findById(bo.getId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(bo.getId());
 		}
 
-		List<User> users = userService.findByRoleId(pageNum, pageSize, id);
+		List<User> users = userService.findByRoleId(
+				StringUtil.getInteger(bo.getPageNum()), StringUtil.getInteger(bo.getPageSize()), bo.getId());
 
 		// 清空密码和盐值
 		users.stream().forEach(s -> {

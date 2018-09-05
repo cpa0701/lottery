@@ -45,20 +45,19 @@ public class LoginFilter implements Filter {
 				|| url.contains(".bmp")) {
 			chain.doFilter(req, resp);
 		} else {
-			HttpSession session = request.getSession();
-			// 没有登录
-			if (session == null) {
-				Result<Object> result = Result
-						.failed(ResultCodeEnum.UNAUTHORIZED);
-				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("application/json; charset=utf-8");
-				response.getWriter().write(
-						JSON.toJSONString(result,
-								SerializerFeature.WriteMapNullValue));
-				return;
-			}
-
+//			HttpSession session = request.getSession();
+//			// 没有登录
+//			if (session == null) {
+//				Result<Object> result = Result
+//						.failed(ResultCodeEnum.UNAUTHORIZED);
+//				response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+//				response.setCharacterEncoding("UTF-8");
+//				response.setContentType("application/json; charset=utf-8");
+//				response.getWriter().write(
+//						JSON.toJSONString(result,
+//								SerializerFeature.WriteMapNullValue));
+//				return;
+//			}
 			// 已经登录
 			chain.doFilter(req, resp);
 		}
