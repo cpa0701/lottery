@@ -86,10 +86,10 @@ class StaffModal extends PureComponent {
         //新增
         fields.deptId = departmentData.id;
         if (this.actionType === 'A') {
-            promise = DeptService.addStaff(fields)
+            promise = DeptService.addStaff({...fields, userId: String(sessionStorage.getItem('userId'))})
         }
         else {
-            promise = DeptService.ediStaff({...fields, id: staffData.id})
+            promise = DeptService.ediStaff({...fields, id: staffData.id, userId: String(sessionStorage.getItem('userId'))})
         }
         promise.then(result => {
             message.success(this.state.actionTypeName + this.state.depart.success);

@@ -15,6 +15,36 @@ const info = Modal.info;
 @observer
 @Form.create({})
 export default class Authority extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.store = this.props.stores;
+        this.state = {
+            //树形数据展示
+            bordered: true,
+            pagination: false,
+            data: [],
+            authorityEditData: [],
+            authorityAddData: [],
+            authorityUserData: [],
+            authorityDeleteData: [],
+            authorityData: [],
+            //模态框
+            addVisible: false,
+            userVisible: false,
+            editVisible: false,
+            confirmLoading: false,
+            authority:this.props.stores.I18nModel.outputLocale.authority,
+        }
+    }
+    componentDidMount() {
+        this.AuthorityQuery();
+        this.setState({
+            authorityEditData: false,
+            authorityAddData: false,
+            authorityUserData: false,
+            authorityDeleteData: false,
+        });
+    }
     //新增方法
     handleAdd = () => {
         this.setState({
@@ -46,7 +76,11 @@ export default class Authority extends PureComponent {
             this.setState({
                 authorityData: this.state.authorityData,
             });
-            AuthorityService.deleteAuthority(this.state.authorityData).then((data) => {
+            let param = {
+                id: this.state.authorityData.id,
+                userId: String(sessionStorage.getItem('userId'))
+            };
+            AuthorityService.deleteAuthority(param).then((data) => {
                 this.freshTable();
                 this.handleOk();
             })
@@ -112,19 +146,6 @@ export default class Authority extends PureComponent {
             });
         });
     };
-
-    componentDidMount() {
-        this.AuthorityQuery();
-        this.setState({
-            authorityEditData: false,
-            authorityAddData: false,
-            authorityUserData: false,
-            authorityDeleteData: false,
-
-        });
-
-    }
-
     freshTable() {
         this.AuthorityQuery();
     }
@@ -149,13 +170,15 @@ export default class Authority extends PureComponent {
             if (this.state.authorityAddData) {
                 value = {
                     ...values,
-                    parentId:this.state.authorityData.id,
+                    parentId: this.state.authorityData.id,
+                    userId: String(sessionStorage.getItem('userId'))
                 }
             }
             else{
                 value = {
                     ...values,
-                    parentId:0,
+                    parentId: 0,
+                    userId: String(sessionStorage.getItem('userId'))
                 }
             }
             AuthorityService.addAuthority(value).then((data) => {
@@ -168,37 +191,13 @@ export default class Authority extends PureComponent {
     handleUpdateSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            AuthorityService.updateAuthority(values).then((data) => {
-                console.log(data)
+            AuthorityService.updateAuthority({...values, userId: String(sessionStorage.getItem('userId'))}).then((data) => {
                 this.freshTable();
                 this.handleOk();
             })
 
         });
-    }
-
-    constructor(props) {
-        super(props);
-        this.store = this.props.stores;
-        this.state = {
-            //树形数据展示
-            bordered: true,
-            pagination: false,
-            data: [],
-            authorityEditData: [],
-            authorityAddData: [],
-            authorityUserData: [],
-            authorityDeleteData: [],
-            authorityData: [],
-            //模态框
-            addVisible: false,
-            userVisible: false,
-            editVisible: false,
-            confirmLoading: false,
-            authority:this.props.stores.I18nModel.outputLocale.authority,
-        }
-    }
-
+    };
 
     render() {
         const {authority} = this.props.stores.I18nModel.outputLocale
@@ -290,6 +289,7 @@ export default class Authority extends PureComponent {
             }
 
         }];
+
         return (
             <div className={'authority'}>
                 <div className="headerAuthority">
@@ -337,7 +337,7 @@ export default class Authority extends PureComponent {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label={authority.permissionName}
+                                        label={authority.authorityName}
                                         labelCol={{span: 10}}
                                         wrapperCol={{span: 14}}
                                     >

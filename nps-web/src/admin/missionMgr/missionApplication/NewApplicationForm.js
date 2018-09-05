@@ -262,6 +262,7 @@ class NewApplicationForm extends React.PureComponent {
         if (isValidate) {
             let formData = this.props.form.getFieldsValue();
             let channelType = this.props.form.getFieldValue('taskChannel');
+            formData.userId = String(sessionStorage.getItem('userId'));
             formData.testNumberList = formData.testNumberList.split(',');
             formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
             formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
@@ -311,6 +312,7 @@ class NewApplicationForm extends React.PureComponent {
         if (isValidate) {
             let formData = this.props.form.getFieldsValue();
             let channelType = this.props.form.getFieldValue('taskChannel');
+            formData.userId = String(sessionStorage.getItem('userId'));;
             formData.testNumberList = formData.testNumberList.split(',');
             formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
             formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');

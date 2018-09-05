@@ -24,7 +24,7 @@ class LoginModel {
         this.token = user.token;
         this.idcard = user.idcard;
         this.id = user.id;
-
+        this.setSession('userId', user.id);
         this.setSession('uc', user.status)
     }
 
@@ -35,6 +35,7 @@ class LoginModel {
         this.token = '';
         this.idcard = '';
 
+        this.removeSession('userId');
         this.removeSession('uc');
     }
 

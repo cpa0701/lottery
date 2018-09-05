@@ -122,7 +122,7 @@ class QuestionEdit extends React.PureComponent {
             isBlank: 0,
             isPaging: 0,
             isCommon: 0,
-            createUid: 200,
+            createUid: sessionStorage.getItem('userId'),
             createTime: '',
             jumpOrder: null
         };

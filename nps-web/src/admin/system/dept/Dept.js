@@ -152,16 +152,16 @@ export default class Dept extends PureComponent {
                 let treeData = result.map(item => {
                     item.title = item.name;
                     item.value = item.id.toString();
-                    item.key = item.id
+                    item.key = item.id;
                     item.isLeaf = item.leaf;
                     return item;
-                })
+                });
                 this.setState({
                     domainTreeDate: treeData,
                 });
             }
         });
-    }
+    };
     //异步加载地区树
     onLoadDomainTreeData = (treeNode) => {
         return new Promise((resolve) => {
@@ -191,16 +191,23 @@ export default class Dept extends PureComponent {
     }
     //获取部门树
     getDeptTree = (params) => {
-        let param = params ? params : {};
-        param.status = 1
+        let param = {
+            name: '',
+            regionId: null,
+            parentId: null,
+            status: 1,
+            type: null,
+            level: null,
+            ...params
+        };
         DeptService.getDeptTree(param).then(result => {
             if (result) {
                 let treeData = result.map(item => {
                     item.title = item.name;
-                    item.key = item.id
+                    item.key = item.id;
                     item.isLeaf = item.leaf;
                     return item;
-                })
+                });
                 this.setState({
                     deptTreeData: treeData,
                     departmentEditData: treeData[0],
@@ -211,7 +218,7 @@ export default class Dept extends PureComponent {
                 });
             }
         });
-    }
+    };
     // //获取角色树
     // getRoleTree = (params) => {
     //     let data = params[params.length - 1];
@@ -450,6 +457,7 @@ export default class Dept extends PureComponent {
         if (row.length) {
             // params.id = row.map(item => item + ''); //平台角色id，必填
             params.id = row;
+            params.userId = String(sessionStorage.getItem('userId'));
             DeptService.dleDept(params).then(result => {
                 message.success(this.state.depart.deleteSuccess);
                 this.handlerSearchDepartment();

@@ -486,7 +486,7 @@ export default class QuestionAddMgr extends PureComponent {
             } else {
                 values.isSatisfied = 0;
             }
-            values.createUid = 18573;
+            values.createUid = String(sessionStorage.getItem('userId'));
             let value = {
                 ...this.state.questionList[0],
                 ...values

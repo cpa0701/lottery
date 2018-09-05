@@ -86,10 +86,10 @@ class Dept extends PureComponent {
         fields.parentId = departmentData.parentId;
         //新增
         if (this.actionType === 'A') {
-            promise = DeptService.addDept(fields)
+            promise = DeptService.addDept({...fields, userId: String(sessionStorage.getItem('userId'))})
         }
         else {
-            promise = DeptService.ediDept({...fields, id: departmentData.id})
+            promise = DeptService.ediDept({...fields, id: departmentData.id, userId: String(sessionStorage.getItem('userId'))})
         }
 
         promise.then(result => {
