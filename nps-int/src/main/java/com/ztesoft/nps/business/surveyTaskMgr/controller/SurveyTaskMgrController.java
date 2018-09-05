@@ -70,6 +70,17 @@ public class SurveyTaskMgrController {
         return Result.success();
     }
 
+    @ApiOperation(value = "编辑任务保存草稿", notes = "编辑任务保存草稿")
+    @PostMapping("/eiditSurveyTaskDraft")
+    public Result<Object> editSurveyTaskToDraft(@RequestBody SurveyTaskAddBo bo){
+        String taskId = bo.getTaskId();
+        if(StringUtil.isNull(taskId)){
+            throw new NpsObjectNotFoundException(taskId);
+        }
+        surveyTaskMgrService.editSurveyTaskToDraft(bo);
+        return Result.success();
+    }
+
     @ApiOperation(value = "根据ID查询任务", notes = "根据ID查询任务")
     @PostMapping("/selectSurveyTaskById")
     public Result<Object> selectSurveyTaskById(@RequestBody SurveyTaskIdQuery surveyTaskIdQuery){

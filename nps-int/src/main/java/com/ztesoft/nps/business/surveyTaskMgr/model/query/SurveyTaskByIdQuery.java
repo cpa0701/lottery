@@ -16,6 +16,8 @@ public class SurveyTaskByIdQuery {
     private Short taskType;
     @ApiModelProperty("问卷ID")
     private String qstnaireId;
+    @ApiModelProperty("问卷名称")
+    private String qstnaireTitle;
     @ApiModelProperty("开始日期")
     private Date surveySdate;
     @ApiModelProperty("结束日期")
@@ -177,6 +179,14 @@ public class SurveyTaskByIdQuery {
 
     public void setTaskChannel(List<TaskChannel> taskChannel) {
         this.taskChannel = taskChannel;
+    }
+
+    public String getQstnaireTitle() {
+        return qstnaireTitle;
+    }
+
+    public void setQstnaireTitle(String qstnaireTitle) {
+        this.qstnaireTitle = qstnaireTitle;
     }
 
     public SurveyTaskByIdQuery beanToQuery(SurveyTask surveyTask){
