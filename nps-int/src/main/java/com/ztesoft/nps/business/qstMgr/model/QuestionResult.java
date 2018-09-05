@@ -9,7 +9,7 @@ public class QuestionResult {
     private String questionId;
     @ApiModelProperty("矩阵行序号")
     private Short rowOrder;
-    @ApiModelProperty("答题结果序号")
+    @ApiModelProperty("答题结果")
     private String questionResult;
 
     public Long getSurveyResultNo() {

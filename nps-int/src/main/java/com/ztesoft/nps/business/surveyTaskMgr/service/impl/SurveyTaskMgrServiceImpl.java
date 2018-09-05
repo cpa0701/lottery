@@ -1,5 +1,9 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 
+import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
+import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireBankMapper;
+import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank;
+import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyNpsInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyNpsInfo;
@@ -42,6 +46,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Autowired
     private SurveyTaskMapper surveyTaskMapper;
+    @Autowired
+    private QstnaireBankMapper qstnaireBankMapper;
 
     @Autowired
     private TaskChannelMapper taskChannelMapper;
@@ -259,8 +265,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         SurveyTaskByIdQuery surveyTaskById = new SurveyTaskByIdQuery();
         //获得surveyTask基础信息
         SurveyTask surveyTask = surveyTaskMapper.selectByPrimaryKey(taskId);
+
+        QstnaireBank qstnaireBank = qstnaireBankMapper.selectByPrimaryKey(surveyTask.getQstnaireId());
         //将bean填入query
         surveyTaskById.beanToQuery(surveyTask);
+        surveyTaskById.setQstnaireTitle(qstnaireBank.getQstnaireTitle());
         //根据taskId查询taskChannel表数据，获得各个渠道及其总数。
         TaskChannelExample taskChannelExample = new TaskChannelExample();
         taskChannelExample.createCriteria().andTaskIdEqualTo(taskId);

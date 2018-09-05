@@ -162,4 +162,25 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+
+
+
+  <insert id="insertByList" parameterType="java.util.List">
+    insert into question_result
+    (
+    survey_result_no,
+    question_id,
+    row_order,
+    question_result,
+    )
+    values
+    <foreach collection="list" item="qusetionResult" index="index" separator=",">
+      (
+      #{qusetionResult.surveyResultNo},
+      #{qusetionResult.questionId},
+      #{qusetionResult.rowOrder},
+      #{qusetionResult.questionResult}
+      )
+    </foreach>
+  </insert>
 </mapper>

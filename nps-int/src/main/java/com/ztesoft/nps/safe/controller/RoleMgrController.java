@@ -1,7 +1,7 @@
 package com.ztesoft.nps.safe.controller;
 
-import com.ztesoft.nps.safe.model.query.DeletePermissionRoleBo;
-import com.ztesoft.nps.safe.model.query.DeleteUserRoleBo;
+import com.ztesoft.nps.safe.model.query.*;
+import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +31,6 @@ import com.ztesoft.nps.safe.model.Role;
 import com.ztesoft.nps.safe.model.RolePermission;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.model.query.RoleQuery;
 import com.ztesoft.nps.safe.service.PermissionService;
 import com.ztesoft.nps.safe.service.RoleService;
 import com.ztesoft.nps.safe.service.UserService;
@@ -75,10 +74,10 @@ public class RoleMgrController {
 
 	@PostMapping("/findRoleById")
 	@ApiOperation(value = "根据ID查询角色", notes = "根据ID查询角色")
-	public Result<Role> findRoleById(@RequestBody Long id) {
-		Role role = roleService.findById(id);
+	public Result<Role> findRoleById(@RequestBody RoleIdQuery condition) {
+		Role role = roleService.findById(condition.getId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 		return Result.success(role);
 	}
@@ -105,13 +104,13 @@ public class RoleMgrController {
 
 	@PostMapping("/findRolePermissionById")
 	@ApiOperation(value = "查询角色的权限", notes = "查询角色的权限")
-	public Result<List<Permission>> findRolePermissionById(@RequestBody Long id) {
-		Role role = roleService.findById(id);
+	public Result<List<Permission>> findRolePermissionById(@RequestBody RoleIdQuery condition) {
+		Role role = roleService.findById(condition.getId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 
-		List<Permission> permissions = permissionService.findByRoleId(id);
+		List<Permission> permissions = permissionService.findByRoleId(condition.getId());
 		return Result.success(permissions);
 	}
 
@@ -151,16 +150,14 @@ public class RoleMgrController {
 
 	@PostMapping("/roleUserList")
 	@ApiOperation(value = "查询角色关联的用户", notes = "查询角色关联的用户")
-	public Result<PageInfo<User>> roleUserList(
-			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
-			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			@RequestBody Long id) {
-		Role role = roleService.findById(id);
+	public Result<PageInfo<User>> roleUserList(@RequestBody RoleUserListBo bo) {
+		Role role = roleService.findById(bo.getId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(bo.getId());
 		}
 
-		List<User> users = userService.findByRoleId(pageNum, pageSize, id);
+		List<User> users = userService.findByRoleId(
+				StringUtil.getInteger(bo.getPageNum()), StringUtil.getInteger(bo.getPageSize()), bo.getId());
 
 		// 清空密码和盐值
 		users.stream().forEach(s -> {
@@ -208,18 +205,18 @@ public class RoleMgrController {
 
 	@PostMapping("/deleteRole")
 	@ApiOperation(value = "删除角色", notes = "删除角色")
-	public Result<Object> deleteRole(@RequestBody Long id) {
-		Role role = roleService.findById(id);
+	public Result<Object> deleteRole(@RequestBody RoleIdQuery condition) {
+		Role role = roleService.findById(condition.getId());
 		if (role == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(condition.getId());
 		}
 
-		List<User> users = userService.findByRoleId(1, 10, id);
+		List<User> users = userService.findByRoleId(1, 10, condition.getId());
 		if (CollectionUtils.isNotEmpty(users)) {
 			throw new NpsDeleteException("角色被用户使用中，不能删除");
 		}
 
-		List<Role> roles = roleService.findByParentId(id);
+		List<Role> roles = roleService.findByParentId(condition.getId());
 		if (CollectionUtils.isNotEmpty(roles)) {
 			throw new NpsDeleteException("角色下存在子节点，不能删除");
 		}
