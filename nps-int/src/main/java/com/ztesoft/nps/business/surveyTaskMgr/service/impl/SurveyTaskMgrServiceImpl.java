@@ -622,7 +622,6 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private int getRealTargetUserSum(SurveyTaskPublishBo bo){
         //获取抽样方式信息
-        System.out.println(getTaskChanelInfoSql(bo));
         Map<String,Object> taskChannelMap = DatabaseUtil.queryForMap(getTaskChanelInfoSql(bo));
         int realSum = 0;
         if(ConstantUtils.SURVEY_TASK_WAY_ALL.equals(MapUtil.getString(taskChannelMap,"sample_type"))){

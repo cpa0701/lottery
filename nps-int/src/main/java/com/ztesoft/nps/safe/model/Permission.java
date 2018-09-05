@@ -85,8 +85,23 @@ public class Permission {
 	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
+	/**
+	 * 当前用户id
+	 */
+	@ApiModelProperty("当前用户id")
+	private Long userId;
+
+
 	public Permission() {
 
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public Long getId() {

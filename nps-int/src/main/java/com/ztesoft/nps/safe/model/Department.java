@@ -79,8 +79,22 @@ public class Department {
 	@ApiModelProperty("修改时间")
 	private Date modifiedAt;
 
+	/**
+	 * 当前用户ID
+	 */
+	@ApiModelProperty("当前用户ID")
+	private Long userId;
+
 	public Department() {
 
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public Long getId() {

@@ -73,9 +73,9 @@ public class UserMgrController {
 	@PostMapping("/addUser")
 	@ApiOperation(value = "新增用户", notes = "新增用户")
 	public Result<User> addUser(@RequestBody User user) {
-		User currentUser = UserUtils.getUser(session);
-		user.setCreatedBy(currentUser.getAccount());
-		user.setModifiedBy(currentUser.getAccount());
+
+		user.setCreatedBy(user.getUserId().toString());
+		user.setModifiedBy(user.getUserId().toString());
 
 		user.setStatus(Status.VALID.getCode());
 
@@ -122,8 +122,8 @@ public class UserMgrController {
 		oldUser.setDeptId(user.getDeptId());
 		oldUser.setRemark(user.getRemark());
 
-		User currentUser = UserUtils.getUser(session);
-		oldUser.setModifiedBy(currentUser.getId().toString());
+
+		oldUser.setModifiedBy(user.getUserId().toString());
 
 		User u = userService.update(oldUser);
 
@@ -159,9 +159,9 @@ public class UserMgrController {
 			throw new NpsObjectNotFoundException(userRole.getRoleId());
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		userRole.setCreatedBy(currentUser.getId().toString());
-		userRole.setModifiedBy(currentUser.getId().toString());
+
+		userRole.setCreatedBy(userRole.getUserId().toString());
+		userRole.setModifiedBy(userRole.getUserId().toString());
 
 		userService.addRole(userRole);
 

@@ -1,5 +1,6 @@
 package com.ztesoft.nps.safe.controller;
 
+import com.ztesoft.nps.safe.model.query.DepartmentIdQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -54,9 +55,9 @@ public class DepartmentMgrController {
 	@PostMapping("/addDept")
 	@ApiOperation(value = "新增部门", notes = "新增部门")
 	public Result<Department> addDept(@RequestBody Department dept) {
-		User currentUser = UserUtils.getUser(session);
-		dept.setCreatedBy(currentUser.getAccount());
-		dept.setModifiedBy(currentUser.getAccount());
+
+		dept.setCreatedBy(dept.getUserId().toString());
+		dept.setModifiedBy(dept.getUserId().toString());
 
 		dept.setStatus(Status.VALID.getCode());
 		Department d = departmentService.add(dept);
@@ -66,7 +67,8 @@ public class DepartmentMgrController {
 
 	@PostMapping("/findDeptById")
 	@ApiOperation(value = "根据ID查询部门", notes = "根据ID查询部门")
-	public Result<Department> findDeptById(@RequestBody Long id) {
+	public Result<Department> findDeptById(@RequestBody DepartmentIdQuery departmentIdQuery) {
+		Long id = departmentIdQuery.getId();
 		Department dept = departmentService.findById(id);
 		if (dept == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -89,8 +91,8 @@ public class DepartmentMgrController {
 		oldDepartment.setType(department.getType());
 		oldDepartment.setLevel(department.getLevel());
 
-		User currentUser = UserUtils.getUser(session);
-		oldDepartment.setModifiedBy(currentUser.getAccount());
+
+		oldDepartment.setModifiedBy(department.getUserId().toString());
 
 		Department d = departmentService.update(oldDepartment);
 
@@ -99,7 +101,8 @@ public class DepartmentMgrController {
 
 	@PostMapping("/deleteDept")
 	@ApiOperation(value = "删除部门", notes = "删除部门")
-	public Result<Object> deleteDept(@RequestBody Long id) {
+	public Result<Object> deleteDept(@RequestBody DepartmentIdQuery departmentIdQuery) {
+		Long id = departmentIdQuery.getId();
 		Department department = departmentService.findById(id);
 		if (department == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -115,9 +118,8 @@ public class DepartmentMgrController {
 			throw new NpsDeleteException("部门下存在子节点，不能删除");
 		}
 
-		User currentUser = UserUtils.getUser(session);
 		department.setStatus(Status.INVALID.getCode());
-		department.setModifiedBy(currentUser.getAccount());
+		department.setModifiedBy(departmentIdQuery.getUserId().toString());
 
 		departmentService.delete(department);
 
