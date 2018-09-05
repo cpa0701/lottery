@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.safe.mapper.RegionMapper;
 import com.ztesoft.nps.safe.model.Region;
-import com.ztesoft.nps.safe.query.RegionQuery;
+import com.ztesoft.nps.safe.model.query.RegionQuery;
 import com.ztesoft.nps.safe.service.RegionService;
 
 @Service("regionService")

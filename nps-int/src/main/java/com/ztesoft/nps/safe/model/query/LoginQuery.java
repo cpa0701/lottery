@@ -1,4 +1,4 @@
-package com.ztesoft.nps.safe.query;
+package com.ztesoft.nps.safe.model.query;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

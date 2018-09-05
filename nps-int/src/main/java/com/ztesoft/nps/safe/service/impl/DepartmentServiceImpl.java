@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ztesoft.nps.safe.mapper.DepartmentMapper;
 import com.ztesoft.nps.safe.model.Department;
-import com.ztesoft.nps.safe.query.DepartmentQuery;
+import com.ztesoft.nps.safe.model.query.DepartmentQuery;
 import com.ztesoft.nps.safe.service.DepartmentService;
 
 @Service("departmentService")

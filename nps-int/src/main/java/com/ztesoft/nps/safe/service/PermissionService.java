@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.ztesoft.nps.safe.model.Permission;
 import com.ztesoft.nps.safe.model.RolePermission;
-import com.ztesoft.nps.safe.query.PermissionQuery;
+import com.ztesoft.nps.safe.model.query.PermissionQuery;
 
 public interface PermissionService {
 	Permission add(Permission permission);

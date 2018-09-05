@@ -1,5 +1,6 @@
 package com.ztesoft.nps.safe.controller;
 
+import com.ztesoft.nps.safe.model.query.DeletePermissionRoleBo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,15 +28,15 @@ import com.ztesoft.nps.safe.model.Permission;
 import com.ztesoft.nps.safe.model.Role;
 import com.ztesoft.nps.safe.model.RolePermission;
 import com.ztesoft.nps.safe.model.User;
-import com.ztesoft.nps.safe.query.PermissionQuery;
+import com.ztesoft.nps.safe.model.query.PermissionQuery;
 import com.ztesoft.nps.safe.service.PermissionService;
 import com.ztesoft.nps.safe.service.RoleService;
 import com.ztesoft.nps.common.utils.UserUtils;
 
 @RestController
-@RequestMapping(value = "/permissions")
+@RequestMapping(value = "/permissionMgr")
 @Api(value = "权限管理", description = "权限管理")
-public class PermissionController {
+public class PermissionMgrController {
 	@Autowired
 	private PermissionService permissionService;
 
@@ -45,9 +46,9 @@ public class PermissionController {
 	@Autowired
 	private HttpSession session;
 
-	@PostMapping
+	@PostMapping("/addPermission")
 	@ApiOperation(value = "新增权限", notes = "新增权限")
-	public Result<Permission> add(@RequestBody Permission permission) {
+	public Result<Permission> addPermission(@RequestBody Permission permission) {
 		User currentUser = UserUtils.getUser(session);
 		permission.setCreatedBy(currentUser.getAccount());
 		permission.setModifiedBy(currentUser.getAccount());
@@ -59,10 +60,9 @@ public class PermissionController {
 		return Result.success(p);
 	}
 
-	@GetMapping(value = "/{id}")
+	@PostMapping("/findPermissionById")
 	@ApiOperation(value = "根据ID查询权限", notes = "根据ID查询权限")
-	public Result<Permission> findById(
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long id) {
+	public Result<Permission> findPermissionById(@RequestBody Long id) {
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -70,14 +70,12 @@ public class PermissionController {
 		return Result.success(permission);
 	}
 
-	@PutMapping(value = "/{id}")
+	@PostMapping("/updatePermission")
 	@ApiOperation(value = "更新权限信息", notes = "更新权限信息")
-	public Result<Permission> update(
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long id,
-			@RequestBody Permission permission) {
-		Permission oldPermission = permissionService.findById(id);
+	public Result<Permission> updatePermission(@RequestBody Permission permission) {
+		Permission oldPermission = permissionService.findById(permission.getId());
 		if (oldPermission == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(permission.getId());
 		}
 
 		oldPermission.setName(permission.getName());
@@ -96,19 +94,18 @@ public class PermissionController {
 		return Result.success(p);
 	}
 
-	@GetMapping
+	@PostMapping("/permissionList")
 	@ApiOperation(value = "查询权限列表", notes = "查询权限列表")
-	public Result<List<Permission>> findByCondition(PermissionQuery condition) {
+	public Result<List<Permission>> permissionList(PermissionQuery condition) {
 		List<Permission> permissions = permissionService
 				.findByCondition(condition);
 
 		return Result.success(permissions);
 	}
 
-	@GetMapping(value = "/{id}/roles")
+	@PostMapping("/findRolePermission")
 	@ApiOperation(value = "查询权限关联的角色", notes = "查询权限关联的角色")
-	public Result<List<Role>> findRolePermission(
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long id) {
+	public Result<List<Role>> findRolePermission(@RequestBody Long id) {
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -118,14 +115,12 @@ public class PermissionController {
 		return Result.success(roles);
 	}
 
-	@PostMapping(value = "/{id}/roles")
+	@PostMapping("/addPermissionRole")
 	@ApiOperation(value = "为权限关联角色", notes = "为权限关联角色")
-	public Result<Object> addRole(
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long id,
-			@RequestBody RolePermission rolePermission) {
-		Permission permission = permissionService.findById(id);
+	public Result<Object> addPermissionRole(@RequestBody RolePermission rolePermission) {
+		Permission permission = permissionService.findById(rolePermission.getPermissionId());
 		if (permission == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(rolePermission.getPermissionId());
 		}
 
 		Role role = roleService.findById(rolePermission.getRoleId());
@@ -137,29 +132,26 @@ public class PermissionController {
 		rolePermission.setCreatedBy(currentUser.getAccount());
 		rolePermission.setModifiedBy(currentUser.getAccount());
 
-		rolePermission.setPermissionId(id);
+		rolePermission.setPermissionId(rolePermission.getPermissionId());
 
 		permissionService.addRole(rolePermission);
 
 		return Result.success();
 	}
 
-	@DeleteMapping(value = "/{pid}/roles/{rid}")
+	@PostMapping("/deletePermissionRole")
 	@ApiOperation(value = "删除权限关联的角色", notes = "删除权限关联的角色")
-	public Result<Object> deletePermission(
-			@ApiParam(value = "角色ID", required = true) @PathVariable Long rid,
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long pid) {
-		RolePermission rp = new RolePermission(rid, pid);
+	public Result<Object> deletePermissionRole(@RequestBody DeletePermissionRoleBo bo) {
+		RolePermission rp = new RolePermission(bo.getRid(), bo.getPid());
 
 		permissionService.deleteRole(rp);
 
 		return Result.success();
 	}
 
-	@DeleteMapping(value = "/{id}")
+	@PostMapping("/deletePermission")
 	@ApiOperation(value = "删除权限", notes = "删除权限")
-	public Result<Object> delete(
-			@ApiParam(value = "权限ID", required = true) @PathVariable Long id) {
+	public Result<Object> deletePermission(@RequestBody Long id) {
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);

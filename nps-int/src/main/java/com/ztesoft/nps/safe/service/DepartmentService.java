@@ -3,7 +3,7 @@ package com.ztesoft.nps.safe.service;
 import java.util.List;
 
 import com.ztesoft.nps.safe.model.Department;
-import com.ztesoft.nps.safe.query.DepartmentQuery;
+import com.ztesoft.nps.safe.model.query.DepartmentQuery;
 
 public interface DepartmentService {
 	Department add(Department dept);

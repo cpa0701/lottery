@@ -34,7 +34,6 @@ public class ShortUrlFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         String requestURI = request.getRequestURI() ;
-        System.out.println("shortUrl请求地址："+requestURI);
         if(requestURI.endsWith(ConstantUtils.RES_SYSTEM_NAME)){
             int endIndex = requestURI.lastIndexOf("/") ;
             String shortUrl = requestURI.substring(endIndex+1) ;

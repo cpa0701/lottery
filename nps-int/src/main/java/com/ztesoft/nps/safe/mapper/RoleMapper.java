@@ -3,7 +3,7 @@ package com.ztesoft.nps.safe.mapper;
 import java.util.List;
 
 import com.ztesoft.nps.safe.model.Role;
-import com.ztesoft.nps.safe.query.RoleQuery;
+import com.ztesoft.nps.safe.model.query.RoleQuery;
 
 public interface RoleMapper {
 	int add(Role role);

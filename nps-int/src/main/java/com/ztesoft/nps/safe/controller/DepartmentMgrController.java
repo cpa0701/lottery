@@ -25,15 +25,15 @@ import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.safe.model.Department;
 import com.ztesoft.nps.safe.model.User;
-import com.ztesoft.nps.safe.query.DepartmentQuery;
+import com.ztesoft.nps.safe.model.query.DepartmentQuery;
 import com.ztesoft.nps.safe.service.DepartmentService;
 import com.ztesoft.nps.safe.service.UserService;
 import com.ztesoft.nps.common.utils.UserUtils;
 
 @RestController
-@RequestMapping(value = "/departments")
+@RequestMapping(value = "deptMgr")
 @Api(value = "部门管理", description = "部门管理")
-public class DepartmentController {
+public class DepartmentMgrController {
     @Autowired
 	private DepartmentService departmentService;
 
@@ -43,17 +43,17 @@ public class DepartmentController {
 	@Autowired
 	private HttpSession session;
 
-	@GetMapping
+	@PostMapping("/deptList")
 	@ApiOperation(value = "查询部门列表", notes = "查询部门列表")
-	public Result<List<Department>> findByCondition(DepartmentQuery condition) {
+	public Result<List<Department>> deptList(DepartmentQuery condition) {
 		List<Department> depts = departmentService.findByCondition(condition);
 
 		return Result.success(depts);
 	}
 
-	@PostMapping
+	@PostMapping("/addDept")
 	@ApiOperation(value = "新增部门", notes = "新增部门")
-	public Result<Department> add(@RequestBody Department dept) {
+	public Result<Department> addDept(@RequestBody Department dept) {
 		User currentUser = UserUtils.getUser(session);
 		dept.setCreatedBy(currentUser.getAccount());
 		dept.setModifiedBy(currentUser.getAccount());
@@ -64,10 +64,9 @@ public class DepartmentController {
 		return Result.success(d);
 	}
 
-	@GetMapping(value = "/{id}")
+	@PostMapping("/findDeptById")
 	@ApiOperation(value = "根据ID查询部门", notes = "根据ID查询部门")
-	public Result<Department> findById(
-			@ApiParam(value = "部门ID", required = true) @PathVariable Long id) {
+	public Result<Department> findDeptById(@RequestBody Long id) {
 		Department dept = departmentService.findById(id);
 		if (dept == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -75,14 +74,12 @@ public class DepartmentController {
 		return Result.success(dept);
 	}
 
-	@PutMapping(value = "/{id}")
+	@PostMapping("/updateDept")
 	@ApiOperation(value = "更新部门信息", notes = "更新部门信息")
-	public Result<Department> update(
-			@ApiParam(value = "部门ID", required = true) @PathVariable Long id,
-			@RequestBody Department department) {
-		Department oldDepartment = departmentService.findById(id);
+	public Result<Department> updateDept(@RequestBody Department department) {
+		Department oldDepartment = departmentService.findById(department.getId());
 		if (oldDepartment == null) {
-			throw new NpsObjectNotFoundException(id);
+			throw new NpsObjectNotFoundException(department.getId());
 		}
 
 		oldDepartment.setName(department.getName());
@@ -100,10 +97,9 @@ public class DepartmentController {
 		return Result.success(d);
 	}
 
-	@DeleteMapping(value = "/{id}")
+	@PostMapping("/deleteDept")
 	@ApiOperation(value = "删除部门", notes = "删除部门")
-	public Result<Object> delete(
-			@ApiParam(value = "部门ID", required = true) @PathVariable Long id) {
+	public Result<Object> deleteDept(@RequestBody Long id) {
 		Department department = departmentService.findById(id);
 		if (department == null) {
 			throw new NpsObjectNotFoundException(id);

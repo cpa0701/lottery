@@ -12,7 +12,7 @@ import com.ztesoft.nps.safe.mapper.UserRoleMapper;
 import com.ztesoft.nps.safe.model.Role;
 import com.ztesoft.nps.safe.model.RolePermission;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.query.RoleQuery;
+import com.ztesoft.nps.safe.model.query.RoleQuery;
 import com.ztesoft.nps.safe.service.RoleService;
 
 @Service("roleService")

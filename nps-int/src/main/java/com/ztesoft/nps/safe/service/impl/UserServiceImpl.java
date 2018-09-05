@@ -11,7 +11,7 @@ import com.ztesoft.nps.safe.mapper.UserMapper;
 import com.ztesoft.nps.safe.mapper.UserRoleMapper;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.query.UserQuery;
+import com.ztesoft.nps.safe.model.query.UserQuery;
 import com.ztesoft.nps.safe.service.UserService;
 import com.ztesoft.nps.common.utils.PasswordUtils;
 

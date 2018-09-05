@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.UserRole;
-import com.ztesoft.nps.safe.query.UserQuery;
+import com.ztesoft.nps.safe.model.query.UserQuery;
 
 public interface UserService {
 	User add(User user);

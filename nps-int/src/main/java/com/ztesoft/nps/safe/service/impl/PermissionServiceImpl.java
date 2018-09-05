@@ -10,7 +10,7 @@ import com.ztesoft.nps.safe.mapper.PermissionMapper;
 import com.ztesoft.nps.safe.mapper.RolePermissionMapper;
 import com.ztesoft.nps.safe.model.Permission;
 import com.ztesoft.nps.safe.model.RolePermission;
-import com.ztesoft.nps.safe.query.PermissionQuery;
+import com.ztesoft.nps.safe.model.query.PermissionQuery;
 import com.ztesoft.nps.safe.service.PermissionService;
 
 @Service("permissionService")
