@@ -100,11 +100,11 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                     menuUrl: '/missionMgr/missionTermination',
                     menuId: 34,
                 },
-                {
-                    menuName: '周期性调研',
-                    menuUrl: '/missionMgr/missionPeriodic',
-                    menuId: 35,
-                }
+                // {
+                //     menuName: '周期性调研',
+                //     menuUrl: '/missionMgr/missionPeriodic',
+                //     menuId: 35,
+                // }
             ],
         },
         // {

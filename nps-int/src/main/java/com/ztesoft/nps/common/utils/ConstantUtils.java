@@ -38,8 +38,8 @@ public class ConstantUtils {
     public static final String SURVEY_TASK_CHANNEL_2 = "2";//邮件
     public static final String SURVEY_TASK_CHANNEL_3 = "3";//短信
 
-    public static final String SURVEY_TASK_TEST_YES = "1";  //测试数据
-    public static final String SURVEY_TASK_TEST_NO = "0"; //正式数据
+    public static final String SURVEY_TASK_TEST_YES = "0";  //测试数据
+    public static final String SURVEY_TASK_TEST_NO = "1"; //正式数据
 
     public static final String SURVEY_RESULT_UPDATE_TYPE_UPDATE = "update";
     public static final String SURVEY_RESULT_UPDATE_TYPE_INSERT = "insert";

@@ -15,7 +15,12 @@ class MissionApplication extends React.PureComponent {
             taskList: [],
             taskName: '',
             pageNum: 1,
-            total: 0
+            total: 0,
+            Auditing: 0,
+            passAudit: 0,
+            vetoAudit: 0,
+            invalAudit: 0,
+            draught: 0
         };
         this.createRequisition = this.createRequisition.bind(this);
     }
@@ -43,21 +48,22 @@ class MissionApplication extends React.PureComponent {
             if (result)
                 this.setState({
                     taskList: result.rows,
-                    total: result.totalCount,
-                    loading: false
+                    total: result.other.statusAll,
+                    loading: false,
+                    Auditing: result.other.status03,
+                    passAudit: result.other.status01,
+                    vetoAudit: result.other.status04,
+                    invalAudit: result.other.status05,
+                    draught: result.other.status02
                 })
         }))
     };
 
     //tab标签被点击
     onTabClick = (key) => {
-        // let params={status: key};
-        // if(key==='00'){
-        //     params={status: '03',uid:''}
-        // }
         this.setState({
             taskList: []
-        }, () => this.getMissionList({status: key}))
+        }, () => this.getMissionList({status: key === '0' ? '' : key}))
     };
 
     //输入框输入
@@ -88,13 +94,17 @@ class MissionApplication extends React.PureComponent {
     createRequisition = () => {
         TaskResearchService.getNewTaskId().then((result) => {
             if (result) {
-                this.props.history.push(`/missionMgr/newApplicationForm/${result}&byAdd`);
+                let params = {id: result, type: 'add'};
+                params = JSON.stringify(params);
+                this.props.history.push(`/missionMgr/newApplicationForm/${params}`);
             }
         })
     };
     // 编辑任务
     editTask = (id) => {
-        this.props.history.push(`/missionMgr/newApplicationForm/${id}`);
+        let params = {id, type: 'edit'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/missionMgr/newApplicationForm/${params}`);
     };
     // 删除任务
     delTask = (id) => {
@@ -106,7 +116,7 @@ class MissionApplication extends React.PureComponent {
     };
 
     render() {
-        const {taskList, total} = this.state;
+        const {taskList, total, Auditing, passAudit, vetoAudit, invalAudit, draught} = this.state;
 
         const operations = <Search
             placeholder="在结果中查询"
@@ -124,28 +134,16 @@ class MissionApplication extends React.PureComponent {
                             </Col>
                             <Col span={8} style={{textAlign: 'right', paddingRight: '40px'}}>
                                 <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
-                                {/*{item.status !== '05' ? '' :*/}
+                                {item.status === '02' ?
                                     <div style={{display: 'inline-block'}}>
                                         <Button type="primary" onClick={() => this.editTask(item.taskId)}>编辑</Button>
                                         <Popconfirm title="你确定删除该任务?" onConfirm={() => this.delTask(item.taskId)}>
                                             <Button type="primary">删除</Button>
                                         </Popconfirm>
                                     </div>
-                                {/*}*/}
-                                <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
-                                {item.status !== '02' ? '' :
-                                    <Popconfirm
-                                        title="该任务是否走审批流程?"
-                                        onCancel={() => this.delTask(item.taskId)}
-                                        okText={'是'}
-                                        cancelText={'否'}
-                                    >
-                                        <Button type="primary">审批流程</Button>
-                                    </Popconfirm>
+                                    : ''
                                 }
-                                {/*<Button >*/}
-                                {/*流程图 <Icon type="down"/>*/}
-                                {/*</Button>*/}
+                                <Button type="primary" onClick={() => this.previewQstnaire(item.qstnaireId)}>预览</Button>
                             </Col>
                         </Row>
                         <Row type="flex" justify="start">
@@ -173,9 +171,11 @@ class MissionApplication extends React.PureComponent {
                             showQuickJumper/>}
         </div>;
         let tab1Title = "我的申请单( 共" + total + "条 )";
-        let tab2Title = "审批中( 共" + total + "条 )";
-        let tab3Title = "发布中( 共" + total + "条 )";
-        let tab4Title = "草稿( 共" + total + "条 )";
+        let tab2Title = "审批中( " + Auditing + " )";
+        let tab3Title = "发布中( " + passAudit + " )";
+        let tab4Title = "审核否决( " + vetoAudit + " )";
+        let tab5Title = "审核作废( " + invalAudit + " )";
+        let tab6Title = "草稿( " + draught + " )";
 
         return (
             <div className='missionApplication '>
@@ -183,12 +183,12 @@ class MissionApplication extends React.PureComponent {
                     新建申请单
                 </Button>
                 <Tabs tabBarExtraContent={operations} onTabClick={this.onTabClick}>
-                    <TabPane tab={tab1Title} key="00">{questionLIst}</TabPane>
+                    <TabPane tab={tab1Title} key="0">{questionLIst}</TabPane>
                     <TabPane tab={tab2Title} key="03">{questionLIst}</TabPane>
-                    <TabPane tab={tab3Title} key="06">{questionLIst}</TabPane>
-                    <TabPane tab="审核否决(0)" key="04">{questionLIst}</TabPane>
-                    <TabPane tab="审核作废(0)" key="05">{questionLIst}</TabPane>
-                    <TabPane tab={tab4Title} key="02">{questionLIst}</TabPane>
+                    <TabPane tab={tab3Title} key="01">{questionLIst}</TabPane>
+                    <TabPane tab={tab4Title} key="04">{questionLIst}</TabPane>
+                    <TabPane tab={tab5Title} key="05">{questionLIst}</TabPane>
+                    <TabPane tab={tab6Title} key="02">{questionLIst}</TabPane>
                 </Tabs>
             </div>
         )

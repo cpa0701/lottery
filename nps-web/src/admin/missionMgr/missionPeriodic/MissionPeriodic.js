@@ -8,39 +8,39 @@ const [Search, TabPane, CheckableTag] = [Input.Search, Tabs.TabPane, Tag.Checkab
 const auditTags = [
     {
         title: '全部',
-        value: '0'
+        value: ''
     },
     {
         title: '正常结束',
-        value: '1'
+        value: '00'
     },
     {
         title: '执行中',
-        value: '2'
+        value: '01'
     },
     {
         title: '草稿',
-        value: '3'
+        value: '02'
     },
     {
-        title: '审批',
-        value: '4'
+        title: '审批中',
+        value: '03'
     },
     {
         title: '否决',
-        value: '5'
+        value: '04'
     },
     {
         title: '作废',
-        value: '6'
+        value: '05'
     },
     {
         title: '发布',
-        value: '7'
+        value: '06'
     },
     {
         title: '人工终止',
-        value: '8'
+        value: '10'
     }
 ];
 

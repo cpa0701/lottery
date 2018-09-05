@@ -27,8 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.spi.ConfigurationState;
+import java.awt.*;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by 64671 on 2018/8/28.
@@ -218,7 +222,21 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"edit"));
+        //type 为 edit 只插入渠道信息
+        addSurveyMethod(bo,"edit");
+    }
 
+    @Override
+    public void editSurveyTaskToDraft(SurveyTaskAddBo bo) {
+        String taskId = bo.getTaskId();
+        //删除渠道信息
+        TaskChannelExample example = new TaskChannelExample();
+        example.createCriteria().andTaskIdEqualTo(taskId);
+        taskChannelMapper.deleteByExample(example);
+
+        //更新任务信息
+        surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"editdraft"));
+        //type 为 edit 只插入渠道信息
         addSurveyMethod(bo,"edit");
     }
 
@@ -348,7 +366,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
         //生成消息数据
         String insertTaskExeSql = "insert into task_exe(serial_id,task_id,channel_type,send_user,target_user," +
-                "is_test,sm_content,create_time,base_url,short_url)valus(?,?,?,?,?,?,?,?,?,?)";
+                "is_test,sm_content,create_time,base_url,short_url)values(?,?,?,?,?,?,?,?,?,?)";
         long startTime1 = System.currentTimeMillis();
         try {
             DatabaseUtil.excuteBatch(insertTaskExeSql, smsList,batchSave);
@@ -362,6 +380,15 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){
             createSurveyTaskResultBaseData(bo.getTaskId(),smsList.size());
         }
+
+        changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+    }
+
+    private void changeSurveyStatus(String taskId,String status){
+        SurveyTask surveyTask = new SurveyTask();
+        surveyTask.setStatus(status);
+        surveyTask.setTaskId(taskId);
+        surveyTaskMapper.updateByPrimaryKeySelective(surveyTask);
     }
 
     /**
@@ -380,6 +407,10 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyUserInfo.setTaskCount(Long.valueOf(taskNum));
         surveyUserInfo.setTaskType(MapUtil.getShort(surveyTaskResult,"task_type"));
         surveyUserInfo.setCreateDate(new Date());
+        surveyUserInfo.setPartakeCount(0L);
+        surveyUserInfo.setFinishCount(0L);
+        surveyUserInfo.setPartakeRatio(new BigDecimal("0"));
+        surveyUserInfo.setFinishRatio(new BigDecimal("0"));
         surveyUserInfoMapper.insertSelective(surveyUserInfo);
 
         //调研nps分析
@@ -388,8 +419,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyNpsInfo.setTaskName(MapUtil.getString(surveyTaskResult,"task_name"));
         surveyNpsInfo.setQstnaireId(MapUtil.getString(surveyTaskResult,"qstnaire_id"));
         surveyNpsInfo.setTaskType(MapUtil.getShort(surveyTaskResult,"task_type"));
+        surveyNpsInfo.setNpsRatio(new BigDecimal("0"));
+        surveyNpsInfo.setNpsRatio1(new BigDecimal("0"));
+        surveyNpsInfo.setNpsRatio2(new BigDecimal("0"));
+        surveyNpsInfo.setNpsRatio3(new BigDecimal("0"));
+        surveyNpsInfo.setNpsCount1(0L);
+        surveyNpsInfo.setNpsCount2(0L);
+        surveyNpsInfo.setNpsCount3(0L);
         surveyNpsInfo.setCreateDate(new Date());
         surveyNpsInfoMapper.insertSelective(surveyNpsInfo);
+
     }
 
     /**
@@ -487,6 +526,10 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
         } else if (type.equals("draft")){
             surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_02);  //草稿
+        } else if (type.equals("editdraft")){
+            surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_02);  //草稿
+        } else if (type.equals("edit")){
+            surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
         }
         surveyTask.setSurveySdate(DateUtil.getDate(bo.getSurveySdate(), DateFormatConst.YMD));
         surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
@@ -507,7 +550,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select st.task_name as taskName, st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
+        surveyTaskQuerySql.append(" select  st.task_name as taskName, st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
@@ -519,7 +562,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTaskQuerySql.append("         WHEN '06' then '").append(ConstantUtils.SURVEY_TASK_STATUS_06).append("' ");
         surveyTaskQuerySql.append("         WHEN '10' then '").append(ConstantUtils.SURVEY_TASK_STATUS_10).append("' ");
         surveyTaskQuerySql.append("     END 'status'").append(", ");
-        surveyTaskQuerySql.append("     st.create_time as createTime, tc.user_sum as userSum ");
+        surveyTaskQuerySql.append("     st.create_time as createTime, tc.user_sum as userSum ,tc.channel_type as channelType");
         surveyTaskQuerySql.append(" from survey_task st ");
         surveyTaskQuerySql.append(" left join qstnaire_bank qb on st.qstnaire_id = qb.qstnaire_id ");
         surveyTaskQuerySql.append(" left join qstnaire_catalog qc on qc.catalog_id = qb.catalog_id ");
@@ -535,6 +578,9 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         }
         if(StringUtil.isNotNull(condition.getStatus())){
             surveyTaskQuerySql.append(" and st.status = '").append(condition.getStatus()).append("'");
+        }
+        if(StringUtil.isNotNull(condition.getActType())){
+            surveyTaskQuerySql.append(" and st.status = '").append(condition.getActType()).append("'");
         }
         surveyTaskQuerySql.append(" order by st.update_time desc ");
         return  surveyTaskQuerySql.toString();
@@ -567,12 +613,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private int getRealTargetUserSum(SurveyTaskPublishBo bo){
         //获取抽样方式信息
+        System.out.println(getTaskChanelInfoSql(bo));
         Map<String,Object> taskChannelMap = DatabaseUtil.queryForMap(getTaskChanelInfoSql(bo));
         int realSum = 0;
         if(ConstantUtils.SURVEY_TASK_WAY_ALL.equals(MapUtil.getString(taskChannelMap,"sample_type"))){
-            realSum = MapUtil.getInteger(taskChannelMap,"sample_sum");
-        }else{
             realSum = MapUtil.getInteger(taskChannelMap,"user_sum");
+        }else{
+            realSum = MapUtil.getInteger(taskChannelMap,"sample_sum");
         }
         return realSum;
     }
@@ -624,21 +671,29 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         statusSql.append(" sum(case when status='04' then 1 else 0 end ) as status04, ");
         statusSql.append(" sum(case when status='05' then 1 else 0 end ) as status05, ");
         statusSql.append(" sum(case when status='06' then 1 else 0 end ) as status06, ");
-        statusSql.append(" sum(case when status='10' then 1 else 0 end ) as status10,  ");
+        statusSql.append(" sum(case when status='10' then 1 else 0 end ) as status10, ");
         statusSql.append(" count(*) as statusAll ");
         statusSql.append(" FROM  survey_task  where 1=1 ");
-
+        StringBuilder allSql = new StringBuilder();
+        allSql.append("select count(*) as statusAll from survey_task where 1=1");
         if(StringUtil.isNotNull(surveyTaskQuery.getTaskName())){
-            statusSql.append(" and task_name like '%").append(surveyTaskQuery.getTaskName()).append("%'");
+            allSql.append(" and task_name like '%").append(surveyTaskQuery.getTaskName()).append("%'");
         }
         if(StringUtil.isNotNull(surveyTaskQuery.getTaskType())){
-            statusSql.append(" and task_type = '").append(surveyTaskQuery.getTaskType()).append("'");
+            allSql.append(" and task_type = '").append(surveyTaskQuery.getTaskType()).append("'");
         }
         if(StringUtil.isNotNull(surveyTaskQuery.getStatus())){
-            statusSql.append(" and status = '").append(surveyTaskQuery.getStatus()).append("'");
+            allSql.append(" and status = '").append(surveyTaskQuery.getStatus()).append("'");
         }
-        return DatabaseUtil.queryForMap(statusSql.toString());
-
-
+        Map<String,Object> i = DatabaseUtil.queryForMap(allSql.toString());
+        Map<String,Object> map = DatabaseUtil.queryForMap(statusSql.toString());
+        map.put("statusAll",i.get("statusAll"));
+        //Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (Map.Entry<String,Object> entry : map.entrySet()){
+            if(entry.getValue()==null){
+                entry.setValue(0);
+            }
+        }
+        return map;
     }
 }

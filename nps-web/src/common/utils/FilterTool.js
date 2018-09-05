@@ -36,16 +36,16 @@ class FilterTool {
     filterChannel = (chan) => {
         let channel = '';
         switch (chan) {
-            case '1':
+            case '0':
                 channel = '链接与二维码';
                 break;
-            case '2':
+            case '1':
                 channel = '微信发送';
                 break;
-            case '3':
+            case '2':
                 channel = '邮件发送';
                 break;
-            case '4':
+            case '3':
                 channel = '短信发送';
                 break;
             default:
