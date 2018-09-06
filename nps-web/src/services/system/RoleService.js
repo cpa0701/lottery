@@ -15,7 +15,7 @@ class SysRoleMgService {
         let url = 'roleMgr/addRole';
         return await Http.post(url, param);
     };
-    // 平台角色修改
+    // 平台角色修改(更新角色信息)
     editRoles = async (param) => {
         // let url = 'roles/' + param.id;
         // return await Http.put(url);
@@ -45,14 +45,14 @@ class SysRoleMgService {
         let url = 'roleMgr/findRolePermissionById';
         return await Http.post(url,param);
     };
-    // 修改角色拥有权限
+    // 修改角色拥有权限(为角色新增权限)
     editRoleAuth = async (param) => {
         // let url = `/roles/${param.roleId}/permissions`;
         // return await Http.post(url, param);
-        let url = `/roles/${param.roleId}/permissions`;
+        let url = 'roleMgr/addRolePermission';
          return await Http.post(url, param);
     };
-    // 删除角色拥有权限
+    // 删除角色拥有权限(批量删除)
     delRoleAuth = async (param) => {
         // let url = `/roles/${param}/permissions/${0}`;
         // return await Http.delete(url, param);
@@ -62,7 +62,7 @@ class SysRoleMgService {
 
 
 
-    // 查询用户数据
+    // 查询用户数据(查询角色关联的用户)
     getRoleUserDate = async (param) => {
         // let url = `/roles/${param.id}/users`;
         // return await Http.get(url, param);

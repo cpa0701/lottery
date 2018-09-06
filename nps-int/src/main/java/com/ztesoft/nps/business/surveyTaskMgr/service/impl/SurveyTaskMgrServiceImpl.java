@@ -71,7 +71,6 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(StringUtil.isNull(condition.getPageSize())){
             condition.setPageSize(ConstantUtils.PAGE_SIZE_DEFAULT);
         }
-
         LPageHelper req = new LPageHelperExtra(DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
                 StringUtil.getInteger(condition.getPageNum()),
                 StringUtil.getInteger(condition.getPageSize())));
@@ -298,7 +297,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         //获取上传的目标对象
         String queryTargetUsers = getQueryTargetUserSql(bo,isTest);
         List<Map<String,Object>> targetUserList = DatabaseUtil.queryForList(queryTargetUsers);
-        if(ListUtil.isNull(targetUserList)){
+
+        String taskId  = bo.getTaskId();
+        SurveyTask surveyTask = surveyTaskMapper.selectByPrimaryKey(taskId);
+
+        if(ListUtil.isNull(targetUserList)&&surveyTask.getTaskType()==0){
             throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
         }
 
@@ -306,10 +309,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){  //如果是正式发布
             //根据需要推送的数目获取推送对象
             int realSum = getRealTargetUserSum(bo);
-            if(realSum==0 || targetUserList.size()<realSum){
-                throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            if(surveyTask.getTaskType()==0){//如果是一般性任务
+                if(realSum==0|| targetUserList.size()<realSum){
+                    throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+                }
             }
-
             Random rand = new Random();
             List<Integer> tempList=new ArrayList<Integer>();
             for(int i=0;i<realSum;i++){
@@ -359,10 +363,14 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             });
             baseUrl.setLength(0);
         }
+        if(surveyTask.getTaskType()==0){//如果是一般性任务
 
-        if(ListUtil.isNull(authTokenInsertSqlList) || ListUtil.isNull(smsList)){
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            if(ListUtil.isNull(authTokenInsertSqlList) || ListUtil.isNull(smsList)){
+                throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            }
+
         }
+
 
         int batchSave = 20000;
         //生成token数据

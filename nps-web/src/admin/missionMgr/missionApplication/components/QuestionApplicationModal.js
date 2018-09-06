@@ -12,7 +12,7 @@ class QuestionApplicationModal extends React.PureComponent {
         this.state = {
             loading: false,
             qstnaireList: [],
-            status: "",
+            status: "01",
             opened: 0,
             draught: 0,
             pageNum: 1,
