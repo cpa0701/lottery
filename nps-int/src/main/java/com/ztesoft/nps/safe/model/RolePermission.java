@@ -49,6 +49,12 @@ public class RolePermission {
 	@ApiModelProperty(value = "修改时间", hidden = true)
 	private Date modifiedAt;
 
+	/**
+	 * 用户Id
+	 */
+	@ApiModelProperty(value = "用户Id")
+	private Long userId;
+
 	public RolePermission() {
 
 	}
@@ -106,4 +112,11 @@ public class RolePermission {
 		this.modifiedAt = modifiedAt;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 }

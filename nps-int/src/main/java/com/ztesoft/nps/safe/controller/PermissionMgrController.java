@@ -1,6 +1,7 @@
 package com.ztesoft.nps.safe.controller;
 
 import com.ztesoft.nps.safe.model.query.DeletePermissionRoleBo;
+import com.ztesoft.nps.safe.model.query.PermissionIdQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,9 +50,8 @@ public class PermissionMgrController {
 	@PostMapping("/addPermission")
 	@ApiOperation(value = "新增权限", notes = "新增权限")
 	public Result<Permission> addPermission(@RequestBody Permission permission) {
-		User currentUser = UserUtils.getUser(session);
-		permission.setCreatedBy(currentUser.getAccount());
-		permission.setModifiedBy(currentUser.getAccount());
+		permission.setCreatedBy(permission.getUserId().toString());
+		permission.setModifiedBy(permission.getUserId().toString());
 
 		permission.setStatus(Status.VALID.getCode());
 
@@ -62,7 +62,8 @@ public class PermissionMgrController {
 
 	@PostMapping("/findPermissionById")
 	@ApiOperation(value = "根据ID查询权限", notes = "根据ID查询权限")
-	public Result<Permission> findPermissionById(@RequestBody Long id) {
+	public Result<Permission> findPermissionById(@RequestBody PermissionIdQuery permissionIdQuery) {
+		Long id = permissionIdQuery.getId();
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -86,8 +87,7 @@ public class PermissionMgrController {
 		oldPermission.setParentId(permission.getParentId());
 		oldPermission.setDescription(permission.getDescription());
 
-		User currentUser = UserUtils.getUser(session);
-		oldPermission.setModifiedBy(currentUser.getAccount());
+		oldPermission.setModifiedBy(permission.getUserId().toString());
 
 		Permission p = permissionService.update(oldPermission);
 
@@ -105,7 +105,8 @@ public class PermissionMgrController {
 
 	@PostMapping("/findRolePermission")
 	@ApiOperation(value = "查询权限关联的角色", notes = "查询权限关联的角色")
-	public Result<List<Role>> findRolePermission(@RequestBody Long id) {
+	public Result<List<Role>> findRolePermission(@RequestBody PermissionIdQuery permissionIdQuery) {
+		Long id = permissionIdQuery.getId();
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -128,9 +129,9 @@ public class PermissionMgrController {
 			throw new NpsObjectNotFoundException(rolePermission.getRoleId());
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		rolePermission.setCreatedBy(currentUser.getAccount());
-		rolePermission.setModifiedBy(currentUser.getAccount());
+
+		rolePermission.setCreatedBy(rolePermission.getUserId().toString());
+		rolePermission.setModifiedBy(rolePermission.getUserId().toString());
 
 		rolePermission.setPermissionId(rolePermission.getPermissionId());
 
@@ -151,7 +152,8 @@ public class PermissionMgrController {
 
 	@PostMapping("/deletePermission")
 	@ApiOperation(value = "删除权限", notes = "删除权限")
-	public Result<Object> deletePermission(@RequestBody Long id) {
+	public Result<Object> deletePermission(@RequestBody PermissionIdQuery permissionIdQuery) {
+		Long id = permissionIdQuery.getId();
 		Permission permission = permissionService.findById(id);
 		if (permission == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -167,8 +169,8 @@ public class PermissionMgrController {
 			throw new NpsDeleteException("权限下存在子节点，不能删除");
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		permission.setModifiedBy(currentUser.getAccount());
+
+		permission.setModifiedBy(permissionIdQuery.getUserId().toString());
 
 		permissionService.delete(permission);
 

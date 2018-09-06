@@ -1,5 +1,6 @@
 package com.ztesoft.nps.safe.controller;
 
+import com.ztesoft.nps.safe.model.query.RegionIdQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -46,9 +47,9 @@ public class RegionMgrController {
 	@PostMapping("/addRegion")
 	@ApiOperation(value = "新增区域", notes = "新增区域")
 	public Result<Region> addRegion(@RequestBody Region region) {
-		User currentUser = UserUtils.getUser(session);
-		region.setCreatedBy(currentUser.getAccount());
-		region.setModifiedBy(currentUser.getAccount());
+
+		region.setCreatedBy(region.getUserId().toString());
+		region.setModifiedBy(region.getUserId().toString());
 
 		Region r = regionService.add(region);
 
@@ -65,7 +66,8 @@ public class RegionMgrController {
 
 	@PostMapping("/findRegionById")
 	@ApiOperation(value = "根据ID查询区域", notes = "根据ID查询区域")
-	public Result<Region> findRegionById(@RequestBody Long id) {
+	public Result<Region> findRegionById(@RequestBody RegionIdQuery regionIdQuery) {
+		Long id = regionIdQuery.getId();
 		Region region = regionService.findById(id);
 		if (region == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -88,8 +90,8 @@ public class RegionMgrController {
 		oldRegion.setSequence(region.getSequence());
 		oldRegion.setParentId(region.getParentId());
 
-		User currentUser = UserUtils.getUser(session);
-		oldRegion.setModifiedBy(currentUser.getAccount());
+
+		oldRegion.setModifiedBy(region.getUserId().toString());
 
 		Region r = regionService.update(oldRegion);
 
@@ -98,7 +100,8 @@ public class RegionMgrController {
 
 	@PostMapping("/deleteRegion")
 	@ApiOperation(value = "删除区域", notes = "删除区域")
-	public Result<Object> deleteRegion(@RequestBody Long id) {
+	public Result<Object> deleteRegion(@RequestBody RegionIdQuery regionIdQuery) {
+		Long id = regionIdQuery.getId();
 		Region region = regionService.findById(id);
 		if (region == null) {
 			throw new NpsObjectNotFoundException(id);
@@ -114,8 +117,7 @@ public class RegionMgrController {
 			throw new NpsDeleteException("区域下存在子节点，不能删除");
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		region.setModifiedBy(currentUser.getAccount());
+		region.setModifiedBy(regionIdQuery.getUserId().toString());
 
 		regionService.delete(region);
 

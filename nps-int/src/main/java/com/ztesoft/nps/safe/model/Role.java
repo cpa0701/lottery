@@ -56,6 +56,12 @@ public class Role {
 	private String modifiedBy;
 
 	/**
+	 * 修改人
+	 */
+	@ApiModelProperty("用户ID")
+	private Long userId;
+
+	/**
 	 * 修改时间
 	 */
 	@ApiModelProperty("修改时间")
@@ -133,4 +139,11 @@ public class Role {
 		this.leaf = leaf;
 	}
 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 }

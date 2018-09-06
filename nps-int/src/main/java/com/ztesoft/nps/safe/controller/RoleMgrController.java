@@ -63,9 +63,8 @@ public class RoleMgrController {
 	@PostMapping("/addRole")
 	@ApiOperation(value = "新增角色", notes = "新增角色")
 	public Result<Role> addRole(@RequestBody Role role) {
-		User currentUser = UserUtils.getUser(session);
-		role.setCreatedBy(currentUser.getAccount());
-		role.setModifiedBy(currentUser.getAccount());
+		role.setCreatedBy(role.getUserId().toString());
+		role.setModifiedBy(role.getUserId().toString());
 
 		Role r = roleService.add(role);
 
@@ -94,8 +93,8 @@ public class RoleMgrController {
 		oldRole.setDescription(role.getDescription());
 		oldRole.setParentId(role.getParentId());
 
-		User currentUser = UserUtils.getUser(session);
-		oldRole.setModifiedBy(currentUser.getAccount());
+
+		oldRole.setModifiedBy(role.getUserId().toString());
 
 		Role r = roleService.update(oldRole);
 
@@ -129,9 +128,8 @@ public class RoleMgrController {
 					rolePermission.getPermissionId());
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		rolePermission.setCreatedBy(currentUser.getAccount());
-		rolePermission.setModifiedBy(currentUser.getAccount());
+		rolePermission.setCreatedBy(rolePermission.getUserId().toString());
+		rolePermission.setModifiedBy(rolePermission.getUserId().toString());
 
 		roleService.addPermission(rolePermission);
 
@@ -171,7 +169,7 @@ public class RoleMgrController {
 
 	@PostMapping("/addRoleUser")
 	@ApiOperation(value = "为角色关联用户", notes = "为角色关联用户")
-	public Result<Object> addRoleUser(@RequestBody UserRole userRole) {
+	public Result<Object> addRoleUser(@RequestBody UserRole userRole) {//关联角色没有添加userId
 		Role role = roleService.findById(userRole.getRoleId());
 		if (role == null) {
 			throw new NpsObjectNotFoundException(userRole.getRoleId());
@@ -182,9 +180,8 @@ public class RoleMgrController {
 			throw new NpsObjectNotFoundException(userRole.getUserId());
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		userRole.setCreatedBy(currentUser.getAccount());
-		userRole.setModifiedBy(currentUser.getAccount());
+		userRole.setCreatedBy(userRole.getUserId().toString());
+		userRole.setModifiedBy(userRole.getUserId().toString());
 
 		userRole.setRoleId(userRole.getRoleId());
 
@@ -221,8 +218,8 @@ public class RoleMgrController {
 			throw new NpsDeleteException("角色下存在子节点，不能删除");
 		}
 
-		User currentUser = UserUtils.getUser(session);
-		role.setModifiedBy(currentUser.getAccount());
+
+		role.setModifiedBy(condition.getUserId().toString());
 
 		roleService.delete(role);
 
