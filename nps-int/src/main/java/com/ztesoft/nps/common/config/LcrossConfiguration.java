@@ -24,7 +24,6 @@ public class LcrossConfiguration  {
 
     @Bean
     public CorsFilter corsFilter() {
-        System.out.println("---------------------配置跨域访问---------------------");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", buildConfig()); // 4 对接口配置跨域设置
         return new CorsFilter(source);
