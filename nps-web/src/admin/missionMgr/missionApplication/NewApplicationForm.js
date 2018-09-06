@@ -84,6 +84,7 @@ class NewApplicationForm extends React.PureComponent {
                         surveySdate: moment(result.surveySdate, "YYYY-MM-DD HH:mm:ss"),
                         surveyEdate: moment(result.surveyEdate, "YYYY-MM-DD HH:mm:ss"),
                         qstnaireId: result.qstnaireId,
+                        qstnaireTitle: result.qstnaireTitle,
                         testNumberList: result.testNumberList.join(','),
                         sampleType: String(result.taskChannel[0].sampleType),
                         sampleSum: result.taskChannel[0].sampleSum,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Tabs, Button, Input, Popconfirm, Icon, Pagination, Spin} from "antd"
+import {Row, Col, Tabs, Button, Input, Popconfirm, Icon, Pagination, Spin, message} from "antd"
 import FilterTool from "../../../../src/common/utils/FilterTool.js"
 import TaskResearchService from "../../../services/research/TaskResearchService"
 import './missionApplication.less'
@@ -110,7 +110,7 @@ class MissionApplication extends React.PureComponent {
     delTask = (id) => {
         TaskResearchService.deleteSurveyTask({taskId: id}).then(result => {
             if (result) {
-                alert('删除成功')
+                message.info('删除成功')
             }
         })
     };
@@ -172,7 +172,7 @@ class MissionApplication extends React.PureComponent {
         </div>;
         let tab1Title = "我的申请单( 共" + total + "条 )";
         let tab2Title = "审批中( " + Auditing + " )";
-        let tab3Title = "发布中( " + passAudit + " )";
+        let tab3Title = "已发布( " + passAudit + " )";
         let tab4Title = "审核否决( " + vetoAudit + " )";
         let tab5Title = "审核作废( " + invalAudit + " )";
         let tab6Title = "草稿( " + draught + " )";
