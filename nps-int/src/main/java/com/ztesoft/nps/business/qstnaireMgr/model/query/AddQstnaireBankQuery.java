@@ -23,6 +23,8 @@ public class AddQstnaireBankQuery {
     private Short belongTo;
     @ApiModelProperty("问卷ID")
     private String  qstnaireId;
+    @ApiModelProperty("当前用户ID")
+    private Long userId;
 
     public String getQstnaireTitle() {
         return qstnaireTitle;
@@ -78,6 +80,14 @@ public class AddQstnaireBankQuery {
 
     public void setQstnaireId(String qstnaireId) {
         this.qstnaireId = qstnaireId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public QstnaireBank toQstnaireBank(){

@@ -39,14 +39,14 @@ public class SurveyTaskMgrController {
     @PostMapping("/addSurveyTask")
     public Result<Object> addSurveyTask(@RequestBody SurveyTaskAddBo bo){
         surveyTaskMgrService.addSurveyTask(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "任务保存草稿", notes = "任务保存草稿")
     @PostMapping("/addSurveyTaskToDraft")
     public Result<Object> addSurveyTaskToDraft(@RequestBody SurveyTaskAddBo bo){
         surveyTaskMgrService.addSurveyTaskToDraft(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "删除任务", notes = "删除任务")
@@ -56,7 +56,7 @@ public class SurveyTaskMgrController {
         if(StringUtil.isNull(taskId)||surveyTaskMgrService.deleteSurveyTask(taskId) == 0){
             throw new NpsDeleteException(taskId);
         }
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "编辑任务", notes = "编辑任务")
@@ -67,7 +67,7 @@ public class SurveyTaskMgrController {
             throw new NpsObjectNotFoundException(taskId);
         }
         surveyTaskMgrService.editSurveyTask(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "编辑任务保存草稿", notes = "编辑任务保存草稿")
@@ -78,7 +78,7 @@ public class SurveyTaskMgrController {
             throw new NpsObjectNotFoundException(taskId);
         }
         surveyTaskMgrService.editSurveyTaskToDraft(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "根据ID查询任务", notes = "根据ID查询任务")
@@ -99,7 +99,7 @@ public class SurveyTaskMgrController {
         if(StringUtil.isNull(taskId)||surveyTaskMgrService.userTargetDelete(condition) == 0){
             throw new NpsDeleteException(taskId);
         }
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "用户上传", notes = "用户上传")
@@ -115,7 +115,7 @@ public class SurveyTaskMgrController {
             throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         surveyTaskMgrService.publishSurvetTask(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "测试任务", notes = "测试任务")
@@ -125,7 +125,7 @@ public class SurveyTaskMgrController {
             throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
         surveyTaskMgrService.testPublishSurvetTask(bo);
-        return Result.success();
+        return Result.success(1);
     }
 
     @ApiOperation(value = "获取任务id", notes = "获取任务id")

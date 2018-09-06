@@ -194,6 +194,7 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         if (StringUtil.isNotNull(condition.getIsSatisfied())) {
             qstBankQuerySql.append(" and is_satisfied = '").append(condition.getIsSatisfied()).append("' ");
         }
+        qstBankQuerySql.append(" order by create_time desc ");
         return qstBankQuerySql;
     }
 

@@ -33,17 +33,18 @@ public class QuestionMgrController {
     @ApiOperation(value = "删除题目", notes = "删除题目")
     public Result<Object> deleteQuestion(@RequestBody QuestionIdQuery condition){
         String questionId = condition.getQuestionId();
-        if(StringUtil.isNull(questionId) || questionMgrService.deleteQuestion(questionId)==0){
+        int deletestatus = questionMgrService.deleteQuestion(questionId);
+        if(StringUtil.isNull(questionId)||deletestatus==0){
             throw new NpsObjectNotFoundException(questionId);
         }
-        return Result.success();
+        return Result.success(deletestatus);
     }
 
     @PostMapping("/addQuestion")
     @ApiOperation(value = "新增题目", notes = "新增题目")
     public Result<Object> addQuestion(@RequestBody QuestionBank bank){
         questionMgrService.addQuestion(bank);
-        return Result.success();
+        return Result.success(1);
     }
 
     @PostMapping("/questionById")
@@ -60,7 +61,7 @@ public class QuestionMgrController {
     @ApiOperation(value = "编辑题目", notes = "编辑题目")
     public Result<Object> editQuestion(@RequestBody QuestionBank bank){
         questionMgrService.editQuestion(bank);
-        return Result.success();
+        return Result.success(1);
     }
 
     @PostMapping("/questionBank")
