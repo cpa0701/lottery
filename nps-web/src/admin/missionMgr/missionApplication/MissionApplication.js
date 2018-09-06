@@ -110,7 +110,8 @@ class MissionApplication extends React.PureComponent {
     delTask = (id) => {
         TaskResearchService.deleteSurveyTask({taskId: id}).then(result => {
             if (result) {
-                message.info('删除成功')
+                message.info('删除成功');
+                this.getMissionList();
             }
         })
     };
