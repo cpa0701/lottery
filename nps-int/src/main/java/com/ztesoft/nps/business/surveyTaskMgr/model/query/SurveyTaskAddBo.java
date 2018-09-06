@@ -44,6 +44,9 @@ public class SurveyTaskAddBo implements Serializable{
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
+    @ApiModelProperty("当前用户id")
+    private Long userId;
+
     public String getTaskId() {
         return taskId;
     }
@@ -122,5 +125,13 @@ public class SurveyTaskAddBo implements Serializable{
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

@@ -122,7 +122,7 @@ class QuestionEdit extends React.PureComponent {
             isBlank: 0,
             isPaging: 0,
             isCommon: 0,
-            createUid: sessionStorage.getItem('userId'),
+            // createUid: sessionStorage.getItem('userId'),
             createTime: '',
             jumpOrder: null
         };
@@ -263,6 +263,7 @@ class QuestionEdit extends React.PureComponent {
         let params = {
             belongTo,
             catalogId,
+            userId: String(sessionStorage.getItem('userId')),
             qstnaireTitle: this.state.qstnaireTitle,
             qstnaireLeadin: this.state.qstnaireLeadin,
             question: this.state.questionDisplayList,
@@ -710,6 +711,7 @@ class QuestionEdit extends React.PureComponent {
         let params = {
                 belongTo,
                 catalogId,
+                userId: String(sessionStorage.getItem('userId')),
                 qstnaireTitle: this.state.qstnaireTitle,
                 qstnaireLeadin: this.state.qstnaireLeadin,
                 question: this.state.questionDisplayList,

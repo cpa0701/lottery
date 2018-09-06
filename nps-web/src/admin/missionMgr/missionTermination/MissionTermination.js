@@ -2,7 +2,8 @@ import React from 'react';
 import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination, message } from 'antd';
 
 import TaskResearchService from "../../../services/research/TaskResearchService";
-
+import '../missionApplication/missionApplication.less'
+import FilterTool from "../../../common/utils/FilterTool";
 const [Search, TabPane, CheckableTag] = [Input.Search, Tabs.TabPane, Tag.CheckableTag];
 
 const auditTags = [
@@ -180,7 +181,7 @@ class MissionTermination extends React.PureComponent{
                                     <Icon type="appstore" style={{marginRight: '5px', color: '#88d7fd'}}/>问卷分类：{item.catalogName}
                                 </Col>
                                 <Col span={3}>
-                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{item.status}</Col>
+                                    <Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}</Col>
                                 <Col span={5}>
                                     <Icon type="clock-circle" style={{marginRight: '5px', color: '#fecb45'}}/>申请时间：{item.createTime}
                                 </Col>
@@ -198,7 +199,7 @@ class MissionTermination extends React.PureComponent{
         </div>;
 
         return(
-            <div>
+            <div className='missionApplication '>
                 <Tabs tabBarExtraContent={operations}>
                     <TabPane tab={tabTitle} key="00">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>

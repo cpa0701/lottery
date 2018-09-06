@@ -77,9 +77,11 @@ class QuestionApplication extends React.PureComponent {
         this.setState({
             loading: true
         }, () => QuestionApplicationService.delQstnaire({qstnaireId: id}).then(result => {
-            message.success('删除成功');
+            if(result) {
+                message.success('删除成功');
+                this.getQuestionnaireList();
+            }
             this.setState({loading: false});
-            this.getQuestionnaireList();
         }))
     };
     // 提交问卷

@@ -35,7 +35,7 @@ public class QstnaireMgrController {
         if(StringUtil.isNull(qstnaireId) || qstnaireBankService.deleteQstnaire(qstnaireIdQuery)!=0){
             throw new NpsObjectNotFoundException(qstnaireId);
         }
-        return Result.success();
+        return Result.success(1);
     }
 
     @PostMapping("/addQstnaire")
@@ -86,6 +86,6 @@ public class QstnaireMgrController {
     @ApiOperation(value = "问卷提交", notes = "问卷提交")
     public Result<Object> submitQstnaire(@RequestBody QuestionResultQuery questionResultQuery){
         qstnaireBankService.submitQstnaire(questionResultQuery);
-        return Result.success();
+        return Result.success(1);
     }
 }

@@ -105,7 +105,7 @@ export default class extends Component {
                 <Col span={11} offset={2}>
                     <FormItem labelCol={{span: 0}} wrapperCol={{span: 10}}>
                         {getFieldDecorator(`question${item.optionOrder}`, {
-                            initialValue: item.questionOrder ? String(item.questionOrder) : '0',
+                            initialValue: item.questionOrder ? (item.questionOrder === -1 || item.questionOrder === -2 ? String(item.questionOrder) : item.questionOrder): '0',
                             rules: [
                                 {required: false},
                             ],
@@ -167,7 +167,8 @@ export default class extends Component {
                                     <Form>
                                         <FormItem label="填写此题后跳转到" labelCol={{span: 7}} wrapperCol={{span: 14}}>
                                             {getFieldDecorator('unconditional', {
-                                                initialValue: record.jumpOrder ? String(record.jumpOrder) : '0',
+                                                // initialValue: record.jumpOrder ? String(record.jumpOrder) : '0',
+                                                initialValue: record.jumpOrder ? (record.jumpOrder === -1 || record.jumpOrder === -2 ? String(record.jumpOrder) : record.jumpOrder): '0',
                                                 rules: [
                                                     {required: false},
                                                 ],

@@ -71,7 +71,6 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(StringUtil.isNull(condition.getPageSize())){
             condition.setPageSize(ConstantUtils.PAGE_SIZE_DEFAULT);
         }
-
         LPageHelper req = new LPageHelperExtra(DatabaseUtil.queryForPageResult(getSurveyTaskQuerySql(condition),
                 StringUtil.getInteger(condition.getPageNum()),
                 StringUtil.getInteger(condition.getPageSize())));
@@ -172,7 +171,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         result.put("repeatCount", repeatCount);  //重复剔除数
         result.put("limitCount", limitCount);  //不符合规格剔除数(电话号码and区域id)
         result.put("dataCount",dataCount);//数据库剔重（与数据库中重复）
-        result.put("sumCount",counttaskUser(channelType,taskId));//数据库统计条数
+        result.put("sumCount",countTaskUser(channelType,taskId));//数据库统计条数
         return result;
     }
 
@@ -181,9 +180,9 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      * @param channalType
      * @return
      */
-    private int counttaskUser(String channalType,String taskId){
+    private int countTaskUser(String channalType,String taskId){
         TaskUserExample taskUserExample = new TaskUserExample();
-        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId);
+        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId).andIsTestEqualTo(new Short("1"));
         int sumCount = taskUserMapper.countByExample(taskUserExample);
         return sumCount;
     }
@@ -225,7 +224,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
-
+        //删除task_use表
+        taskUserMapper.deleteByPrimaryKey(taskId);
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"edit"));
         //type 为 edit 只插入渠道信息
@@ -239,6 +239,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
+        //删除task_use表
+        taskUserMapper.deleteByPrimaryKey(taskId);
 
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"editdraft"));
@@ -295,7 +297,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         //获取上传的目标对象
         String queryTargetUsers = getQueryTargetUserSql(bo,isTest);
         List<Map<String,Object>> targetUserList = DatabaseUtil.queryForList(queryTargetUsers);
-        if(ListUtil.isNull(targetUserList)){
+
+        String taskId  = bo.getTaskId();
+        SurveyTask surveyTask = surveyTaskMapper.selectByPrimaryKey(taskId);
+
+        if(ListUtil.isNull(targetUserList)&&surveyTask.getTaskType()==0){
             throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
         }
 
@@ -303,10 +309,11 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){  //如果是正式发布
             //根据需要推送的数目获取推送对象
             int realSum = getRealTargetUserSum(bo);
-            if(realSum==0 || targetUserList.size()<realSum){
-                throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            if(surveyTask.getTaskType()==0){//如果是一般性任务
+                if(realSum==0|| targetUserList.size()<realSum){
+                    throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+                }
             }
-
             Random rand = new Random();
             List<Integer> tempList=new ArrayList<Integer>();
             for(int i=0;i<realSum;i++){
@@ -356,10 +363,14 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             });
             baseUrl.setLength(0);
         }
+        if(surveyTask.getTaskType()==0){//如果是一般性任务
 
-        if(ListUtil.isNull(authTokenInsertSqlList) || ListUtil.isNull(smsList)){
-            throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            if(ListUtil.isNull(authTokenInsertSqlList) || ListUtil.isNull(smsList)){
+                throw new NpsBusinessException(ConstantUtils.EXECPTION_SYSTEM_DATA_DEFICIENCY);
+            }
+
         }
+
 
         int batchSave = 20000;
         //生成token数据
@@ -544,7 +555,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
         surveyTask.setQstnaireId(bo.getQstnaireId());
         if(!type.equals("edit")){
-            surveyTask.setCreateUid(1L);  //这里需要根据当前用户设置
+            surveyTask.setCreateUid(bo.getUserId());  //这里需要根据当前用户设置
             surveyTask.setCreateTime(new Date());
         }
         surveyTask.setUpdateTime(new Date());

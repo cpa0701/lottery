@@ -38,6 +38,12 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
     @Value("${security.oauth2.client.scope}")
     private String scopes;
 
+    @Value("${security.oauth2.client.access-token-validity-seconds}")
+    private int expiratTime;
+
+    @Value("${security.oauth2.client.refresh-token-validity-seconds}")
+    private int refreshExpiratTime;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -78,7 +84,9 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
                 .secret(clientPWD)
                 .scopes(scopes)
                 .authorizedGrantTypes(grantType.split(",")[0],
-                        grantType.split(",")[1]);
+                        grantType.split(",")[1])
+                .accessTokenValiditySeconds(expiratTime)
+                .refreshTokenValiditySeconds(refreshExpiratTime);
 
     }
 

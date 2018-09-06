@@ -90,7 +90,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         //插入问卷表
         QstnaireBank qstnaireBank = addQstnaireBankQuery.toQstnaireBank();//转化
         qstnaireBank.setQstnaireId(qstnaireId);
-        qstnaireBank.setCreateUid(1L);//用户
+        qstnaireBank.setCreateUid(addQstnaireBankQuery.getUserId());//用户
         qstnaireBank.setStatus(ConstantUtils.QSTNAIRE_STATUS_02);
         qstnaireBank.setCreateTime(new Date());
         qstnaireBank.setUpdateTime(new Date());
@@ -133,7 +133,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         qstnaireQuestionMapper.deleteByExample(qstnaireQuestionExample);
         //删除主表数据
         qstnaireBankMapper.deleteByPrimaryKey(qstnaireId);
-        return 0;
+        return 1;
     }
 
     @Override

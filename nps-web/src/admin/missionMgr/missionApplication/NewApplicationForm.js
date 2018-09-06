@@ -55,7 +55,7 @@ class NewApplicationForm extends React.PureComponent {
             checkedResearch: false,
             rsFlag: true,
             accessFlag: false,
-            taskType: 1,
+            taskType: 0,
             add: false,
             selecttabs: false,
             path: null,
@@ -64,7 +64,7 @@ class NewApplicationForm extends React.PureComponent {
             userSum: 0,
             taskId: JSON.parse(this.props.match.params.id).id,
             resultDescripe: '共导入0条数据'
-        }
+        };
         this.delUpload = this.delUpload.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
     }
@@ -84,6 +84,7 @@ class NewApplicationForm extends React.PureComponent {
                         surveySdate: moment(result.surveySdate, "YYYY-MM-DD HH:mm:ss"),
                         surveyEdate: moment(result.surveyEdate, "YYYY-MM-DD HH:mm:ss"),
                         qstnaireId: result.qstnaireId,
+                        qstnaireTitle: result.qstnaireTitle,
                         testNumberList: result.testNumberList.join(','),
                         sampleType: String(result.taskChannel[0].sampleType),
                         sampleSum: result.taskChannel[0].sampleSum,
@@ -110,14 +111,14 @@ class NewApplicationForm extends React.PureComponent {
         } else {
             this.setState({selecttabs: false});
         }
-    }
+    };
     disabledStartDate = (startValue) => {
         const endValue = this.state.endValue;
         if (!startValue || !endValue) {
             return false;
         }
         return startValue.valueOf() > endValue.valueOf();
-    }
+    };
 
     disabledEndDate = (endValue) => {
         const startValue = this.state.startValue;
@@ -125,50 +126,50 @@ class NewApplicationForm extends React.PureComponent {
             return false;
         }
         return endValue.valueOf() <= startValue.valueOf();
-    }
+    };
 
     onChange = (field, value) => {
         this.setState({
             [field]: value,
         });
-    }
+    };
 
     onStartChange = (value) => {
         this.onChange('startValue', value);
-    }
+    };
 
     onEndChange = (value) => {
         this.onChange('endValue', value);
-    }
+    };
 
     handleStartOpenChange = (open) => {
         if (!open) {
             this.setState({endOpen: true});
         }
-    }
+    };
 
     handleEndOpenChange = (open) => {
         this.setState({endOpen: open});
-    }
+    };
     accessHandleChange = (value) => {
-        if (value === '2') this.setState({accessFlag: true})
+        if (value === '2') this.setState({accessFlag: true});
         else this.setState({accessFlag: false})
 
-    }
+    };
     onMeasure = (e) => {
         this.setState({checkedMeasure: e.target.checked})
-    }
+    };
     onResearch = (e) => {
         this.setState({checkedResearch: e.target.checked})
-    }
+    };
     onTrigger = (e) => {
-        this.setState({taskType: e.target.checked ? 2 : 1})
-    }
+        this.setState({taskType: e.target.checked ? 1 : 0})
+    };
     handleChange = (value) => {
         if (value === 2) this.setState({rsFlag: false})
         else this.setState({rsFlag: true})
 
-    }
+    };
     info = () => {
         Modal.info({
             title: '',
@@ -180,7 +181,7 @@ class NewApplicationForm extends React.PureComponent {
             onOk() {
             },
         });
-    }
+    };
     //删除目标号码
     delUpload = () => {
         TaskResearchService.userTargetDelete({
@@ -193,7 +194,7 @@ class NewApplicationForm extends React.PureComponent {
                 });
             }
         })
-    }
+    };
     handleUpload = () => {
         const {fileList} = this.state;
         const formData = new FormData();
@@ -234,8 +235,6 @@ class NewApplicationForm extends React.PureComponent {
         });
     };
     beforeUpload = (file) => {
-        console.log(file.type)
-        // const isType = (file.type === 'doc/docx/txt/xls/xlsx/pdf');
         const isType = ((file.type === 'application/msword') || (file.type === 'text/plain') || (file.type === 'application/vnd.ms-excel') || (file.type === 'application/pdf'));
         if (!isType) {
             message.error('文档类型仅支持doc、docx、txt、xls、xlsx、pdf格式');
@@ -245,12 +244,12 @@ class NewApplicationForm extends React.PureComponent {
             message.error('文档大小不能超过5M');
         }
         return isType && isLt5M;
-    }
+    };
     //提交审核
     handleSubmit = (e) => {
         e.preventDefault();
         let isValidate = true;
-        if (this.state.taskType !== 2 && this.state.userSum === 0) {
+        if (this.state.taskType !== 1 && this.state.userSum === 0) {
             isValidate = false;
             return message.info('请先上传用户号码')
         }
@@ -295,12 +294,12 @@ class NewApplicationForm extends React.PureComponent {
                 })
             }
         }
-    }
+    };
     //保存草稿
     handleSave = (e) => {
         e.preventDefault();
         let isValidate = true;
-        if (this.state.taskType !== 2 && this.state.userSum === 0) {
+        if (this.state.taskType !== 1 && this.state.userSum === 0) {
             isValidate = false;
             return message.info('请先上传用户号码')
         }
@@ -312,7 +311,7 @@ class NewApplicationForm extends React.PureComponent {
         if (isValidate) {
             let formData = this.props.form.getFieldsValue();
             let channelType = this.props.form.getFieldValue('taskChannel');
-            formData.userId = String(sessionStorage.getItem('userId'));;
+            formData.userId = String(sessionStorage.getItem('userId'));
             formData.testNumberList = formData.testNumberList.split(',');
             formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
             formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
@@ -345,10 +344,10 @@ class NewApplicationForm extends React.PureComponent {
                 })
             }
         }
-    }
+    };
     handleReset = () => {
         this.props.history.push('/missionMgr/missionApplication');
-    }
+    };
 
     render() {
         const {getFieldDecorator} = this.props.form;
@@ -397,9 +396,9 @@ class NewApplicationForm extends React.PureComponent {
 
         //触发式调研任务
         const TriggerTask = <div style={{position: 'absolute', right: '20px', top: '-10px'}}>
-            <Checkbox onChange={this.onTrigger} checked={this.state.taskType !== 1}
+            <Checkbox onChange={this.onTrigger} checked={this.state.taskType !== 0}
                       style={{display: 'inline'}}>是否触发式任务</Checkbox>
-        </div>
+        </div>;
         //调研基本信息
         let baseInfo = (<div>
             <Row style={{background: '#ECECEC', padding: '5px'}}>
@@ -585,7 +584,7 @@ class NewApplicationForm extends React.PureComponent {
                     {/*</Row>*/}
                 </TabPane>
                 <TabPane tab={<span><Icon type="message"/>短信发送</span>} key="3">
-                    <Row style={{display: this.state.taskType !== 2 ? 'block' : 'none'}}>
+                    <Row style={{display: this.state.taskType !== 1 ? 'block' : 'none'}}>
                         <RadioGroup name="radiogroup">
                             {/*<Row>*/}
                             {/*<Col span={1} offset={1}>*/}
