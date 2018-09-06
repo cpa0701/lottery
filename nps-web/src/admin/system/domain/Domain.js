@@ -40,8 +40,9 @@ export default class Domain extends PureComponent {
         if (this.state.domainDeleteData) {
             this.setState({
                 domainData: this.state.domainData,
+
             });
-            DomainService.deleteDomain(this.state.domainData).then((data) => {
+            DomainService.deleteDomain({id:Number(this.state.domainData.id),userId: String(sessionStorage.getItem('userId'))}).then((data) => {
                 const ref = info({
                     title: this.state.domain.deleted,
                     content: '',
@@ -128,7 +129,6 @@ export default class Domain extends PureComponent {
                     });
                 }
                 let data=[];
-                debugger;
                     result.map(item=>{
                         if(item.parentId===0){
                             data.push(item);
@@ -175,13 +175,23 @@ export default class Domain extends PureComponent {
             if (this.state.domainAddData) {
                 value = {
                     ...values,
+                    type: Number(values.type),
+                    userId: String(sessionStorage.getItem('userId')),
                     parentId: this.state.domainData.id,
+                    leaf:true,
+                    createBy:String(sessionStorage.getItem('userId')),
+                    modifiedBy:String(sessionStorage.getItem('userId')),
                 }
             }
             else{
                 value = {
                     ...values,
+                    type: Number(values.type),
+                    userId: String(sessionStorage.getItem('userId')),
                     parentId:0,
+                    leaf:true,
+                    createBy:String(sessionStorage.getItem('userId')),
+                    modifiedBy:String(sessionStorage.getItem('userId')),
                 }
             }
             DomainService.addDomain(value).then((data) => {
@@ -196,7 +206,15 @@ export default class Domain extends PureComponent {
     handleUpdateSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            DomainService.updateDomain(values).then((data) => {
+            let value={
+                ...values,
+                type:Number(values.type),
+                userId: String(sessionStorage.getItem('userId')),
+                leaf:true,
+                createBy:String(sessionStorage.getItem('userId')),
+                modifiedBy:String(sessionStorage.getItem('userId')),
+            }
+            DomainService.updateDomain(value).then((data) => {
                 console.log(data)
                 this.freshTable();
                 this.handleOk();

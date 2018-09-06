@@ -129,7 +129,11 @@ export default class Role extends PureComponent {
         });
         if (selectedKeys.length  === 1) {
             this.authQuery({id: Number(selectedKeys[0])});
-            this.getUserData({id: selectedKeys[0]});
+            this.getUserData({
+                pageNum:String(this.state.pagination.current),
+                pageSize:String(this.state.pagination.pageSize),
+                id: Number(selectedKeys[0])
+            });
         }
     };
 
@@ -186,7 +190,7 @@ export default class Role extends PureComponent {
             return;
         }
         this.setState({loading: true}, () => {
-            SysRoleMgService.delRoles({id: checkedKeys[0]}).then((res) => {
+            SysRoleMgService.delRoles({id: Number(checkedKeys[0]),userId: String(sessionStorage.getItem('userId'))}).then((res) => {
                 message.success(this.state.role.deleteSuccess);
                 this.roleQuery({parentId: '0'});
                 this.setState({checkedKeys: [], record: {}, loading: false});
@@ -258,10 +262,15 @@ export default class Role extends PureComponent {
             return;
         }
         this.setState({loading: true}, () => {
-            SysRoleMgService.delRoleAuth(checkedKeys[0]).then((res) => {
+              let param={
+                  rid: Number(checkedKeys[0]),
+                  pid: Number(this.state.selectedKeys[0]),
+                  userId: String(sessionStorage.getItem('userId'))
+              }
+            SysRoleMgService.delRoleAuth(param).then((res) => {
                     message.success(this.state.role.deleteSuccess);
                     if (checkedKeys.length  === 1) {
-                        this.authQuery(checkedKeys);
+                        this.authQuery({id: Number(checkedKeys[0])});
                     }
                     this.setState({loading: false});
             });
@@ -396,16 +405,17 @@ export default class Role extends PureComponent {
             }
             let params = {
                 ...values,
-                pageNum:this.state.pagination.current,
-                pageSize:this.state.pagination.pageSize,
+                pageNum: String(this.state.pagination.current),
+                pageSize: String(this.state.pagination.pageSize),
                 id: Number(this.state.checkedKeys[0]),
+                userId: String(sessionStorage.getItem('userId')),
             };
             this.getUserData( params);
         });
     };
     // 获取勾选用户表格id
     onSelectChange = (selectedRowKeys) => {
-        if(selectedRowKeys.length !== 1) {
+        if(selectedRowKeys.length > 1) {
             message.info(this.state.role.checkDeleteUser);
             return;
         }
@@ -432,9 +442,17 @@ export default class Role extends PureComponent {
             return;
         }
         this.setState({loading: true}, () => {
-            SysRoleMgService.delRoleUsers({rid: this.state.selectedKeys, uid: selRowKeys}).then((res) => {
+            SysRoleMgService.delRoleUsers({rid: Number(this.state.checkedKeys[0]),
+                    uid: Number(selRowKeys)}).then((res) => {
                 message.success(this.state.role.deleteSuccess);
-                this.getUserData({id: this.state.selectedKeys});
+                let param={
+                    pageNum:String(this.state.pagination.current),
+                    pageSize:String(this.state.pagination.pageSize),
+                    //id: Number(this.state.selectedKeys[0])
+                    id: Number(this.state.checkedKeys[0])
+                }
+                this.getUserData(param);
+
                 this.setState({loading: false});
             });
         });
@@ -540,7 +558,7 @@ export default class Role extends PureComponent {
                 this.addRoleModal(false);
             },
             onCreate: (values) => {
-                SysRoleMgService.addRoles({...values}).then((data) => {
+                SysRoleMgService.addRoles({...values,userId: String(sessionStorage.getItem('userId'))}).then((data) => {
                     if (data) {
                         message.success(role.success);
                         if (this.isMount) {
@@ -564,9 +582,8 @@ export default class Role extends PureComponent {
                 this.editRoleModal(false, {}, {}, 1);
                 },
             onCreate: (values) => {
-                debugger;
                 console.log(values);
-                SysRoleMgService.editRoles({...values}).then((data) => {
+                SysRoleMgService.editRoles({...values,userId: String(sessionStorage.getItem('userId'))}).then((data) => {
                     message.success(role.editSuccess);
                     if (this.isMount) {
                         this.setState({checkedKeys: [], record: {}, edit: false}, () => {
@@ -612,7 +629,7 @@ export default class Role extends PureComponent {
             onCreate: () => {
                 this.setState({editAuth: false}, () => {
                     if (checkedKeys.length  === 1) {
-                        this.authQuery(checkedKeys);
+                        this.authQuery({id: Number(checkedKeys[0])});
                     }
                 });
             },
@@ -700,14 +717,16 @@ export default class Role extends PureComponent {
                 let params = {
                     ...values,
                     roleId: Number(checkedKeys[0]),
-                    uid: selRowKeys,
+                    currentUserId: String(sessionStorage.getItem('userId'))
                 };
                 SysRoleMgService.addRoleUserDate(params).then((data) => {
                    if(data) {
                        this.setState({addUser: false}, () => {
                            message.success(role.newRecruitSuccess);
                            if (checkedKeys.length  === 1) {
-                               this.getUserData({id: checkedKeys[0]});
+                                   this.getUserData({id: checkedKeys[0],
+                                   pageNum:String(this.state.pagination.current),
+                                   pageSize:String(this.state.pagination.pageSize)});
                            }
                        });
                    }
