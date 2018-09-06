@@ -172,7 +172,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         result.put("repeatCount", repeatCount);  //重复剔除数
         result.put("limitCount", limitCount);  //不符合规格剔除数(电话号码and区域id)
         result.put("dataCount",dataCount);//数据库剔重（与数据库中重复）
-        result.put("sumCount",counttaskUser(channelType,taskId));//数据库统计条数
+        result.put("sumCount",countTaskUser(channelType,taskId));//数据库统计条数
         return result;
     }
 
@@ -181,9 +181,9 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      * @param channalType
      * @return
      */
-    private int counttaskUser(String channalType,String taskId){
+    private int countTaskUser(String channalType,String taskId){
         TaskUserExample taskUserExample = new TaskUserExample();
-        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId);
+        taskUserExample.createCriteria().andChannelTypeEqualTo(Short.valueOf(channalType)).andTaskIdEqualTo(taskId).andIsTestEqualTo(new Short("1"));
         int sumCount = taskUserMapper.countByExample(taskUserExample);
         return sumCount;
     }
@@ -225,7 +225,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
-
+        //删除task_use表
+        taskUserMapper.deleteByPrimaryKey(taskId);
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"edit"));
         //type 为 edit 只插入渠道信息
@@ -239,6 +240,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
+        //删除task_use表
+        taskUserMapper.deleteByPrimaryKey(taskId);
 
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"editdraft"));
@@ -544,7 +547,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
         surveyTask.setQstnaireId(bo.getQstnaireId());
         if(!type.equals("edit")){
-            surveyTask.setCreateUid(1L);  //这里需要根据当前用户设置
+            surveyTask.setCreateUid(bo.getUserId());  //这里需要根据当前用户设置
             surveyTask.setCreateTime(new Date());
         }
         surveyTask.setUpdateTime(new Date());

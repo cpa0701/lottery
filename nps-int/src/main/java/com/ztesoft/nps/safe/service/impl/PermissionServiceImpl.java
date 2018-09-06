@@ -28,8 +28,7 @@ public class PermissionServiceImpl implements PermissionService {
 		permission.setLeaf(Boolean.TRUE);
 		permissionMapper.add(permission);
 
-		Permission pPermission = permissionMapper.findById(permission
-				.getParentId());
+		Permission pPermission = permissionMapper.findById(permission.getParentId());
 		if (pPermission != null) {
 			// 父节点变为非叶子节点
 			pPermission.setLeaf(Boolean.FALSE);

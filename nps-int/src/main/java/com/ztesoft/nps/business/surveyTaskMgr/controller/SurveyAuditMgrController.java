@@ -29,13 +29,13 @@ public class SurveyAuditMgrController {
     @ApiOperation(value = "审核通过", notes = "审核通过")
     public Result<Object> auditPass(@RequestBody SurveyTaskIdQuery surveyTaskIdQuery){
         surveyAuditMgrService.auditPass(surveyTaskIdQuery);
-        return Result.success();
+        return Result.success(1);
     }
 
     @PostMapping("/auditNoPass")
     @ApiOperation(value = "审核不通过", notes = "审核不通过")
     public Result<Object> auditNoPass(@RequestBody SurveyTaskIdQuery surveyTaskIdQuery){
         surveyAuditMgrService.auditNoPass(surveyTaskIdQuery);
-        return Result.success();
+        return Result.success(1);
     }
 }

@@ -17,9 +17,6 @@ import java.util.Map;
 
 public class CustomTokenEnhancer implements TokenEnhancer {
 
-    @Value("${security.oauth2.client.expirat}")
-    private String expiratTime;
-
     @Value("${security.oauth2.client.extral.props}")
     private String extralProps;
 
@@ -38,7 +35,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             }
         }
         ((DefaultOAuth2AccessToken) oAuth2AccessToken).setAdditionalInformation(additionalInfo);
-        ((DefaultOAuth2AccessToken) oAuth2AccessToken).setExpiration((DateUtil.getDateBySecond(new Date().getTime()+ StringUtil.getLong(expiratTime))));
 
         return oAuth2AccessToken;
     }
