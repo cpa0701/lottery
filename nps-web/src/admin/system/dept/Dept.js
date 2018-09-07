@@ -9,7 +9,7 @@ import {
     Popconfirm,
     Tabs,
     message,
-    Modal, Row, Col,
+    Modal
 } from 'antd';
 
 import "./Dept.less"
@@ -140,11 +140,11 @@ export default class Dept extends PureComponent {
         this.setState({
             collapsed: !this.state.collapsed,
         });
-    }
+    };
     //点击区域树
     onChange = (value) => {
         this.setState({value: value, selectedDomainKeys: value});
-    }
+    };
     //获取区域树
     getDomainTree = () => {
         DeptService.getDomainTree().then(result => {
@@ -188,13 +188,14 @@ export default class Dept extends PureComponent {
                 }
             })
         });
-    }
+    };
+
     //获取部门树
     getDeptTree = (params) => {
         let param = {
             name: '',
             regionId: null,
-            parentId: null,
+            parentId: 0,
             status: 1,
             type: null,
             level: null,
@@ -213,7 +214,6 @@ export default class Dept extends PureComponent {
                     departmentEditData: treeData[0],
                     selectedDeptKey: treeData.length ? treeData[0].key : ''
                 }, () => {
-                    // this.getStaffData({deptId: '1'})
                     this.getStaffData({deptId: this.state.selectedDeptKey})
                 });
             }
@@ -262,7 +262,7 @@ export default class Dept extends PureComponent {
         }, () => {
             this.getStaffData({deptId: selectedKeys})
         })
-    }
+    };
     //异步加载部门树节点
     onLoadDeptTreeData = (treeNode) => {
         return new Promise((resolve) => {
@@ -273,15 +273,15 @@ export default class Dept extends PureComponent {
             let params = {
                 parentId: treeNode.props.dataRef.id,
                 regionId: treeNode.props.dataRef.regionId,
-            }
+            };
             DeptService.getDeptTree(params).then(result => {
                 if (result) {
                     let treeData = result.map(item => {
                         item.title = item.name;
-                        item.key = item.id
+                        item.key = item.id;
                         item.isLeaf = item.leaf;
                         return item;
-                    })
+                    });
                     treeNode.props.dataRef.children = [...treeData];
                     this.setState({
                         deptTreeData: [...this.state.deptTreeData],
@@ -290,7 +290,7 @@ export default class Dept extends PureComponent {
                 resolve();
             })
         });
-    }
+    };
     // //点击角色树节点时
     // onSelectRoleTree = (selectedKeys, info) => {
     //     info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
@@ -395,10 +395,10 @@ export default class Dept extends PureComponent {
             deptTreeData: [],
         });
         this.getDeptTree(params);
-    }
+    };
     //新增部门
     handleDeptAdd = () => {
-        if (this.state.departmentEditData) {
+        if (this.state.departmentEditData.length !== 0) {
             this.setState({
                 departmentData: {
                     regionId: this.state.selectedDomainKeys,
@@ -406,7 +406,6 @@ export default class Dept extends PureComponent {
                     name: "",
                 }
             }, () => this.handleDeptModalVisible(true));
-
         } else {
             this.setState({
                 departmentData: {
@@ -415,17 +414,8 @@ export default class Dept extends PureComponent {
                     name: "",
                 }
             }, () => this.handleDeptModalVisible(true));
-            // const ref = info({
-            //     title: '请先选择要新增的所属部门',
-            //     content: '',
-            //     okText: '确定',
-            //     cancelText: '取消',
-            //     onOk: () => {
-            //         ref.destroy();
-            //     }
-            // });
         }
-    }
+    };
     //修改部门
     handleDeptUpdate = () => {
         if (this.state.departmentEditData) {
@@ -449,13 +439,12 @@ export default class Dept extends PureComponent {
                 }
             });
         }
-    }
+    };
     //删除部门
     handleDeptDelete = () => {
         let row = this.state.selectedKeys;
         let params = {};
         if (row.length) {
-            // params.id = row.map(item => item + ''); //平台角色id，必填
             params.id = row;
             params.userId = String(sessionStorage.getItem('userId'));
             DeptService.dleDept(params).then(result => {
@@ -475,24 +464,24 @@ export default class Dept extends PureComponent {
         }
         this.handleSelectRows([])
 
-    }
+    };
     //控制弹出框的显示状态
     handleDeptModalVisible = (flag) => {
-        let visible = !!flag
+        let visible = !!flag;
         this.setState({
             modalDeptVisible: visible,
         });
 
         // 页面关闭了要重新查询
         !visible && this.handlerSearchDepartment();
-    }
+    };
     //点击勾选方法
     handleSelectRows = (record, selected, selectedRows) => {
         this.setState({
             selectedRows: record,
             departmentEditData: record[record.length - 1],
         });
-    }
+    };
     //获取人员表格数据
     getStaffData = (params) => {
         this.setState({
@@ -500,11 +489,11 @@ export default class Dept extends PureComponent {
         }, () => {
             this.standardTable.handleSearch({pageNumber: 1, pageSize: 10, ...params})
         });
-    }
+    };
     //查询人员表格
     onRef = (ref) => {
         this.standardTable = ref
-    }
+    };
     //新增人员
     handleStaffAdd = () => {
         if (this.state.departmentEditData.length !== 0) {
@@ -521,7 +510,7 @@ export default class Dept extends PureComponent {
                 }
             });
         }
-    }
+    };
     //修改人员
     handleStaffEdit = () => {
         if (this.state.departmentEditData.length !== 0) {
@@ -554,7 +543,7 @@ export default class Dept extends PureComponent {
                 }
             });
         }
-    }
+    };
     // 双击表格查看人员信息
     handelViewStaff = (data) => {
         this.setState({
@@ -563,7 +552,7 @@ export default class Dept extends PureComponent {
         }, () => {
             this.handleStaffModalVisible(true);
         });
-    }
+    };
     //删除人员
     handleStaffDelete = () => {
         let row = this.state.selectedStaffIds;
@@ -588,7 +577,7 @@ export default class Dept extends PureComponent {
         }
         this.handleSelectRows([])
 
-    }
+    };
     //控制人员弹出框的显示状态
     handleStaffModalVisible = (flag) => {
         let visible = !!flag
@@ -598,7 +587,7 @@ export default class Dept extends PureComponent {
             // 页面关闭了要重新查询
             !visible && this.getStaffData({deptId: this.state.selectedDeptKey});
         });
-    }
+    };
     //更改部门
     handleChangeDept = () => {
         if (this.state.staffData.length !== 0) {
@@ -617,7 +606,7 @@ export default class Dept extends PureComponent {
                 }
             });
         }
-    }
+    };
     //控制更改部门弹出框显示状态
     handleChangeDeptVisible = (flag) => {
         let visible = !!flag
@@ -629,7 +618,7 @@ export default class Dept extends PureComponent {
         });
 
 
-    }
+    };
     // //新增角色按钮点击事件
     // handleAddRole = () => {
     //     if (this.state.addRoleTreeDate.length) {
@@ -793,22 +782,42 @@ export default class Dept extends PureComponent {
             }
         });
         // this.getRoleTree(data)
-    }
+    };
 
     render() {
-        const {dept} = this.props.stores.I18nModel.outputLocale
+        const { dept } = this.props.stores.I18nModel.outputLocale;
+        const {
+            departmentData,
+            authorityTreeAllData,
+            deptTreeForChangeData,
+            selectedAuthorityData,
+            modalChangeAuthorityVisible,
+            staffEditData,
+            modalDeptVisible,
+            modalStaffVisible,
+            modalChangeDeptVisible,
+            modalChangeRoleVisible,
+            domainTreeDate,
+            deptTreeData,
+            roleTreeData,
+            addRoleTreeDate,
+            authorityTreeData,
+            staffColumns,
+            formValues
+        } = this.state;
+        const {getFieldDecorator} = this.props.form;
+
         const loop = data => data.map((item) => {
             if (item.children) {
                 return (
-                    <TreeNode title={item.name} key={item.id} dataRef={item} isLeaf={item.leaf}>
+                    <TreeNode title={item.name} key={item.id} dataRef={item} >
                         {loop(item.children)}
                     </TreeNode>
                 );
             }
-            return <TreeNode {...item} dataRef={item}/>;
+            return <TreeNode {...item} dataRef={item} isLeaf={item.leaf}/>;
         });
-        const {departmentData, authorityTreeAllData, deptTreeForChangeData, selectedAuthorityData, modalChangeAuthorityVisible, staffEditData, modalDeptVisible, modalStaffVisible, modalChangeDeptVisible, modalChangeRoleVisible, domainTreeDate, deptTreeData, roleTreeData, addRoleTreeDate, authorityTreeData, staffColumns, formValues} = this.state;
-        const {getFieldDecorator} = this.props.form;
+
         return (
             <Layout className='dept'>
                 <Sider
@@ -863,7 +872,7 @@ export default class Dept extends PureComponent {
                         <Button type="dashed" onClick={this.handleDeptUpdate}>{dept.modify}</Button>
                         <Popconfirm title={this.state.depart.shuredelete} okText={this.state.depart.ok} cancelText={this.state.depart.cancel} onConfirm={this.handleDeptDelete}>
                             <Button type="danger">{dept.delete}</Button>
-                        </Popconfirm>,
+                        </Popconfirm>
                     </div>
                     <h6 className='departmentH6'>{dept.departNavigationtree}</h6>
                     <TreeComponent

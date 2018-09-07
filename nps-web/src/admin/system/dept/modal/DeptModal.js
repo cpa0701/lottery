@@ -84,40 +84,43 @@ class Dept extends PureComponent {
         const {handleModalVisible, departmentData} = this.props;
         let promise = null;
         fields.parentId = departmentData.parentId;
+        fields.userId = String(sessionStorage.getItem('userId'));
+
         //新增
         if (this.actionType === 'A') {
-            promise = DeptService.addDept({...fields, userId: String(sessionStorage.getItem('userId'))})
-        }
-        else {
-            promise = DeptService.ediDept({...fields, id: departmentData.id, userId: String(sessionStorage.getItem('userId'))})
+            fields.createdBy = String(sessionStorage.getItem('userId'));
+            promise = DeptService.addDept(fields)
+        } else {
+            fields.modifiedBy = String(sessionStorage.getItem('userId'));
+            promise = DeptService.ediDept({...fields, id: departmentData.id})
         }
 
         promise.then(result => {
             message.success(this.state.actionTypeName + this.state.depart.success);
             handleModalVisible();
         });
-    }
+    };
     // 校验部门的唯一性
     handleCheckName = (rule, value, callback) => {
-        let code = ''
+        let code = '';
         let params = {
             name: value
-        }
+        };
         DeptService.checkDeptName(params)
             .then(result => {
-                code = result.code
+                code = result.code;
                 if (code && code === '1' && this.actionType === 'A') {
                     callback(this.state.depart.exisitSystem)
                 }
                 callback()
             })
-    }
+    };
 
     getFields(actionType) {
         const {form, departmentData, domainTreeDate} = this.props;
         const domainSelect = domainTreeDate.map((a) =>
             <Option key={a.key} value={a.key}>{a.title}</Option>
-        )
+        );
         return (
             <div>
                 <Col span={12}>
@@ -192,7 +195,7 @@ class Dept extends PureComponent {
                                 { //type:"url",
                                     required: true, message: this.state.depart.enterDepartName
                                 },
-                                {validator: this.handleCheckName},
+                                // {validator: this.handleCheckName},
                                 {whitespace: true, message: this.state.depart.noBlank}
                             ],
                             initialValue: departmentData.name,
@@ -297,7 +300,7 @@ class Dept extends PureComponent {
         let action = {
             actionType: 'A',
             actionTypeName: dept.newDepartment
-        }
+        };
         if (departmentData && departmentData.id) {
             if (thisTime === "M") {
                 action = {
