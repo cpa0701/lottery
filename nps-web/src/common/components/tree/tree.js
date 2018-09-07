@@ -5,12 +5,12 @@ const TreeNode = Tree.TreeNode;
 const loop = data => data.map((item) => {
     if (item.children) {
         return (
-            <TreeNode title={item.title} key={item.key} dataRef={item} isLeaf={item.isLeaf}>
+            <TreeNode title={item.title} key={item.key} dataRef={item}>
                 {loop(item.children)}
             </TreeNode>
         );
     }
-    return <TreeNode {...item} dataRef={item}/>;
+    return <TreeNode {...item} dataRef={item} isLeaf={item.isLeaf}/>;
 });
 @inject('stores')
 class TreeComponent extends PureComponent {
