@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Icon} from "antd"
 import {RadioModule} from "../questionModule/QuestionModules"
 import {CheckboxModule} from "../questionModule/QuestionModules"
 import {BlankModule} from "../questionModule/QuestionModules"
@@ -36,7 +36,18 @@ class InitQuestionList extends React.PureComponent {
                 break;
         }
         return (<div onClick={this.getDom} className={'questionList'}>
-            {isLib ? <span>{index + 1}.{question.questionName}</span> : ''}
+            {isLib ? <span>
+                {question.questionType === '01' ?
+                    <Icon type="check-circle" style={{marginRight: '8px'}}/> :
+                    question.questionType === '02' ?
+                        <Icon type="check-square" style={{marginRight: '8px'}}/> :
+                        question.questionType === '03' ?
+                            <Icon type="wallet" style={{marginRight: '8px'}}/> :
+                            question.questionType === '04' ?
+                                <Icon type='profile' style={{marginRight: '8px'}}/> : <div/>}
+                { index + 1}.{question.questionName}</span>
+                : ''
+            }
             {isLib ? '' : (<div>
                 {dom}
             </div>)}

@@ -61,6 +61,11 @@ class TaskResearchService {
         // let url = 'mock/missionMgr/getMissionList';
         return await Http.post(url, param);
     };
+    // 内测
+    testPublishSurveyTask = async (param) => {
+        let url = 'surveyTaskMgr/testPublishSurveyTask';
+        return await Http.post(url, param);
+    };
     // 内测并发布
     publicTask = async (param) => {
         let url = 'surveyTaskMgr/publishSurveyTask';

@@ -2,8 +2,9 @@ import React from 'react';
 import { Row, Col, Tabs, Input, Button, Tag, Spin, Icon, Pagination, Popconfirm, message } from 'antd';
 
 import TaskResearchService from "../../../services/research/TaskResearchService";
-import '../missionApplication/missionApplication.less'
+import '../missionApplication/missionApplication.less';
 import FilterTool from "../../../common/utils/FilterTool";
+import ReviewForm from './ReviewForm';
 
 const [Search, TabPane, CheckableTag] = [Input.Search, Tabs.TabPane, Tag.CheckableTag];
 
@@ -51,10 +52,12 @@ class ReviewApplication extends React.PureComponent{
         super(props);
         this.state = {
             loading: false,
+            show: false,
             taskList: [],
             auditTag: [''],
             actType: "03",
             taskName: '',
+            record: {},
             waitAudit: 0,
             passAudit: 0,
             vetoAudit: 0,
@@ -107,6 +110,13 @@ class ReviewApplication extends React.PureComponent{
         });
     }
 
+    // 查看问卷
+    showQstnaire = (id) => {
+        let params = {id: id, type: 'check'};
+        params = JSON.stringify(params);
+        this.props.history.push(`/npsMgr/questionMgr/qstnairePreview/${params}`);
+    };
+
     // 通过审批
     auditPass = (id) => {
         this.setState({
@@ -118,6 +128,9 @@ class ReviewApplication extends React.PureComponent{
                 this.getMissionList();
             }
         }))
+    };
+    confirm = () => {
+      message.info('暂不支持流程审批，请直接选择否');
     };
     // 否决审批
     auditNoPass = (id) => {
@@ -133,20 +146,19 @@ class ReviewApplication extends React.PureComponent{
     };
 
     // 内测并发布
-    publicTask = (id, type) => {
-        let params = {
-            channelType: String(type),
-            taskId: id
-        };
-        this.setState({
-            loading: true
-        }, () => TaskResearchService.publicTask(params).then(result => {
-            if(result) {
-                message.success('已内测发布完成');
-                this.setState({loading: false});
-                this.getMissionList();
-            }
-        }))
+    testModal = (show, id) => {
+        if (show) {
+            TaskResearchService.selectSurveyTaskById({taskId: id}).then(result=>{
+                if(result){
+                    this.setState({
+                        record: result,
+                        show: true,
+                    });
+                }
+            })
+        } else {
+            this.setState({show: false});
+        }
     };
 
     //tab标签被点击
@@ -168,8 +180,28 @@ class ReviewApplication extends React.PureComponent{
     };
 
     render(){
-        const { taskList, waitAudit, passAudit, vetoAudit, invalAudit, auditTag, publicTask } = this.state;
+        const {
+            taskList,
+            waitAudit,
+            passAudit,
+            vetoAudit,
+            invalAudit,
+            auditTag,
+            publicTask,
+            show,
+            record
+        } = this.state;
 
+        const testPropsModal = {
+          show,
+          props: record,
+          onCreate: (value) => {
+              this.testModal(false)
+          },
+          onClose: () => {
+              this.testModal(false)
+          }
+        };
         const operations = <Search
             placeholder="在结果中查询"
             onSearch={value => this.onSearch(value)}
@@ -205,10 +237,19 @@ class ReviewApplication extends React.PureComponent{
                             <Row type="flex" justify="space-between">
                                 <Col span={15} className={'subject-name'}>{item.taskName}</Col>
                                 <Col span={9} style={{textAlign: 'right', paddingRight: '40px'}}>
-                                    <Button type="primary" onClick={() => this.showQstnaire(item.taskId)}>查看</Button>
+                                    <Button type="primary" onClick={() => this.showQstnaire(item.qstnaireId)}>查看</Button>
                                     {item.status === '03' ?
                                         <div style={{display: 'inline-block'}}>
-                                            <Button type="primary" onClick={() => this.auditPass(item.taskId)}>通过</Button>
+                                            <Popconfirm
+                                                title="该任务是否走审批流程?"
+                                                onConfirm={this.confirm}
+                                                onCancel={() => this.auditPass(item.taskId)}
+                                                okText={'是'}
+                                                cancelText={'否'}
+                                            >
+                                                <Button type="primary">审批流程</Button>
+                                            </Popconfirm>
+                                            {/*<Button type="primary" onClick={() => this.auditPass(item.taskId)}>通过</Button>*/}
                                             <Popconfirm title="确定否决该任务?" onConfirm={() => this.auditNoPass(item.taskId)}>
                                                 <Button type="danger">否决</Button>
                                             </Popconfirm>
@@ -216,10 +257,13 @@ class ReviewApplication extends React.PureComponent{
                                     }
                                     {item.status === '06' ?
                                         <div style={{display: 'inline-block'}}>
-                                            <Popconfirm title="确定发布该任务?" onConfirm={() => this.publicTask(item.taskId, item.channelType)}>
-                                                <Button type="primary">内测发布</Button>
-                                            </Popconfirm>
-                                        </div> : ''
+                                            { item.taskType === 0 ?
+                                              <Button type="primary" onClick={() => this.testModal(true, item.taskId)}>内测发布</Button>
+                                              :
+                                              <Button type="primary" onClick={() => this.testModal(true, item.taskId)}>内测</Button>
+                                            }
+                                        </div>
+                                        : ''
                                     }
                                 </Col>
                             </Row>
@@ -254,6 +298,7 @@ class ReviewApplication extends React.PureComponent{
                     <TabPane tab={tab5Title} key="05">{checkableTag} {questionLIst}</TabPane>
                     <TabPane tab={tab6Title} key="01">{checkableTag} {questionLIst}</TabPane>
                 </Tabs>
+                <ReviewForm {...testPropsModal}/>
             </div>
         );
     }

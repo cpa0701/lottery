@@ -564,10 +564,9 @@ class QuestionEdit extends React.PureComponent {
                     }else{
                         questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                     }
-                } else if (i > 0  && questionDisplayList2[i - 1].isPaging === 0) { // 如果上一题是题目，将清除本题及上一题所有逻辑
+                } else if (i > 0 && i <= questionDisplayList2.length - 1  && questionDisplayList2[i - 1].isPaging === 0) { // 如果上一题是题目，将清除本题及上一题所有逻辑
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i - 1].questionOrder, 1);
-                    this.questionLogicInfo();
                 }
             }
             questionDisplayList2.splice(i - 1, 0, props);
@@ -596,14 +595,17 @@ class QuestionEdit extends React.PureComponent {
                 if (i > 0 && questionDisplayList2[i - 1].isPaging === 1 && questionDisplayList2[i + 1].isPaging === 1) {
                     message.info('当前题目位置不可下移');
                     return '';
-                } else if (i > 0 && questionDisplayList2[i - 1].isPaging === 1) {
+                } else if (i < questionDisplayList2.length - 1 && questionDisplayList2[i + 1].isPaging === 1) {
+                    questionDisplayList2[i + 1].questionOrder = questionDisplayList2[i].questionOrder;
+                } else if (i > 0 && i < questionDisplayList2.length - 1 && questionDisplayList2[i - 1].isPaging === 1) {
                     questionDisplayList2[i - 1].questionOrder = questionDisplayList2[i + 1].questionOrder;
                     this.delLogic(props.questionOrder, 1);
                     this.delLogic(questionDisplayList2[i + 1].questionOrder, 1);
-                    this.questionLogicInfo();
-                } else if (questionDisplayList2[i + 1].isPaging === 1) {
-                    questionDisplayList2[i + 1].questionOrder = questionDisplayList2[i].questionOrder;
+                } else {
+                    this.delLogic(props.questionOrder, 1);
+                    this.delLogic(questionDisplayList2[i + 1].questionOrder, 1);
                 }
+
             }
             questionDisplayList2.splice(i + 2, 0, props);
             questionDisplayList2.splice(i, 1);
@@ -653,11 +655,8 @@ class QuestionEdit extends React.PureComponent {
             });
         } else if (Number(type) === 1) { // 删除所有与该题有关的逻辑(关联、跳转)
             newLogic = this.state.logic.filter(item => item.setupQuestionOrder !== order && item.skiptoQuestionOrder !== order);
-            this.setState({
-                logic: [...newLogic]
-            }, () => {
-                this.questionLogicInfo();
-            });
+            this.state.logic = newLogic;
+            this.questionLogicInfo();
         }
     };
 
@@ -748,7 +747,8 @@ class QuestionEdit extends React.PureComponent {
             catalogId
         } = this.state;
         const { getFieldDecorator } = this.props.form;
-
+        console.log('a',questionDisplayList);
+        console.log('b',logic);
         // 关联弹窗
         const connModalProps = {
             conn,

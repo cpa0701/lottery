@@ -543,24 +543,26 @@ export default class QuestionAddMgr extends PureComponent {
                             />
                         )}
                     </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('isNps', {
-                            valuePropName: 'checked',
-                            initialValue: !questionList.length ? false : questionList[0].isNps === 1,
-                        })(
-                            <Checkbox>NPS评分题</Checkbox>
-                        )}
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('isSatisfied', {
-                            valuePropName: 'checked',
-                            initialValue: !questionList.length ? false : questionList[0].isSatisfied === 1,
-                        })(
-                            <Checkbox>满意度评分题</Checkbox>
-                        )}
-                    </FormItem>
-                    {isTextArea ?
-                        <FormItem className="selectOption" label="内容限制">
+                    {!isTextArea ?
+                        <div style={{display: 'inline'}}>
+                            <FormItem>
+                                {getFieldDecorator('isNps', {
+                                    valuePropName: 'checked',
+                                    initialValue: !questionList.length ? false : questionList[0].isNps === 1,
+                                })(
+                                    <Checkbox>NPS评分题</Checkbox>
+                                )}
+                            </FormItem>
+                            <FormItem>
+                                {getFieldDecorator('isSatisfied', {
+                                    valuePropName: 'checked',
+                                    initialValue: !questionList.length ? false : questionList[0].isSatisfied === 1,
+                                })(
+                                    <Checkbox>满意度评分题</Checkbox>
+                                )}
+                            </FormItem>
+                        </div>
+                        : <FormItem className="selectOption" label="内容限制">
                             {getFieldDecorator('contentCheck', {
                                 initialValue: questionList.length ? questionList[0].contentCheck : 0,
                             })(
@@ -570,8 +572,7 @@ export default class QuestionAddMgr extends PureComponent {
                                     })}
                                 </Select>
                             )}
-                        </FormItem>
-                        : <div/>}
+                        </FormItem>}
                     <FormItem>
                         {getFieldDecorator('isCommon', {
                             initialValue: 1,

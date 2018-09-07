@@ -78,11 +78,13 @@ class NewApplicationForm extends React.PureComponent {
                     this.setState({
                         taskType: result.taskType,
                         accessFlag: String(result.taskChannel[0].sampleType) === '2',
+                        userSum: result.taskChannel[0].userSum,
+                        resultDescripe: `共导入${result.taskChannel[0].userSum}条数据`
                     });
                     this.props.form.setFieldsValue({
                         taskName: result.taskName,
-                        surveySdate: moment(result.surveySdate, "YYYY-MM-DD HH:mm:ss"),
-                        surveyEdate: moment(result.surveyEdate, "YYYY-MM-DD HH:mm:ss"),
+                        surveySdate: moment(result.surveySdate, "YYYY-MM-DD"),
+                        surveyEdate: moment(result.surveyEdate, "YYYY-MM-DD"),
                         qstnaireId: result.qstnaireId,
                         qstnaireTitle: result.qstnaireTitle,
                         testNumberList: result.testNumberList.join(','),
@@ -115,7 +117,7 @@ class NewApplicationForm extends React.PureComponent {
     disabledStartDate = (startValue) => {
         const endValue = this.state.endValue;
         if (!startValue || !endValue) {
-            return false;
+            return startValue <= moment().endOf('day');
         }
         return startValue.valueOf() > endValue.valueOf();
     };
@@ -123,7 +125,7 @@ class NewApplicationForm extends React.PureComponent {
     disabledEndDate = (endValue) => {
         const startValue = this.state.startValue;
         if (!endValue || !startValue) {
-            return false;
+            return endValue >= moment().endOf('day');
         }
         return endValue.valueOf() <= startValue.valueOf();
     };
@@ -263,8 +265,8 @@ class NewApplicationForm extends React.PureComponent {
             let channelType = this.props.form.getFieldValue('taskChannel');
             formData.userId = String(sessionStorage.getItem('userId'));
             formData.testNumberList = formData.testNumberList.split(',');
-            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
-            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD');
+            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD');
             formData.taskId = this.state.taskId;
             formData.taskType = this.state.taskType;
             formData.taskChannel = {
@@ -313,8 +315,8 @@ class NewApplicationForm extends React.PureComponent {
             let channelType = this.props.form.getFieldValue('taskChannel');
             formData.userId = String(sessionStorage.getItem('userId'));
             formData.testNumberList = formData.testNumberList.split(',');
-            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD HH:mm:ss');
-            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD HH:mm:ss');
+            formData.surveySdate = formData.surveySdate.format('YYYY-MM-DD');
+            formData.surveyEdate = formData.surveyEdate.format('YYYY-MM-DD');
             formData.taskId = this.state.taskId;
             formData.taskType = this.state.taskType;
             formData.taskChannel = {
@@ -425,9 +427,12 @@ class NewApplicationForm extends React.PureComponent {
                             rules: [{type: 'object', required: true, message: '请选择调研触发时间'}],
                         })(
                             <DatePicker
+                                width={'100%'}
                                 disabledDate={this.disabledStartDate}
-                                showTime
-                                format="YYYY-MM-DD HH:mm:ss"
+                                showTime={{
+                                    hideDisabledOptions: true
+                                }}
+                                format="YYYY-MM-DD"
                                 onChange={this.onStartChange}
                                 onOpenChange={this.handleStartOpenChange}
                             />
@@ -440,9 +445,12 @@ class NewApplicationForm extends React.PureComponent {
                             rules: [{type: 'object', required: true, message: '请选择调研结束时间'}],
                         })(
                             <DatePicker
+                                width={'100%'}
                                 disabledDate={this.disabledEndDate}
-                                showTime
-                                format="YYYY-MM-DD HH:mm:ss"
+                                showTime={{
+                                    hideDisabledOptions: true
+                                }}
+                                format="YYYY-MM-DD"
                                 onChange={this.onEndChange}
                                 open={this.state.endOpen}
                                 onOpenChange={this.handleEndOpenChange}

@@ -111,15 +111,24 @@ export class Http {
         withCredentails:true,
         header:{
             'Access-Control-Allow-Origin':true,
-            'Content-Type':'application/x-www-form-urlencoded'
+            'Content-Type':'application/x-www-form-urlencoded',
         },
         credentials:'same-origin'
     }) {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
+                axios.defaults.headers.common['Authorization'] = 'Basic Y2xpZW50LW5wczoxMjM0NTY=';
+
+                // let api = this.getUrl(params.url);
+                // if(api === 'oauth/token') {
+                //     axios.defaults.headers.common['Authorization'] = 'Basic Y2xpZW50LW5wczoxMjM0NTY=';
+                // } else if(api !== 'login') {
+                //     axios.defaults.headers.common['Authorization'] = 'Bearer '+ sessionStorage.getItem('authToken');
+                // }
+
                 if (result.data.code === 200)
-                    return result.data.data ? result.data.data : false
+                    return result.data.data ? result.data.data : false;
                 else return true;
             }).catch(function (error) {
                 if (error.response.data.code === 401) {

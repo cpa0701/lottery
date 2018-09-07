@@ -1,13 +1,14 @@
 import React from 'react';
+import {Row, Col, Form, Select, Input, Button, DatePicker} from "antd";
+
+
 import ReQuestionaire from '../../missionMgr/missionApplication/modal/ReQuestionaire';
-import {Row, Col, Form, Select, Input, Button, DatePicker} from "antd"
 import SurveyModule from './modal/SurveyModule';
-import moment from 'moment';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const echarts = require('echarts');
-const monthFormat = 'YYYY/MM';
+
 @Form.create({})
 class AnalysisResult extends React.PureComponent {
     constructor(props) {
@@ -18,7 +19,7 @@ class AnalysisResult extends React.PureComponent {
             value: 'city',
             triggerTask: 'all',
 
-        }
+        };
         this.search = this.search.bind(this);
     }
 
@@ -29,7 +30,8 @@ class AnalysisResult extends React.PureComponent {
         } else {
             this.setState({add: false});
         }
-    }
+    };
+
     //城市
     handleChange = (value) => {
         // value1:value,
@@ -38,16 +40,11 @@ class AnalysisResult extends React.PureComponent {
                 value: value,
             }
         )
-    }
+    };
     //触发式调研任务
     handleChangeTask = (value) => {
-        this.setState(
-            {
-                triggerTask: value,
-            }
-        )
-
-    }
+        this.setState({triggerTask: value})
+    };
 
     componentDidMount() {
         var myChart = echarts.init(document.getElementById("barChartone"));
@@ -86,9 +83,7 @@ class AnalysisResult extends React.PureComponent {
             }
         };
 
-
         var labelOption = {};
-
         var option = {
             title: {
                 text: '调研对象分析'
@@ -103,7 +98,6 @@ class AnalysisResult extends React.PureComponent {
             legend: {
                 data: ['调研人数', '参与人数', '完成人数',]
             },
-
             calculable: true,
             xAxis: [
                 {
@@ -208,7 +202,6 @@ class AnalysisResult extends React.PureComponent {
                 },
             ]
         };
-        ;
         if (optionone && typeof optionone === "object") {
             chartTwo.setOption(optionone, true);
         }
@@ -216,24 +209,25 @@ class AnalysisResult extends React.PureComponent {
 
     OnRef1 = (ref) => {
         this.chart = ref;
-    }
+    };
 
     search = () => {
         this.chart.getData()
-
-    }
+    };
 
     render() {
         const {getFieldDecorator} = this.props.form;
+
         //是否显示新增问卷弹框
         const selectModalProps = {
             add: this.state.add,
             onClose: () => {
                 this.selectQuestion(false);
             },
-            onChoseQuestion: (id) => {
+            onChoseQuestion: (id, qstnaireTitle) => {
                 this.props.form.setFieldsValue({
                     qstnaireId: id,
+                    qstnaireTitle
                 });
                 this.setState({add: false})
             },
@@ -243,16 +237,17 @@ class AnalysisResult extends React.PureComponent {
             questionName: '',
             triggerTask: this.state.triggerTask,
             height: 500,
-        }
+        };
         return (
             <div>
                 <Row>
                     <Form>
                         <Col span='4'>
-                            <FormItem label="调研地市" labelCol={{span: 6}} wrapperCol={{span: 16}}>
+                            <FormItem label="调研地市" labelCol={{span: 8}} wrapperCol={{span: 10}}>
                                 <Select defaultValue="全市" onChange={this.handleChange}>
-                                    <Option value="city">全市</Option>
-                                    <Option value="yubei">渝北</Option>
+                                    <Option value="00">全市</Option>
+                                    <Option value="01">渝北</Option>
+                                    <Option value="02">九龙坡</Option>
                                 </Select>
                             </FormItem>
                         </Col>
@@ -264,6 +259,10 @@ class AnalysisResult extends React.PureComponent {
                                 <Input placeholder='点击选择调研问卷' onClick={() => this.selectQuestion(true)}/>
                                 )}
                             </FormItem>
+                            {getFieldDecorator('qstnaireId', {
+                            })(
+                                <Input hidden/>
+                            )}
                         </Col>
                         <Col span='6'>
                             <FormItem label="任务类型" labelCol={{span: 4}} wrapperCol={{span: 20}}>

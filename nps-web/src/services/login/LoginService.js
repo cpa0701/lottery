@@ -7,6 +7,11 @@ class LoginService {
     var url = 'login';
     return Http.post(url,param);
   }
+    //获取token
+    authToken = async (param) => {
+        var url = 'oauth/token';
+        return Http.post(url, param);
+    }
   //登出方法
     logout = async (param) => {
       var url = 'logout';

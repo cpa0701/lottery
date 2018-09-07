@@ -18,10 +18,11 @@ const GetRequest = () => {
         let strs = str.split("&");
         strs.map(s => {
             theRequest[s.split("=")[0]] = unescape(s.split("=")[1]);
+            return '';
         })
     }
     return theRequest;
-}
+};
 
 class QuestionPreview extends React.PureComponent {
     constructor(props) {
@@ -33,7 +34,7 @@ class QuestionPreview extends React.PureComponent {
             pageList: [],
             questionList: [],
             isPaging: 0
-        }
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onCheckBoxChange = this.onCheckBoxChange.bind(this);
     }
@@ -68,6 +69,7 @@ class QuestionPreview extends React.PureComponent {
                     item.optionList && item.optionList.map(k => {
                         k.logicList = [];
                         k.questionOrder = item.questionOrder;
+                        return '';
                     });
                     item.belongToPage = page;
                     if (item.isPaging === 1) {
@@ -84,13 +86,15 @@ class QuestionPreview extends React.PureComponent {
                             if (item.questionOrder === k.setupQuestionOrder) {
                                 let optionList = k.optionOrder.split(",");
                                 optionList.map(option => {
-                                    let optionIndex = option - 1//有逻辑的选项索引
+                                    let optionIndex = option - 1; //有逻辑的选项索引
                                     item.optionList[optionIndex].logicList.push(k);
                                     return '';
                                 })
                             }
                         }
-                    })
+                        return '';
+                    });
+                    return '';
                 });
                 isPaging && questionList.push({//如果有分页添加最后一页的对象
                     "contentCheck": "",
@@ -111,7 +115,7 @@ class QuestionPreview extends React.PureComponent {
                     "questionOrder": questionList[questionList.length - 1].questionOrder,
                     "questionType": "00",
                     "status": ""
-                })
+                });
                 this.setState({
                     loading: false,
                     isPaging: isPaging,
@@ -204,7 +208,7 @@ class QuestionPreview extends React.PureComponent {
             if (o.checked)
                 rightOption = o;
             return !o.checked
-        })
+        });
         questionList[e.target.questionIndex - 1].optionList.push(rightOption);
         questionList[e.target.questionIndex - 1].optionList.map(item => {//遍历当前单选题所有选项的逻辑
             item.logicList.length && item.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
@@ -222,7 +226,7 @@ class QuestionPreview extends React.PureComponent {
                         }
                         return logic.setupQuestionOrder === question.questionOrder
                     })
-                })
+                });
                 let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
@@ -276,12 +280,13 @@ class QuestionPreview extends React.PureComponent {
                     if (skiptoQuestionOrder === -1 || skiptoQuestionOrder === -2) {//直接调至结尾
                         let isOver = arr01.some(option => {
                             return option.checked;
-                        })
+                        });
                         if (isOver) {
                             questionList.map((item, i) => {
                                 if (i > (e.target.questionIndex - 1)) {
                                     item.jumped = true;
                                 }
+                                return '';
                             });
                             this.over = skiptoQuestionOrder;//将跳转至结束,-1为记录结果，-2为不记录结果
                         } else {
@@ -289,6 +294,7 @@ class QuestionPreview extends React.PureComponent {
                                 if (i > (e.target.questionIndex - 1)) {
                                     item.jumped = false;
                                 }
+                                return '';
                             });
                             this.over = false;//将跳转至结束设为false
                         }
@@ -299,18 +305,20 @@ class QuestionPreview extends React.PureComponent {
                                     return option.checked;
                                 })
                             } else return false;
-                        })
+                        });
                         if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
                             questionList.map((item, i) => {
                                 if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                                     item.jumped = true;
                                 }
-                            })
+                                return '';
+                            });
                         else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
                             questionList.map((item, i) => {
                                 if (i > (e.target.questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                                     item.jumped = false;
                                 }
+                                return '';
                             })
                     }
                 }
@@ -326,9 +334,10 @@ class QuestionPreview extends React.PureComponent {
                 if (question.questionOrder === item.questionOrder && question.isPaging !== 1) {
                     question = item
                 }
-            })
+                return '';
+            });
             return question;
-        })
+        });
         this.setState({questionList: [...questionResultList]})
     };
     //复选框值改变
@@ -341,7 +350,7 @@ class QuestionPreview extends React.PureComponent {
         //将未填写必填的提示去除
         checkList.length || questionList[questionIndex - 1].isBlank === 0 ? questionList[questionIndex - 1].showTip = false : questionList[questionIndex - 1].showTip = true;//将未填写必填的提示加上
 
-        questionList[questionIndex - 1].value = checkList.join(',');//给questionList对应题目赋值所选值
+        questionList[questionIndex - 1].value = checkList.join('/');//给questionList对应题目赋值所选值
 
         questionList[questionIndex - 1].optionList.map(item => {//遍历当前题所有选项的逻辑
             item.logicList.length && item.logicList.map(k => {//遍历此选项相关的所有逻辑然后找到所有相关逻辑的题目的选项然后依次判断
@@ -371,7 +380,7 @@ class QuestionPreview extends React.PureComponent {
                         }
                         return logic.setupQuestionOrder === question.questionOrder
                     })
-                })
+                });
                 let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
@@ -389,10 +398,15 @@ class QuestionPreview extends React.PureComponent {
                                     } else if (logic.logicType === '01') {//跳转的逻辑
                                         arr01.push(option)
                                     }
-                                })
-                            })
-                        })
-                    })
+                                    return '';
+                                });
+                                return '';
+                            });
+                            return '';
+                        });
+                        return '';
+                    });
+                    return '';
                 });
                 if (k.logicType === '00') {//关联逻辑判断
                     questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//或的被关联题关联逻辑的结果
@@ -521,30 +535,54 @@ class QuestionPreview extends React.PureComponent {
                     let result = this.state.questionList.filter(question => {//去除分页数据获取显示的题目的值
                         return question.isPaging === 0 && question.value && question.display;
                     });
-                    console.log(result)
+                    let question = result.map(item => {
+                        return {questionId: item.questionId, questionResult: String(item.value)};
+                    });
+                    let params = GetRequest();
+                    let values = {
+                        questionResultList: question,
+                        targetUser: params.targetUser,
+                        sendUser: params.sendUser,
+                        taskId: params.taskId,
+                        time: params.time,
+                        type: params.type,
+                        id: params.id,
+                    } ;
+                    console.log(values);
+                    this.setState({
+                        loading: true
+                    }, () => {
+                        QuestionPreviewService.submitQstnaire(values).then(result => {
+                            if(result) {
+                                message.info('问卷提交成功，感谢参与本次活动');
+                                this.setState({loading: false});
+                            }
+                        })
+                    })
                 } else {
                     console.log('无结果')
                 }
             }
         }
-    }
+    };
     //验证必填
     validIsBlank = () => {
         let blankList = this.state.questionList.filter(question => {//去除分页数据判断必填数据是否有值
-            if (question.isPaging === 0 && !question.value && question.display && question.isBlank && question.belongToPage === this.state.currentPage) {
+            if (question.isPaging === 0 && !question.value && question.display && question.isBlank === 0 && question.belongToPage === this.state.currentPage) {
                 question.showTip = true;
                 return question;
             } else {
                 question.showTip = false;
             }
+            return '';
         });
         if (blankList.length) {
             this.setState({
                 questionList: [...this.state.questionList]
-            })
+            });
             return true;
         }
-    }
+    };
 
     render() {
         let questionnaireBlock = this.state.pageList.map(page => {
@@ -556,7 +594,7 @@ class QuestionPreview extends React.PureComponent {
                         // isShow={item.isShow}//是否显示被关联题
                         // isJump={item.isJump}//是否跳转题
                         // isSetup={item.isSetup}//是否是被关联题
-                        item.display = item.jumped ? false : (item.isShow ? true : !item.isSetup)
+                        item.display = item.jumped ? false : (item.isShow ? true : !item.isSetup);
                         if (item.belongToPage === page) {
                             return <InitQuestionList
                                 style={{display: item.belongToPage === this.state.currentPage ? 'block' : 'none'}}
