@@ -139,7 +139,7 @@ export default {
         'Confirm':'确认',
         'Authority':'权限管理',
         'modifyAuthority':'修改权限',
-        'batchdeletion':'批量删除',
+        'batchdeletion':'删除',
         'authorityName':'权限名称',
         'personnel':'人员',
         'select':'查询',
