@@ -36,6 +36,7 @@ export default class Role extends PureComponent {
         deptData: [], // 部门表
         checkedKeys: [], //角色树勾选
         selRowKeys: [], // 用户表勾选
+        checkedAuthKeys:[],//权限树勾选
         record: {}, // 编辑角色时的obj数据
         parentId: '0',
         selectedKeys: [],
@@ -136,7 +137,21 @@ export default class Role extends PureComponent {
             });
         }
     };
+    //点击、勾选获取权限树时
+    onSelectAuth=(selectedKeys, info)=>{
+        if (selectedKeys.length > 1) {
+            message.info(this.state.role.selectOneCharacter);
+            return;
+        }
+        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
+        let record =  info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props.dataRef : "";
 
+        this.setState({
+            parentId: selectedKeys[selectedKeys.length - 1],
+            checkedKeys: selectedKeys,
+            record
+        });
+    }
     // 新增角色
     addRoleModal = (show) => {
         if (show) {
@@ -264,13 +279,15 @@ export default class Role extends PureComponent {
         this.setState({loading: true}, () => {
               let param={
                   rid: Number(checkedKeys[0]),
-                  pid: Number(this.state.selectedKeys[0]),
+                  pid: Number(this.state.authCheckedKeys[0]),
+                 // pid: Number(this.state.selectedKeys[0]),
                   userId: String(sessionStorage.getItem('userId'))
               }
             SysRoleMgService.delRoleAuth(param).then((res) => {
                     message.success(this.state.role.deleteSuccess);
                     if (checkedKeys.length  === 1) {
                         this.authQuery({id: Number(checkedKeys[0])});
+                       // this.authQuery({id: Number(selectedkedKeys[0])});
                     }
                     this.setState({loading: false});
             });
@@ -536,8 +553,11 @@ export default class Role extends PureComponent {
         };
         const authProps = {// 树索要用到的参数
             treeData: authData, // 要一级数据.
+            checkedKeys,
             selectedKey,
-            checkable: false,
+            checkable:true,
+            onCheck: this.onSelectAuth,
+            onSelect:this.onselectAuth,
             onLoadData: this.loadAuthData
         };
         // const regionProps = {// 表所要用到的参数

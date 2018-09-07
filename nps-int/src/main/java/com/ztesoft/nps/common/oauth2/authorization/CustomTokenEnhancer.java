@@ -26,16 +26,18 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         additionalInfo.put("organization", authentication.getName());
 
         User user = (User) authentication.getUserAuthentication().getPrincipal();
-
         LinkedHashMap details = (LinkedHashMap) authentication.getUserAuthentication().getDetails();
-        if(StringUtil.isNotNull(extralProps)){
+
+        System.out.println("请求令牌， 用户 ：" + MapUtil.getString(details, "userId") + ", " +
+                "类型 ：" + (StringUtil.isNull(MapUtil.getString(details, "grant_type")) ? "refresh_token" : MapUtil.getString(details, "grant_type")));
+
+        if (StringUtil.isNotNull(extralProps)) {
             String[] props = extralProps.split(",");
-            for(int i=0;i<props.length;i++){
-                additionalInfo.put(props[i], MapUtil.getString(details,props[i]));
+            for (int i = 0; i < props.length; i++) {
+                additionalInfo.put(props[i], MapUtil.getString(details, props[i]));
             }
         }
         ((DefaultOAuth2AccessToken) oAuth2AccessToken).setAdditionalInformation(additionalInfo);
-
         return oAuth2AccessToken;
     }
 

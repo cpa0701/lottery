@@ -26,7 +26,7 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter {
             System.out.println("=============================开启jwt认证===========================");
             http.antMatcher("/**")        //匹配需要资源认证路径
                     .authorizeRequests()
-                    .antMatchers("/swagger-ui.html", "/swagger-resources/**",
+                    .antMatchers("/login","/logout","/swagger-ui.html", "/swagger-resources/**",
                             "/v2/api-docs/**", "/validatorUrl","/valid"
                     ).permitAll().anyRequest().authenticated();           //匹配不需要资源认证路径
 
