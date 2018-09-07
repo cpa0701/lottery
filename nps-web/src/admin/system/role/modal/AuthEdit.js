@@ -59,8 +59,9 @@ export default class extends Component {
   onSelect = (selectedKeys) => {
       this.props.onCheck(selectedKeys);
       let params = {
-          roleId: this.props.roleId,
-          permissionId: selectedKeys[selectedKeys.length - 1]
+          roleId: Number(this.props.roleId),
+          permissionId: Number(selectedKeys[selectedKeys.length - 1]),
+          userId: String(sessionStorage.getItem('userId')),
       };
       SysRoleMgService.editRoleAuth(params).then((data) => {
           message.success('修改权限成功!');
