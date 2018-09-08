@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Modal, Form, Select, Button, Row, Col, Radio, Icon, Popconfirm,message } from 'antd';
 
-import InitQuestionList from './InitQuestionList';
+import InitQuestionList from './InitConnQuestionList';
 
 import './questionApplication.less';
 
@@ -34,19 +34,35 @@ export default class extends PureComponent {
                 return '';
             }
             let record = this.props.record, logicArr = [], _Obj = {};
-            this.state.questions.map(item => {
-                if(item.questionType === '01') { // 单选处理
-                    _Obj = {
-                        "actType": 0,
-                        "andOr": values.andOr ? Number(values.andOr) : 0,
-                        "isMain": 0,
-                        "logicType": "00",
-                        "optionOrder": String(item.value),
-                        "setupQuestionOrder": item.questionOrder,
-                        "skiptoQuestionOrder": record.questionOrder
-                    };
-                    logicArr.push(_Obj);
-                } else if (item.questionType === '02') { // 多选处理
+            if(JSON.stringify(this.state.questions[0]) !== '{}') {
+                this.state.questions.map(item => {
+                    // if(item.questionType === '01') { // 单选处理
+                    //     _Obj = {
+                    //         "actType": 0,
+                    //         "andOr": values.andOr ? Number(values.andOr) : 0,
+                    //         "isMain": 0,
+                    //         "logicType": "00",
+                    //         "optionOrder": String(item.value),
+                    //         "setupQuestionOrder": item.questionOrder,
+                    //         "skiptoQuestionOrder": record.questionOrder
+                    //     };
+                    //     logicArr.push(_Obj);
+                    // } else if (item.questionType === '02') { // 多选处理
+                    //     let optionChecked = item.optionList.filter(item => item.checked === true);
+                    //     let optionOrder = optionChecked.map(item => {
+                    //         return item.optionOrder;
+                    //     }).join(',');
+                    //     _Obj = {
+                    //         "actType": 0,
+                    //         "andOr": values.andOr ? Number(values.andOr) : 0,
+                    //         "isMain": 0,
+                    //         "logicType": "00",
+                    //         "optionOrder": optionOrder,
+                    //         "setupQuestionOrder": item.questionOrder,
+                    //         "skiptoQuestionOrder": record.questionOrder
+                    //     };
+                    //     logicArr.push(_Obj);
+                    // }
                     let optionChecked = item.optionList.filter(item => item.checked === true);
                     let optionOrder = optionChecked.map(item => {
                         return item.optionOrder;
@@ -61,16 +77,18 @@ export default class extends PureComponent {
                         "skiptoQuestionOrder": record.questionOrder
                     };
                     logicArr.push(_Obj);
-                }
-                return '';
-            });
-            this.props.onCreate(logicArr)
+                    return '';
+                });
+            }
+            this.props.onCreate(logicArr);
+            // this.props.form.getFieldDecorator('keys', {initialValue: [0]});
+            // this.setState({questions: [{}]})
         });
     };
 
     afterClose = () => {
         this.setState({
-            questions: [{}],
+            questions: [{},{},{},{}],
         });
         this.props.form.resetFields();
     };
@@ -171,7 +189,7 @@ export default class extends PureComponent {
     };
     // 复选框值改变
     onCheckBoxChange = (e) => {
-        this.state.questions.map(item => {
+        let newArr = this.state.questions.map(item => {
             if(item.questionOrder === e.target.questionIndex) {
                 item.optionList.map(k => {
                     if(k.optionOrder === e.target.value) {
@@ -180,21 +198,24 @@ export default class extends PureComponent {
                     return '';
                 })
             }
-            return '';
+            return item;
         });
         this.setState({
-            questions: [...this.state.questions]
+            questions: [...newArr]
         });
     };
 
     render() {
         const { conn, record, connList, keyS, andOr, form: { getFieldDecorator, getFieldValue } } = this.props;
         const { questions } = this.state;
+        console.log('keys1',keyS)
+        console.log('questions',questions)
         const optionList = connList.map((item) => {
             return  <Option key={item.questionOrder} value={item.questionOrder}>{item.questionName}</Option>
         });
         getFieldDecorator('keys', keyS.length !== 0 ? {initialValue: [...keyS]} : {initialValue: [0]});
         const keys = getFieldValue('keys');
+        console.log('keys2',keys)
         const formItems = keys.map((index, k) => {
             return (
                 <div key={k}>
@@ -233,19 +254,31 @@ export default class extends PureComponent {
                         { JSON.stringify(questions[k]) !== '{}' ?
                             <div>
                                 当关联题目{ k + 1 } 选择下面的选项<br/>
-                                    <InitQuestionList
-                                        index={ questions[k].questionOrder }
-                                        key={questions[k].questionOrder}
-                                        question={
-                                            {
-                                                ...questions[k],
-                                                value: questions[k].value ? questions[k].value : undefined,
-                                                questionName: questions[k].questionName.split('、')[1]
-                                            }
+                                    {/*<InitQuestionList*/}
+                                        {/*index={ questions[k].questionOrder }*/}
+                                        {/*key={questions[k].questionOrder}*/}
+                                        {/*question={*/}
+                                            {/*{*/}
+                                                {/*...questions[k],*/}
+                                                {/*value: questions[k].value ? questions[k].value : undefined,*/}
+                                                {/*questionName: questions[k].questionName.split('、')[1]*/}
+                                            {/*}*/}
+                                        {/*}*/}
+                                        {/*onRadioChange={this.onRadioChange}*/}
+                                        {/*onCheckBoxChange={this.onCheckBoxChange}*/}
+                                    {/*/>*/}
+                                <InitQuestionList
+                                    index={ questions[k].questionOrder }
+                                    key={questions[k].questionOrder}
+                                    question={
+                                        {
+                                            ...questions[k],
+                                            value: questions[k].value ? questions[k].value : undefined,
+                                            questionName: questions[k].questionName.split('、')[1]
                                         }
-                                        onRadioChange={this.onRadioChange}
-                                        onCheckBoxChange={this.onCheckBoxChange}
-                                    />
+                                    }
+                                    onCheckBoxChange={this.onCheckBoxChange}
+                                />
                                 中的任意一个时，"当前题目"才出现
                             </div>
                         : '' }

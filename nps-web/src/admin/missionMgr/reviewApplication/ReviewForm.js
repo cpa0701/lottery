@@ -47,35 +47,38 @@ class ReviewForm extends React.PureComponent {
             this.setState({
                 loading: true
             }, () => TaskResearchService.testPublishSurveyTask(values).then(result => {
-                if(result) {
+                if(result.code === 3) {
                     this.setState({
                         submitBtn: true,
+                        accessFlag: true,
                         loading: false
                     });
                     this.props.form.setFieldsValue({
                         taskStatus: '号码已提交，测试中'
                     });
+                } else {
+                    message.success(result.desInfo);
                 }
             }))
         });
     };
 
     // 内测并发布
-    publicTask = (id, type) => {
+    publicTask = (id) => {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 return '';
             }
             let params = {
-                channelType: String(type),
+                channelType: String(values.channelType),
                 taskId: id,
                 isSuccee: values.isSuccee
             };
             TaskResearchService.publicTask(params).then(result => {
-                if(result.code === 1) {
+                if(result.code === 0) {
                     message.success('已内测发布完成');
                     this.setState({loading: false});
-                    this.props.close();
+                    this.props.refresh()
                 } else {
                     message.success(result.desInfo);
                 }
@@ -168,7 +171,7 @@ class ReviewForm extends React.PureComponent {
                             <Button type="primary" onClick={this.onSubmit} disabled={submitBtn}>开始测试</Button>
                             &nbsp;&nbsp;&nbsp;
                             {
-                                accessFlag ? <Button type="primary" onClick={() => this.publicTask(props.taskId, props.channelType)}>提交并发布</Button>
+                                props.taskType === 0 && accessFlag ? <Button type="primary" onClick={() => this.publicTask(props.taskId)}>提交并发布</Button>
                                     : ''
                             }
                         </Row>

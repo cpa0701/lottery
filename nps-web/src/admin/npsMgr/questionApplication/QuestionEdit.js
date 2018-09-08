@@ -230,6 +230,30 @@ class QuestionEdit extends React.PureComponent {
             questionDisplayList: [...this.state.questionDisplayList1]
         })
     };
+    // 勾选isNps
+    onChangeIsNps = (e, id) => {
+        this.state.questionDisplayList1.map(item => {
+            if(id === item.id) {
+                item.isNps = e.target.checked ? 1 : 0;
+            }
+            return '';
+        });
+        this.setState({
+            questionDisplayList: [...this.state.questionDisplayList1]
+        })
+    };
+    // 勾选isSatisfied
+    onChangeIsSatisfied = (e, id) => {
+        this.state.questionDisplayList1.map(item => {
+            if(id === item.id) {
+                item.isSatisfied = e.target.checked ? 1 : 0;
+            }
+            return '';
+        });
+        this.setState({
+            questionDisplayList: [...this.state.questionDisplayList1]
+        })
+    };
 
     // 问卷标题
     qstnaireTitle = (e) => {
@@ -398,21 +422,21 @@ class QuestionEdit extends React.PureComponent {
                     andOr = item.andOr;
                     arr = this.state.questionDisplayList.filter(k => k.questionOrder === item.setupQuestionOrder);
                     if(arr) {
-                        if(arr[0].questionType === '01') {
-                            arr[0] = {
-                                ...arr[0],
-                                value: Number(item.optionOrder)
-                            };
-
-                            arr[0].optionList.map(x => {
-                                if(x.optionOrder === Number(item.optionOrder)) {
-                                    x.checked = true;
-                                } else {
-                                    x.checked = false;
-                                }
-                                return '';
-                            })
-                        } else if(arr[0].questionType === '02') {
+                        // if(arr[0].questionType === '01') {
+                        //     arr[0] = {
+                        //         ...arr[0],
+                        //         value: Number(item.optionOrder)
+                        //     };
+                        //
+                        //     arr[0].optionList.map(x => {
+                        //         if(x.optionOrder === Number(item.optionOrder)) {
+                        //             x.checked = true;
+                        //         } else {
+                        //             x.checked = false;
+                        //         }
+                        //         return '';
+                        //     })
+                        // } else if(arr[0].questionType === '02') {
                             let checkOption = item.optionOrder.split(',');
                             if(checkOption) {
                                 checkOption.map(y => {
@@ -425,7 +449,7 @@ class QuestionEdit extends React.PureComponent {
                                     return '';
                                 })
                             }
-                        }
+                        // }
                     }
                     questions.push(...arr);
                     return '';
@@ -440,10 +464,11 @@ class QuestionEdit extends React.PureComponent {
                 };
                 return item;
             });
+            console.log('aaaa',questions)
             keyS = questions.map((item, k) => {
                 return k;
             });
-
+            console.log('bbb',keyS)
             let _obj = JSON.stringify(this.state.questionDisplayList);
             let connList = JSON.parse(_obj).splice(0, i).map((item, k) => {
                 item.questionName = item.questionOrder + '、' + item.questionName;
@@ -459,7 +484,7 @@ class QuestionEdit extends React.PureComponent {
 
             this.setState({
                 questions,
-                keyS: keyS ? keyS : [0],
+                keyS: keyS.length !== 0 ? keyS : [0],
                 conn: true,
                 record: props,
                 connList,
@@ -636,8 +661,7 @@ class QuestionEdit extends React.PureComponent {
             this.orderPageNum()
         }
         this.orderQuestion();
-        this.delLogic(props.questionOrder, 1);
-        this.questionLogicInfo();
+        this.delLogic(props.questionOrder, 2);
         message.info('删除成功')
     };
     // 删除与题目有关的所有逻辑
@@ -655,6 +679,10 @@ class QuestionEdit extends React.PureComponent {
             });
         } else if (Number(type) === 1) { // 删除所有与该题有关的逻辑(关联、跳转)
             newLogic = this.state.logic.filter(item => item.setupQuestionOrder !== order && item.skiptoQuestionOrder !== order);
+            this.state.logic = newLogic;
+            this.questionLogicInfo();
+        } else if (Number(type) === 2) {// 删除该题有关的及该题以后的所有与逻辑(关联、跳转)
+            newLogic = this.state.logic.filter(item => item.setupQuestionOrder < order && item.skiptoQuestionOrder < order);
             this.state.logic = newLogic;
             this.questionLogicInfo();
         }
@@ -747,8 +775,7 @@ class QuestionEdit extends React.PureComponent {
             catalogId
         } = this.state;
         const { getFieldDecorator } = this.props.form;
-        console.log('a',questionDisplayList);
-        console.log('b',logic);
+
         // 关联弹窗
         const connModalProps = {
             conn,
@@ -856,9 +883,10 @@ class QuestionEdit extends React.PureComponent {
                                     </FormItem>
                                 </Form>
                                 <Button type="primary" onClick={this.save}>完成编辑</Button>
-                                <Popconfirm title="预览前将保存对当前问卷的所有操作，确定预览该问卷?" onConfirm={this.preview}>
-                                    <Button type="primary">预览</Button>
-                                </Popconfirm>
+                                {/*<Popconfirm title="预览前将保存对当前问卷的所有操作，确定预览该问卷?" onConfirm={this.preview}>*/}
+                                    {/*<Button type="primary">预览</Button>*/}
+                                {/*</Popconfirm>*/}
+                                <Button type="primary" onClick={this.preview}>预览</Button>
                                 <Button style={{marginRight: '100px', marginLeft: '0'}} onClick={() => this.addPagination()}>分页</Button>
                             </Col>
                         </Row>
@@ -870,9 +898,17 @@ class QuestionEdit extends React.PureComponent {
                             { questionDisplayList.map((item, i) => {
                                 return (
                                     item.isPaging === 0 ?
-                                        <div key={i}>
+                                        <div key={i} className="questionRowStyle">
                                             <InitQuestionList question={item} index={item.questionOrder} infoView={true}/>
                                             <div className="link-group">
+                                                {
+                                                    item.questionType === '01' || item.questionType === '02' ?
+                                                        <div style={{display: 'inline'}}>
+                                                            <Checkbox defaultChecked={item.isNps === 1} onChange={(e) => this.onChangeIsNps(e, item.questionId)}>NPS评分题</Checkbox>
+                                                            <Checkbox defaultChecked={item.isSatisfied === 1} onChange={(e) => this.onChangeIsSatisfied(e, item.questionId)}>满意度评分题</Checkbox>
+                                                        </div>
+                                                    : ''
+                                                }
                                                 <Checkbox defaultChecked={item.isBlank === 0} onChange={(e) => this.onChangeCheckbox(e, i)}>必填</Checkbox>
                                                 <a href="javascript:void(0);"
                                                    onClick={() => this.connModal(true, item, i)}>关联逻辑</a>
@@ -884,7 +920,7 @@ class QuestionEdit extends React.PureComponent {
                                                 <Popconfirm key="jumpDown"  title="若该题存在关联、跳转逻辑，下移将清除与该题及下一题有关所有的逻辑(忽略分页)。确定下移?" onConfirm={() => this.jumpDown(i, item, 'question')}>
                                                     <a href="javascript:void(0);" >下移</a>
                                                 </Popconfirm>
-                                                <Popconfirm key="delete"  title="你确定删除该题及与该题有关的所有逻辑?" onConfirm={() => this.delQestion(item, i, 'question')}>
+                                                <Popconfirm key="delete"  title="你确定删除该题及与该题或之后有关题的所有逻辑?" onConfirm={() => this.delQestion(item, i, 'question')}>
                                                     <a href="javascript:void(0);">删除</a>
                                                 </Popconfirm>
                                             </div>

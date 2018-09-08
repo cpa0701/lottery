@@ -195,11 +195,12 @@ class ReviewApplication extends React.PureComponent{
         const testPropsModal = {
           show,
           props: record,
-          onCreate: (value) => {
-              this.testModal(false)
-          },
           onClose: () => {
               this.testModal(false)
+          },
+          refresh: () => {
+              this.testModal(false);
+              this.getMissionList()
           }
         };
         const operations = <Search

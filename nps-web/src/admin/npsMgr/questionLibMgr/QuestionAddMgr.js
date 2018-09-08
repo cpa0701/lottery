@@ -295,7 +295,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: questionList.length ? questionList.questionName : '单选题标题',
+                            questionName: this.state.questionList.length ? this.state.questionList[0].questionName : '单选题标题',
                             questionName2: '', // 题目提示描述
                             questionType: '01',
                             questionCategory: '', // 题目分类
@@ -339,7 +339,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: questionList.length ? questionList.questionName : '多选题标题',
+                            questionName: this.state.questionList.length ? this.state.questionList[0].questionName : '多选题标题',
                             questionName2: '多选题', // 题目提示描述
                             questionType: '02',
                             questionCategory: '', // 题目分类
@@ -392,7 +392,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: questionList.length ? questionList.questionName : '单行填空题',
+                            questionName: this.state.questionList.length ? this.state.questionList[0].questionName : '单行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: '03',
                             questionCategory: '', // 题目分类
@@ -431,7 +431,7 @@ export default class QuestionAddMgr extends PureComponent {
                     questionList = [
                         {
                             ...this.state.questionList[0],
-                            questionName: questionList.length ? questionList.questionName : '多行填空题',
+                            questionName: this.state.questionList.length ? this.state.questionList[0].questionName : '多行填空题',
                             questionName2: '', // 题目提示描述
                             questionType: '04',
                             questionCategory: '', // 题目分类

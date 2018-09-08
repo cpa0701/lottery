@@ -1,3 +1,9 @@
+.transition(@transition) {
+  transition: @transition 1s;
+  -moz-transition: @transition 1s; /* Firefox 4 */
+  -webkit-transition: @transition 1s; /* Safari 和 Chrome */
+  -o-transition: @transition 1s; /* Opera */
+}
 .questionApplication {
   height: 100%;
   .height {
@@ -61,6 +67,18 @@
     }
     .questionStyle {
       padding: 15px 0 0;
+      .transition(border);
+      border: 1px solid #fff;
+      .link-group {
+        visibility: hidden;
+      }
+    }
+    .questionStyle:hover {
+      .transition(border);
+      border: 1px solid rgb(253, 181, 83);
+      .link-group {
+        visibility: visible;
+      }
     }
     .question {
       .div_preview {
@@ -114,6 +132,24 @@
   .questionList:hover {
     border: 1px solid rgb(253, 181, 83);
   }
+  .questionRowStyle {
+    border: 1px solid #fff;
+    .transition(border);
+    .link-group {
+      visibility: hidden;
+    }
+  }
+  .questionRowStyle:hover {
+    .transition(border);
+    border: 1px solid rgb(253, 181, 83);
+    .questionList {
+      border: 1px solid #fff;
+    }
+    .link-group {
+      visibility: visible;
+    }
+  }
+
   .questionLib {
     margin: 0 10px 10px;
     background-color: #FFF;

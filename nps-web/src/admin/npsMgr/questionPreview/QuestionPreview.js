@@ -32,6 +32,7 @@ class QuestionPreview extends React.PureComponent {
             currentPage: 1,
             pageCount: 1,
             pageList: [],
+            type: undefined,
             questionList: [],
             isPaging: 0
         };
@@ -541,10 +542,11 @@ class QuestionPreview extends React.PureComponent {
                     let params = GetRequest();
                     let values = {
                         questionResultList: question,
-                        targetUser: params.targetUser,
-                        sendUser: params.sendUser,
-                        taskId: params.taskId,
-                        time: params.time,
+                        targetUser: params.prod_inst_id,
+                        sendUser: params.sys_id,
+                        resultId: Number(params.rid),
+                        taskId: params.tid,
+                        time: params.t,
                         type: params.type,
                         id: params.id,
                     } ;
@@ -642,6 +644,9 @@ class QuestionPreview extends React.PureComponent {
                         <Button
                             style={{display: this.state.isPaging ? (this.state.currentPage === this.state.pageCount ? 'inline-block' : 'none') : 'inline-block'}}
                             type="primary" onClick={this.handleSubmit}>提交</Button>
+                        <Button
+                            style={{display: this.state.type === 'official' ? 'none' : 'inline-block'}}
+                            type="primary" onClick={() => {this.props.history.goBack()}}>返回</Button>
                     </Col>
                 </Row>
             </Spin>

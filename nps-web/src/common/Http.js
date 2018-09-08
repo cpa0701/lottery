@@ -118,15 +118,9 @@ export class Http {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
-                axios.defaults.headers.common['Authorization'] = 'Basic Y2xpZW50LW5wczoxMjM0NTY=';
-
-                // let api = this.getUrl(params.url);
-                // if(api === 'oauth/token') {
-                //     axios.defaults.headers.common['Authorization'] = 'Basic Y2xpZW50LW5wczoxMjM0NTY=';
-                // } else if(api !== 'login') {
-                //     axios.defaults.headers.common['Authorization'] = 'Bearer '+ sessionStorage.getItem('authToken');
-                // }
-
+                if(sessionStorage.getItem('authToken')) {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer '+ sessionStorage.getItem('authToken');
+                }
                 if (result.data.code === 200)
                     return result.data.data ? result.data.data : false;
                 else return true;

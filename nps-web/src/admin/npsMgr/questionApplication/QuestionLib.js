@@ -115,9 +115,9 @@ class QuestionLib extends React.PureComponent {
                                 </Select>
                             </Col>
                             <Col span={8}>
-                                <Select placeholder={'请选择题型'}
+                                <Select placeholder={'请选择分类'}
                                         onChange={(e) => {
-                                            this.setState({isNps: e ? 0 : 1, isSatisfied:e ? 1 : 0}, () => this.refreshLib())
+                                            this.setState({isNps: e ? 1 : 0, isSatisfied:e ? 1 : 0}, () => this.refreshLib())
                                         }}>
                                     <Option value={0}>nps</Option>
                                     <Option value={1}>满意度</Option>

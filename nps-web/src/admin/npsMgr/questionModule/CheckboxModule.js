@@ -13,7 +13,7 @@ export default class CheckboxModule extends PureComponent {
                 lineHeight: '34px',
                 marginLeft: '20px'
             } : {marginLeft: '20px'}}
-                             questionIndex={index} value={item.optionOrder} key={item.optionOrder} isblank={isBlank}
+                             questionIndex={index} value={item.optionOrder} key={item.optionOrder} isblank={isBlank} defaultChecked={item.checked === true}
                              logicList={item.logicList}>
                 {isView ? item.optionName :
                     <span>
@@ -28,7 +28,7 @@ export default class CheckboxModule extends PureComponent {
 
         return (
             <div style={{padding: '12px'}} className={'radio-module'}>
-                <h3>{index}、[多选题]{isView ? questionName :
+                <h3>{index}、{isView ? questionName :
                     <Input className="titleInput" defaultValue={questionName}
                            onBlur={(e) => this.props.questionNameBlur(e, index)}/>}</h3>
                 {optionLIst}
