@@ -15,6 +15,17 @@ public class SurveyTaskPublishBo {
     @ApiModelProperty("渠道")
     private String channelType;
 
+    @ApiModelProperty("是否成功")
+    private int isSuccee;
+
+    public int getIsSuccee() {
+        return isSuccee;
+    }
+
+    public void setIsSuccee(int isSuccee) {
+        this.isSuccee = isSuccee;
+    }
+
     public String getTaskId() {
         return taskId;
     }

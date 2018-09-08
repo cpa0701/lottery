@@ -21,7 +21,7 @@ public class ConstantUtils {
     public static final String SMS_SEND_STREAMING_NO = "08512016011315215";
     public static final String SMS_SEND_USER_10001 = "10001";
     public static final String SMS_SEND_USER_10086 = "10086";
-    public static final String SMS_SEND_BASE_URL = "http://localhost:18088/nps/surveyTask/viewer.jsp?access_token=";
+    public static final String SMS_SEND_BASE_URL = "http://10.45.48.139:3000/question.html#/?access_token=";
 
     /**调查任务表survey_task的任务状态STATUS*/
     public static final String SURVEY_TASK_STATUS_00 = "00";//00 正常结束

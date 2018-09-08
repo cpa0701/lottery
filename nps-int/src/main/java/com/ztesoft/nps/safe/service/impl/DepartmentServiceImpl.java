@@ -43,6 +43,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Department> findByCondition(DepartmentQuery condition) {
+		if(condition.getParentId()==null){
+			condition.setParentId(0L);
+		}
 		return departmentMapper.findByCondition(condition);
 	}
 

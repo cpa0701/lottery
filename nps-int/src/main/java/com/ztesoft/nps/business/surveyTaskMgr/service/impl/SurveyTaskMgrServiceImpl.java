@@ -1,9 +1,7 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 
-import com.ztesoft.nps.business.qstMgr.model.QuestionBank;
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireBankMapper;
 import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank;
-import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyNpsInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyNpsInfo;
@@ -31,10 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.spi.ConfigurationState;
-import java.awt.*;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -224,8 +222,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
-        //删除task_use表
-        taskUserMapper.deleteByPrimaryKey(taskId);
+
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"edit"));
         //type 为 edit 只插入渠道信息
@@ -239,8 +236,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         TaskChannelExample example = new TaskChannelExample();
         example.createCriteria().andTaskIdEqualTo(taskId);
         taskChannelMapper.deleteByExample(example);
-        //删除task_use表
-        taskUserMapper.deleteByPrimaryKey(taskId);
+
 
         //更新任务信息
         surveyTaskMapper.updateByPrimaryKeySelective(caseBo2Bean(bo,"editdraft"));
@@ -250,14 +246,14 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void publishSurvetTask(SurveyTaskPublishBo bo) {
-        createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_NO);
+    public PublishBo publishSurvetTask(SurveyTaskPublishBo bo) {
+        return createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_NO);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void testPublishSurvetTask(SurveyTaskPublishBo bo) {
-        createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_YES);
+    public PublishBo testPublishSurvetTask(SurveyTaskPublishBo bo) {
+        return createSmsSend(bo,ConstantUtils.SURVEY_TASK_TEST_YES);
     }
 
     @Override
@@ -293,7 +289,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
     /**
      * 生成推送消息
      */
-    private void createSmsSend(SurveyTaskPublishBo bo,String isTest){
+    private PublishBo createSmsSend(SurveyTaskPublishBo bo, String isTest){
         //获取上传的目标对象
         String queryTargetUsers = getQueryTargetUserSql(bo,isTest);
         List<Map<String,Object>> targetUserList = DatabaseUtil.queryForList(queryTargetUsers);
@@ -350,10 +346,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
                     .append("&prod_inst_id=").append(taskExe.getTargetUser())
                     .append("&sys_id=").append(taskExe.getSendUser())
                     .append("&tid=").append(taskExe.getTaskId())
-                    .append("&t=").append(new Date().getTime());
+                    .append("&t=").append(new Date().getTime())
+                    .append("&id=").append(surveyTask.getQstnaireId())
+//                    .append("&sno=").append()
+                    .append("&type=official");
 
             taskExe.setBaseUrl(baseUrl.toString());
-            taskExe.setShortUrl(ShortUrlUtils.shortUrl(taskExe.getBaseUrl()));
+            taskExe.setShortUrl(ShortUrlUtils.shortUrl(taskExe.getBaseUrl())+ConstantUtils.RES_SYSTEM_NAME);
 
             smsList.add(new String[]{
                     taskExe.getSerialId(),taskExe.getTaskId(),taskExe.getChannelType().toString(),
@@ -401,7 +400,13 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             createSurveyTaskResultBaseData(bo.getTaskId(),smsList.size());
         }
 
-        changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+        if(bo.getIsSuccee()==0){
+            changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+            return new PublishBo(0,"发布成功");
+        }else{
+            return new PublishBo(1,"发布失败, 测试不通过");
+        }
+
     }
 
     private void changeSurveyStatus(String taskId,String status){
@@ -462,26 +467,37 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             //插入任务数据
             surveyTaskMapper.insertSelective(caseBo2Bean(bo, type));
         }
-
         //插入任务渠道信息
         taskChannelMapper.insertSelective(bo.getTaskChannel());
 
         //插入测试号码
-        TaskUser taskUser = new TaskUser();
+        //去数据库重复
+        TaskUserExample taskUserExample = new TaskUserExample();
+        taskUserExample.createCriteria().andTaskIdEqualTo(bo.getTaskId()).andIsTestEqualTo(new Short("0"));
+        List<TaskUser> taskUserList = taskUserMapper.selectByExample(taskUserExample);
         List<String> accNumList = bo.getTestNumberList();
-        List<String[]> sqlParamList = new ArrayList<String[]>();
-        String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
-        for (String accNum: accNumList) {
-            sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelType().toString(),bo.getTaskId(),accNum,
-                DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),"","0","1",ConstantUtils.RES_SYSTEM_NAME});
+        if(ListUtil.isNotNull(taskUserList)){
+            for(TaskUser tu : taskUserList){
+                if(accNumList.contains(tu.getUserAccount())){
+                    accNumList.remove(tu.getUserAccount());
+                }
+            }
+        }
+        if(ListUtil.isNotNull(accNumList)){
+            List<String[]> sqlParamList = new ArrayList<String[]>();
+            String batchSaveSql = "insert into task_user(task_user_id,channel_type,task_id,user_account,create_time,area_id,is_test,is_flag,res_sys) values(?,?,?,?,?,?,?,?,?)";
+            for (String accNum: accNumList) {
+                sqlParamList.add(new String[]{StringUtil.getRandom32PK(),bo.getTaskChannel().getChannelType().toString(),bo.getTaskId(),accNum,
+                        DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),"","0","1",ConstantUtils.RES_SYSTEM_NAME});
+            }
+            try {
+                DatabaseUtil.excuteBatch(batchSaveSql, sqlParamList);
+            } catch (SQLException e) {
+                throw new NpsBusinessException(e.getMessage());
+            }
+            sqlParamList.clear();
         }
 
-        try {
-            DatabaseUtil.excuteBatch(batchSaveSql, sqlParamList);
-        } catch (SQLException e) {
-            throw new NpsBusinessException(e.getMessage());
-        }
-        sqlParamList.clear();
 
     }
 
@@ -551,8 +567,16 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         } else if (type.equals("edit")){
             surveyTask.setStatus(ConstantUtils.SURVEY_TASK_STATUS_03);  //审批中
         }
-        surveyTask.setSurveySdate(DateUtil.getDate(bo.getSurveySdate(), DateFormatConst.YMD));
-        surveyTask.setSurveyEdate(DateUtil.getDate(bo.getSurveyEdate(), DateFormatConst.YMD));
+
+        //时间格式更改
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            surveyTask.setSurveySdate(format.parse(bo.getSurveySdate()));
+            surveyTask.setSurveyEdate(format.parse(bo.getSurveyEdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         surveyTask.setQstnaireId(bo.getQstnaireId());
         if(!type.equals("edit")){
             surveyTask.setCreateUid(bo.getUserId());  //这里需要根据当前用户设置
@@ -570,7 +594,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
      */
     private String getSurveyTaskQuerySql(SurveyTaskQuery condition){
         StringBuilder surveyTaskQuerySql = new StringBuilder();
-        surveyTaskQuerySql.append(" select  st.task_name as taskName, st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
+        surveyTaskQuerySql.append(" select  st.task_type as taskType,st.task_name as taskName, st.task_id as taskId, qc.catalog_name as catalogName, st.qstnaire_id as qstnaireId, ");
         surveyTaskQuerySql.append("     '").append(ConstantUtils.SURVEY_TASK_CHANNEL_3).append("' as channelName, ");
         surveyTaskQuerySql.append("     CASE st.status ");
         surveyTaskQuerySql.append("         WHEN '00' then '").append(ConstantUtils.SURVEY_TASK_STATUS_00).append("' ");
@@ -674,6 +698,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         reqVo.setProdInstId(taskExe.getTargetUser());
         String accessToken = Md5Tool.getHashString(reqVo.toString()).toUpperCase();
         authTokenInsertSqlList.add(new String[]{ DateUtil.getFormat(new Date(),DateFormatConst.YMDHMS_),accessToken,uid });
+
         return accessToken;
     }
 

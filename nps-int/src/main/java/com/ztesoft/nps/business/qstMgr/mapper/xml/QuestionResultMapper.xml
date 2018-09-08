@@ -171,15 +171,15 @@
     survey_result_no,
     question_id,
     row_order,
-    question_result,
+    question_result
     )
     values
-    <foreach collection="list" item="qusetionResult" index="index" separator=",">
+    <foreach collection="list" item="questionResult" index="index" separator=",">
       (
-      #{qusetionResult.surveyResultNo},
-      #{qusetionResult.questionId},
-      #{qusetionResult.rowOrder},
-      #{qusetionResult.questionResult}
+      #{questionResult.surveyResultNo,jdbcType=BIGINT},
+      #{questionResult.questionId,jdbcType=VARCHAR},
+      0,
+      #{questionResult.questionResult,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

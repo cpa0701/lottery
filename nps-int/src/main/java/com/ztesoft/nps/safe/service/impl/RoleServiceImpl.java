@@ -66,6 +66,9 @@ public class RoleServiceImpl implements RoleService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Role> findByCondition(RoleQuery condition) {
+		if (condition.getParentId()==null){
+			condition.setParentId(0L);
+		}
 		return roleMapper.findByCondition(condition);
 	}
 

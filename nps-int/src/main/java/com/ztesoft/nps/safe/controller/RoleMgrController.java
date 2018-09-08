@@ -180,8 +180,8 @@ public class RoleMgrController {
 			throw new NpsObjectNotFoundException(userRole.getUserId());
 		}
 
-		userRole.setCreatedBy(userRole.getUserId().toString());
-		userRole.setModifiedBy(userRole.getUserId().toString());
+		userRole.setCreatedBy(StringUtil.toString(userRole.getCurrentUserId()));
+		userRole.setModifiedBy(StringUtil.toString(userRole.getUserId().toString()));
 
 		userRole.setRoleId(userRole.getRoleId());
 

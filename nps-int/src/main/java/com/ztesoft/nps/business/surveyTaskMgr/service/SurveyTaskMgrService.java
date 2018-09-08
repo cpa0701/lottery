@@ -26,9 +26,9 @@ public interface SurveyTaskMgrService {
 
     void editSurveyTaskToDraft(SurveyTaskAddBo bo);
 
-    void publishSurvetTask(SurveyTaskPublishBo bo);
+    PublishBo publishSurvetTask(SurveyTaskPublishBo bo);
 
-    void testPublishSurvetTask(SurveyTaskPublishBo bo);
+    PublishBo testPublishSurvetTask(SurveyTaskPublishBo bo);
 
     SurveyTaskByIdQuery selectSurveyTaskById(SurveyTaskIdQuery bo);
 

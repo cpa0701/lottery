@@ -114,8 +114,7 @@ public class SurveyTaskMgrController {
         if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
             throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
-        surveyTaskMgrService.publishSurvetTask(bo);
-        return Result.success(1);
+        return Result.success(surveyTaskMgrService.publishSurvetTask(bo));
     }
 
     @ApiOperation(value = "测试任务", notes = "测试任务")
@@ -124,8 +123,8 @@ public class SurveyTaskMgrController {
         if (StringUtil.isNull(bo.getTaskId())||StringUtil.isNull(bo.getChannelType())) {
             throw new NpsRequestParamException(ConstantUtils.EXECPTION_REQUEST_PARAM_DEFICIENCY);
         }
-        surveyTaskMgrService.testPublishSurvetTask(bo);
-        return Result.success(1);
+
+        return Result.success(surveyTaskMgrService.testPublishSurvetTask(bo));
     }
 
     @ApiOperation(value = "获取任务id", notes = "获取任务id")

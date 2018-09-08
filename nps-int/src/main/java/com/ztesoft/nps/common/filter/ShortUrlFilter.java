@@ -38,7 +38,7 @@ public class ShortUrlFilter implements Filter {
             int endIndex = requestURI.lastIndexOf("/") ;
             String shortUrl = requestURI.substring(endIndex+1) ;
 
-            Map<String,Object> resultMap = SmsBussinessBo.getBaseUrlFromShortUrl(shortUrl);;
+            Map<String,Object> resultMap = SmsBussinessBo.getBaseUrlFromShortUrl(shortUrl);
             if(StringUtil.isNull(MapUtil.getString(resultMap,"short_url"))
                     || StringUtil.isNull(MapUtil.getString(resultMap,"base_url"))){
                 filterChain.doFilter(req,resp);

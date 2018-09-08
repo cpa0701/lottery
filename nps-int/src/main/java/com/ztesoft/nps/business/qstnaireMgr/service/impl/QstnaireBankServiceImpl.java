@@ -29,6 +29,7 @@ import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -231,8 +232,13 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
 
     @Override
     public int submitQstnaire(QuestionResultQuery questionResultQuery) {
+        String surveyResultNo = StringUtil.getRandom6Number(6);
         //获得结果LIST
         List<QuestionResult> questionResultlist = questionResultQuery.getQuestionResultList();
+        for(QuestionResult questionResult : questionResultlist){
+            questionResult.setSurveyResultNo(new Long(surveyResultNo));
+            questionResult.setRowOrder(new Short("0"));
+        }
         //批量插入结果
         questionResultMapper.insertByList(questionResultlist);
         //所有题目的ID
@@ -264,7 +270,7 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         surveyResult.setStatus(new Short("1"));
         //根据resultId 更新数据
         SurveyResultExample surveyResultExample = new SurveyResultExample();
-        surveyResultExample.createCriteria().andResultIdEqualTo(Long.valueOf(questionResultQuery.getSurveyResultNo()));
+        surveyResultExample.createCriteria().andResultIdEqualTo(Long.valueOf(surveyResultNo));
         surveyResultMapper.updateByExampleSelective(surveyResult,surveyResultExample);
 
         String resultId = surveyResult.getResultId().toString();

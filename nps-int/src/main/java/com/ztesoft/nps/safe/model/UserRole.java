@@ -18,6 +18,11 @@ public class UserRole {
 	 */
 	@ApiModelProperty("用户ID")
 	private Long userId;
+	/**
+	 * 当前用户ID
+	 */
+	@ApiModelProperty("当前用户ID")
+	private Long currentUserId;
 
 	/**
 	 * 角色ID
@@ -106,4 +111,11 @@ public class UserRole {
 		this.modifiedAt = modifiedAt;
 	}
 
+	public Long getCurrentUserId() {
+		return currentUserId;
+	}
+
+	public void setCurrentUserId(Long currentUserId) {
+		this.currentUserId = currentUserId;
+	}
 }
