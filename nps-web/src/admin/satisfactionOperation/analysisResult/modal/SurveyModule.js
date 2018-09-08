@@ -2,77 +2,63 @@ import {PureComponent} from "react";
 import React from 'react';
 import {Row, Col} from "antd";
 import ResultService from "../../../../services/analysisResult/ResultService"
-import TaskResearchService from "../../../../services/research/TaskResearchService"
 
 const echarts = require('echarts');
+
 export default class SurveyModule extends PureComponent {
     constructor(props) {
         super(props);
-        this.props.OnRef(this);
+        this.props.onRef(this);
     }
-
-    componentWillMount() {
-        // const {params}=this.props;
-        // debugger;
-        // console.log(params)
-        // TaskResearchService.getMissionList(params).then(result=>{
-        //     if(result){
-        //
-        //     }
-        // })
-    }
-
-    getData = () => {
-        console.log('我是getdata方法');
-        // const {params}=this.props;
-        // ResultService.getTargetshow(params).then(result=>{
-        //     if(result){
-        //
-        //     }
-        // })
-    }
+    getData = (params) => {
+        let param = {
+            areaId: '00',
+            qstnaireId: '',
+            taskType: 0,
+            ...params
+        };
+        // 获取nps值分布
+        ResultService.getNpsTargetshow(param).then(result=>{
+            if(result){
+                let xData = [], taskCount = [], partakeCount = [], finishCount = [];
+                result.map(item => {
+                    xData.push(item.taskName);
+                    taskCount.push(item.npsCount1);
+                    partakeCount.push(item.npsCount2);
+                    finishCount.push(item.npsCount3);
+                    return '';
+                });
+                this.createNPSChart(xData, taskCount, partakeCount, finishCount);
+            }
+        });
+        // 获取对象分析
+        ResultService.getObjTargetshow(param).then(result=>{
+            if(result){
+                let xData = [], taskCount = [], partakeCount = [], finishCount = [];
+                result.map(item => {
+                    xData.push(item.taskName);
+                    taskCount.push(item.taskCount);
+                    partakeCount.push(item.partakeCount);
+                    finishCount.push(item.finishCount);
+                    return '';
+                });
+                this.createChart(xData, taskCount, partakeCount, finishCount);
+            }
+        })
+    };
 
     componentDidMount() {
-        var myChart = echarts.init(document.getElementById("barChartone"));
-        var app = {};
-        var posList = [
-            'left', 'right', 'top', 'bottom',
-            'inside',
-            'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
-            'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
-        ];
-        app.config = {
-            rotate: 90,
-            align: 'left',
-            verticalAlign: 'middle',
-            position: 'insideBottom',
-            distance: 15,
-            onChange: function () {
-                var labelOption = {
-                    normal: {
-                        rotate: app.config.rotate,
-                        align: app.config.align,
-                        verticalAlign: app.config.verticalAlign,
-                        position: app.config.position,
-                        distance: app.config.distance
-                    }
-                };
-                myChart.setOption({
-                    series: [{
-                        label: labelOption
-                    }, {
-                        label: labelOption
-                    }, {
-                        label: labelOption
-                    },]
-                });
-            }
-        };
+        // this.createChart();
+        // this.createNPSChart();
+        this.getData();
+    }
+    //调研结果值分布
+    createChart = (xData, taskCount, partakeCount, finishCount) => {
+        let myChart = echarts.init(document.getElementById("barChartone"));
+        myChart.clear();
+        let labelOption = {};
 
-
-        var labelOption = {};
-
-        var option = {
+        let option = {
             title: {
                 text: '调研对象分析'
             },
@@ -81,7 +67,8 @@ export default class SurveyModule extends PureComponent {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'line'
-                }
+                },
+                // formatter: '{a}: {b} {c}'
             },
             legend: {
                 data: ['调研人数', '参与人数', '完成人数',],
@@ -93,7 +80,8 @@ export default class SurveyModule extends PureComponent {
                 {
                     type: 'category',
                     // axisTick: {show: true},
-                    data: ['2012', '2013', '2014', '2015', '2016']
+                    // data: ['2012', '2013', '2014', '2015', '2016']
+                    data: xData
                 }
             ],
             yAxis: [
@@ -107,21 +95,24 @@ export default class SurveyModule extends PureComponent {
                     type: 'bar',
                     barGap: 0,
                     label: labelOption,
-                    data: [320, 332, 301, 334, 390],
+                    // data: [320, 332, 301, 334, 390],
+                    data: taskCount,
                     barMaxWidth: 20,//最大宽度
                 },
                 {
                     name: '参与人数',
                     type: 'bar',
                     label: labelOption,
-                    data: [220, 182, 191, 234, 290],
+                    // data: [220, 182, 191, 234, 290],
+                    data: partakeCount,
                     barMaxWidth: 20,//最大宽度
                 },
                 {
                     name: '完成人数',
                     type: 'bar',
                     label: labelOption,
-                    data: [150, 232, 201, 154, 190],
+                    // data: [150, 232, 201, 154, 190],
+                    data: finishCount,
                     barMaxWidth: 20,//最大宽度
                 },
             ]
@@ -129,16 +120,18 @@ export default class SurveyModule extends PureComponent {
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
         }
-
-
-        //调研NPS值分布
-        var chartTwo = echarts.init(document.getElementById("barCharttwo"));
-        var optionone = {
+    };
+    //调研NPS值分布
+    createNPSChart = (xData, taskCount, partakeCount, finishCount) => {
+        let chartTwo = echarts.init(document.getElementById("barCharttwo"));
+        chartTwo.clear();
+        let optionone = {
             title: {
                 text: '调研NPS值分布'
             },
             tooltip: {
                 trigger: 'axis',
+                // formatter: '{a}: {b} {c}'
             },
             legend: {
                 data: ['推荐者', '被动者', '贬损者',],
@@ -152,7 +145,8 @@ export default class SurveyModule extends PureComponent {
             xAxis: [
                 {
                     type: 'category',
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    data: xData,
                 }
             ],
             yAxis: [
@@ -165,7 +159,8 @@ export default class SurveyModule extends PureComponent {
                     name: '推荐者',
                     type: 'bar',
                     stack: '人',
-                    data: [120, 132, 101, 134, 90, 230, 210],
+                    // data: [120, 132, 101, 134, 90, 230, 210],
+                    data: taskCount,
                     itemStyle: {
                         color: '#F3E309'
                     },
@@ -175,7 +170,8 @@ export default class SurveyModule extends PureComponent {
                     name: '被动者',
                     type: 'bar',
                     stack: '人',
-                    data: [220, 182, 191, 234, 290, 330, 310],
+                    // data: [220, 182, 191, 234, 290, 330, 310],
+                    data: partakeCount,
                     itemStyle: {
                         color: '#FF4400'
                     }
@@ -184,7 +180,8 @@ export default class SurveyModule extends PureComponent {
                     name: '贬损者',
                     type: 'bar',
                     stack: '人',
-                    data: [150, 232, 201, 154, 190, 330, 410],
+                    // data: [150, 232, 201, 154, 190, 330, 410],
+                    data: finishCount,
                     itemStyle: {
                         color: '#87CEFA'
                     }
@@ -194,18 +191,17 @@ export default class SurveyModule extends PureComponent {
         if (optionone && typeof optionone === "object") {
             chartTwo.setOption(optionone, true);
         }
-    }
+    };
 
     render() {
-        const {params, height} = this.props;
+        const { height } = this.props;
+
         return (
             <div>
                 <Row>
-                    <Col span='24' id="barChartone" style={{height: height}}>
-
+                    <Col span='22' offset={1} id="barChartone" style={{height: height}}>
                     </Col>
-                    <Col span='24' id="barCharttwo" style={{height: height}}>
-
+                    <Col span='22' offset={1} id="barCharttwo" style={{height: height}}>
                     </Col>
                 </Row>
             </div>

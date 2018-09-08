@@ -70,7 +70,7 @@ class QuestionApplicationModal extends React.PureComponent {
                                 </Col>
                             </Row>
                             <Row type="flex" justify="start">
-                                <Col span={4}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
+                                <Col span={5}><Icon type="appstore" style={{marginRight: '5px'}}/>分类：{item.catalogName}
                                 </Col>
                                 <Col span={4}><Icon type="ant-design" style={{marginRight: '5px'}}/>任务状态：{FilterTool.filterStatus(item.status)}
                                 </Col>

@@ -49,8 +49,7 @@ export default class extends PureComponent {
         return (
             <Modal
                 title="选择问卷"
-                width={1200}
-                height={1200}
+                width={1000}
                 maskClosable={false}
                 visible={add}
                 onOk={this.onSubmit}
