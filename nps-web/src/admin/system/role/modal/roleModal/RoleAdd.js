@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Row, Col, Input, Form } from 'antd';
 import {inject} from "mobx-react/index";
-import Role from "../../Role";
 const {TextArea} = Input;
 const FormItem = Form.Item;
 
@@ -21,7 +20,7 @@ export default class extends Component {
   };
 
   render() {
-    const {role} = this.props.stores.I18nModel.outputLocale
+    const { role } = this.props.stores.I18nModel.outputLocale;
     const {add, parentId = '0',form: {getFieldDecorator}} = this.props;
     const formItemLayout = {
       labelCol: {xs: {span: 24}, sm: {span: 6}},

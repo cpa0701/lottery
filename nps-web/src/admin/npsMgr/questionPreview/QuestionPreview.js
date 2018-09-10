@@ -228,7 +228,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 });
-                let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.length && question.optionFilteredList.map(optionFiltered => {
@@ -245,10 +245,15 @@ class QuestionPreview extends React.PureComponent {
                                     } else if (logic.logicType === '01') {//跳转的逻辑
                                         arr01.push(option)
                                     }
-                                })
-                            })
-                        })
-                    })
+                                    return '';
+                                });
+                                return '';
+                            });
+                            return '';
+                        });
+                        return '';
+                    });
+                    return '';
                 });
                 if (k.logicType === '00') {//关联逻辑判断
                     questionList[skiptoQuestionOrder - 1].isShow = [arr000, arr001].some((arr, i) => {//或的被关联题关联逻辑的结果
@@ -323,7 +328,9 @@ class QuestionPreview extends React.PureComponent {
                             })
                     }
                 }
+                return '';
             })
+            return '';
         });
         //将之前替换的位置换回来
         let length = questionList[e.target.questionIndex - 1].optionList.length;
@@ -382,7 +389,7 @@ class QuestionPreview extends React.PureComponent {
                         return logic.setupQuestionOrder === question.questionOrder
                     })
                 });
-                let arr000 = [], arr001 = [], arr010 = [], arr011 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
+                let arr000 = [], arr001 = [], arr01 = [];//定义关联且，关联或，跳转且，跳转或空数组用来存放满足条件的option
                 relatedQuestionList.map(list => {//对相关题的相关选项根据关联和跳转，且和或进行分组
                     list.map(question => {
                         question.optionFilteredList.length && question.optionFilteredList.map(optionFiltered => {
@@ -440,12 +447,13 @@ class QuestionPreview extends React.PureComponent {
                     if (skiptoQuestionOrder === -1 || skiptoQuestionOrder === -2) {//直接调至结尾
                         let isOver = arr01.some(option => {
                             return option.checked;
-                        })
+                        });
                         if (isOver) {
                             questionList.map((item, i) => {
                                 if (i > (questionIndex - 1)) {
                                     item.jumped = true;
                                 }
+                                return '';
                             });
                             this.over = skiptoQuestionOrder;//将跳转至结束,-1为记录结果，-2为不记录结果
                         } else {
@@ -453,6 +461,7 @@ class QuestionPreview extends React.PureComponent {
                                 if (i > (questionIndex - 1)) {
                                     item.jumped = false;
                                 }
+                                return '';
                             });
                             this.over = false;//将跳转至结束设为false
                         }
@@ -463,23 +472,25 @@ class QuestionPreview extends React.PureComponent {
                                     return option.checked;
                                 })
                             } else return false;
-                        })
+                        });
                         if (questionList[skiptoQuestionOrder - 1].isJump)//如果此题确实跳转则将选择题和被跳转题之间题全部隐藏
                             questionList.map((item, i) => {
                                 if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                                     item.jumped = true;
                                 }
-                            })
+                                return '';
+                            });
                         else//如果此题不跳转则将选择题和被跳转题之间题隐藏属性去掉
                             questionList.map((item, i) => {
                                 if (i > (questionIndex - 1) && i < (skiptoQuestionOrder - 1)) {
                                     item.jumped = false;
                                 }
+                                return '';
                             })
                     }
                 }
                 return '';
-            })
+            });
             return '';
         });
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
@@ -487,23 +498,24 @@ class QuestionPreview extends React.PureComponent {
                 if (question.questionOrder === item.questionOrder && question.isPaging !== 1) {
                     question = item
                 }
-            })
+                return '';
+            });
             return question;
-        })
+        });
         this.setState({questionList: [...questionResultList]})
     };
     // 填空题数据变化
     onBlankChange = (e) => {
         let questionResultList = this.state.questionList.map(question => {//将分页信息装回
             if (question.questionOrder === parseInt(e.target.attributes.questionIndex.value) && question.isPaging !== 1) {
-                question.value = e.target.value
+                question.value = e.target.value;
                 if (question.value || question.isBlank === 0)//如果有值，则将未填写必填的提示去除
                     question.showTip = false;
                 else
                     question.showTip = true;
             }
             return question;
-        })
+        });
         this.setState({questionList: [...questionResultList]})
     };
 

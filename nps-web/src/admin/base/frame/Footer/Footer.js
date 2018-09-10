@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 
 import "./Footer.less"
-import {inject, observer} from "mobx-react/index"
+import { inject } from "mobx-react/index"
 
 const { Footer } = Layout;
 

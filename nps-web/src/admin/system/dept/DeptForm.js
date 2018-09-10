@@ -56,7 +56,7 @@ class AdvancedSearchForm extends Component {
             }, {
                 label: this.props.stores.I18nModel.outputLocale.dept.accountStatus,
                 type: 'select',
-                key: 'status ',
+                key: 'status',
                 optionList: [{key: '', title:this.props.stores.I18nModel.outputLocale.dept.all }, {key: 1, title: this.props.stores.I18nModel.outputLocale.dept.normal}, {key: 2, title: this.props.stores.I18nModel.outputLocale.dept.seal}, {
                     key: 3,
                     title:this.props.stores.I18nModel.outputLocale.dept.changepwd,

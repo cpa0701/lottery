@@ -16,16 +16,16 @@ const loop = data => data.map((item) => {
 class TreeComponent extends PureComponent {
 
     render() {
-        const {dept} = this.props.stores.I18nModel.outputLocale
-        const {treeData, onSelect, onCheck, checkedKeys, onLoadData, checkable, showLine, defaultExpandedKeys, defaultDeptSelectedKeys} = this.props;
+        const {dept} = this.props.stores.I18nModel.outputLocale;
+        const {treeData, onSelect, onCheck, onLoadData, checkable, showLine, defaultExpandedKeys, defaultDeptSelectedKeys} = this.props;
 
         return treeData.length
             ? <Tree
                 showLine={showLine}
                 checkable={checkable}
-                defaultExpandedKeys={defaultExpandedKeys ? defaultExpandedKeys : [treeData[0].key.toString()]}
-                defaultSelectedKeys={defaultDeptSelectedKeys ? defaultDeptSelectedKeys : [treeData[0].key.toString()]}
-                defaultCheckedKeys={defaultDeptSelectedKeys ? defaultDeptSelectedKeys : [treeData[0].key.toString()]}
+                // defaultExpandedKeys={defaultExpandedKeys ? defaultExpandedKeys : [treeData[0].key.toString()]}
+                // defaultSelectedKeys={defaultDeptSelectedKeys ? defaultDeptSelectedKeys : [treeData[0].key.toString()]}
+                // defaultCheckedKeys={defaultDeptSelectedKeys ? defaultDeptSelectedKeys : [treeData[0].key.toString()]}
                 onSelect={onSelect}
                 onCheck={onCheck}
                 loadData={onLoadData}>{loop(treeData)}</Tree>

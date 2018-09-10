@@ -21,11 +21,12 @@ class LoginModel {
     login(user) {
         this.identityCard = user.identityCard;
         this.username = user.username;
-        this.token = user.token;
+        this.token = user.token.access_token;
         this.idcard = user.idcard;
         this.id = user.id;
         this.setSession('userId', user.id);
-        this.setSession('uc', user.status)
+        this.setSession('uc', user.status);
+        localStorage.setItem('authToken', user.token.access_token);
     }
 
     @action
@@ -37,6 +38,7 @@ class LoginModel {
 
         this.removeSession('userId');
         this.removeSession('uc');
+        localStorage.removeItem('authToken');
     }
 
     getSessionUser = () => {

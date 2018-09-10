@@ -151,6 +151,7 @@ export default {
         'deleteOneCharacter':'一次只能删除一条角色',
         'selectDeleteCharacter':'请选择要删除的角色',
         'selectEditRole':'请选择需要编辑权限的角色',
+        'selectOneCharacterAuth':'每次只能选择一个权限',
         'tickDeleteRole':'请在左侧勾选要删除权限的角色',
         'selectAreaRole':'请选择需要选择区域的角色',
         'selectEditDepartmentRole':'请选择需要编辑部门的角色',

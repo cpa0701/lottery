@@ -130,7 +130,7 @@ export default class Dept extends PureComponent {
     }
 
     componentWillMount() {
-        this.getDomainTree();
+        this.getDomainTree({parentId: 0});
         this.getDeptTree();
         // this.getAllAuthorityData();
     }
@@ -211,8 +211,8 @@ export default class Dept extends PureComponent {
                 });
                 this.setState({
                     deptTreeData: treeData,
-                    departmentEditData: treeData[0],
-                    selectedDeptKey: treeData.length ? treeData[0].key : ''
+                    // departmentEditData: treeData[0],
+                    // selectedDeptKey: treeData.length ? treeData[0].key : ''
                 }, () => {
                     this.getStaffData({deptId: this.state.selectedDeptKey})
                 });
@@ -256,7 +256,7 @@ export default class Dept extends PureComponent {
         selectedKeys = selectedKeys ? selectedKeys[selectedKeys.length - 1] : '';
         info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
         this.setState({
-            departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : "",
+            departmentEditData: info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props : [],
             selectedKeys: selectedKeys,
             selectedDeptKey: selectedKeys,
         }, () => {
@@ -390,7 +390,7 @@ export default class Dept extends PureComponent {
     //点击查询部门树
     handlerSearchDepartment = () => {
         let params = this.props.form.getFieldsValue();
-        params.regionId = this.state.selectedDomainKeys;
+        params.regionId = this.state.selectedDomainKeys[0];
         this.setState({
             deptTreeData: [],
         });
@@ -470,10 +470,11 @@ export default class Dept extends PureComponent {
         let visible = !!flag;
         this.setState({
             modalDeptVisible: visible,
+            deptTreeData: [],
         });
 
         // 页面关闭了要重新查询
-        !visible && this.handlerSearchDepartment();
+        !visible &&  this.getDeptTree();
     };
     //点击勾选方法
     handleSelectRows = (record, selected, selectedRows) => {
@@ -561,7 +562,7 @@ export default class Dept extends PureComponent {
             DeptService.ediStaff(this.state.staffData).then(result => {
                 if (result) {
                     message.success(this.state.depart.deleteSuccess);
-                    this.getStaffData({deptId: this.state.selectedDeptKey});
+                    this.getStaffData({deptId: this.state.selectedDeptKey, status: 1});
                 }
             });
         } else {

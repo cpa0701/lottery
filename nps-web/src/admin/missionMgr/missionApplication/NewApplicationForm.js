@@ -27,7 +27,7 @@ const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const {TextArea} = Input;
-const QRCode = require('qrcode.react');
+// const QRCode = require('qrcode.react');
 //获取url参数
 const GetRequest = () => {
     let url = window.location.hash.substr(2); //获取url中"?"符后的字串
@@ -218,6 +218,9 @@ class NewApplicationForm extends React.PureComponent {
             url: 'surveyTaskMgr/userTargetImport',
             method: 'post',
             processData: false,
+            headers: {
+            'Authorization': 'Bearer '+ localStorage.getItem('authToken')
+            },
             data: formData,
             success: (result) => {
                 this.setState({
@@ -721,153 +724,154 @@ class NewApplicationForm extends React.PureComponent {
             </FormItem>
         </div>);
         //奖励措施
-        let measure = null;
-        if (this.state.checkedMeasure) {
-            measure = (
-                <div>
-                    <Row className={'row2'}>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="赠费类型：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('measureType', {
-                                    rules: [],
-                                    initialValue: " ",
-                                })(
-                                    <Select multiple placeholder="--请选择--" style={{width: '100%'}}>
-                                        <Option value="shortmessage">10元赠费</Option>
-                                        <Option value="wechart">30元赠费</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span='12' className={'select'}>
-                            <FormItem label="赠费数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
-                                {getFieldDecorator('measureNumber', {
-                                    rules: [],
-                                    initialValue: " ",
-                                })(
-                                    <Input size="default"/>
-                                )}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                </div>)
-        }
+        // let measure = null;
+        // if (this.state.checkedMeasure) {
+        //     measure = (
+        //         <div>
+        //             <Row className={'row2'}>
+        //                 <Col span='12' className={'select'}>
+        //                     <FormItem label="赠费类型：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+        //                         {getFieldDecorator('measureType', {
+        //                             rules: [],
+        //                             initialValue: " ",
+        //                         })(
+        //                             <Select multiple placeholder="--请选择--" style={{width: '100%'}}>
+        //                                 <Option value="shortmessage">10元赠费</Option>
+        //                                 <Option value="wechart">30元赠费</Option>
+        //                             </Select>
+        //                         )}
+        //                     </FormItem>
+        //                 </Col>
+        //                 <Col span='12' className={'select'}>
+        //                     <FormItem label="赠费数量：" labelCol={{span: 4}} wrapperCol={{span: 12}}>
+        //                         {getFieldDecorator('measureNumber', {
+        //                             rules: [],
+        //                             initialValue: " ",
+        //                         })(
+        //                             <Input size="default"/>
+        //                         )}
+        //                     </FormItem>
+        //                 </Col>
+        //             </Row>
+        //         </div>)
+        // }
         //常态调研
-        let research = null;
-        if (this.state.checkedResearch) {
-            research = (
-                <div>
-                    <Row className={'row2'}>
-                        <Col span='4' className={'select'}>
-                            <FormItem>
-                                {getFieldDecorator('researchType', {
-                                    rules: [],
-                                    initialValue: "1",
-                                })(
-                                    <Select onChange={this.handleChange}>
-                                        <Option value="1">每月</Option>
-                                        <Option value="2">每季度</Option>
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        {this.state.rsFlag ?
-                            <div>
-                                <Col span='12' className={'select'}>
-                                    <FormItem>
-                                        {getFieldDecorator('measureSelect', {
-                                            rules: [],
-                                            initialValue: " ",
-                                        })(
-                                            <RadioGroup>
-                                                <Radio className={'radio'} value={1} disabled>1</Radio>
-                                                <Radio className={'radio'} value={2} disabled>2</Radio>
-                                                <Radio className={'radio'} value={3} disabled>3</Radio>
-                                                <Radio className={'radio'} value={4} disabled>4</Radio>
-                                                <Radio className={'radio'} value={5} disabled>5</Radio>
-                                                <Radio className={'radio'} value={6}>6</Radio>
-                                                <Radio className={'radio'} value={7}>7</Radio>
-                                                <Radio className={'radio'} value={8}>8</Radio>
-                                                <Radio className={'radio'} value={9}>9</Radio>
-                                                <Radio className={'radio'} value={10}>10</Radio>
-                                                <Radio className={'radio'} value={11}>11</Radio>
-                                                <Radio className={'radio'} value={12}>12</Radio>
-                                                <Radio className={'radio'} value={13}>13</Radio>
-                                                <Radio className={'radio'} value={14}>14</Radio>
-                                                <Radio className={'radio'} value={15}>15</Radio>
-                                                <Radio className={'radio'} value={16}>16</Radio>
-                                                <Radio className={'radio'} value={17}>17</Radio>
-                                                <Radio className={'radio'} value={18}>18</Radio>
-                                                <Radio className={'radio'} value={19}>19</Radio>
-                                                <Radio className={'radio'} value={20}>20</Radio>
-                                                <Radio className={'radio'} value={21}>21</Radio>
-                                                <Radio className={'radio'} value={22}>22</Radio>
-                                                <Radio className={'radio'} value={23}>23</Radio>
-                                                <Radio className={'radio'} value={24}>24</Radio>
-                                                <Radio className={'radio'} value={25}>25</Radio>
-                                                <Radio className={'radio'} value={26}>26</Radio>
-                                                <Radio className={'radio'} value={27} disabled>27</Radio>
-                                                <Radio className={'radio'} value={28} disabled>28</Radio>
-                                                <Radio className={'radio'} value={29} disabled>29</Radio>
-                                                <Radio className={'radio'} value={30} disabled>30</Radio>
-                                                <Radio className={'radio'} value={31} disabled>31</Radio>
-                                            </RadioGroup>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span='4' className={'select'}>
-                                    <span>注：按月前后五天不可选择</span>
-                                </Col>
-                            </div> : <div>
-                                <Col span='12' className={'select'}>
-                                    <FormItem>
-                                        <RadioGroup onChange={this.onChange}>
-                                            <Radio value={1}>第一月</Radio>
-                                            <Radio value={2}>第二月</Radio>
-                                            <Radio value={3}>第三月</Radio>
-                                        </RadioGroup>
-                                        <RadioGroup>
-                                            <Radio className={'radio'} value={1} disabled>1</Radio>
-                                            <Radio className={'radio'} value={2} disabled>2</Radio>
-                                            <Radio className={'radio'} value={3} disabled>3</Radio>
-                                            <Radio className={'radio'} value={4} disabled>4</Radio>
-                                            <Radio className={'radio'} value={5} disabled>5</Radio>
-                                            <Radio className={'radio'} value={6}>6</Radio>
-                                            <Radio className={'radio'} value={7}>7</Radio>
-                                            <Radio className={'radio'} value={8}>8</Radio>
-                                            <Radio className={'radio'} value={9}>9</Radio>
-                                            <Radio className={'radio'} value={10}>10</Radio>
-                                            <Radio className={'radio'} value={11}>11</Radio>
-                                            <Radio className={'radio'} value={12}>12</Radio>
-                                            <Radio className={'radio'} value={13}>13</Radio>
-                                            <Radio className={'radio'} value={14}>14</Radio>
-                                            <Radio className={'radio'} value={15}>15</Radio>
-                                            <Radio className={'radio'} value={16}>16</Radio>
-                                            <Radio className={'radio'} value={17}>17</Radio>
-                                            <Radio className={'radio'} value={18}>18</Radio>
-                                            <Radio className={'radio'} value={19}>19</Radio>
-                                            <Radio className={'radio'} value={20}>20</Radio>
-                                            <Radio className={'radio'} value={21}>21</Radio>
-                                            <Radio className={'radio'} value={22}>22</Radio>
-                                            <Radio className={'radio'} value={23}>23</Radio>
-                                            <Radio className={'radio'} value={24}>24</Radio>
-                                            <Radio className={'radio'} value={25}>25</Radio>
-                                            <Radio className={'radio'} value={26}>26</Radio>
-                                            <Radio className={'radio'} value={27} disabled>27</Radio>
-                                            <Radio className={'radio'} value={28} disabled>28</Radio>
-                                            <Radio className={'radio'} value={29} disabled>29</Radio>
-                                            <Radio className={'radio'} value={30} disabled>30</Radio>
-                                            <Radio className={'radio'} value={31} disabled>31</Radio>
-                                        </RadioGroup>
-                                    </FormItem>
-                                </Col>
-                                <Col span='4' className={'select'}>
-                                    <span>注：按月前后五天不可选择</span>
-                                </Col>
-                            </div>}
-                    </Row>
-                </div>)
-        }
+        // let research = null;
+        // if (this.state.checkedResearch) {
+        //     research = (
+        //         <div>
+        //             <Row className={'row2'}>
+        //                 <Col span='4' className={'select'}>
+        //                     <FormItem>
+        //                         {getFieldDecorator('researchType', {
+        //                             rules: [],
+        //                             initialValue: "1",
+        //                         })(
+        //                             <Select onChange={this.handleChange}>
+        //                                 <Option value="1">每月</Option>
+        //                                 <Option value="2">每季度</Option>
+        //                             </Select>
+        //                         )}
+        //                     </FormItem>
+        //                 </Col>
+        //                 {this.state.rsFlag ?
+        //                     <div>
+        //                         <Col span='12' className={'select'}>
+        //                             <FormItem>
+        //                                 {getFieldDecorator('measureSelect', {
+        //                                     rules: [],
+        //                                     initialValue: " ",
+        //                                 })(
+        //                                     <RadioGroup>
+        //                                         <Radio className={'radio'} value={1} disabled>1</Radio>
+        //                                         <Radio className={'radio'} value={2} disabled>2</Radio>
+        //                                         <Radio className={'radio'} value={3} disabled>3</Radio>
+        //                                         <Radio className={'radio'} value={4} disabled>4</Radio>
+        //                                         <Radio className={'radio'} value={5} disabled>5</Radio>
+        //                                         <Radio className={'radio'} value={6}>6</Radio>
+        //                                         <Radio className={'radio'} value={7}>7</Radio>
+        //                                         <Radio className={'radio'} value={8}>8</Radio>
+        //                                         <Radio className={'radio'} value={9}>9</Radio>
+        //                                         <Radio className={'radio'} value={10}>10</Radio>
+        //                                         <Radio className={'radio'} value={11}>11</Radio>
+        //                                         <Radio className={'radio'} value={12}>12</Radio>
+        //                                         <Radio className={'radio'} value={13}>13</Radio>
+        //                                         <Radio className={'radio'} value={14}>14</Radio>
+        //                                         <Radio className={'radio'} value={15}>15</Radio>
+        //                                         <Radio className={'radio'} value={16}>16</Radio>
+        //                                         <Radio className={'radio'} value={17}>17</Radio>
+        //                                         <Radio className={'radio'} value={18}>18</Radio>
+        //                                         <Radio className={'radio'} value={19}>19</Radio>
+        //                                         <Radio className={'radio'} value={20}>20</Radio>
+        //                                         <Radio className={'radio'} value={21}>21</Radio>
+        //                                         <Radio className={'radio'} value={22}>22</Radio>
+        //                                         <Radio className={'radio'} value={23}>23</Radio>
+        //                                         <Radio className={'radio'} value={24}>24</Radio>
+        //                                         <Radio className={'radio'} value={25}>25</Radio>
+        //                                         <Radio className={'radio'} value={26}>26</Radio>
+        //                                         <Radio className={'radio'} value={27} disabled>27</Radio>
+        //                                         <Radio className={'radio'} value={28} disabled>28</Radio>
+        //                                         <Radio className={'radio'} value={29} disabled>29</Radio>
+        //                                         <Radio className={'radio'} value={30} disabled>30</Radio>
+        //                                         <Radio className={'radio'} value={31} disabled>31</Radio>
+        //                                     </RadioGroup>
+        //                                 )}
+        //                             </FormItem>
+        //                         </Col>
+        //                         <Col span='4' className={'select'}>
+        //                             <span>注：按月前后五天不可选择</span>
+        //                         </Col>
+        //                     </div> : <div>
+        //                         <Col span='12' className={'select'}>
+        //                             <FormItem>
+        //                                 <RadioGroup onChange={this.onChange}>
+        //                                     <Radio value={1}>第一月</Radio>
+        //                                     <Radio value={2}>第二月</Radio>
+        //                                     <Radio value={3}>第三月</Radio>
+        //                                 </RadioGroup>
+        //                                 <RadioGroup>
+        //                                     <Radio className={'radio'} value={1} disabled>1</Radio>
+        //                                     <Radio className={'radio'} value={2} disabled>2</Radio>
+        //                                     <Radio className={'radio'} value={3} disabled>3</Radio>
+        //                                     <Radio className={'radio'} value={4} disabled>4</Radio>
+        //                                     <Radio className={'radio'} value={5} disabled>5</Radio>
+        //                                     <Radio className={'radio'} value={6}>6</Radio>
+        //                                     <Radio className={'radio'} value={7}>7</Radio>
+        //                                     <Radio className={'radio'} value={8}>8</Radio>
+        //                                     <Radio className={'radio'} value={9}>9</Radio>
+        //                                     <Radio className={'radio'} value={10}>10</Radio>
+        //                                     <Radio className={'radio'} value={11}>11</Radio>
+        //                                     <Radio className={'radio'} value={12}>12</Radio>
+        //                                     <Radio className={'radio'} value={13}>13</Radio>
+        //                                     <Radio className={'radio'} value={14}>14</Radio>
+        //                                     <Radio className={'radio'} value={15}>15</Radio>
+        //                                     <Radio className={'radio'} value={16}>16</Radio>
+        //                                     <Radio className={'radio'} value={17}>17</Radio>
+        //                                     <Radio className={'radio'} value={18}>18</Radio>
+        //                                     <Radio className={'radio'} value={19}>19</Radio>
+        //                                     <Radio className={'radio'} value={20}>20</Radio>
+        //                                     <Radio className={'radio'} value={21}>21</Radio>
+        //                                     <Radio className={'radio'} value={22}>22</Radio>
+        //                                     <Radio className={'radio'} value={23}>23</Radio>
+        //                                     <Radio className={'radio'} value={24}>24</Radio>
+        //                                     <Radio className={'radio'} value={25}>25</Radio>
+        //                                     <Radio className={'radio'} value={26}>26</Radio>
+        //                                     <Radio className={'radio'} value={27} disabled>27</Radio>
+        //                                     <Radio className={'radio'} value={28} disabled>28</Radio>
+        //                                     <Radio className={'radio'} value={29} disabled>29</Radio>
+        //                                     <Radio className={'radio'} value={30} disabled>30</Radio>
+        //                                     <Radio className={'radio'} value={31} disabled>31</Radio>
+        //                                 </RadioGroup>
+        //                             </FormItem>
+        //                         </Col>
+        //                         <Col span='4' className={'select'}>
+        //                             <span>注：按月前后五天不可选择</span>
+        //                         </Col>
+        //                     </div>}
+        //             </Row>
+        //         </div>)
+        // }
+
         return (
             <div className={'newApplicationForm'}>
                 <Form layout={'horizontal'} className="ant-advanced-search-form">

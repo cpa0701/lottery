@@ -467,10 +467,10 @@ class Home extends React.PureComponent {
                 status = ''
         }
         return status;
-    }
+    };
     OnRef1 = (ref) => {
         this.chart = ref;
-    }
+    };
 
     render() {
         const map = {
@@ -478,7 +478,7 @@ class Home extends React.PureComponent {
             questionName: '',
             triggerTask: '',
             height: 200
-        }
+        };
         return (
             <div className={'home'}>
                 <div className={'main-title'}/>
@@ -532,7 +532,7 @@ class Home extends React.PureComponent {
                             <div id={'home-map'} style={{height: '400px'}}/>
                         </Col>
                         <Col span={12}>
-                            <SurveyModule OnRef={this.OnRef1} {...map}/>
+                            <SurveyModule onRef={this.OnRef1} {...map}/>
                         </Col>
                     </Row>
                 </div>

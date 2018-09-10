@@ -156,6 +156,7 @@ export default {
         'selectAreaRole':'Select the role that you want to select the area',
         'selectEditDepartmentRole':'Select the role you want to edit the department',
         'checkDeleteUser':'Please check the user to delete, and only one user information can be checked at a time',
+        'selectOneCharacterAuth':'Only one authority can be selected at a time',
         'selectAddCharacter':'Please select a role that requires new personnel',
         'selectDeleteUser':'Please select the user to delete',
         'saveSuccess':'Save success!',
