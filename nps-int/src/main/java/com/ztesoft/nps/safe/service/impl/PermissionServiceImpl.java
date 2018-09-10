@@ -91,6 +91,7 @@ public class PermissionServiceImpl implements PermissionService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public int delete(Permission permission) {
+
 		permissionMapper.delete(permission);
 
 		int cnt = permissionMapper.findChildCount(permission.getParentId());

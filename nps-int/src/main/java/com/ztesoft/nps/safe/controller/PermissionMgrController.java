@@ -96,7 +96,7 @@ public class PermissionMgrController {
 
 	@PostMapping("/permissionList")
 	@ApiOperation(value = "查询权限列表", notes = "查询权限列表")
-	public Result<List<Permission>> permissionList(PermissionQuery condition) {
+	public Result<List<Permission>> permissionList( @RequestBody PermissionQuery condition) {
 		List<Permission> permissions = permissionService
 				.findByCondition(condition);
 
@@ -128,7 +128,6 @@ public class PermissionMgrController {
 		if (role == null) {
 			throw new NpsObjectNotFoundException(rolePermission.getRoleId());
 		}
-
 
 		rolePermission.setCreatedBy(rolePermission.getUserId().toString());
 		rolePermission.setModifiedBy(rolePermission.getUserId().toString());
@@ -172,8 +171,8 @@ public class PermissionMgrController {
 
 		permission.setModifiedBy(permissionIdQuery.getUserId().toString());
 
-		permissionService.delete(permission);
 
-		return Result.success();
+
+		return Result.success(permissionService.delete(permission));
 	}
 }

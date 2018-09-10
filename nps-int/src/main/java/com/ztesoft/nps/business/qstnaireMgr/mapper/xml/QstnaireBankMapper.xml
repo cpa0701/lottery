@@ -12,6 +12,7 @@
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="is_inst" property="isInst" jdbcType="DECIMAL" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_use" property="isUse" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -110,11 +111,11 @@
     insert into qstnaire_bank (qstnaire_id, qstnaire_title, qstnaire_leadin, 
       catalog_id, belong_to, create_uid, 
       create_time, status, is_inst, 
-      update_time)
+      update_time, is_use)
     values (#{qstnaireId,jdbcType=VARCHAR}, #{qstnaireTitle,jdbcType=VARCHAR}, #{qstnaireLeadin,jdbcType=VARCHAR}, 
       #{catalogId,jdbcType=VARCHAR}, #{belongTo,jdbcType=DECIMAL}, #{createUid,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{isInst,jdbcType=DECIMAL}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{updateTime,jdbcType=TIMESTAMP}, #{isUse,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank" >
     insert into qstnaire_bank
@@ -149,6 +150,9 @@
       <if test="updateTime != null" >
         update_time,
       </if>
+      <if test="isUse != null" >
+        is_use,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="qstnaireId != null" >
@@ -180,6 +184,9 @@
       </if>
       <if test="updateTime != null" >
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isUse != null" >
+        #{isUse,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -222,6 +229,9 @@
       <if test="record.updateTime != null" >
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.isUse != null" >
+        is_use = #{record.isUse,jdbcType=DECIMAL},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -238,7 +248,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=VARCHAR},
       is_inst = #{record.isInst,jdbcType=DECIMAL},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      is_use = #{record.isUse,jdbcType=DECIMAL}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -273,6 +284,9 @@
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isUse != null" >
+        is_use = #{isUse,jdbcType=DECIMAL},
+      </if>
     </set>
     where qstnaire_id = #{qstnaireId,jdbcType=VARCHAR}
   </update>
@@ -286,7 +300,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=VARCHAR},
       is_inst = #{isInst,jdbcType=DECIMAL},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_use = #{isUse,jdbcType=DECIMAL}
     where qstnaire_id = #{qstnaireId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -1,7 +1,11 @@
 package com.ztesoft.nps.safe.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.ztesoft.utils.sys.util.DatabaseUtil;
+import com.ztesoft.utils.sys.util.MapUtil;
+import com.ztesoft.utils.sys.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,17 @@ public class RegionServiceImpl implements RegionService {
 	public Region add(Region region) {
 		// 新增节点为叶子节点
 		region.setLeaf(Boolean.TRUE);
+
+		String maxAreaIdSql = "select Max(area_id) as maxAreaId from regions";
+		Map<String,Object> areaIdMap = DatabaseUtil.queryForMap(maxAreaIdSql);
+		Long areaId = MapUtil.getLong(areaIdMap,"maxAreaId")+1L;
+		region.setAreaId (areaId);
+
+		String sequenceSql = "select Max(sequence) as sequence from regions";
+		Map<String,Object> sequenceMap = DatabaseUtil.queryForMap(sequenceSql);
+		int sequence = MapUtil.getInteger(sequenceMap,"sequence")+1;
+		region.setSequence(sequence);
+
 		regionMapper.add(region);
 
 		Region pRegion = regionMapper.findById(region.getParentId());
@@ -85,6 +100,9 @@ public class RegionServiceImpl implements RegionService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Region> findByCondition(RegionQuery condition) {
+		if(condition.getParentId()==null){
+			condition.setParentId(0L);
+		}
 		return regionMapper.findByCondition(condition);
 	}
 

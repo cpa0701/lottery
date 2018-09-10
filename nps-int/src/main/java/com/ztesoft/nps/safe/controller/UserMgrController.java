@@ -56,7 +56,8 @@ public class UserMgrController {
 	public Result<PageInfo<User>> userList(
 			@ApiParam(value = "当前页码") @RequestParam(required = true, defaultValue = "1") int pageNum,
 			@ApiParam(value = "每页大小") @RequestParam(required = true, defaultValue = "15") int pageSize,
-			UserQuery condition) {
+			@RequestBody  UserQuery condition) {
+		condition.setStatus(1);
 		List<User> users = userService.findByCondition(pageNum, pageSize,
 				condition);
 
@@ -122,8 +123,7 @@ public class UserMgrController {
 		oldUser.setDeptId(user.getDeptId());
 		oldUser.setRemark(user.getRemark());
 
-
-		oldUser.setModifiedBy(user.getUserId().toString());
+		oldUser.setModifiedBy("1");
 
 		User u = userService.update(oldUser);
 

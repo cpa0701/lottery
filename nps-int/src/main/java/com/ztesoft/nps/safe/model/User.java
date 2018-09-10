@@ -79,6 +79,7 @@ public class User {
 	@ApiModelProperty("部门ID")
 	private Long deptId;
 
+
 	/**
 	 * 备注
 	 */

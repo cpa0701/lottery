@@ -1,11 +1,15 @@
 package com.ztesoft.nps.safe.controller;
 
+import com.ztesoft.nps.safe.mapper.DepartmentMapper;
+import com.ztesoft.nps.safe.mapper.UserMapper;
+import com.ztesoft.nps.safe.model.*;
 import com.ztesoft.nps.safe.model.query.*;
 import com.ztesoft.utils.sys.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -26,11 +30,6 @@ import com.github.pagehelper.PageInfo;
 import com.ztesoft.nps.common.views.Result;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
-import com.ztesoft.nps.safe.model.Permission;
-import com.ztesoft.nps.safe.model.Role;
-import com.ztesoft.nps.safe.model.RolePermission;
-import com.ztesoft.nps.safe.model.User;
-import com.ztesoft.nps.safe.model.UserRole;
 import com.ztesoft.nps.safe.service.PermissionService;
 import com.ztesoft.nps.safe.service.RoleService;
 import com.ztesoft.nps.safe.service.UserService;
@@ -50,11 +49,16 @@ public class RoleMgrController {
 	private UserService userService;
 
 	@Autowired
+	private DepartmentMapper departmentMapper;
+	@Autowired
+	private UserMapper userMapper;
+
+	@Autowired
 	private HttpSession session;
 
 	@PostMapping("/roleList")
 	@ApiOperation(value = "查询角色列表", notes = "查询角色列表")
-	public Result<List<Role>> roleList(RoleQuery condition) {
+	public Result<List<Role>> roleList(@RequestBody RoleQuery condition) {
 		List<Role> roles = roleService.findByCondition(condition);
 
 		return Result.success(roles);
@@ -154,9 +158,7 @@ public class RoleMgrController {
 			throw new NpsObjectNotFoundException(bo.getId());
 		}
 
-		List<User> users = userService.findByRoleId(
-				StringUtil.getInteger(bo.getPageNum()), StringUtil.getInteger(bo.getPageSize()), bo.getId());
-
+		List<User> users = userService.findByRole(StringUtil.getInteger(bo.getPageNum()), StringUtil.getInteger(bo.getPageSize()), bo);
 		// 清空密码和盐值
 		users.stream().forEach(s -> {
 			s.setPassword(null);

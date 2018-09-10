@@ -238,4 +238,20 @@
     where ur.role_id = #{id}
   </select>
 
+
+	<select id="findByRole" resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from users u
+		inner join user_role ur on u.id = ur.user_id
+		left join departments d on d.id = u.dept_id
+		where ur.role_id = #{id}
+		<if test="deptName != null and deptName != ''">
+			and d.name like like like concat('%', #{deptName}, '%')
+		</if>
+		<if test="userName != null and userName != ''">
+			and u.name like like concat('%', #{userName}, '%')
+		</if>
+	</select>
+
 </mapper>

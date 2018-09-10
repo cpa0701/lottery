@@ -1,6 +1,5 @@
 package com.ztesoft.nps.business.qstnaireMgr.model.query;
 
-import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;

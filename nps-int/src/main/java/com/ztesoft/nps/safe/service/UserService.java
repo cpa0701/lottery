@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.UserRole;
+import com.ztesoft.nps.safe.model.query.RoleUserListBo;
 import com.ztesoft.nps.safe.model.query.UserQuery;
 
 public interface UserService {
@@ -26,4 +27,6 @@ public interface UserService {
 	int deleteRole(UserRole userRole);
 
 	List<User> findByRoleId(int pageNum, int pageSize, Long id);
+
+	List<User> findByRole(int pageNum, int pageSize, RoleUserListBo bo);
 }

@@ -56,10 +56,8 @@ public class ShortUrlFilter implements Filter {
                         SmsAccessQuequ.putInfo(smsAccess);
                     }
                 }
-
                 response.sendRedirect(MapUtil.getString(resultMap,"base_url"));
             }
-
             // 测试demo:
 //            String baseUrl = "http://localhost:18088/swagger-ui.html";
 //            if(shortUrl.equals("Uzii6nNPS")){

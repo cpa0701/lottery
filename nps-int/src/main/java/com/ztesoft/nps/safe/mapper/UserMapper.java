@@ -2,6 +2,7 @@ package com.ztesoft.nps.safe.mapper;
 
 import java.util.List;
 
+import com.ztesoft.nps.safe.model.query.RoleUserListBo;
 import org.apache.ibatis.annotations.Param;
 
 import com.ztesoft.nps.safe.model.User;
@@ -23,4 +24,7 @@ public interface UserMapper {
 	List<User> findByCondition(UserQuery condition);
 
 	List<User> findByRoleId(Long id);
+
+	List<User> findByRole(RoleUserListBo bo);
+
 }

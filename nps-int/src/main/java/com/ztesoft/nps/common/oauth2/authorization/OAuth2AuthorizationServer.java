@@ -66,6 +66,7 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        //lxy test login
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(
                 Arrays.asList(tokenEnhancer(), accessTokenConverter()));

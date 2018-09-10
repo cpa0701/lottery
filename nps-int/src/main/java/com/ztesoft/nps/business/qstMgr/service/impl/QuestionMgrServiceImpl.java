@@ -1,5 +1,6 @@
 package com.ztesoft.nps.business.qstMgr.service.impl;
 
+import com.sun.corba.se.impl.orb.DataCollectorBase;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.business.qstMgr.mapper.QuestionBankMapper;
@@ -124,10 +125,20 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
         }
 
         if (StringUtil.isNotNull(qstIds)) {
+            //查找选项列表
             StringBuilder optQuerySql = getOptionQuerySql();
             optQuerySql.append(" and question_id in( ");
             optQuerySql.append(StringUtil.getFormatString(qstIds.substring(0, qstIds.lastIndexOf(","))));
             optQuerySql.append(" ) ");
+            //查询是否存在
+            StringBuilder isUseSql = new StringBuilder();
+            isUseSql.append("select DISTINCT question_id as questionId from qstnaire_question where question_id in(");
+            isUseSql.append(StringUtil.getFormatString(qstIds.substring(0, qstIds.lastIndexOf(","))));
+            isUseSql.append(" ) ");
+
+            List<Map<String, Object>> isUseList = DatabaseUtil.queryForList(isUseSql.toString());
+
+
 
             List<Map<String, Object>> optList = DatabaseUtil.queryForList(optQuerySql.toString());
             for (Map<String,Object> bank : bankRows) {
@@ -139,8 +150,17 @@ public class QuestionMgrServiceImpl implements QuestionMgrService {
                         chirlOptList.add(optMap);
                     }
                 }
+                bank.put("isUse",0);
+                for (Map<String, Object> isUse : isUseList) {
+                    String qstId = MapUtil.getString(isUse, "questionId");
+                    if (StringUtil.isNotNull(qstId) && questionId.equals(qstId)) {
+                        bank.put("isUse",1);
+                    }
+                }
                 bank.put("optionList",chirlOptList);
             }
+
+
         }
 
         return bankResult;

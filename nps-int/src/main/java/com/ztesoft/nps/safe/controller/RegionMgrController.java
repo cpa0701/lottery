@@ -58,7 +58,7 @@ public class RegionMgrController {
 
 	@PostMapping("/regionList")
 	@ApiOperation(value = "查询区域列表", notes = "查询区域列表")
-	public Result<List<Region>> regionList(RegionQuery condition) {
+	public Result<List<Region>> regionList(@RequestBody RegionQuery condition) {
 		List<Region> regions = regionService.findByCondition(condition);
 
 		return Result.success(regions);

@@ -46,7 +46,7 @@ public class DepartmentMgrController {
 
 	@PostMapping("/deptList")
 	@ApiOperation(value = "查询部门列表", notes = "查询部门列表")
-	public Result<List<Department>> deptList(DepartmentQuery condition) {
+	public Result<List<Department>> deptList(@RequestBody DepartmentQuery condition) {
 		List<Department> depts = departmentService.findByCondition(condition);
 
 		return Result.success(depts);

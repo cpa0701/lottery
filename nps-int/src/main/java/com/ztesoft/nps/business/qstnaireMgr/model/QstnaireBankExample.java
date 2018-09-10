@@ -754,6 +754,66 @@ public class QstnaireBankExample {
             addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
+
+        public Criteria andIsUseIsNull() {
+            addCriterion("is_use is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseIsNotNull() {
+            addCriterion("is_use is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseEqualTo(Short value) {
+            addCriterion("is_use =", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseNotEqualTo(Short value) {
+            addCriterion("is_use <>", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseGreaterThan(Short value) {
+            addCriterion("is_use >", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseGreaterThanOrEqualTo(Short value) {
+            addCriterion("is_use >=", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseLessThan(Short value) {
+            addCriterion("is_use <", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseLessThanOrEqualTo(Short value) {
+            addCriterion("is_use <=", value, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseIn(List<Short> values) {
+            addCriterion("is_use in", values, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseNotIn(List<Short> values) {
+            addCriterion("is_use not in", values, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseBetween(Short value1, Short value2) {
+            addCriterion("is_use between", value1, value2, "isUse");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsUseNotBetween(Short value1, Short value2) {
+            addCriterion("is_use not between", value1, value2, "isUse");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

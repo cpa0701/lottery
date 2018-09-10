@@ -2,6 +2,8 @@ package com.ztesoft.nps.safe.service.impl;
 
 import java.util.List;
 
+import com.ztesoft.nps.safe.mapper.DepartmentMapper;
+import com.ztesoft.nps.safe.model.query.RoleUserListBo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRoleMapper userRoleMapper;
+
+	@Autowired
+	private DepartmentMapper departmentMapper;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -99,8 +104,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findByRoleId(int pageNum, int pageSize, Long id) {
 		PageHelper.startPage(pageNum, pageSize);
+		List<User> users = userMapper.findByRoleId(id);
 
-		return userMapper.findByRoleId(id);
+
+		return users;
+	}
+
+	@Override
+	public List<User> findByRole(int pageNum, int pageSize, RoleUserListBo bo) {
+		PageHelper.startPage(pageNum, pageSize);
+		List<User> users = userMapper.findByRole(bo);
+
+		return users;
 	}
 
 }

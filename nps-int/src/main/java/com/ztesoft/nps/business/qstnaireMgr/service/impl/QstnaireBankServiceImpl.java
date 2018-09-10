@@ -32,7 +32,6 @@ import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.ListUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

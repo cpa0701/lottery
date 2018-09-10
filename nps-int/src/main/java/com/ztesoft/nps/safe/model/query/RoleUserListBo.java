@@ -14,6 +14,12 @@ public class RoleUserListBo implements Serializable {
     @ApiModelProperty("角色id")
     private Long id;
 
+    @ApiModelProperty("部门名称")
+    private String deptName;
+
+    @ApiModelProperty("用户名")
+    private String userName;
+
     @ApiModelProperty("起始页")
     private String pageNum;
 
@@ -42,5 +48,21 @@ public class RoleUserListBo implements Serializable {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

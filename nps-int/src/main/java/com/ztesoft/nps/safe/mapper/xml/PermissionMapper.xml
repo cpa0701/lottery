@@ -164,7 +164,8 @@
   </select>
   
   <select id="findByUserId" resultMap="BaseResultMap" parameterType="Long" >
-    select <include refid="Base_Column_List" /> 
+    select
+	 <include refid="Base_Column_List" />
     from user_role ur 
 	inner join role_permission rp on ur.role_id = rp.role_id
 	inner join permissions p on rp.permission_id = p.id
@@ -178,15 +179,14 @@
   <select id="findByParentId" resultMap="BaseResultMap" parameterType="Long" >
     select 
     <include refid="Base_Column_List" />
-    from permissions
+    from permissions p
     where status = 1 and parent_id = #{id}
   </select>
-  
-  <update id="delete" parameterType="Permission" >
-    update permissions set 
-    	status = #{status},
-    	modified_by = #{modifiedBy}
-    where id = #{id}
-  </update>
+
+
+	<delete id="delete" parameterType="Permission" >
+    delete from permissions
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
 
 </mapper>

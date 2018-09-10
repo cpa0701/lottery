@@ -22,6 +22,7 @@ public class ConstantUtils {
     public static final String SMS_SEND_USER_10001 = "10001";
     public static final String SMS_SEND_USER_10086 = "10086";
     public static final String SMS_SEND_BASE_URL = "http://10.45.48.139:3000/question.html#/?access_token=";
+    public static final String SMS_SEND_Short_URL = "http://10.45.48.139:3000/";
 
     /**调查任务表survey_task的任务状态STATUS*/
     public static final String SURVEY_TASK_STATUS_00 = "00";//00 正常结束
@@ -70,5 +71,11 @@ public class ConstantUtils {
     public static final String NPS_RESULT_OPTION_8 = "8"; //nps题目选项
     public static final String NPS_RESULT_OPTION_9 = "9"; //nps题目选项
     public static final String NPS_RESULT_OPTION_10 = "10"; //nps题目选项
+
+    public static final String LOGIN_ACCEPT = "application/json";
+    public static final String LOGIN_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String LOGIN_AUTHORIZATION = "Basic Y2xpZW50LW5wczoxMjM0NTY=";
+
+
 
 }

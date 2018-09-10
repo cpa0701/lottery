@@ -46,7 +46,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 		if(condition.getParentId()==null){
 			condition.setParentId(0L);
 		}
-		return departmentMapper.findByCondition(condition);
+		List<Department> list = departmentMapper.findByCondition(condition);
+		return list;
 	}
 
 	@Transactional(readOnly = true)

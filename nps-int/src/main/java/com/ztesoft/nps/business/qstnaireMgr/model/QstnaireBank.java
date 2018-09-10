@@ -11,7 +11,7 @@ public class QstnaireBank {
 
     private String catalogId;
 
-    private int belongTo;
+    private Short belongTo;
 
     private Long createUid;
 
@@ -19,9 +19,11 @@ public class QstnaireBank {
 
     private String status;
 
-    private int isInst;
+    private Short isInst;
 
     private Date updateTime;
+
+    private Short isUse;
 
     public String getQstnaireId() {
         return qstnaireId;
@@ -55,11 +57,11 @@ public class QstnaireBank {
         this.catalogId = catalogId == null ? null : catalogId.trim();
     }
 
-    public int getBelongTo() {
+    public Short getBelongTo() {
         return belongTo;
     }
 
-    public void setBelongTo(int belongTo) {
+    public void setBelongTo(Short belongTo) {
         this.belongTo = belongTo;
     }
 
@@ -87,11 +89,11 @@ public class QstnaireBank {
         this.status = status == null ? null : status.trim();
     }
 
-    public int getIsInst() {
+    public Short getIsInst() {
         return isInst;
     }
 
-    public void setIsInst(int isInst) {
+    public void setIsInst(Short isInst) {
         this.isInst = isInst;
     }
 
@@ -103,4 +105,11 @@ public class QstnaireBank {
         this.updateTime = updateTime;
     }
 
+    public Short getIsUse() {
+        return isUse;
+    }
+
+    public void setIsUse(Short isUse) {
+        this.isUse = isUse;
+    }
 }

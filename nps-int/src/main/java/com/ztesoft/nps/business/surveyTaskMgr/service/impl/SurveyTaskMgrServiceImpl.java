@@ -3,7 +3,6 @@ package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireBankMapper;
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper;
 import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank;
-import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBankExample;
 import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion;
 import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyNpsInfoMapper;
@@ -344,7 +343,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             taskExe.setSendUser(ConstantUtils.SMS_SEND_USER_10001);
             taskExe.setTargetUser(MapUtil.getString(userMap,"user_account"));
             taskExe.setIsTest(new Short("0"));
-            taskExe.setSmContent(MapUtil.getString(userMap,"sms_content"));
+
             taskExe.setCreatTime(new Date());
 
             baseUrl.append(ConstantUtils.SMS_SEND_BASE_URL)
@@ -354,11 +353,15 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
                     .append("&tid=").append(taskExe.getTaskId())
                     .append("&t=").append(new Date())
                     .append("&id=").append(surveyTask.getQstnaireId())
-//                    .append("&sno=").append()
                     .append("&type=official");
 
             taskExe.setBaseUrl(baseUrl.toString());
             taskExe.setShortUrl(ShortUrlUtils.shortUrl(taskExe.getBaseUrl())+ConstantUtils.RES_SYSTEM_NAME);
+
+            String smContent = MapUtil.getString(userMap,"sms_content");
+            String shortUrl = ConstantUtils.SMS_SEND_Short_URL + taskExe.getShortUrl();
+            smContent.replace("{url}",shortUrl);
+            taskExe.setSmContent(MapUtil.getString(userMap,"sms_content"));
 
             smsList.add(new String[]{
                     taskExe.getSerialId(),taskExe.getTaskId(),taskExe.getChannelType().toString(),
@@ -405,6 +408,9 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         if(isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){
             createSurveyTaskResultBaseData(bo.getTaskId(),smsList.size());
         }
+
+        //更改问卷状态
+
 
         if(surveyTask.getTaskType()==0&&isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){//如果是一般性正式发布
             if(bo.getIsSuccee()==0){
