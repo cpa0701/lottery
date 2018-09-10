@@ -115,8 +115,21 @@ public class User {
 	@ApiModelProperty("用户ID")
 	private Long userId;
 
+	@ApiModelProperty("token")
+	private JwtAuthToken token;
+
+
 	public User() {
 
+	}
+
+
+	public JwtAuthToken getToken() {
+		return token;
+	}
+
+	public void setToken(JwtAuthToken token) {
+		this.token = token;
 	}
 
 	public Long getUserId() {

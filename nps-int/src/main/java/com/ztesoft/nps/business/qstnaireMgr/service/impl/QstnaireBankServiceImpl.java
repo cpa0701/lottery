@@ -21,6 +21,9 @@ import com.ztesoft.nps.business.qstnaireMgr.service.QstnaireBankService;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyResultMapper;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResult;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyResultExample;
+import com.ztesoft.nps.business.surveyTaskMgr.mapper.TaskExeMapper;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe;
+import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExeExample;
 import com.ztesoft.nps.common.exception.NpsDeleteException;
 import com.ztesoft.nps.common.utils.ConstantUtils;
 import com.ztesoft.nps.safe.mapper.UserMapper;
@@ -59,6 +62,8 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
     private QuestionResultMapper questionResultMapper;
     @Autowired
     private SurveyResultMapper surveyResultMapper;
+    @Autowired
+    private TaskExeMapper taskExeMapper;
 
 
     @Override
@@ -232,11 +237,22 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
 
     @Override
     public int submitQstnaire(QuestionResultQuery questionResultQuery) {
-        String surveyResultNo = StringUtil.getRandom6Number(6);
+        SurveyResultExample surveyResultExample = new SurveyResultExample();
+        surveyResultExample.createCriteria().andTaskIdEqualTo(questionResultQuery.getTaskId()).andUserAccountEqualTo(questionResultQuery.getTargetUser());
+        List<SurveyResult> resultList = surveyResultMapper.selectByExample(surveyResultExample);
+
+        Long surveyResultNo = 0L;
+
+        if(resultList.size()==1){
+            for(SurveyResult sr : resultList){
+                surveyResultNo = sr.getResultId();
+            }
+        }
+
         //获得结果LIST
         List<QuestionResult> questionResultlist = questionResultQuery.getQuestionResultList();
         for(QuestionResult questionResult : questionResultlist){
-            questionResult.setSurveyResultNo(new Long(surveyResultNo));
+            questionResult.setSurveyResultNo(surveyResultNo);
             questionResult.setRowOrder(new Short("0"));
         }
         //批量插入结果
@@ -269,15 +285,32 @@ public class QstnaireBankServiceImpl implements QstnaireBankService {
         //更改状态为完成 1
         surveyResult.setStatus(new Short("1"));
         //根据resultId 更新数据
-        SurveyResultExample surveyResultExample = new SurveyResultExample();
-        surveyResultExample.createCriteria().andResultIdEqualTo(Long.valueOf(surveyResultNo));
+        surveyResultExample.createCriteria().andResultIdEqualTo(surveyResultNo);
         surveyResultMapper.updateByExampleSelective(surveyResult,surveyResultExample);
 
-        String resultId = surveyResult.getResultId().toString();
-        String taskId = surveyResult.getTaskId();
+        String resultId = StringUtil.toString(surveyResultNo);
+        String taskId = questionResultQuery.getTaskId();
+        String targetUser = questionResultQuery.getTargetUser();
+        TaskExeExample taskExeExample = new TaskExeExample();
+        taskExeExample.createCriteria().andTaskIdEqualTo(taskId).andTargetUserEqualTo(targetUser);
+        List<TaskExe> taskExes = taskExeMapper.selectByExample(taskExeExample);
+        String serailId = null;
+        String channelType = null;
+        for(TaskExe te : taskExes){
+            serailId =  te.getSerialId();
+            channelType = StringUtil.toString(te.getChannelType());
+        }
+
+
+
         if(StringUtil.isNotNull(resultId)&&StringUtil.isNotNull(taskId)&&option!=0){
+
             SmsResult smsResult = new SmsResult(resultId,taskId,option);
             SmsResultQuequ.putInfo(smsResult);
+            SmsAccess smsAccess = new SmsAccess(serailId,taskId,channelType,questionResultQuery.getTargetUser());
+            SmsAccessQuequ.putInfo(smsAccess);
+
+
         }
         return 0;
     }

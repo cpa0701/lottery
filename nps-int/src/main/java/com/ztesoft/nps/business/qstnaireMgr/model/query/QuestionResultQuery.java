@@ -15,7 +15,9 @@ public class QuestionResultQuery {
 
     private String taskId;
 
-    private Date time;
+    private String time;
+
+    private Long resultId;
 
     public String getSendUser() {
         return sendUser;
@@ -41,11 +43,11 @@ public class QuestionResultQuery {
         this.taskId = taskId;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -57,4 +59,11 @@ public class QuestionResultQuery {
         this.questionResultList = questionResultList;
     }
 
+    public Long getResultId() {
+        return resultId;
+    }
+
+    public void setResultId(Long resultId) {
+        this.resultId = resultId;
+    }
 }

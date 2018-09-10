@@ -5,6 +5,7 @@ import com.ztesoft.nps.analysisProgram.SmsAccessAnalysis.SmsAccessQuequ;
 import com.ztesoft.nps.analysisProgram.SmsBussinessBo;
 import com.ztesoft.nps.business.surveyTaskMgr.model.TaskExe;
 import com.ztesoft.nps.common.utils.ConstantUtils;
+import com.ztesoft.utils.sys.util.DatabaseUtil;
 import com.ztesoft.utils.sys.util.MapUtil;
 import com.ztesoft.utils.sys.util.StringUtil;
 
@@ -55,6 +56,7 @@ public class ShortUrlFilter implements Filter {
                         SmsAccessQuequ.putInfo(smsAccess);
                     }
                 }
+
                 response.sendRedirect(MapUtil.getString(resultMap,"base_url"));
             }
 
