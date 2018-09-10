@@ -39,6 +39,7 @@ public class SmsResult {
         try{
             //对提交答卷的结果分析统一管理
             SmsBussinessBo.updateResultStatistics(taskId,option);
+            result="OK";
         }catch(Exception e){
             e.printStackTrace();
         }

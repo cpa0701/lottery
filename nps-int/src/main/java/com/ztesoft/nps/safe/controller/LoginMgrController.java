@@ -1,13 +1,21 @@
 package com.ztesoft.nps.safe.controller;
 
+
 import com.ztesoft.nps.common.exception.NpsObjectNotFoundException;
 import com.ztesoft.nps.common.views.Result;
+
+import com.ztesoft.nps.safe.model.JwtAuthToken;
 import com.ztesoft.nps.safe.model.User;
 import com.ztesoft.nps.safe.model.query.LoginQuery;
 import com.ztesoft.nps.safe.service.UserService;
+import com.ztesoft.utils.sys.datastruct.Var;
+import com.ztesoft.utils.sys.exception.HttpConnectionException;
+import com.ztesoft.utils.sys.util.HttpUtil;
+import com.ztesoft.utils.sys.util.MapUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,13 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Api(value = "登录与注销", description = "登录与注销")
 public class LoginMgrController {
+
+	@Value("${server.port}")
+	private String serverPort;
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	HttpServletRequest request;
 
@@ -46,9 +60,29 @@ public class LoginMgrController {
 		user.setPassword(null);
 		user.setSalt(null);
 
-		HttpSession session = request.getSession();
-		session.setAttribute("user",user);
+		String requestUrl = "http://localhost:"+serverPort+"/oauth/token";
 
+		Map<String,String> requestHeader = new HashMap<String,String>();
+		requestHeader.put("Authorization","Basic Y2xpZW50LW5wczoxMjM0NTY=");
+		requestHeader.put("Content-Type","application/x-www-form-urlencoded");
+		requestHeader.put("Accept","application/json");
+
+		Map<String,String> requestParam = new HashMap<String,String>();
+		requestParam.put("grant_type","password");
+		requestParam.put("username","ztesoft");
+		requestParam.put("password","123456");
+		requestParam.put("scope","nps-api");
+		requestParam.put("userId","1");
+		requestParam.put("appId","nps");
+
+		JwtAuthToken token = new JwtAuthToken();
+		try {
+			String result = HttpUtil.post(requestUrl,requestHeader,requestParam);
+			token = MapUtil.convertMap2Bean(Var.fromJson(result).getObjectMap(), JwtAuthToken.class);
+		} catch (HttpConnectionException e) {
+			e.printStackTrace();
+		}
+		user.setToken(token);
 		return Result.success(user);
 	}
 

@@ -1,7 +1,11 @@
 package com.ztesoft.nps.business.surveyTaskMgr.service.impl;
 
 import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireBankMapper;
+import com.ztesoft.nps.business.qstnaireMgr.mapper.QstnaireQuestionMapper;
 import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBank;
+import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireBankExample;
+import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestion;
+import com.ztesoft.nps.business.qstnaireMgr.model.QstnaireQuestionExample;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyNpsInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.mapper.SurveyUserInfoMapper;
 import com.ztesoft.nps.business.surveyResultMgr.model.SurveyNpsInfo;
@@ -58,6 +62,8 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
 
     @Autowired
     private SurveyNpsInfoMapper surveyNpsInfoMapper;
+    @Autowired
+    QstnaireQuestionMapper qstnaireQuestionMapper;
 
 
 
@@ -346,7 +352,7 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
                     .append("&prod_inst_id=").append(taskExe.getTargetUser())
                     .append("&sys_id=").append(taskExe.getSendUser())
                     .append("&tid=").append(taskExe.getTaskId())
-                    .append("&t=").append(new Date().getTime())
+                    .append("&t=").append(new Date())
                     .append("&id=").append(surveyTask.getQstnaireId())
 //                    .append("&sno=").append()
                     .append("&type=official");
@@ -400,12 +406,31 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
             createSurveyTaskResultBaseData(bo.getTaskId(),smsList.size());
         }
 
-        if(bo.getIsSuccee()==0){
-            changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
-            return new PublishBo(0,"发布成功");
-        }else{
-            return new PublishBo(1,"发布失败, 测试不通过");
+        if(surveyTask.getTaskType()==0&&isTest.equals(ConstantUtils.SURVEY_TASK_TEST_NO)){//如果是一般性正式发布
+            if(bo.getIsSuccee()==0){
+                changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+                return new PublishBo(0,"发布成功");
+            }else{
+                return new PublishBo(1,"发布失败, 测试不通过");
+            }
+        }else if(surveyTask.getTaskType()==0&&isTest.equals(ConstantUtils.SURVEY_TASK_TEST_YES)){
+
+            if(bo.getIsSuccee()==0){
+                changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+                return new PublishBo(3,"测试成功");
+            }else{
+                return new PublishBo(2,"测试失败, 测试不通过");
+            }
+        }else if(surveyTask.getTaskType()==1&&isTest.equals(ConstantUtils.SURVEY_TASK_TEST_YES)){
+            if(bo.getIsSuccee()==0){
+                changeSurveyStatus(bo.getTaskId(),ConstantUtils.SURVEY_TASK_STATUS_01);
+                return new PublishBo(3,"测试成功");
+            }else{
+                return new PublishBo(2,"测试失败, 测试不通过");
+            }
         }
+        return new PublishBo(4,"出错, 测试不通过");
+
 
     }
 
@@ -439,7 +464,18 @@ public class SurveyTaskMgrServiceImpl implements SurveyTaskMgrService {
         surveyUserInfoMapper.insertSelective(surveyUserInfo);
 
         //调研nps分析
+
+        QstnaireQuestionExample qstnaireQuestionExample = new QstnaireQuestionExample();
+        qstnaireQuestionExample.createCriteria().andQstnaireIdEqualTo(MapUtil.getString(surveyTaskResult,"qstnaire_id")).andIsNpsEqualTo(new Short("1"));
+        List<QstnaireQuestion> qstnaireQuestions  = qstnaireQuestionMapper.selectByExample(qstnaireQuestionExample);
+        String NpsQuestionId = null;
+        if(qstnaireQuestions.size()==1){
+            for(QstnaireQuestion qq : qstnaireQuestions){
+                NpsQuestionId = qq.getQuestionId();
+            }
+        }
         SurveyNpsInfo surveyNpsInfo = new SurveyNpsInfo();
+        surveyNpsInfo.setNpsQuestionId(NpsQuestionId);
         surveyNpsInfo.setTaskId(MapUtil.getString(surveyTaskResult,"task_id"));
         surveyNpsInfo.setTaskName(MapUtil.getString(surveyTaskResult,"task_name"));
         surveyNpsInfo.setQstnaireId(MapUtil.getString(surveyTaskResult,"qstnaire_id"));

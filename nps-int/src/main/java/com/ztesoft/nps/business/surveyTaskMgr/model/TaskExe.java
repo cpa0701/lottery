@@ -31,6 +31,9 @@ public class TaskExe {
 
     private Short urlFlag;
 
+
+
+
     public String getSerialId() {
         return serialId;
     }
