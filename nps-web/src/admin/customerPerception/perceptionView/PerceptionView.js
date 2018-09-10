@@ -1,6 +1,5 @@
 import React from 'react';
-import {Row, Col, Form, Select, Input, Button, DatePicker, Icon} from "antd"
-import {Table, Divider, Tag, Rate} from 'antd';
+import {Row, Col, Form, Select, Button, Table, DatePicker, Icon} from "antd"
 import moment from 'moment';
 
 const FormItem = Form.Item;

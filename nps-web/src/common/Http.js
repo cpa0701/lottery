@@ -1,7 +1,5 @@
 import axios from 'axios';
-import {
-    message,
-} from 'antd';
+import { message } from 'antd';
 
 const $ = require("jquery");
 
@@ -118,14 +116,15 @@ export class Http {
         params = Object.assign(params, config);
         return await axios(params)
             .then(result => {
-                if(sessionStorage.getItem('authToken')) {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer '+ sessionStorage.getItem('authToken');
+                let token = localStorage.getItem('authToken');
+                if(token) {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer '+ token;
                 }
                 if (result.data.code === 200)
                     return result.data.data ? result.data.data : false;
                 else return true;
             }).catch(function (error) {
-                if (error.response.data.code === 401) {
+                if (error.response.data.code === 401 || error.response.status === 401) {
                     message.error('登录超时');
                     window.location.href = '#/login'
                 } else if (error.response.data.code === 500)

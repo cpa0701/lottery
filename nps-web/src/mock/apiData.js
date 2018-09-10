@@ -1,32 +1,31 @@
 import Mock from 'mockjs'
-import MissionTermination from "../admin/missionMgr/missionTermination/MissionTermination";
 
 const Random = Mock.Random;
 
 
-let serialize = (str1) => {
-    if (str1 === '') {
-        return {}
-    }
-    //修复 jquery.serialize() 会把空格转成'+'的坑
-    let str = str1.replace(/\+/g, " ");
-    let obj = {};
-    let params = str.split('&');
-    for (let i = 0; i < params.length; i++) {
-        let val = params[i].split("=");
-        //多选的select，在jquery.serialize()的时候名称都是相同的，如右：rules=1&rules=3
-        //这个时候需要把值以数组的形式保存，如右：rules：[1,3]
-        if (obj[val[0]]) {
-            let arr = [];
-            Object.prototype.toString.call(obj[val[0]]) === "[object Array]" ? arr = arr.concat(obj[val[0]]) : arr.push(obj[val[0]]);
-            arr.push(unescape(val[1]));
-            obj[val[0]] = arr;
-        } else {
-            obj[val[0]] = unescape(val[1])
-        }
-    }
-    return obj
-};
+// let serialize = (str1) => {
+//     if (str1 === '') {
+//         return {}
+//     }
+//     //修复 jquery.serialize() 会把空格转成'+'的坑
+//     let str = str1.replace(/\+/g, " ");
+//     let obj = {};
+//     let params = str.split('&');
+//     for (let i = 0; i < params.length; i++) {
+//         let val = params[i].split("=");
+//         //多选的select，在jquery.serialize()的时候名称都是相同的，如右：rules=1&rules=3
+//         //这个时候需要把值以数组的形式保存，如右：rules：[1,3]
+//         if (obj[val[0]]) {
+//             let arr = [];
+//             Object.prototype.toString.call(obj[val[0]]) === "[object Array]" ? arr = arr.concat(obj[val[0]]) : arr.push(obj[val[0]]);
+//             arr.push(unescape(val[1]));
+//             obj[val[0]] = arr;
+//         } else {
+//             obj[val[0]] = unescape(val[1])
+//         }
+//     }
+//     return obj
+// };
 Mock.setup({
     timeout: '1000'
 });
@@ -34,7 +33,7 @@ Mock.setup({
 //登录
 Mock.mock('mock/test', {
     'usercode': '00000',
-})
+});
 //菜单
 Mock.mock('mock/menuInfoController/qryMenu', {
     'menuData': [
@@ -181,7 +180,7 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                     menuId: 71,
                 },
                 {
-                    menuName: '角色管理',
+                    menuName: '角色配置管理',
                     menuUrl: '/system/role',
                     menuId: 72,
                 },
@@ -191,14 +190,14 @@ Mock.mock('mock/menuInfoController/qryMenu', {
                     menuId: 73,
                 },
                 {
-                    menuName: '区域管理',
+                    menuName: '区域配置管理',
                     menuUrl: '/system/domain',
                     menuId: 74,
                 },
             ]
         }
     ],
-})
+});
 
 //获取部门树
 Mock.mock('mock/dept/getDeptTree', (params) => {
@@ -238,7 +237,7 @@ Mock.mock('mock/dept/getDeptTree', (params) => {
             }]
         })
     }
-})
+});
 //获取所有权限树
 Mock.mock('mock/dept/getAllAuthorityData', (params) => {
     return Mock.mock({
@@ -257,7 +256,7 @@ Mock.mock('mock/dept/getAllAuthorityData', (params) => {
             'childCount': '2'
         }]
     })
-})
+});
 //判断部门唯一性
 Mock.mock('mock/dept/checkDeptName', () => {
     return Mock.mock({
@@ -265,7 +264,7 @@ Mock.mock('mock/dept/checkDeptName', () => {
             'code': 0
         }
     })
-})
+});
 //新增部门
 Mock.mock('mock/dept/addDept', (params) => {
     let params1 = JSON.parse(params.body);
@@ -275,7 +274,7 @@ Mock.mock('mock/dept/addDept', (params) => {
             'code': 0
         }
     })
-})
+});
 //删除角色
 Mock.mock('mock/dept/dleRole', (params) => {
     let params1 = JSON.parse(params.body);
@@ -285,7 +284,7 @@ Mock.mock('mock/dept/dleRole', (params) => {
             'code': 0
         }
     })
-})
+});
 //删除部门
 Mock.mock('mock/dept/dleDept', (params) => {
     let params1 = JSON.parse(params.body);
@@ -295,7 +294,7 @@ Mock.mock('mock/dept/dleDept', (params) => {
             'code': 0
         }
     })
-})
+});
 //编辑部门
 Mock.mock('mock/dept/ediDept', (params) => {
     let params1 = JSON.parse(params.body);
@@ -305,7 +304,7 @@ Mock.mock('mock/dept/ediDept', (params) => {
             'code': 0
         }
     })
-})
+});
 //编辑部门
 Mock.mock('mock/dept/editAuthority', (params) => {
     let params1 = JSON.parse(params.body);
@@ -315,7 +314,7 @@ Mock.mock('mock/dept/editAuthority', (params) => {
             'code': 0
         }
     })
-})
+});
 //新增角色
 Mock.mock('mock/dept/addRole', (params) => {
     let params1 = JSON.parse(params.body);
@@ -325,7 +324,7 @@ Mock.mock('mock/dept/addRole', (params) => {
             'code': 0
         }
     })
-})
+});
 
 //获取人员信息
 Mock.mock('mock/dept/getStaffData', (params) => {
@@ -357,7 +356,7 @@ Mock.mock('mock/dept/getStaffData', (params) => {
             'pageIndex': params1.pageInfo.pageIndex
         }
     })
-})
+});
 //新增人员
 Mock.mock('mock/dept/addStaff', (params) => {
     let params1 = JSON.parse(params.body);
@@ -367,16 +366,15 @@ Mock.mock('mock/dept/addStaff', (params) => {
             'code': 0
         }
     })
-})
+});
 //删除人员
 Mock.mock('mock/dept/dleStaff', (params) => {
-    let params1 = JSON.parse(params.body);
     return Mock.mock({
         'result': {
             'code': 0
         }
     })
-})
+});
 //编辑人员
 Mock.mock('mock/dept/ediStaff', (params) => {
     let params1 = JSON.parse(params.body);
@@ -386,7 +384,7 @@ Mock.mock('mock/dept/ediStaff', (params) => {
             'code': 0
         }
     })
-})
+});
 //更改部门
 Mock.mock('mock/dept/changeDept', (params) => {
     let params1 = JSON.parse(params.body);
@@ -396,7 +394,7 @@ Mock.mock('mock/dept/changeDept', (params) => {
             'code': 0
         }
     })
-})
+});
 
 //获取部门页面角色树
 Mock.mock('mock/dept/getRoleTree', (params) => {
@@ -417,7 +415,7 @@ Mock.mock('mock/dept/getRoleTree', (params) => {
                 'iDeptType|+1': 1,
                 'childCount': '2'
             }]
-        })
+        });
     else {
         return Mock.mock({
             'treeData|2': [{
@@ -436,7 +434,7 @@ Mock.mock('mock/dept/getRoleTree', (params) => {
             }]
         })
     }
-})
+});
 //获取部门页面权限树
 Mock.mock('mock/dept/getAuthorityTree', (params) => {
     let params1 = JSON.parse(params.body);
@@ -456,7 +454,7 @@ Mock.mock('mock/dept/getAuthorityTree', (params) => {
                 'iDeptType|+1': 1,
                 'childCount': '2'
             }]
-        })
+        });
     else {
         return Mock.mock({
             'treeData|2': [{
@@ -475,7 +473,7 @@ Mock.mock('mock/dept/getAuthorityTree', (params) => {
             }]
         })
     }
-})
+});
 
 //获取角色树
 Mock.mock('mock/system/rolesController/qryRolesTree', {
@@ -528,7 +526,7 @@ Mock.mock('mock/system/rolesController/qryRolesTree', {
             ]
         }
     ]
-})
+});
 //区域管理
 Mock.mock("mock/SystemController/doMain", {
     "domainData": [
@@ -561,7 +559,7 @@ Mock.mock("mock/SystemController/doMain", {
             No: '5'
         }],
 
-})
+});
 //获取用户表数据
 Mock.mock('mock/system/rolesController/getUserDate', {
     "userData": [
@@ -584,7 +582,7 @@ Mock.mock('mock/system/rolesController/getUserDate', {
             create: '人事1'
         }
     ]
-})
+});
 //权限配置管理
 Mock.mock("mock/systemController/Authority", {
     "authorityData": [
@@ -629,7 +627,7 @@ Mock.mock("mock/systemController/Authority", {
             ]
         },
     ]
-})
+});
 
 // 新增题目
 Mock.mock('mock/questionMgr/addQuestion', (params) => {
@@ -695,7 +693,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             let count = Math.floor(Math.random() * 6 + 2);
             let list = [];
             for (let i = 0; i < count; i++) {
-                let optionId = questionId * 10 + i;
+                // let optionId = questionId * 10 + i;
                 list.push(Mock.mock('@constellation(' + questionId + ')'))
             }
             return list
@@ -704,12 +702,13 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             let result = false;
             result = options.some(item => {
                 if (item.setupQuestionId)
-                    return true
-            })
+                    return true;
+                return ''
+            });
             return result
         }
 
-    })
+    });
     return Mock.mock({
         'qstnaireTitle': '@csentence',
         'list|100': [{
@@ -720,7 +719,7 @@ Mock.mock('mock/questionPreview/getQuestionLIst', (params) => {
             'isSetup': '@isSetup(@optionList)'
         }]
     })
-})
+});
 // 获取问卷预览内容
 Mock.mock('mock/questionPreview/getPreviewLIst', (params) => {
     return Mock.mock({

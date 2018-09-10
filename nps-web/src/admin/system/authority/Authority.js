@@ -1,16 +1,12 @@
 import React, {PureComponent} from 'react';
-import {Col, Row, Select, Button, Divider, Table, Input, Form, Modal} from 'antd';
-import './Authority.less'
+import {Col, Row, Select, Button, Table, Input, Form, Modal} from 'antd';
+
 import {inject, observer} from "mobx-react/index";
 import AuthorityService from "../../../services/system/AuthorityService";
+import './Authority.less'
 
+const [ FormItem, info, Option ] = [ Form.Item, Modal.info, Select.Option ];
 
-const Option = Select.Option;//是否激活选择框
-//选择框选择内容
-
-//表单
-const FormItem = Form.Item;
-const info = Modal.info;
 @inject('stores')
 @observer
 @Form.create({})
@@ -45,12 +41,45 @@ export default class Authority extends PureComponent {
             authorityDeleteData: false,
         });
     }
+
+    //获取权限树
+    AuthorityQuery = (param) => {
+        AuthorityService.getAuthTree({status:1}).then(result => {
+            if (result) {
+                result.map(item => {
+                    if (!item.leaf) {
+                        item.children = [];
+                    }
+                    if (item.parentId !== 0) {
+                        result.map((e) => {
+                            if (e.id === item.parentId) {
+                                e.children.push(item)
+                            }
+                            return '';
+                        })
+                    }
+                    return '';
+                });
+                let data = [];
+                result.map(item => {
+                    if (item.parentId === 0) {
+                        data.push(item);
+                    }
+                    return '';
+                });
+                this.setState({
+                    data: data,
+                });
+            }
+        });
+    };
+
     //新增方法
     handleAdd = () => {
         this.setState({
             addVisible: true,
         });
-    }
+    };
     //修改方法
     handleUpdate = () => {
         if (this.state.authorityEditData) {
@@ -69,7 +98,7 @@ export default class Authority extends PureComponent {
                 }
             });
         }
-    }
+    };
     //删除方法
     handleDelete = () => {
         if (this.state.authorityDeleteData) {
@@ -78,11 +107,13 @@ export default class Authority extends PureComponent {
             });
             let param = {
                 id: this.state.authorityData.id,
-                userId: String(sessionStorage.getItem('userId'))
+                userId: Number(sessionStorage.getItem('userId'))
             };
             AuthorityService.deleteAuthority(param).then((data) => {
-                this.freshTable();
-                this.handleOk();
+                if(data) {
+                    this.freshTable();
+                    this.handleOk();
+                }
             })
 
         } else {
@@ -97,7 +128,7 @@ export default class Authority extends PureComponent {
             });
         }
         this.freshTable();
-    }
+    };
     //详情方法
     handleDetail = () => {
         if (this.state.authorityUserData) {
@@ -116,35 +147,6 @@ export default class Authority extends PureComponent {
                 }
             });
         }
-    }
-    //获取权限树
-    AuthorityQuery = (param) => {
-        AuthorityService.getAuthTree({status:1}).then(result => {
-            if (result) {
-                result.map(item => {
-                    if (!item.leaf) {
-                        item.children = [];
-                    }
-                    if (item.parentId !== 0) {
-                        result.map((e) => {
-                            if (e.id === item.parentId) {
-                                e.children.push(item)
-                            }
-                        })
-                    }
-                });
-            }
-            let data = [];
-            result.map(item => {
-                if (item.parentId === 0) {
-                    data.push(item);
-                }
-                return '';
-            });
-            this.setState({
-                data: data,
-            });
-        });
     };
     freshTable() {
         this.AuthorityQuery();
@@ -156,42 +158,44 @@ export default class Authority extends PureComponent {
             userVisible: false,
             editVisible: false,
         });
-    }
+    };
     handleCancel = () => {
         this.setState({
             addVisible: false,
             userVisible: false,
             editVisible: false,
         });
-    }
+    };
     handleAddSubmit = (e) => {
         this.props.form.validateFields((err, values) => {
-            let value;
+            let value = {
+                ...values,
+                userId: Number(sessionStorage.getItem('userId'))
+            };
             if (this.state.authorityAddData) {
                 value = {
-                    ...values,
-                    parentId: this.state.authorityData.id,
-                    userId: String(sessionStorage.getItem('userId'))
+                    ...value,
+                    parentId: this.state.authorityData.id
                 }
-            }
-            else{
+            } else{
                 value = {
-                    ...values,
-                    parentId: 0,
-                    userId: String(sessionStorage.getItem('userId'))
+                    ...value,
+                    parentId: 0
                 }
             }
             AuthorityService.addAuthority(value).then((data) => {
-                this.freshTable();
-                this.handleOk();
+                if(data) {
+                    this.freshTable();
+                    this.handleOk();
+                }
             })
 
         });
-    }
+    };
     handleUpdateSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            AuthorityService.updateAuthority({...values, userId: String(sessionStorage.getItem('userId'))}).then((data) => {
+            AuthorityService.updateAuthority({...values, userId: Number(sessionStorage.getItem('userId'))}).then((data) => {
                 this.freshTable();
                 this.handleOk();
             })
@@ -200,9 +204,9 @@ export default class Authority extends PureComponent {
     };
 
     render() {
-        const {authority} = this.props.stores.I18nModel.outputLocale
+        const {authority} = this.props.stores.I18nModel.outputLocale;
         const {getFieldDecorator} = this.props.form;
-        const state = this.state;
+
         const rowSelection = {
             onSelect: (record, selected, selectedRows) => {
                 this.setState({
@@ -216,79 +220,86 @@ export default class Authority extends PureComponent {
 
             },
         };
-        const columns = [{
-            title: authority.authorityName,
-            dataIndex: 'name',
-            key: 'name',
-            width: '30%',
-        }, {
-            title: authority.authorityUrl,
-            dataIndex: 'url',
-            key: 'url',
-            width: '25%',
-            render: (text) => <span className="tableText">{text}</span>,
+        const columns = [
+            {
+                title: authority.authorityName,
+                dataIndex: 'name',
+                key: 'name',
+                width: '30%',
+            },
+            {
+                title: authority.authorityUrl,
+                dataIndex: 'url',
+                key: 'url',
+                width: '25%',
+                render: (text) => <span className="tableText">{text}</span>,
 
-        }, {
-            title: authority.authorityDescribe,
-            dataIndex: 'description',
-            key: 'description',
-            width: '15%',
-            render: (text) => <span className="tableText">{text}</span>,
-        }, {
-            title: authority.authorityType,
-            dataIndex: 'type',
-            key: 'type',
-            width: '15%',
-            render: (text, record, index) => {
-                switch (text) {
-                    case 1:
-                        return authority.menu
-                    case 2:
-                        return authority.functionButton
-                    case 3:
-                        return authority.CSright
-                    case 4:
-                        return authority.other
-                    case 5:
-                        return authority.tab
-                    case 6:
-                        return authority.dataSource
+            },
+            {
+                title: authority.authorityDescribe,
+                dataIndex: 'description',
+                key: 'description',
+                width: '15%',
+                render: (text) => <span className="tableText">{text}</span>,
+            },
+            {
+                title: authority.authorityType,
+                dataIndex: 'type',
+                key: 'type',
+                width: '15%',
+                render: (text, record, index) => {
+                    switch (text) {
+                        case 1:
+                            return authority.menu;
+                        case 2:
+                            return authority.functionButton;
+                        case 3:
+                            return authority.CSright;
+                        case 4:
+                            return authority.other;
+                        case 5:
+                            return authority.tab;
+                        case 6:
+                            return authority.dataSource;
+                        default: return ''
+                    }
+
                 }
 
-            }
+            },
+            {
+                title: authority.authorityArea,
+                dataIndex: 'appType',
+                key: 'appType',
+                width: '15%',
+                render: (text, record, index) => {
+                    switch (text) {
+                        case 1:
+                            return authority.global;
+                        case 2:
+                            return authority.netManagement;
+                        case 3:
+                            return authority.keyAccountSystem;
+                        case 4:
+                            return authority.jiangsu;
+                        case 5:
+                            return authority.stateAnalysis;
+                        case 6:
+                            return authority.customReport;
+                        case 7:
+                            return authority.statisticalAnalysis;
+                        case 8:
+                            return authority.reInsurance;
+                        case 9:
+                            return authority.guangxiPortal;
+                        case 10:
+                            return authority.guangdongResourceTree;
+                        default: return ''
+                    }
 
-        }, {
-            title: authority.authorityArea,
-            dataIndex: 'appType',
-            key: 'appType',
-            width: '15%',
-            render: (text, record, index) => {
-                switch (text) {
-                    case 1:
-                        return authority.global
-                    case 2:
-                        return authority.netManagement
-                    case 3:
-                        return authority.keyAccountSystem
-                    case 4:
-                        return authority.jiangsu
-                    case 5:
-                        return authority.stateAnalysis
-                    case 6:
-                        return authority.customReport
-                    case 7:
-                        return authority.statisticalAnalysis
-                    case 8:
-                        return authority.reInsurance
-                    case 9:
-                        return authority.guangxiPortal
-                    case 10:
-                        return authority.guangdongResourceTree
                 }
 
-            }
-
-        }];
+            }];
 
         return (
             <div className={'authority'}>
@@ -298,26 +309,27 @@ export default class Authority extends PureComponent {
                     <Button type="danger" icon="delete" onClick={this.handleDelete}>{authority.delete}</Button>
                     <Button type="primary" icon="user" onClick={this.handleDetail}>{authority.detail}</Button>
                 </div>
-                <Divider/>
-                <div>
-                    <Table {...this.state} columns={columns} rowKey={record => `${record.id}`}
-                           defaultExpandedRowKeys={[0]} rowSelection={rowSelection} size="small"
-                           dataSource={this.state.data} onRow={(record) => {
-                        return {
-                            onClick: (e) => {
-                                e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click()
-                            },       // 点击行
-                            onDoubleClick: (e) => {
-                                this.setState({
-                                    authorityUserData: true
-                                }, () => {
-                                    this.handleDetail()
-                                });
-
-
-                            },
+                <div style={{marginTop: '10px'}}>
+                    <Table
+                        {...this.state}
+                        columns={columns}
+                        rowKey={record => `${record.id}`}
+                        defaultExpandedRowKeys={[0]}
+                        rowSelection={rowSelection} size="small"
+                        dataSource={this.state.data} onRow={(record) => {
+                            return {
+                                onClick: (e) => {
+                                    e.currentTarget.getElementsByClassName("ant-checkbox-wrapper")[0].click()
+                                },       // 点击行
+                                onDoubleClick: (e) => {
+                                    this.setState({
+                                        authorityUserData: true
+                                    }, () => {
+                                        this.handleDetail()
+                                    });
+                                },
+                            }
                         }
-                    }
                     }
                     />
                     <Modal
@@ -338,7 +350,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.authorityName}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('name', {
@@ -349,17 +361,15 @@ export default class Authority extends PureComponent {
                                         )}
                                     </FormItem>
                                 </Col>
-
-
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('type', {
-                                            rules: [{required: true,}],
-                                            initialValue: "6",
+                                            rules: [{required: true, }],
+                                            initialValue: "1",
                                         })(
                                             <Select>
                                                 <Option value="1">{authority.menu}</Option>
@@ -375,11 +385,10 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.linkURL}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('url', {
-                                            rules: [{}],
                                             initialValue: " ",
                                         })(
                                             <Input/>
@@ -389,7 +398,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionDescribe}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('description', {
@@ -400,11 +409,10 @@ export default class Authority extends PureComponent {
                                         )}
                                     </FormItem>
                                 </Col>
-
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.applicationType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('appType', {
@@ -437,8 +445,7 @@ export default class Authority extends PureComponent {
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
                         footer={[
-                            <Button key="submit" type="primary" icon="check-circle-o"
-                                    onClick={this.handleUpdateSubmit}>{authority.save}</Button>,
+                            <Button key="submit" type="primary" icon="check-circle-o" onClick={this.handleUpdateSubmit}>{authority.save}</Button>,
                             <Button key="back" icon="close-circle-o" onClick={this.handleCancel}>{authority.cancel}</Button>
                         ]}
                     >
@@ -447,21 +454,21 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionIdentify}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('id', {
                                             rules: [{required: true,}],
                                             initialValue: this.state.authorityData.id,
                                         })(
-                                            <Input/>
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.authorityName}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('name', {
@@ -476,7 +483,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('type', {
@@ -497,11 +504,10 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.linkURL}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('url', {
-                                            rules: [{}],
                                             initialValue: this.state.authorityData.url,
                                         })(
                                             <Input/>
@@ -512,11 +518,10 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionDescribe}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('description', {
-                                            rules: [{}],
                                             initialValue: this.state.authorityData.description,
                                         })(
                                             <Input/>
@@ -526,7 +531,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.applicationType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('appType', {
@@ -549,7 +554,6 @@ export default class Authority extends PureComponent {
                                     </FormItem>
                                 </Col>
                             </Row>
-
                         </Form>
                     </Modal>
                     <Modal
@@ -566,7 +570,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionIdentify}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {this.state.authorityData.id}
@@ -575,7 +579,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.authorityName}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {this.state.authorityData.name}
@@ -584,10 +588,10 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
-                                        <Select value={String(this.state.authorityData.type)}disabled>
+                                        <Select value={String(this.state.authorityData.type)} disabled>
                                             <Option value="1">{authority.menu}</Option>
                                             <Option value="2">{authority.functionButton}</Option>
                                             <Option value="3">{authority.CSbutton}</Option>
@@ -600,7 +604,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.linkURL}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {this.state.authorityData.url}
@@ -609,7 +613,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.permissionDescribe}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         {this.state.authorityData.description}
@@ -618,7 +622,7 @@ export default class Authority extends PureComponent {
                                 <Col span={12}>
                                     <FormItem
                                         label={authority.applicationType}
-                                        labelCol={{span: 10}}
+                                        labelCol={{span: 8}}
                                         wrapperCol={{span: 14}}
                                     >
                                         <Select value={String(this.state.authorityData.appType)} disabled>

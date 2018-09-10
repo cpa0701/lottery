@@ -98,6 +98,7 @@ class Head extends React.Component {
                     mode="horizontal"
                     theme="dark"
                     style={{height: "100%", paddingTop: 9}}
+                    className="menuBorder"
                 >{
                     this.initMenu()
                 }</Menu>

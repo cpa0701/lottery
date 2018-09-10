@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Tabs, Button, Input, Menu, Dropdown, Icon, Pagination, Spin, Popconfirm, message} from "antd"
+import {Row, Col, Tabs, Button, Input, Icon, Pagination, Spin, Popconfirm, message} from "antd"
 
 import './questionApplication.less'
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService";
@@ -136,13 +136,13 @@ class QuestionApplication extends React.PureComponent {
             onSearch={value => this.onSearch(value)}
             enterButton
         />;
-        const menu = (
-            <Menu onClick={this.handleMenuClick}>
-                <Menu.Item key="1">1st item</Menu.Item>
-                <Menu.Item key="2">2nd item</Menu.Item>
-                <Menu.Item key="3">3rd item</Menu.Item>
-            </Menu>
-        );
+        // const menu = (
+        //     <Menu onClick={this.handleMenuClick}>
+        //         <Menu.Item key="1">1st item</Menu.Item>
+        //         <Menu.Item key="2">2nd item</Menu.Item>
+        //         <Menu.Item key="3">3rd item</Menu.Item>
+        //     </Menu>
+        // );
         const questionLIst = <div>
                                 <Spin spinning={this.state.loading}>
                                     {qstnaireList.map(item => {

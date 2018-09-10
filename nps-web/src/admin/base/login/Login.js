@@ -7,7 +7,6 @@ import {message, Form, Input, Button, Icon, Row, Col, Radio} from 'antd';
 
 import LoginService from '../../../services/login/LoginService';
 import ResetPassword from './ResetPassword';
-import axios from 'axios';
 import './login.less'
 
 const {runInAction, autorun, configure} = mobx;
@@ -96,20 +95,6 @@ class Login extends React.Component {
                 });
                 let data = result;
                 if (data) {
-                    // let params = {
-                    //     grant_type: 'password',
-                    //     username: 'ztesoft',
-                    //     password: '123456',
-                    //     scope: 'nps-api',
-                    //     userId: sessionStorage.getItem('userId'),
-                    //     appId: 'nps'
-                    // };
-                    // LoginService.authToken(params).then(res => {
-                    //     if(res) {
-                    //         sessionStorage.setItem('authToken', res.access_token);
-                    //
-                    //     }
-                    // });
                     runInAction(() => {
                         message.success('登录成功！');
                         //登录状态变更

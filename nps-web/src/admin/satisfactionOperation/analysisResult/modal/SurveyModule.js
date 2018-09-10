@@ -46,12 +46,10 @@ export default class SurveyModule extends PureComponent {
             }
         })
     };
-
-    componentDidMount() {
-        // this.createChart();
-        // this.createNPSChart();
+    componentWillMount() {
         this.getData();
     }
+
     //调研结果值分布
     createChart = (xData, taskCount, partakeCount, finishCount) => {
         let myChart = echarts.init(document.getElementById("barChartone"));

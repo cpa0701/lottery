@@ -95,23 +95,26 @@ class StaffModal extends PureComponent {
             message.success(this.state.actionTypeName + this.state.depart.success);
             handleModalVisible();
         });
-    }
+    };
     // 校验部门的唯一性
     handleCheckName = (rule, value, callback) => {
-        let code = ''
+        let code = '';
         let params = {
             menuName: value,
             state: "00A"
-        }
+        };
         DeptService.checkDeptName(params)
             .then(result => {
-                code = result.code
+                code = result.code;
                 if (code && code === '1' && this.actionType === 'A') {
                     callback(this.state.depart.exisitSystem)
                 }
                 callback()
             })
-    }
+    };
+    afterClose = () => {
+        this.props.form.resetFields();
+    };
 
     getFields(actionType) {
         const {form, departmentData, staffData} = this.props;
@@ -190,7 +193,7 @@ class StaffModal extends PureComponent {
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
-                        {form.getFieldDecorator('cellphone ', {
+                        {form.getFieldDecorator('cellphone', {
                             rules: [],
                             initialValue: staffData.cellphone,
                         })(
@@ -218,7 +221,7 @@ class StaffModal extends PureComponent {
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
-                        {form.getFieldDecorator('email ', {
+                        {form.getFieldDecorator('email', {
                             rules: [],
                             initialValue: staffData.email,
                             // initialValue: { menuUrl: this.props.departmentData.menuUrl !== undefined ? this.props.departmentData.menuUrl + '' : '' },
@@ -233,7 +236,7 @@ class StaffModal extends PureComponent {
                         labelCol={{span: 10}}
                         wrapperCol={{span: 14}}
                     >
-                        {form.getFieldDecorator('identityCard ', {
+                        {form.getFieldDecorator('identityCard', {
                             initialValue: staffData.identityCard,
                             // initialValue: { menuUrl: this.props.departmentData.menuUrl !== undefined ? this.props.departmentData.menuUrl + '' : '' },
                         })(
@@ -263,7 +266,7 @@ class StaffModal extends PureComponent {
         let action = {
             actionType: 'A',
             actionTypeName: this.state.depart.newStaff
-        }
+        };
         if (thisTime === "M") {
             action = {
                 actionType: 'M',
@@ -292,6 +295,7 @@ class StaffModal extends PureComponent {
                 destroyOnClose={true}
                 onOk={okHandle}
                 onCancel={() => handleModalVisible()}
+                afterClose={this.afterClose}
             >
                 <Form>
                     <Row gutter={24}>

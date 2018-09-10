@@ -15,7 +15,7 @@ class LoginService {
   //登出方法
     logout = async (param) => {
       var url = 'logout';
-      return Http.get(url,param);
+      return Http.post(url, param);
     }
 
   //获取登录信息

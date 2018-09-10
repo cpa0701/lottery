@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import { Modal, Row, Col, Input, Form,Tabs,Pagination  } from 'antd';
+import { Modal, Form } from 'antd';
 import './ReQuestionaire.less'
-const Search = Input.Search;
-const TabPane = Tabs.TabPane;
-const {TextArea} = Input;
-const FormItem = Form.Item;
 
 @Form.create()
 export default class extends Component {
@@ -12,7 +8,7 @@ export default class extends Component {
         loading: false,
         pageNum: 1,
         total: 0
-    }
+    };
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
@@ -27,7 +23,7 @@ export default class extends Component {
     //列表分页
     refreshList = (page) => {
         this.getQuestionnaireList({pageNum: page,});
-    }
+    };
 
     render() {
         const {selecttabs} = this.props;

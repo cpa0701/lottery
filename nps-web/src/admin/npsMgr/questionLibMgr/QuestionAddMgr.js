@@ -308,7 +308,7 @@ export default class QuestionAddMgr extends PureComponent {
                                 },
                                 {
                                     optionOrder: 2, // 选项序号
-                                    optionName: '选项1',
+                                    optionName: '选项2',
                                     isOther: 0  // 默认0
                                 },
                             ],

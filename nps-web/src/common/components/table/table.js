@@ -124,7 +124,7 @@ class StandardTable extends PureComponent {
                 dataSource.length && this.props.onSelectRow([dataSource[0]])
                 // }
             });
-    }
+    };
 
     getInteger = (value) => {
         if (typeof(value) === 'number') {
@@ -136,7 +136,7 @@ class StandardTable extends PureComponent {
         else {
             return 0;
         }
-    }
+    };
 
     handleRowSelectChange = (selectedRowKeys, selectedRows) => {
         let needTotalList = [...this.state.needTotalList];
@@ -153,13 +153,13 @@ class StandardTable extends PureComponent {
             this.props.onSelectRow(selectedRows, selectedRowKeys);
         }
         this.setState({selectedRowKeys, needTotalList});
-    }
+    };
 
     handleRowSelect = (record, selected, selectedRows) => {
         if (this.props.onRowSelect) {
             this.props.onRowSelect(record, selected, selectedRows);
         }
-    }
+    };
 
     handleTableChange = (pagination, filters, sorter) => {
         if (this.props.handleStandardTableChange) {
@@ -170,7 +170,7 @@ class StandardTable extends PureComponent {
             //采用标准事件
             this.handleStandardTableChange(pagination, filters, sorter);
         }
-    }
+    };
 
     handleStandardTableChange = (pagination, filtersArg, sorter) => {
         const {formValues} = this.props;
@@ -193,11 +193,11 @@ class StandardTable extends PureComponent {
         }
 
         this.handleSearch(params);
-    }
+    };
 
     cleanSelectedKeys = () => {
         this.handleRowSelectChange([], []);
-    }
+    };
 
     cleanTable = () => {
         this.setState({
@@ -205,7 +205,7 @@ class StandardTable extends PureComponent {
             pagination: null
         });
         this.cleanSelectedKeys();
-    }
+    };
 
     onRowClick = (record, index) => {
         const {onRowClick} = this.props;
@@ -215,7 +215,7 @@ class StandardTable extends PureComponent {
         if (typeof(onRowClick) === 'function') {
             onRowClick(record, index);
         }
-    }
+    };
 
     rowClassName = (record, index) => {
         if (this.state.clickedRowIndex === record[this.props.rowKey]) {
@@ -223,10 +223,10 @@ class StandardTable extends PureComponent {
             return 'ant-table-row-selected';
         }
         return 'ant-table-row-nonSelected';
-    }
+    };
 
     render() {
-        const {dept}=this.props.stores.I18nModel.outputLocale
+        const {dept}=this.props.stores.I18nModel.outputLocale;
         const {selectedRowKeys, needTotalList} = this.state;
         const {
             title, size, columns, rowKey, showRowSelection,

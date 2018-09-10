@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Layout, Icon, Button, Tabs, Radio, Table, Form, Input, Popconfirm, message} from 'antd';
+import {Layout, Icon, Button, Tabs, Table, Form, Input, Popconfirm, message} from 'antd';
 
 import SysRoleMgService from '../../../services/system/RoleService';
 import DeptService from '../../../services/system/DeptService';
@@ -18,7 +18,7 @@ import UserAdd from './modal/UserAdd';
 import './Role.less';
 import {inject} from "mobx-react/index";
 
-const [TabPane, RadioGroup, FormItem] = [Tabs.TabPane, Radio.Group, Form.Item];
+const [TabPane, FormItem] = [Tabs.TabPane, Form.Item];
 const {Sider, Content} = Layout;
 @inject('stores')
 @Form.create({})
@@ -36,9 +36,9 @@ export default class Role extends PureComponent {
         deptData: [], // 部门表
         checkedKeys: [], //角色树勾选
         selRowKeys: [], // 用户表勾选
-        checkedAuthKeys:[],//权限树勾选
+        checkedAuthKeys: [],//权限树勾选(删除)
         record: {}, // 编辑角色时的obj数据
-        parentId: '0',
+        parentId: 0,
         selectedKeys: [],
         collapsed: false,
         loading: false,
@@ -62,7 +62,7 @@ export default class Role extends PureComponent {
 
     componentDidMount() {
         // 获取角色树
-        this.roleQuery({parentId: '0'});
+        this.roleQuery({parentId: 0, name: ''});
     }
     //收起展开角色
     toggle = () => {
@@ -96,7 +96,7 @@ export default class Role extends PureComponent {
                 resolve();
                 return;
             }
-            SysRoleMgService.roleTree({parentId: treeNode.props.dataRef.id})
+            SysRoleMgService.roleTree({parentId: Number(treeNode.props.dataRef.id), name: ''})
                 .then(data => {
                     if (data) {
                         data.map(item => {
@@ -124,7 +124,7 @@ export default class Role extends PureComponent {
         let record =  info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props.dataRef : "";
 
         this.setState({
-            parentId: selectedKeys[selectedKeys.length - 1],
+            parentId: Number(selectedKeys[selectedKeys.length - 1]),
             checkedKeys: selectedKeys,
             record
         });
@@ -133,25 +133,11 @@ export default class Role extends PureComponent {
             this.getUserData({
                 pageNum:String(this.state.pagination.current),
                 pageSize:String(this.state.pagination.pageSize),
-                id: Number(selectedKeys[0])
+                id: Number(selectedKeys[0]),
             });
         }
     };
-    //点击、勾选获取权限树时
-    onSelectAuth=(selectedKeys, info)=>{
-        if (selectedKeys.length > 1) {
-            message.info(this.state.role.selectOneCharacter);
-            return;
-        }
-        info.selectedNodes = info.selectedNodes ? info.selectedNodes : info.checkedNodes;
-        let record =  info.selectedNodes.length ? info.selectedNodes[info.selectedNodes.length - 1].props.dataRef : "";
 
-        this.setState({
-            parentId: selectedKeys[selectedKeys.length - 1],
-            checkedKeys: selectedKeys,
-            record
-        });
-    }
     // 新增角色
     addRoleModal = (show) => {
         if (show) {
@@ -207,7 +193,7 @@ export default class Role extends PureComponent {
         this.setState({loading: true}, () => {
             SysRoleMgService.delRoles({id: Number(checkedKeys[0]),userId: String(sessionStorage.getItem('userId'))}).then((res) => {
                 message.success(this.state.role.deleteSuccess);
-                this.roleQuery({parentId: '0'});
+                this.roleQuery({parentId: 0, name: ''});
                 this.setState({checkedKeys: [], record: {}, loading: false});
             });
         });
@@ -239,7 +225,7 @@ export default class Role extends PureComponent {
                 return;
             }
             let authCheckedKeys = [];
-            AuthorityService.getAuthTree({parentId: treeNode.props.dataRef.id})
+            AuthorityService.getAuthTree({parentId: Number(treeNode.props.dataRef.id)})
                 .then(data => {
                     data.map(item => {
                         item.title = item.name;
@@ -269,6 +255,16 @@ export default class Role extends PureComponent {
             message.info(this.state.role.selectEditRole);
         }
     };
+    // 点击、勾选获取权限树时(删除)
+    onSelectAuth=(selectedKeys, info)=>{
+        if (selectedKeys.length > 1) {
+            message.info(this.state.role.selectOneCharacterAuth);
+            return;
+        }
+        this.setState({
+            checkedAuthKeys: selectedKeys,
+        });
+    };
     // 删除权限
     delAuths = () => {
         let checkedKeys = this.state.checkedKeys;
@@ -279,15 +275,13 @@ export default class Role extends PureComponent {
         this.setState({loading: true}, () => {
               let param={
                   rid: Number(checkedKeys[0]),
-                  pid: Number(this.state.authCheckedKeys[0]),
-                 // pid: Number(this.state.selectedKeys[0]),
+                  pid: Number(this.state.checkedAuthKeys[0]),
                   userId: String(sessionStorage.getItem('userId'))
-              }
+              };
             SysRoleMgService.delRoleAuth(param).then((res) => {
                     message.success(this.state.role.deleteSuccess);
                     if (checkedKeys.length  === 1) {
                         this.authQuery({id: Number(checkedKeys[0])});
-                       // this.authQuery({id: Number(selectedkedKeys[0])});
                     }
                     this.setState({loading: false});
             });
@@ -425,9 +419,8 @@ export default class Role extends PureComponent {
                 pageNum: String(this.state.pagination.current),
                 pageSize: String(this.state.pagination.pageSize),
                 id: Number(this.state.checkedKeys[0]),
-                userId: String(sessionStorage.getItem('userId')),
             };
-            this.getUserData( params);
+            this.getUserData(params);
         });
     };
     // 获取勾选用户表格id
@@ -463,11 +456,11 @@ export default class Role extends PureComponent {
                     uid: Number(selRowKeys)}).then((res) => {
                 message.success(this.state.role.deleteSuccess);
                 let param={
-                    pageNum:String(this.state.pagination.current),
-                    pageSize:String(this.state.pagination.pageSize),
+                    pageNum: String(this.state.pagination.current),
+                    pageSize: String(this.state.pagination.pageSize),
                     //id: Number(this.state.selectedKeys[0])
                     id: Number(this.state.checkedKeys[0])
-                }
+                };
                 this.getUserData(param);
 
                 this.setState({loading: false});
@@ -489,6 +482,7 @@ export default class Role extends PureComponent {
             record,
             checkedKeys,
             authCheckedKeys,
+            checkedAuthKeys,
             selRowKeys,
             // regSelectKeys
         } = this.state;
@@ -501,12 +495,12 @@ export default class Role extends PureComponent {
             },
             {
                 title: role.department,
-                dataIndex: 'deptId',
+                dataIndex: 'deptName',
                 width: '60%'
             },
             {
                 title: role.creator,
-                dataIndex: 'createdBy',
+                dataIndex: 'createdName',
                 width: '20%'
             }
         ];
@@ -553,11 +547,11 @@ export default class Role extends PureComponent {
         };
         const authProps = {// 树索要用到的参数
             treeData: authData, // 要一级数据.
-            checkedKeys,
-            selectedKey,
-            checkable:true,
+            checkedKeys: checkedAuthKeys,
+            selectedKey: checkedAuthKeys,
+            checkable: true,
             onCheck: this.onSelectAuth,
-            onSelect:this.onselectAuth,
+            onSelect:this.onSelectAuth,
             onLoadData: this.loadAuthData
         };
         // const regionProps = {// 表所要用到的参数
@@ -583,7 +577,7 @@ export default class Role extends PureComponent {
                         message.success(role.success);
                         if (this.isMount) {
                             this.setState({add: false, loading: false}, () => {
-                                this.roleQuery({parentId: '0'});
+                                this.roleQuery({parentId: 0, name: ''});
                             });
                         }
                     } else {
@@ -607,7 +601,7 @@ export default class Role extends PureComponent {
                     message.success(role.editSuccess);
                     if (this.isMount) {
                         this.setState({checkedKeys: [], record: {}, edit: false}, () => {
-                            this.roleQuery({parentId: '0'});
+                            this.roleQuery({parentId: 0, name: ''});
                         });
                     }
                 });
@@ -625,7 +619,7 @@ export default class Role extends PureComponent {
                         message.success(role.copySuccess);
                         if (this.isMount) {
                             this.setState({edit: false}, () => {
-                                this.roleQuery({parentId: '0'});
+                                this.roleQuery({parentId: 0, name: ''});
                             });
                         }
                     } else {

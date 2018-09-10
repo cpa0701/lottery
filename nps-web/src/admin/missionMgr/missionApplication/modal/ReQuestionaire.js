@@ -1,14 +1,14 @@
 import React, {PureComponent} from 'react';
-import {Modal, Row, Col, Input, Form, Tabs, Pagination, Button} from 'antd';
+import {Modal, Row, Col, Input, Form, Button} from 'antd';
 import QuestionApplicationModal from '../components/QuestionApplicationModal'
 
 import './ReQuestionaire.less'
 import {inject} from "mobx-react/index"
 
 const Search = Input.Search;
-const TabPane = Tabs.TabPane;
-const {TextArea} = Input;
-const FormItem = Form.Item;
+// const TabPane = Tabs.TabPane;
+// const {TextArea} = Input;
+// const FormItem = Form.Item;
 
 @Form.create()
 @inject('stores')
@@ -21,7 +21,7 @@ export default class extends PureComponent {
         pageSize: 10,
         createId: '',
         qstnaireTitle: ''
-    }
+    };
     onSubmit = () => {
         this.props.form.validateFieldsAndScroll((errors, values) => {
             if (errors) {
@@ -38,14 +38,14 @@ export default class extends PureComponent {
         this.setState({createId: id ? id : ''}, () => {
             this.questionApplicationList.getQuestionnaireList({pageNum: 1})
         })
-    }
+    };
     OnRef = (ref) => {
         this.questionApplicationList = ref;
-    }
+    };
 
     render() {
         const {add, onChoseQuestion} = this.props;
-        const createId = JSON.parse(sessionStorage.getItem('userInfo')).id
+        const createId = JSON.parse(sessionStorage.getItem('userInfo')).id;
         return (
             <Modal
                 title="选择问卷"

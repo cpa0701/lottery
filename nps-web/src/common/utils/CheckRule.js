@@ -6,7 +6,7 @@ class CheckRule {
 		patOne:/^[0-9A-Za-z_]+$/,//字母数字和下划线
 		passWord:/^[0-9a-zA-Z]{8,16}$/,//密码校验
 
-	}
+	};
 
 	//自定义json校验方法
 	handleIsJson = (rule,values,callback) => {
@@ -16,13 +16,13 @@ class CheckRule {
 		}else{
 			callback();
 		}
-	}
+	};
 
 	//判断json格式
 	isJSON = (str) => {
-		if (typeof str == 'string') {
+		if (typeof str === 'string') {
 	        try {
-	        	if (typeof JSON.parse(str) == "object") {
+	        	if (typeof JSON.parse(str) === "object") {
 	                return true;
 	            }
 	        } catch(e) {
@@ -30,7 +30,7 @@ class CheckRule {
 	            return false;
 	        }
 	    }
-	}
+	};
 
 	//平台账号密码校验
 	handlePassWordCheck = (rule,value,callback) => {
@@ -45,19 +45,19 @@ class CheckRule {
 			callback(result.text);
 		}
 
-	}
+	};
 	//密码复杂校验
 	passWordCheck = (value) => {
 		var result = {
 			flag:false,
 			text:''
-		}
+		};
 		//大于八位
 		if(value.length < 8){
 			result = {
 				flag: false,
 				text:'不能小于八位'
-			}
+			};
 			return result;
 		}
 		// 密码复杂性要求至少包含以下4种类别中的2种：大写字母、小写字母、数字、特殊符号
@@ -78,7 +78,7 @@ class CheckRule {
                 isNumFlage=1;
             }
             for(let j=0;j<otherChar.length;j++){
-                if(otherChar[j]==value.charAt(i)){
+                if(otherChar[j] === value.charAt(i)){
                     isOtherFlage=1;
                 }
             }
@@ -89,7 +89,7 @@ class CheckRule {
         		result = {
 					flag: true,
 					text:''
-				}
+				};
         		return result;
         	}else{
         		result = {

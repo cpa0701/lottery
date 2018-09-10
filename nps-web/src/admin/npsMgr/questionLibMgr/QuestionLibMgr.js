@@ -113,9 +113,9 @@ class QuestionLibMgr extends React.PureComponent {
                                     <Button type="primary" onClick={() => this.showQuestion(true, item)}
                                             icon="eye-o">查看</Button>
                                     <Button type="primary" onClick={() => this.editQuestion(item)}
-                                            icon="edit">编辑</Button>
+                                            icon="edit" disabled={item.isUse === 1}>编辑</Button>
                                     <Popconfirm title="你确定删除该题目?" onConfirm={() => this.delQuestion(item.questionId)}>
-                                        <Button type="danger" icon="delete">删除</Button>
+                                        <Button type="danger" icon="delete" disabled={item.isUse === 1}>删除</Button>
                                     </Popconfirm>
                                 </Col>
                             </Row>

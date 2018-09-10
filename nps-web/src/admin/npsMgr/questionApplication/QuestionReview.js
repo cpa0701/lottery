@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Tabs, Button, Input, Menu, Icon, Pagination, Spin, Popconfirm, message} from "antd"
+import {Row, Col, Tabs, Button, Input, Icon, Pagination, Spin, Popconfirm, message} from "antd"
 
 import './questionApplication.less'
 import QuestionApplicationService from "../../../services/question/QuestionApplicationService";

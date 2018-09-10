@@ -56,11 +56,11 @@ export default class extends Component {
         });
     };
   // 点击、勾选权限树节点时
-  onSelect = (selectedKeys) => {
+  onSelect = (selectedKeys, info) => {
       this.props.onCheck(selectedKeys);
       let params = {
           roleId: Number(this.props.roleId),
-          permissionId: Number(selectedKeys[selectedKeys.length - 1]),
+          permissionId: Number(info.node.props.dataRef.id),
           userId: String(sessionStorage.getItem('userId')),
       };
       SysRoleMgService.editRoleAuth(params).then((data) => {
