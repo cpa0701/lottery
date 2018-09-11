@@ -56,6 +56,7 @@ public class ShortUrlFilter implements Filter {
                         SmsAccessQuequ.putInfo(smsAccess);
                     }
                 }
+                response.setHeader("","");
                 response.sendRedirect(MapUtil.getString(resultMap,"base_url"));
             }
             // 测试demo:

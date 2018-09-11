@@ -76,6 +76,8 @@ public class ConstantUtils {
     public static final String LOGIN_CONTENT_TYPE = "application/x-www-form-urlencoded";
     public static final String LOGIN_AUTHORIZATION = "Basic Y2xpZW50LW5wczoxMjM0NTY=";
 
+    public static final String AUTH = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJ6dGVzb2Z0Iiwic2NvcGUiOlsibnBzLWFwaSJdLCJvcmdhbml6YXRpb24iOiJ6dGVzb2Z0IiwiYXBwSWQiOiJucHMiLCJleHAiOjE1MzY1ODA5ODYsInVzZXJJZCI6IjEiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiOGI0OTlmYmQtNjU0NC00ZTMzLTk0ODYtNGMzMTc5ZWRhNDU3IiwiY2xpZW50X2lkIjoiY2xpZW50LW5wcyJ9.Yn-e9QW4nAxWIzWp5PYRC0vrZWmsYZZfTzKYS4SNGV8";
+
 
 
 }

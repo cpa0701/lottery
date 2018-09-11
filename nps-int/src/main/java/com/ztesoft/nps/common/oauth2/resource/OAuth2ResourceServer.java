@@ -27,8 +27,11 @@ public class OAuth2ResourceServer extends ResourceServerConfigurerAdapter {
             http.antMatcher("/**")        //匹配需要资源认证路径
                     .authorizeRequests()
                     .antMatchers("/login","/logout","/swagger-ui.html", "/swagger-resources/**",
-                            "/v2/api-docs/**", "/validatorUrl","/valid"
-                    ).permitAll().anyRequest().authenticated();           //匹配不需要资源认证路径
+                            "/v2/api-docs/**", "/validatorUrl","/valid","/*NPS","/qstnaireMgr/submitQstnaire","/qstnaireMgr/qstnaireById",
+                            "/question.html**","/**.js","/**.json","/**/question.64725e9f.js","/npsResultMgr/surveyTargetShow","/npsResultMgr/surveyNpsShow","/",
+                            "/**/index.4a720580.js","/static/**"
+
+                    ).permitAll().anyRequest().authenticated();
 
         }else{
             System.out.println("=============================关闭jwt认证===========================");

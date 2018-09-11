@@ -76,7 +76,7 @@ public class LoginMgrController {
 		user.setPassword(null);
 		user.setSalt(null);
 
-		String requestUrl = "http://localhost:"+serverPort+"/oauth/token";
+		String requestUrl = "http://10.45.50.199:"+serverPort+"/oauth/token";
 
 		Map<String,String> requestHeader = new HashMap<String,String>();
 		requestHeader.put("Authorization","Basic Y2xpZW50LW5wczoxMjM0NTY=");
